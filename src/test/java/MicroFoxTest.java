@@ -1,6 +1,6 @@
-import ir.moke.microfox.MicroFoxServer;
 import org.junit.jupiter.api.Test;
 
+import ir.moke.microfox.MicroFoxServer;
 import static ir.moke.microfox.MicroFox.*;
 
 public class MicroFoxTest {

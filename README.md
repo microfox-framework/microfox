@@ -19,6 +19,10 @@ dependency:
 Usage: 
 
 ```java
+import org.junit.jupiter.api.Test;
+import ir.moke.microfox.MicroFoxServer;
+import static ir.moke.microfox.MicroFox.*;
+
 public class MicroFoxTest {
     public static void main(String[] args) {
         filter("/book/add", ((request, response) -> System.out.println("I'm Filter")));
