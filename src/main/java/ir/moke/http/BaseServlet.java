@@ -17,9 +17,9 @@ public class BaseServlet extends HttpServlet {
 
     private static Optional<RouteInfo> findMatchingRouteInfo(String reqPath, Method method) {
         for (RouteInfo routeInfo : ResourceHolder.instance.list()) {
-            String path = routeInfo.getPath();
+            String path = routeInfo.path();
             Pattern regex = compilePattern(path);
-            if (regex.matcher(reqPath).matches() && method.equals(routeInfo.getMethod())) {
+            if (regex.matcher(reqPath).matches() && method.equals(routeInfo.method())) {
                 return Optional.of(routeInfo);
             }
         }
@@ -69,7 +69,7 @@ public class BaseServlet extends HttpServlet {
     }
 
     private static void getHandle(HttpServletRequest req, HttpServletResponse resp, RouteInfo item) {
-        item.getRoute().handle(new Request(req), new Response(resp));
+        item.route().handle(new Request(req), new Response(resp));
     }
 
     private static void notFound(HttpServletResponse resp) {

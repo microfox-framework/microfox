@@ -11,8 +11,12 @@ public class ResourceHolder {
         new Thread(HttpContainer::start).start();
     }
 
+    public void add(Method method, String path, ContentType contentType, Route route) {
+        ROUTES.add(new RouteInfo(method, path, contentType, route));
+    }
+
     public void add(Method method, String path, Route route) {
-        ROUTES.add(new RouteInfo(method, path, route));
+        ROUTES.add(new RouteInfo(method, path, null, route));
     }
 
     public Set<RouteInfo> list() {
