@@ -17,7 +17,7 @@ public class BaseFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
-        findMatchingFilterInfo(req.getRequestURI(), Method.GET)
+        findMatchingFilterInfo(req.getRequestURI())
                 .ifPresentOrElse(item -> applyFilter(item, req, resp, chain), () -> doChain(req, resp, chain));
     }
 
