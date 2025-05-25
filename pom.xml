@@ -38,6 +38,13 @@
             <version>${tomcatVersion}</version>
         </dependency>
 
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.0</version>
+        </dependency>
+
         <!-- Log -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -67,22 +74,6 @@
                 <version>3.8.1</version>
                 <configuration>
                     <release>21</release>
-                </configuration>
-            </plugin>
-
-            <!-- copy compiled jar file to target/lib , only needed for test jpms -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.2</version>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/lib/</outputDirectory>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>ir.moke.MainClass</mainClass>
-                        </manifest>
-                    </archive>
                 </configuration>
             </plugin>
 

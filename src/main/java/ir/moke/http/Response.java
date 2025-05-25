@@ -1,5 +1,6 @@
 package ir.moke.http;
 
+import ir.moke.utils.JsonUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ public class Response {
         this.response = response;
     }
 
-    public void payload(String payload) {
+    public void body(String payload) {
         try {
             PrintWriter writer = response.getWriter();
             writer.write(payload);
@@ -27,6 +28,18 @@ public class Response {
             throw new RuntimeException(e);
         }
     }
+
+    public void body(Object o) {
+        try {
+            String json = JsonUtils.toJson(o);
+            PrintWriter writer = response.getWriter();
+            writer.write(json);
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public void status(int status) {
         response.setStatus(status);

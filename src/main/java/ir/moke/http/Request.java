@@ -1,5 +1,6 @@
 package ir.moke.http;
 
+import ir.moke.utils.JsonUtils;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,15 @@ public class Request {
     public String body() {
         try (ServletInputStream inputStream = request.getInputStream()) {
             return new String(inputStream.readAllBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public <T> T body(Class<T> clazzType) {
+        try (ServletInputStream inputStream = request.getInputStream()) {
+            String json = new String(inputStream.readAllBytes());
+            return JsonUtils.toObject(json, clazzType);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,16 +1,20 @@
 package ir.moke.http;
 
+import ir.moke.MicroFoxConfig;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HttpContainer {
-    private static final String contextPath = "";
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HttpContainer.class);
+    private static final String contextPath = MicroFoxConfig.MICROFOX_HTTP_BASE_CONTEXT;
     private static final String baseDir = "/tmp/tomcat";
 
     static {
@@ -44,7 +48,7 @@ public class HttpContainer {
              * add filters
              * Note : Filter could be ordered by @WebFilter#filterName method
              * */
-//            context.addServletContainerInitializer(new EmbeddedFilterContainerInitializer(), Set.of(SampleFilter.class, CORSFilter.class));
+            context.addServletContainerInitializer(new EmbeddedFilterContainerInitializer(), Set.of(BaseFilter.class));
 
             tomcat.start();
             tomcat.getServer().await();
@@ -54,10 +58,11 @@ public class HttpContainer {
     }
 
     public static Connector createHttpConnector() {
-        System.out.println("HTTP connector is ready, listening to port 8080");
+        String port = MicroFoxConfig.MICROFOX_HTTP_PORT;
+        logger.info("HTTP connector is ready, listening to port 8080");
         Connector connector = new Connector();
-        connector.setProperty("address", "0.0.0.0");
-        connector.setPort(8080);
+        connector.setProperty("address", MicroFoxConfig.MICROFOX_HTTP_HOST);
+        connector.setPort(Integer.parseInt(port));
         return connector;
     }
 }

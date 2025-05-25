@@ -5,30 +5,20 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.Optional;
-import java.util.regex.Pattern;
+import static ir.moke.utils.HttpUtils.findMatchingRouteInfo;
 
 @WebServlet("/*")
 public class BaseServlet extends HttpServlet {
-    private static Pattern compilePattern(String pattern) {
-        String regex = pattern.replaceAll(":([^/]+)", "([^/]+)");
-        return Pattern.compile("^" + regex + "$");
-    }
-
-    private static Optional<RouteInfo> findMatchingRouteInfo(String reqPath, Method method) {
-        for (RouteInfo routeInfo : ResourceHolder.instance.list()) {
-            String path = routeInfo.path();
-            Pattern regex = compilePattern(path);
-            if (regex.matcher(reqPath).matches() && method.equals(routeInfo.method())) {
-                return Optional.of(routeInfo);
-            }
-        }
-        return Optional.empty();
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         findMatchingRouteInfo(req.getRequestURI(), Method.GET)
+                .ifPresentOrElse(item -> getHandle(req, resp, item), () -> notFound(resp));
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+        findMatchingRouteInfo(req.getRequestURI(), Method.POST)
                 .ifPresentOrElse(item -> getHandle(req, resp, item), () -> notFound(resp));
     }
 

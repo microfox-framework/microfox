@@ -2,7 +2,7 @@ package ir.moke.http;
 
 import java.util.Objects;
 
-public record RouteInfo(Method method, String path, ContentType contentType, Route route) {
+public record RouteInfo(Method method, String path, Route route) {
 
     @Override
     public boolean equals(Object o) {
