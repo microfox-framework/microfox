@@ -1,3 +1,5 @@
+import ir.moke.microfox.MicroFoxServer;
+
 import static ir.moke.microfox.MicroFox.*;
 
 public class MicroFoxTest {
@@ -11,5 +13,7 @@ public class MicroFoxTest {
 
         get("/book/find", (request, response) -> response.body(BookService.instance.find()));
         delete("/book/remove", (request, response) -> BookService.instance.removeAll());
+
+        MicroFoxServer.start();
     }
 }

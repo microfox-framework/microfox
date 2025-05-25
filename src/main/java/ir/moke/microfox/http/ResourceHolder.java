@@ -15,9 +15,7 @@ public class ResourceHolder {
     public static final ResourceHolder instance = new ResourceHolder();
 
     private ResourceHolder() {
-        new Thread(HttpContainer::start).start();
     }
-
 
     public void addRoute(Method method, String path, Route route) {
         logger.info("register route {} {}", method, path);
