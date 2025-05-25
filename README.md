@@ -30,7 +30,20 @@ public class MicroFoxTest {
 
         get("/book/find", (request, response) -> response.body(BookService.instance.find()));
         delete("/book/remove", (request, response) -> BookService.instance.removeAll());
+        
+        /*------------------------------------------*/
+        // http "http://localhost:8080/api/mahdi/12?id=23"
+        get("/api/:name/:age", (request, response) -> {
+            System.out.println("ID : " + request.queryParameter("id"));
+            System.out.println("Name : " + request.pathParam("name"));
+            System.out.println("Age : " + request.pathParam("age"));
+        });
 
+        /*------------------------------------------*/
+        // http -F http://localhost:8080/redirect
+        get("/target", (request, response) -> response.body("I'm target"));
+        delete("/redirect", (request, response) -> response.redirect("/target"));
+        
         MicroFoxServer.start();
     }
 }
