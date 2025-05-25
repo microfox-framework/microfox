@@ -12,4 +12,28 @@ public class MicroFox {
     public static void post(String path, Route route) {
         ResourceHolder.instance.add(Method.POST, path, route);
     }
+
+    public static void delete(String path, Route route) {
+        ResourceHolder.instance.add(Method.DELETE, path, route);
+    }
+
+    public static void put(String path, Route route) {
+        ResourceHolder.instance.add(Method.PUT, path, route);
+    }
+
+    public static void head(String path, Route route) {
+        ResourceHolder.instance.add(Method.HEAD, path, route);
+    }
+
+    public static void patch(String path, Route route) {
+        ResourceHolder.instance.add(Method.PATCH, path, route);
+    }
+
+    public static void options(String path, Route route) {
+        ResourceHolder.instance.add(Method.OPTIONS, path, route);
+    }
+
+    public static void trace(String path, Route route) {
+        ResourceHolder.instance.add(Method.TRACE, path, route);
+    }
 }

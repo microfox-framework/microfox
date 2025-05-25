@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.util.*;
 
 public class Request {
-    private final HttpServletRequest httpServletRequest;
+    private final HttpServletRequest request;
 
-    public Request(HttpServletRequest httpServletRequest) {
-        this.httpServletRequest = httpServletRequest;
+    public Request(HttpServletRequest request) {
+        this.request = request;
     }
 
     public String body() {
-        try (ServletInputStream inputStream = httpServletRequest.getInputStream()) {
+        try (ServletInputStream inputStream = request.getInputStream()) {
             return new String(inputStream.readAllBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -23,7 +23,7 @@ public class Request {
     }
 
     public byte[] bodyAsBytes() {
-        try (ServletInputStream inputStream = httpServletRequest.getInputStream()) {
+        try (ServletInputStream inputStream = request.getInputStream()) {
             return inputStream.readAllBytes();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -31,12 +31,12 @@ public class Request {
     }
 
     public String authType() {
-        return httpServletRequest.getAuthType();
+        return request.getAuthType();
     }
 
     public Set<String> headers() {
         Set<String> headers = new HashSet<>();
-        Enumeration<String> enumeration = httpServletRequest.getHeaderNames();
+        Enumeration<String> enumeration = request.getHeaderNames();
         while (enumeration.hasMoreElements()) {
             headers.add(enumeration.nextElement());
         }
@@ -44,12 +44,12 @@ public class Request {
     }
 
     public String header(String name) {
-        return httpServletRequest.getHeader(name);
+        return request.getHeader(name);
     }
 
     public Set<String> queryParameters() {
         Set<String> params = new HashSet<>();
-        Enumeration<String> enumeration = httpServletRequest.getParameterNames();
+        Enumeration<String> enumeration = request.getParameterNames();
         while (enumeration.hasMoreElements()) {
             params.add(enumeration.nextElement());
         }
@@ -57,11 +57,11 @@ public class Request {
     }
 
     public String getParameter(String key) {
-        return httpServletRequest.getParameter(key);
+        return request.getParameter(key);
     }
 
     public Map<String, String> cookies() {
-        Cookie[] cookies = httpServletRequest.getCookies();
+        Cookie[] cookies = request.getCookies();
         Map<String, String> map = new HashMap<>();
         for (Cookie cookie : cookies) {
             map.put(cookie.getName(), cookie.getValue());
@@ -71,7 +71,7 @@ public class Request {
     }
 
     public String cookie(String name) {
-        Cookie[] cookies = httpServletRequest.getCookies();
+        Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
@@ -83,73 +83,73 @@ public class Request {
     }
 
     public String userAgent() {
-        return httpServletRequest.getHeader("user-agent");
+        return request.getHeader("user-agent");
     }
 
     public String user() {
-        return httpServletRequest.getRemoteUser();
+        return request.getRemoteUser();
     }
 
     public String contentType() {
-        return httpServletRequest.getContentType();
+        return request.getContentType();
     }
 
     public String ip() {
-        return httpServletRequest.getRemoteAddr();
+        return request.getRemoteAddr();
     }
 
     public String url() {
-        return httpServletRequest.getRequestURL().toString();
+        return request.getRequestURL().toString();
     }
 
     public String contextPath() {
-        return httpServletRequest.getContextPath();
+        return request.getContextPath();
     }
 
     public String servletPath() {
-        return httpServletRequest.getServletPath();
+        return request.getServletPath();
     }
 
     public String pathInfo() {
-        return httpServletRequest.getPathInfo();
+        return request.getPathInfo();
     }
 
     public int port() {
-        return httpServletRequest.getServerPort();
+        return request.getServerPort();
     }
 
     public String scheme() {
-        return httpServletRequest.getScheme();
+        return request.getScheme();
     }
 
     public String host() {
-        return httpServletRequest.getHeader("host");
+        return request.getHeader("host");
     }
 
     public int contentLength() {
-        return httpServletRequest.getContentLength();
+        return request.getContentLength();
     }
 
     public String uri() {
-        return httpServletRequest.getRequestURI();
+        return request.getRequestURI();
     }
 
     public String protocol() {
-        return httpServletRequest.getProtocol();
+        return request.getProtocol();
     }
 
     public void attribute(String attribute, Object value) {
-        httpServletRequest.setAttribute(attribute, value);
+        request.setAttribute(attribute, value);
     }
 
     @SuppressWarnings("unchecked")
     public <T> T attribute(String attribute) {
-        return (T) httpServletRequest.getAttribute(attribute);
+        return (T) request.getAttribute(attribute);
     }
 
     public Set<String> attributes() {
         Set<String> attrList = new HashSet<>();
-        Enumeration<String> attributes = (Enumeration<String>) httpServletRequest.getAttributeNames();
+        Enumeration<String> attributes = (Enumeration<String>) request.getAttributeNames();
         while (attributes.hasMoreElements()) {
             attrList.add(attributes.nextElement());
         }
