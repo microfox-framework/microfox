@@ -1,9 +1,31 @@
 import ir.moke.microfox.MicroFoxServer;
+import org.junit.jupiter.api.Test;
 
 import static ir.moke.microfox.MicroFox.*;
 
 public class MicroFoxTest {
-    public static void main(String[] args) {
+
+    @Test
+    public void checkPathParameter() {
+        get("/api/:name/:age", (request, response) -> {
+            System.out.println("ID : " + request.queryParameter("id"));
+            System.out.println("Name : " + request.pathParam("name"));
+            System.out.println("Age : " + request.pathParam("age"));
+        });
+
+        MicroFoxServer.start();
+    }
+
+    @Test
+    public void checkRedirect() {
+        get("/target", (request, response) -> response.body("I'm target"));
+        delete("/redirect", (request, response) -> response.redirect("/target"));
+
+        MicroFoxServer.start();
+    }
+
+    @Test
+    public void checkMultipleService() {
         filter("/book/add", ((request, response) -> System.out.println("I'm Filter")));
         post("/book/add", (req, resp) -> {
             Book body = req.body(Book.class);

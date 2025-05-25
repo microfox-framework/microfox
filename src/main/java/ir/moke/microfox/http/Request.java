@@ -1,5 +1,6 @@
 package ir.moke.microfox.http;
 
+import ir.moke.microfox.utils.HttpUtils;
 import ir.moke.microfox.utils.JsonUtils;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.Cookie;
@@ -66,8 +67,18 @@ public class Request {
         return params;
     }
 
-    public String getParameter(String key) {
+    public String queryParameter(String key) {
         return request.getParameter(key);
+    }
+
+    public String pathParam(String key) {
+        String requestURI = request.getRequestURI();
+        String method = request.getMethod();
+        RouteInfo optionalRouteInfo = HttpUtils.findMatchingRouteInfo(requestURI, Method.valueOf(method.toUpperCase())).get();
+
+        Map<String, String> map = HttpUtils.extractPathParams(optionalRouteInfo.path(), requestURI);
+        return map.get(key);
+
     }
 
     public Map<String, String> cookies() {
