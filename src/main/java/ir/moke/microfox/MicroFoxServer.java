@@ -15,6 +15,8 @@ public class MicroFoxServer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        MicroFoxConfig.print();
     }
 
     public static void start() {
