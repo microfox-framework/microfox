@@ -1,3 +1,3 @@
-public record Book(String isbn, String name) {
+public record Book(int id, String isbn, String name) {
 
 }

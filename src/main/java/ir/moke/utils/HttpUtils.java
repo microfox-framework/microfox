@@ -25,7 +25,7 @@ public class HttpUtils {
         return Optional.empty();
     }
 
-    public static Optional<FilterInfo> findMatchingFilterInfo(String reqPath, Method method) {
+    public static Optional<FilterInfo> findMatchingFilterInfo(String reqPath) {
         for (FilterInfo filterInfo : ResourceHolder.instance.listFilters()) {
             String path = filterInfo.path();
             Pattern regex = compilePattern(path);
