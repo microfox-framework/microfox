@@ -1,4 +1,4 @@
-package ir.moke.http;
+package ir.moke.microfox.http;
 
 public enum ContentType {
     APPLICATION_JAVA_ARCHIVE("application/java-archive"),

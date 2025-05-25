@@ -1,6 +1,6 @@
-package ir.moke.http;
+package ir.moke.microfox.http;
 
-import ir.moke.utils.JsonUtils;
+import ir.moke.microfox.utils.JsonUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;

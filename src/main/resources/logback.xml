@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="10 seconds">
+
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+    <conversionRule conversionWord="highlighter" converterClass="ir.moke.microfox.utils.LogHighlighter"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{yyyy-MMM-dd HH:mm:ss} [%t] [%highlighter(%-5level)] %logger{36} [%M:%L] - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <logger name="ir.moke.microfox" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <root level="ALL">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

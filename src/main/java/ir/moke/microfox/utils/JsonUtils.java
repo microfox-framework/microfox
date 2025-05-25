@@ -1,4 +1,4 @@
-package ir.moke.utils;
+package ir.moke.microfox.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

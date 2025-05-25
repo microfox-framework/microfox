@@ -1,4 +1,4 @@
-package ir.moke.http;
+package ir.moke.microfox.http;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.*;
@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import static ir.moke.utils.HttpUtils.findMatchingFilterInfo;
+import static ir.moke.microfox.utils.HttpUtils.findMatchingFilterInfo;
 
 @WebFilter("/*")
 public class BaseFilter implements Filter {

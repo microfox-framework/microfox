@@ -1,4 +1,4 @@
-import static ir.moke.MicroFox.*;
+import static ir.moke.microfox.MicroFox.*;
 
 public class MicroFoxTest {
     public static void main(String[] args) {
