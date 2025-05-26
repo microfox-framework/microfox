@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import static ir.moke.microfox.utils.HttpUtils.findMatchingRouteInfo;
 
 @WebServlet("/*")
-public class BaseServlet extends HttpServlet {
+class BaseServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseServlet.class);
 

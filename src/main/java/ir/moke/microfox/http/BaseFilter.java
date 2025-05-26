@@ -11,7 +11,7 @@ import java.io.IOException;
 import static ir.moke.microfox.utils.HttpUtils.findMatchingFilterInfo;
 
 @WebFilter("/*")
-public class BaseFilter implements Filter {
+class BaseFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
         HttpServletRequest req = (HttpServletRequest) request;
