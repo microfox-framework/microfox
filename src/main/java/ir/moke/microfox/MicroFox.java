@@ -12,6 +12,7 @@ import java.net.http.HttpClient;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class MicroFox {
     public static void filter(String path, Filter... filters) {
@@ -50,16 +51,17 @@ public class MicroFox {
         ResourceHolder.instance.addRoute(Method.TRACE, path, route);
     }
 
-    public static <T> T restCall(String baseUri, Class<T> serviceClass) {
-        return restCall(baseUri, Map.of(), serviceClass);
+    public static <T> void restCall(String baseUri, Class<T> serviceClass, Consumer<T> consumer) {
+        restCall(baseUri, Map.of(), serviceClass, consumer);
     }
 
-    public static <T> T restCall(String baseUri, Map<String, String> headers, Class<T> serviceClass) {
-        return new Kafir.KafirBuilder()
+    public static <T> void restCall(String baseUri, Map<String, String> headers, Class<T> serviceClass, Consumer<T> consumer) {
+        T t = new Kafir.KafirBuilder()
                 .setBaseUri(baseUri)
                 .setVersion(HttpClient.Version.HTTP_2)
                 .setHeaders(headers)
                 .build(serviceClass);
+        consumer.accept(t);
     }
 
     public static void job(Class<? extends Job> jobClass, String cronExpression) {

@@ -58,11 +58,10 @@ public class MicroFoxTest {
         delete("/redirect", (request, response) -> response.redirect("/book/find"));
 
         /* Easy call rest api */
-        BookService bookService = restCall("http://w.x.y.z:8080/book/find", BookService.class);
-        bookService.findBooks();
+        restCall("http://w.x.y.z:8080/book/find", BookService.class, bookService -> {/*...*/});
 
         /* Easy setup job */
-        job(EchoJob.class,"*/3 * * * * ? *");
+        job(EchoJob.class, "*/3 * * * * ? *");
 
         MicroFoxServer.start();
     }
