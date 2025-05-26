@@ -6,7 +6,7 @@ import static ir.moke.microfox.MicroFox.*;
 
 public class MicroFoxTest {
     public static void main(String[] str) {
-        filter("/book/add", ((request, response) -> System.out.println("I'm Filter")));
+        filter("/book/:id", ((request, response) -> System.out.println("I'm Filter")));
         post("/book", (req, resp) -> {
             Book body = req.body(Book.class);
             BookService.save(body);
