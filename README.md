@@ -27,6 +27,7 @@ Usage:
 import ir.moke.kafir.annotation.GET;
 import org.junit.jupiter.api.Test;
 import ir.moke.microfox.MicroFoxServer;
+import org.quartz.Job;
 
 import java.net.http.HttpResponse;
 
@@ -37,6 +38,13 @@ public class MicroFoxTest {
     private interface BookService {
         @GET("/book/find")
         HttpResponse<String> findBooks();
+    }
+
+    private class EchoJob implements Job {
+        @Override
+        public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+            System.out.println("Job executed");
+        }
     }
 
     public static void main(String[] args) {
@@ -52,6 +60,9 @@ public class MicroFoxTest {
         /* Easy call rest api */
         BookService bookService = restCall("http://w.x.y.z:8080/book/find", BookService.class);
         bookService.findBooks();
+
+        /* Easy setup job */
+        job(EchoJob.class,"*/3 * * * * ? *");
 
         MicroFoxServer.start();
     }
