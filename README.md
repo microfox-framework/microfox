@@ -3,12 +3,17 @@
 </p>
 
 # Microfox
-Microfox is a lightweight, developer-friendly toolkit designed to simplify the setup and management of microservice-based projects.    
-With a focus on ease of use and minimal configuration, Microfox helps teams get started quickly, offering a smooth path from development to deployment.    
-Whether you're building a small service or scaling up a complex system, Microfox keeps things simple and efficient.     
 
-dependency: 
+Microfox is a lightweight, developer-friendly toolkit designed to simplify the setup and management of
+microservice-based projects.    
+With a focus on ease of use and minimal configuration, Microfox helps teams get started quickly, offering a smooth path
+from development to deployment.    
+Whether you're building a small service or scaling up a complex system, Microfox keeps things simple and efficient.
+
+dependency:
+
 ```xml
+
 <dependency>
     <groupId>ir.moke.microfox</groupId>
     <artifactId>microfox</artifactId>
@@ -16,38 +21,38 @@ dependency:
 </dependency>
 ```
 
-Usage: 
+Usage:
 
 ```java
+import ir.moke.kafir.annotation.GET;
 import org.junit.jupiter.api.Test;
 import ir.moke.microfox.MicroFoxServer;
+
+import java.net.http.HttpResponse;
+
 import static ir.moke.microfox.MicroFox.*;
 
 public class MicroFoxTest {
+
+    private interface BookService {
+        @GET("/book/find")
+        HttpResponse<String> findBooks();
+    }
+
     public static void main(String[] args) {
-        filter("/book/add", ((request, response) -> System.out.println("I'm Filter")));
-        post("/book/add", (req, resp) -> {
-            Book body = req.body(Book.class);
-            BookService.instance.add(body);
-            resp.body(body);
-        });
 
-        get("/book/find", (request, response) -> response.body(BookService.instance.find()));
-        delete("/book/remove", (request, response) -> BookService.instance.removeAll());
-        
-        /*------------------------------------------*/
-        // http "http://localhost:8080/api/mahdi/12?id=23"
-        get("/api/:name/:age", (request, response) -> {
-            System.out.println("ID : " + request.queryParameter("id"));
-            System.out.println("Name : " + request.pathParam("name"));
-            System.out.println("Age : " + request.pathParam("age"));
-        });
+        /* Easy Implement Rest API */
+        filter("/book/add", ((request, response) -> {/*...*/}));
+        post("/book/add", (req, resp) -> {/*...*/});
+        get("/book/find", (request, response) -> {/*...*/});
+        delete("/book/remove", (request, response) -> {/*...*/});
+        get("/api/:name/:age", (request, response) -> {/*...*/});
+        delete("/redirect", (request, response) -> response.redirect("/book/find"));
 
-        /*------------------------------------------*/
-        // http -F http://localhost:8080/redirect
-        get("/target", (request, response) -> response.body("I'm target"));
-        delete("/redirect", (request, response) -> response.redirect("/target"));
-        
+        /* Easy call rest api */
+        BookService bookService = restCall("http://w.x.y.z:8080/book/find", BookService.class);
+        bookService.findBooks();
+
         MicroFoxServer.start();
     }
 }
