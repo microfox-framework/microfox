@@ -1,5 +1,6 @@
 package ir.moke.microfox.http;
 
+import ir.moke.kafir.utils.JsonUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -71,6 +72,7 @@ public class Response {
     public void header(String header, Instant value) {
         response.addDateHeader(header, value.toEpochMilli());
     }
+
     public void cookie(Cookie cookie) {
         response.addCookie(cookie);
     }
