@@ -52,8 +52,8 @@ public class MicroFoxTest {
         /* Easy Implement Rest API */
         filter("/book/add", ((request, response) -> {/*...*/}));
         post("/book/add", (req, resp) -> {/*...*/});
-        get("/book/find", (request, response) -> {/*...*/});
-        delete("/book/remove", (request, response) -> {/*...*/});
+        get("/book/findAll", (request, response) -> {/*...*/});
+        delete("/book/remove?id=12", (request, response) -> {/*...*/});
         get("/api/:name/:age", (request, response) -> {/*...*/});
         delete("/redirect", (request, response) -> response.redirect("/book/find"));
 
