@@ -34,7 +34,5 @@ public class MicroFoxTest {
         delete("/redirect", (request, response) -> response.redirect("/target"));
 
         MicroFoxServer.start();
-
-        MicroFoxServer.start();
     }
 }
