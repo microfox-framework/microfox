@@ -5,8 +5,12 @@ import ir.moke.microfox.http.Filter;
 import ir.moke.microfox.http.Method;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.Route;
+import ir.moke.microfox.job.JobSchedulerContainer;
+import org.quartz.Job;
 
 import java.net.http.HttpClient;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.Map;
 
 public class MicroFox {
@@ -56,5 +60,13 @@ public class MicroFox {
                 .setVersion(HttpClient.Version.HTTP_2)
                 .setHeaders(headers)
                 .build(serviceClass);
+    }
+
+    public static void job(Class<? extends Job> jobClass, String cronExpression) {
+        JobSchedulerContainer.instance.register(jobClass, cronExpression);
+    }
+
+    public static void job(Class<? extends Job> jobClass, ZonedDateTime zonedDateTime) {
+        JobSchedulerContainer.instance.register(jobClass, Date.from(zonedDateTime.toInstant()));
     }
 }
