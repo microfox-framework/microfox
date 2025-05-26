@@ -1,9 +1,13 @@
 package ir.moke.microfox;
 
+import ir.moke.kafir.http.Kafir;
 import ir.moke.microfox.http.Filter;
 import ir.moke.microfox.http.Method;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.Route;
+
+import java.net.http.HttpClient;
+import java.util.Map;
 
 public class MicroFox {
     public static void filter(String path, Filter... filters) {
@@ -40,5 +44,17 @@ public class MicroFox {
 
     public static void trace(String path, Route route) {
         ResourceHolder.instance.addRoute(Method.TRACE, path, route);
+    }
+
+    public static <T> T restCall(String baseUri, Class<T> serviceClass) {
+        return restCall(baseUri, Map.of(), serviceClass);
+    }
+
+    public static <T> T restCall(String baseUri, Map<String, String> headers, Class<T> serviceClass) {
+        return new Kafir.KafirBuilder()
+                .setBaseUri(baseUri)
+                .setVersion(HttpClient.Version.HTTP_2)
+                .setHeaders(headers)
+                .build(serviceClass);
     }
 }
