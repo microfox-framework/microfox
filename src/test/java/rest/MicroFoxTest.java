@@ -1,21 +1,24 @@
 package rest;
 
-import org.junit.jupiter.api.Test;
-
 import ir.moke.microfox.MicroFoxServer;
+
 import static ir.moke.microfox.MicroFox.*;
 
 public class MicroFoxTest {
     public static void main(String[] str) {
         filter("/book/add", ((request, response) -> System.out.println("I'm Filter")));
-        post("/book/add", (req, resp) -> {
-            rest.Book body = req.body(rest.Book.class);
-            rest.BookService.instance.add(body);
+        post("/book", (req, resp) -> {
+            Book body = req.body(Book.class);
+            BookService.save(body);
             resp.body(body);
         });
 
-        get("/book/find", (request, response) -> response.body(rest.BookService.instance.find()));
-        delete("/book/remove", (request, response) -> rest.BookService.instance.removeAll());
+        get("/book", (request, response) -> response.body(BookService.find()));
+        get("/book/:id", (request, response) -> {
+            int id = Integer.parseInt(request.pathParam("id"));
+            response.body(BookService.find(id));
+        });
+        delete("/book/:id", (request, response) -> BookService.remove(Integer.parseInt(request.pathParam("id"))));
 
         /*------------------------------------------*/
         // http "http://localhost:8080/api/mahdi/12?id=23"

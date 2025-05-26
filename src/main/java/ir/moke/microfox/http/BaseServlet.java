@@ -4,11 +4,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ir.moke.microfox.utils.HttpUtils.findMatchingRouteInfo;
 
 @WebServlet("/*")
 public class BaseServlet extends HttpServlet {
+
+    private static final Logger logger = LoggerFactory.getLogger(BaseServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
@@ -59,10 +63,19 @@ public class BaseServlet extends HttpServlet {
     }
 
     private static void getHandle(HttpServletRequest req, HttpServletResponse resp, RouteInfo item) {
-        item.route().handle(new Request(req), new Response(resp));
+        try {
+            item.route().handle(new Request(req), new Response(resp));
+        } catch (Exception e) {
+            logger.error("Microfox Error", e);
+            internalServerError(resp);
+        }
     }
 
     private static void notFound(HttpServletResponse resp) {
         resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    private static void internalServerError(HttpServletResponse resp) {
+        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 }

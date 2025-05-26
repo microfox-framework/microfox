@@ -1,24 +1,22 @@
 package rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BookService {
-    private static final List<Book> BOOKS = new ArrayList<>();
-    public static final BookService instance = new BookService();
 
-    private BookService() {
+    public static void save(Book book) {
+        BookRepository.instance.insert(book);
     }
 
-    public void add(Book book) {
-        BOOKS.add(book);
+    public static List<Book> find() {
+        return BookRepository.instance.select();
     }
 
-    public List<Book> find() {
-        return BOOKS;
+    public static Book find(int id) {
+        return BookRepository.instance.select(id);
     }
 
-    public void removeAll() {
-        BOOKS.clear();
+    public static void remove(int id) {
+        BookRepository.instance.delete(id);
     }
 }

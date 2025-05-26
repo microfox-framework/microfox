@@ -26,7 +26,7 @@ public class Request {
 
     public <T> T body(Class<T> clazzType) {
         try (ServletInputStream inputStream = request.getInputStream()) {
-            String json = new String(inputStream.readAllBytes());
+            String json = new String(inputStream.readAllBytes()).trim();
             return JsonUtils.toObject(json, clazzType);
         } catch (IOException e) {
             throw new RuntimeException(e);

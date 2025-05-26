@@ -31,6 +31,7 @@ public class Response {
 
     public void body(Object o) {
         try {
+            contentType(ContentType.APPLICATION_JSON);
             String json = JsonUtils.toJson(o);
             PrintWriter writer = response.getWriter();
             writer.write(json);
@@ -40,6 +41,9 @@ public class Response {
         }
     }
 
+    public void contentType(ContentType contentType) {
+        response.setContentType(contentType.getType());
+    }
 
     public void status(int status) {
         response.setStatus(status);
@@ -68,7 +72,6 @@ public class Response {
     public void header(String header, Instant value) {
         response.addDateHeader(header, value.toEpochMilli());
     }
-
     public void cookie(Cookie cookie) {
         response.addCookie(cookie);
     }
