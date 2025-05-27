@@ -10,8 +10,7 @@ With a focus on ease of use and minimal configuration, MicroFox helps teams get 
 from development to deployment.    
 Whether you're building a small service or scaling up a complex system, MicroFox keeps things simple and efficient.
 
-dependency:
-
+### Dependency 
 ```xml
 
 <dependency>
@@ -21,8 +20,7 @@ dependency:
 </dependency>
 ```
 
-Usage:
-
+### Usage
 ```java
 import ir.moke.kafir.annotation.GET;
 import org.junit.jupiter.api.Test;
