@@ -2,27 +2,25 @@
   <img src="microfox.png" alt="JOS" width="300"/>
 </p>
 
-# Microfox
+# MicroFox
 
-Microfox is a lightweight, developer-friendly framework designed to simplify the setup and management of
+MicroFox is a lightweight, developer-friendly **framework** designed to simplify the setup and management of
 microservice-based projects.    
-With a focus on ease of use and minimal configuration, Microfox helps teams get started quickly, offering a smooth path
+With a focus on ease of use and minimal configuration, MicroFox helps teams get started quickly, offering a smooth path
 from development to deployment.    
-Whether you're building a small service or scaling up a complex system, Microfox keeps things simple and efficient.
+Whether you're building a small service or scaling up a complex system, MicroFox keeps things simple and efficient.
 
-dependency:
-
+### Dependency 
 ```xml
 
 <dependency>
-    <groupId>ir.moke.microfox</groupId>
+    <groupId>ir.moke</groupId>
     <artifactId>microfox</artifactId>
     <version>0.1</version>
 </dependency>
 ```
 
-Usage:
-
+### Usage
 ```java
 import ir.moke.kafir.annotation.GET;
 import org.junit.jupiter.api.Test;
