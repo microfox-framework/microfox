@@ -6,6 +6,8 @@ import ir.moke.microfox.http.Method;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.Route;
 import ir.moke.microfox.job.JobSchedulerContainer;
+import ir.moke.microfox.persistence.MyBatisExecutor;
+import org.apache.ibatis.session.SqlSession;
 import org.quartz.Job;
 
 import java.net.http.HttpClient;
@@ -70,5 +72,23 @@ public class MicroFox {
 
     public static void job(Class<? extends Job> jobClass, ZonedDateTime zonedDateTime) {
         JobSchedulerContainer.instance.register(jobClass, Date.from(zonedDateTime.toInstant()));
+    }
+
+    public static <T> T sql(Class<T> mapper) {
+        return MyBatisExecutor.mapper(mapper);
+    }
+
+    public static <T> void sqlBatch(Class<T> mapper, Consumer<T> consumer) {
+        SqlSession batchSession = MyBatisExecutor.getBatchSession();
+        T t = batchSession.getMapper(mapper);
+        try {
+            consumer.accept(t);
+            batchSession.commit();
+        } catch (Exception e) {
+            batchSession.rollback();
+            throw new RuntimeException("Failed to execute SQL batch", e);
+        } finally {
+            batchSession.close();
+        }
     }
 }
