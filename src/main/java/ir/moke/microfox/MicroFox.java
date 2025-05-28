@@ -1,6 +1,7 @@
 package ir.moke.microfox;
 
 import ir.moke.kafir.http.Kafir;
+import ir.moke.microfox.ftp.FtpClient;
 import ir.moke.microfox.http.Filter;
 import ir.moke.microfox.http.Method;
 import ir.moke.microfox.http.ResourceHolder;
@@ -9,7 +10,11 @@ import ir.moke.microfox.job.JobSchedulerContainer;
 import ir.moke.microfox.persistence.BatisExecutor;
 import org.apache.ibatis.session.SqlSession;
 import org.quartz.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.http.HttpClient;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -18,6 +23,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class MicroFox {
+    private static final Logger logger = LoggerFactory.getLogger(MicroFox.class);
+
     public static void filter(String path, Filter... filters) {
         ResourceHolder.instance.addFilter(path, filters);
     }
@@ -93,6 +100,94 @@ public class MicroFox {
             throw new RuntimeException("Failed to execute SQL batch", e);
         } finally {
             batchSession.close();
+        }
+    }
+
+    public static void ftpDownload(String host, String username, String password, String remoteFilePath, File file) {
+        try {
+            FtpClient ftpClient = new FtpClient();
+            ftpClient.connect(host);
+            ftpClient.login(username, password);
+            ftpClient.download(remoteFilePath, file);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public static void ftpDownload(String host, String username, String remoteFilePath, File file) {
+        try {
+            FtpClient ftpClient = new FtpClient();
+            ftpClient.connect(host);
+            ftpClient.anonymous();
+            ftpClient.download(remoteFilePath, file);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public static void ftpUpload(String host, String username, String password, String remoteFilePath, InputStream inputStream) {
+        try {
+            FtpClient ftpClient = new FtpClient();
+            ftpClient.connect(host);
+            ftpClient.login(username, password);
+            ftpClient.upload(remoteFilePath, inputStream);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public static void ftpUpload(String host, String remoteFilePath, InputStream inputStream) {
+        try {
+            FtpClient ftpClient = new FtpClient();
+            ftpClient.connect(host);
+            ftpClient.anonymous();
+            ftpClient.upload(remoteFilePath, inputStream);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public static void ftpDelete(String host, String username, String password, String remoteFilePath) {
+        try {
+            FtpClient ftpClient = new FtpClient();
+            ftpClient.connect(host);
+            ftpClient.login(username, password);
+            ftpClient.delete(remoteFilePath);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public static void ftpDelete(String host, String remoteFilePath) {
+        try {
+            FtpClient ftpClient = new FtpClient();
+            ftpClient.connect(host);
+            ftpClient.anonymous();
+            ftpClient.delete(remoteFilePath);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public static void ftpList(String host, String username, String password, String remoteFilePath) {
+        try {
+            FtpClient ftpClient = new FtpClient();
+            ftpClient.connect(host);
+            ftpClient.login(username, password);
+            ftpClient.listFiles(remoteFilePath);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public static void ftpList(String host, String remoteFilePath) {
+        try {
+            FtpClient ftpClient = new FtpClient();
+            ftpClient.connect(host);
+            ftpClient.anonymous();
+            ftpClient.listFiles(remoteFilePath);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 }
