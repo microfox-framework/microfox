@@ -6,7 +6,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 
-public class MyBatisExecutor {
+public class BatisExecutor {
 
     private static SqlSessionFactory sqlSessionFactory;
 
@@ -24,10 +24,8 @@ public class MyBatisExecutor {
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
 
-    public static <T> T mapper(Class<T> mapperClass) {
-        try (SqlSession session = sqlSessionFactory.openSession(true)) {
-            return session.getMapper(mapperClass);
-        }
+    public static SqlSessionFactory getSqlSessionFactory() {
+        return sqlSessionFactory;
     }
 
     public static SqlSession getBatchSession() {

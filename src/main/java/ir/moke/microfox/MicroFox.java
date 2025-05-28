@@ -6,7 +6,7 @@ import ir.moke.microfox.http.Method;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.Route;
 import ir.moke.microfox.job.JobSchedulerContainer;
-import ir.moke.microfox.persistence.MyBatisExecutor;
+import ir.moke.microfox.persistence.BatisExecutor;
 import org.apache.ibatis.session.SqlSession;
 import org.quartz.Job;
 
@@ -15,6 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MicroFox {
     public static void filter(String path, Filter... filters) {
@@ -74,12 +75,15 @@ public class MicroFox {
         JobSchedulerContainer.instance.register(jobClass, Date.from(zonedDateTime.toInstant()));
     }
 
-    public static <T> T sql(Class<T> mapper) {
-        return MyBatisExecutor.mapper(mapper);
+    public static <T, R> R sql(Class<T> mapper, Function<T, R> function) {
+        try (SqlSession sqlSession = BatisExecutor.getSqlSessionFactory().openSession(true)) {
+            T t = sqlSession.getMapper(mapper);
+            return function.apply(t);
+        }
     }
 
     public static <T> void sqlBatch(Class<T> mapper, Consumer<T> consumer) {
-        SqlSession batchSession = MyBatisExecutor.getBatchSession();
+        SqlSession batchSession = BatisExecutor.getBatchSession();
         T t = batchSession.getMapper(mapper);
         try {
             consumer.accept(t);
