@@ -1,9 +1,4 @@
-package ir.moke.microfox.utils;
-
-import ir.moke.microfox.http.FilterInfo;
-import ir.moke.microfox.http.Method;
-import ir.moke.microfox.http.ResourceHolder;
-import ir.moke.microfox.http.RouteInfo;
+package ir.moke.microfox.http;
 
 import java.util.HashMap;
 import java.util.Map;
