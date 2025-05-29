@@ -12,19 +12,18 @@ Whether you're building a small service or scaling up a complex system, MicroFox
 
 ### Dependency 
 ```xml
-
 <dependency>
     <groupId>ir.moke</groupId>
     <artifactId>microfox</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
 </dependency>
 ```
 
 ### Usage
+
 ```java
 import ir.moke.kafir.annotation.GET;
 import org.junit.jupiter.api.Test;
-import ir.moke.microfox.MicroFoxServer;
 import org.quartz.Job;
 
 import java.net.http.HttpResponse;
@@ -60,8 +59,6 @@ public class MicroFoxTest {
 
         /* Easy setup job */
         job(EchoJob.class, "*/3 * * * * ? *");
-
-        MicroFoxServer.start();
     }
 }
 ```
