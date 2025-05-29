@@ -4,7 +4,7 @@
     <groupId>ir.moke</groupId>
     <artifactId>microfox</artifactId>
     <packaging>jar</packaging>
-    <version>0.1</version>
+    <version>0.2</version>
     <name>microfox</name>
 
     <url>https://github.com/mah454/microfox</url>
@@ -89,6 +89,7 @@
             <artifactId>kafir</artifactId>
             <version>1.4.5</version>
         </dependency>
+
         <!-- Log -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
