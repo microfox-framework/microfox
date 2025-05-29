@@ -1,4 +1,4 @@
-package model;
+package ir.moke.microfox.test.crud.model;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;

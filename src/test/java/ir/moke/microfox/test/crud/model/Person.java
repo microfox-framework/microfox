@@ -1,4 +1,4 @@
-package model;
+package ir.moke.microfox.test.crud.model;
 
 public class Person {
     private long id;

@@ -1,7 +1,9 @@
+package ir.moke.microfox.test.crud;
+
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.persistence.BatisExecutor;
-import model.Person;
-import model.PersonMapper;
+import ir.moke.microfox.test.crud.model.Person;
+import ir.moke.microfox.test.crud.model.PersonMapper;
 import org.h2.jdbcx.JdbcDataSource;
 
 import javax.sql.DataSource;
@@ -10,7 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-public class MicroFoxTest {
+public class CrudTest {
     public static void main(String[] args) {
         DataSource dataSource = createDataSource();
         BatisExecutor.configure("h2", dataSource, "model");
