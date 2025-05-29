@@ -28,47 +28,47 @@ import java.util.function.Function;
 public class MicroFox {
     private static final Logger logger = LoggerFactory.getLogger(MicroFox.class);
 
-    public static void filter(String path, Filter... filters) {
+    public static void httpFilter(String path, Filter... filters) {
         ResourceHolder.instance.addFilter(path, filters);
     }
 
-    public static void get(String path, Route route) {
+    public static void httpGet(String path, Route route) {
         ResourceHolder.instance.addRoute(Method.GET, path, route);
     }
 
-    public static void post(String path, Route route) {
+    public static void httpPost(String path, Route route) {
         ResourceHolder.instance.addRoute(Method.POST, path, route);
     }
 
-    public static void delete(String path, Route route) {
+    public static void httpDelete(String path, Route route) {
         ResourceHolder.instance.addRoute(Method.DELETE, path, route);
     }
 
-    public static void put(String path, Route route) {
+    public static void httpPut(String path, Route route) {
         ResourceHolder.instance.addRoute(Method.PUT, path, route);
     }
 
-    public static void patch(String path, Route route) {
+    public static void httpPatch(String path, Route route) {
         ResourceHolder.instance.addRoute(Method.PATCH, path, route);
     }
 
-    public static void head(String path, Route route) {
+    public static void httpHead(String path, Route route) {
         ResourceHolder.instance.addRoute(Method.HEAD, path, route);
     }
 
-    public static void options(String path, Route route) {
+    public static void httpOptions(String path, Route route) {
         ResourceHolder.instance.addRoute(Method.OPTIONS, path, route);
     }
 
-    public static void trace(String path, Route route) {
+    public static void httpTrace(String path, Route route) {
         ResourceHolder.instance.addRoute(Method.TRACE, path, route);
     }
 
-    public static <T> void restCall(String baseUri, Class<T> serviceClass, Consumer<T> consumer) {
-        restCall(baseUri, Map.of(), serviceClass, consumer);
+    public static <T> void httpCall(String baseUri, Class<T> serviceClass, Consumer<T> consumer) {
+        httpCall(baseUri, Map.of(), serviceClass, consumer);
     }
 
-    public static <T> void restCall(String baseUri, Map<String, String> headers, Class<T> serviceClass, Consumer<T> consumer) {
+    public static <T> void httpCall(String baseUri, Map<String, String> headers, Class<T> serviceClass, Consumer<T> consumer) {
         T t = new Kafir.KafirBuilder()
                 .setBaseUri(baseUri)
                 .setVersion(HttpClient.Version.HTTP_2)

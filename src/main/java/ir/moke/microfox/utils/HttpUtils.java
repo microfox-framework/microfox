@@ -50,7 +50,7 @@ public class HttpUtils {
         String[] pathParts = requestPath.split("/");
 
         if (patternParts.length != pathParts.length) {
-            return params; // or throw exception
+            return params;
         }
 
         for (int i = 0; i < patternParts.length; i++) {
@@ -63,5 +63,4 @@ public class HttpUtils {
 
         return params;
     }
-
 }

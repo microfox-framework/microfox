@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-class EmbeddedFilterContainerInitializer implements ServletContainerInitializer {
+public class EmbeddedFilterContainerInitializer implements ServletContainerInitializer {
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) {
         for (Class<?> filterClass : classes) {

@@ -4,12 +4,10 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Date;
-import java.util.Timer;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
 public class JobSchedulerContainer {
-    private static final Timer timer = new Timer(false);
     public static final JobSchedulerContainer instance = new JobSchedulerContainer();
     private final Scheduler scheduler;
 

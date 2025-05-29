@@ -3,6 +3,7 @@ package ir.moke.microfox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
@@ -26,9 +27,24 @@ public class MicroFoxConfig {
         }
     }
 
-    public static void print() {
+    private static void printEnvironments() {
         logger.info("MICROFOX_HTTP_HOST {}", MICROFOX_HTTP_HOST);
         logger.info("MICROFOX_HTTP_PORT {}", MICROFOX_HTTP_PORT);
         logger.info("MICROFOX_HTTP_BASE_CONTEXT {}", MICROFOX_HTTP_BASE_CONTEXT);
+    }
+
+    private static void printLogo() {
+        try (InputStream inputStream = MicroFoxServer.class.getClassLoader().getResourceAsStream("logo")) {
+            if (inputStream != null) {
+                System.out.println(new String(inputStream.readAllBytes()));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void introduce() {
+        printLogo();
+        printEnvironments();
     }
 }

@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @HandlesTypes(Servlet.class)
-class EmbeddedServletContainerInitializer implements ServletContainerInitializer {
+public class EmbeddedServletContainerInitializer implements ServletContainerInitializer {
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) {
         if (classes != null) {
