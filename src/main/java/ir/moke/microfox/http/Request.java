@@ -1,6 +1,7 @@
 package ir.moke.microfox.http;
 
 import ir.moke.kafir.utils.JsonUtils;
+import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -174,5 +175,17 @@ public class Request {
             attrList.add(attributes.nextElement());
         }
         return attrList;
+    }
+
+    public AsyncContext asyncContext() {
+        return request.getAsyncContext();
+    }
+
+    public boolean isAsyncStarted() {
+        return request.isAsyncStarted();
+    }
+
+    public boolean isAsyncSupported() {
+        return request.isAsyncSupported();
     }
 }
