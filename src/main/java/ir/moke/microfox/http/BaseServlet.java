@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ir.moke.microfox.utils.HttpUtils.findMatchingRouteInfo;
+import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
 
 @WebServlet("/*")
 class BaseServlet extends HttpServlet {
