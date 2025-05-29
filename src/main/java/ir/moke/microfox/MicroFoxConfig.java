@@ -34,7 +34,7 @@ public class MicroFoxConfig {
     }
 
     private static void printLogo() {
-        try (InputStream inputStream = MicroFoxServer.class.getClassLoader().getResourceAsStream("logo")) {
+        try (InputStream inputStream = MicroFoxConfig.class.getClassLoader().getResourceAsStream("logo")) {
             if (inputStream != null) {
                 System.out.println(new String(inputStream.readAllBytes()));
             }

@@ -28,6 +28,10 @@ import java.util.function.Function;
 public class MicroFox {
     private static final Logger logger = LoggerFactory.getLogger(MicroFox.class);
 
+    static {
+        MicroFoxConfig.introduce();
+    }
+
     public static void httpFilter(String path, Filter... filters) {
         ResourceHolder.instance.addFilter(path, filters);
     }
@@ -85,15 +89,22 @@ public class MicroFox {
         JobSchedulerContainer.instance.register(jobClass, Date.from(zonedDateTime.toInstant()));
     }
 
-    public static <T, R> R sql(Class<T> mapper, Function<T, R> function) {
-        try (SqlSession sqlSession = BatisExecutor.getSqlSessionFactory().openSession(true)) {
+    public static <T, R> R sqlFetch(String databaseId, Class<T> mapper, Function<T, R> function) {
+        try (SqlSession sqlSession = BatisExecutor.getSqlSessionFactory(databaseId).openSession(true)) {
             T t = sqlSession.getMapper(mapper);
             return function.apply(t);
         }
     }
 
-    public static <T> void sqlBatch(Class<T> mapper, Consumer<T> consumer) {
-        SqlSession batchSession = BatisExecutor.getBatchSession();
+    public static <T> void sqlExecute(String databaseId, Class<T> mapper, Consumer<T> consumer) {
+        try (SqlSession sqlSession = BatisExecutor.getSqlSessionFactory(databaseId).openSession(true)) {
+            T t = sqlSession.getMapper(mapper);
+            consumer.accept(t);
+        }
+    }
+
+    public static <T> void sqlBatch(String databaseId, Class<T> mapper, Consumer<T> consumer) {
+        SqlSession batchSession = BatisExecutor.getBatchSession(databaseId);
         T t = batchSession.getMapper(mapper);
         try {
             consumer.accept(t);
