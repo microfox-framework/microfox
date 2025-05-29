@@ -1,4 +1,4 @@
-package ir.moke.microfox.utils;
+package ir.moke.microfox.log;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
