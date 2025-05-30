@@ -83,5 +83,5 @@ public class MicroFoxTest {
 https://github.com/microfox-framework/Microfox-Example 
 
 <p align="center">
-  <img src="assets/RapiDoc.png" alt="JOS" width="500"/>
+  <img src="assets/RapiDoc.png" alt="JOS" width="800"/>
 </p>
