@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RapiDoc</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: 'Roboto', 'Montserrat', sans-serif;
+        }
+        rapi-doc::part(section-servers) {
+          background: #6b5b95;
+          color:#d1c2e4;
+          margin:0 24px 0 24px;
+          border-radius: 5px;
+        }
+        rapi-doc::part(label-selected-server) {
+          color: #fff;
+        }
+    </style>
+    <script type="module" src="/docs/rapidoc-min.js"></script>
+</head>
+<body>
+<rapi-doc
+        spec-url="/docs/openapi.json"
+        x-tag-expanded="false"
+        render-style="read"
+        allow-try="true"
+        show-header="true"
+        show-code-sample="true"
+        code-sample-language="curl"
+        nav-bg-color="#423368"
+        primary-color="#df75c4"
+        bg-color="#fae4f5">
+
+</rapi-doc>
+</body>
+</html>
