@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="microfox.png" alt="JOS" width="300"/>
+  <img src="assets/microfox.png" alt="JOS" width="300"/>
 </p>
 
 # MicroFox
@@ -10,8 +10,10 @@ With a focus on ease of use and minimal configuration, MicroFox helps teams get 
 from development to deployment.    
 Whether you're building a small service or scaling up a complex system, MicroFox keeps things simple and efficient.
 
-### Dependency 
+### Dependency
+
 ```xml
+
 <dependency>
     <groupId>ir.moke</groupId>
     <artifactId>microfox</artifactId>
@@ -22,12 +24,6 @@ Whether you're building a small service or scaling up a complex system, MicroFox
 ### Usage
 
 ```java
-import ir.moke.kafir.annotation.GET;
-import org.junit.jupiter.api.Test;
-import org.quartz.Job;
-
-import java.net.http.HttpResponse;
-
 import static ir.moke.microfox.MicroFox.*;
 
 public class MicroFoxTest {
@@ -44,21 +40,48 @@ public class MicroFoxTest {
         }
     }
 
+    private interface BookMapper {
+        @InsertProvider(type = BookProvider.class, method = "insert")
+        @SelectKey(statement = "SELECT book_seq.NEXTVAL FROM dual", keyProperty = "id", before = true, resultType = Long.class)
+        void save(Book book);
+
+        @Select("select * from book")
+        List<Address> findAll();
+    }
+
     public static void main(String[] args) {
 
         /* Easy Implement Rest API */
-        filter("/book/add", ((request, response) -> {/*...*/}));
-        post("/book/add", (req, resp) -> {/*...*/});
-        get("/book/findAll", (request, response) -> {/*...*/});
-        delete("/book/remove?id=12", (request, response) -> {/*...*/});
-        get("/api/:name/:age", (request, response) -> {/*...*/});
-        delete("/redirect", (request, response) -> response.redirect("/book/find"));
+        httpFilter("/book/add", ((request, response) -> {/*...*/}));
+        httpPost("/book/add", (req, resp) -> {/*...*/});
+        httpGet("/book/findAll", (request, response) -> {/*...*/});
+        httpDelete("/book/remove?id=12", (request, response) -> {/*...*/});
+        httpGet("/api/:name/:age", (request, response) -> {/*...*/});
+        httpDelete("/redirect", (request, response) -> response.redirect("/book/find"));
 
         /* Easy call rest api */
-        restCall("http://w.x.y.z:8080/book/find", BookService.class, bookService -> {/*...*/});
+        httpCall("http://w.x.y.z:8080/book", BookService.class, bookService -> {/*...*/});
 
         /* Easy setup job */
         job(EchoJob.class, "*/3 * * * * ? *");
     }
 }
 ```
+
+### Implementations :
+
+| **Feature**      | **Technology**                        |
+|------------------|---------------------------------------|
+| Rest API         | Apache Tomcat                         |
+| Job Scheduler    | Quartz                                |
+| SQL Framework    | MyBatis                               |
+| FTP Client       | Apache Commons-net                    |
+| RestClient       | Kafir Project (Pure Java Http Client) |
+| OpenAPI / Web UI | Swagger annotations / RapiDoc         |    
+
+### Example Project: 
+https://github.com/microfox-framework/Microfox-Example 
+
+<p align="center">
+  <img src="assets/RapiDoc.png" alt="JOS" width="500"/>
+</p>
