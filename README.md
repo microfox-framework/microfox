@@ -72,6 +72,7 @@ public class MicroFoxTest {
 
 | **Feature**      | **Technology**                        |
 |------------------|---------------------------------------|
+| JDK Compatible   | Java 21+                              |
 | Rest API         | Apache Tomcat                         |
 | Job Scheduler    | Quartz                                |
 | SQL Framework    | MyBatis                               |
@@ -79,8 +80,9 @@ public class MicroFoxTest {
 | RestClient       | Kafir Project (Pure Java Http Client) |
 | OpenAPI / Web UI | Swagger annotations / RapiDoc         |    
 
-### Example Project: 
-https://github.com/microfox-framework/Microfox-Example 
+### Example Project:
+
+https://github.com/microfox-framework/Microfox-Example
 
 <p align="center">
   <img src="assets/RapiDoc.png" alt="JOS" width="800"/>

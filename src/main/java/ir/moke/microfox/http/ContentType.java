@@ -10,13 +10,21 @@ public enum ContentType {
     APPLICATION_XML("application/xml"),
     APPLICATION_ZIP("application/zip"),
     APPLICATION_X_WWW_FORM_URLENCODED("application/x-www-form-urlencoded"),
-    text_css("text/css"),
-    text_csv("text/csv"),
-    text_event_stream("text/event-stream"),
-    text_html("text/html"),
-    text_javascript("text/javascript"),
-    text_plain("text/plain"),
-    text_xml("text/xml");
+    TEXT_CSS("text/css"),
+    TEXT_CSV("text/csv"),
+    TEXT_EVENT_STREAM("text/event-stream"),
+    TEXT_HTML("text/html"),
+    TEXT_JAVASCRIPT("text/javascript"),
+    TEXT_PLAIN("text/plain"),
+    TEXT_XML("text/xml"),
+    FONT_WOFF2("font/woff2"),
+    IMAGE_APNG("image/apng"),
+    IMAGE_AVIF("image/avif"),
+    IMAGE_GIF("image/gif"),
+    IMAGE_JPEG("image/jpeg"),
+    IMAGE_PNG("image/png"),
+    IMAGE_SVG_XML("image/svg+xml"),
+    IMAGE_WEBP("image/webp");
 
     private final String type;
 

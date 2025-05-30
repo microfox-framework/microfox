@@ -2,6 +2,7 @@ package ir.moke.microfox.http.servlet;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import ir.moke.kafir.utils.JsonUtils;
+import ir.moke.microfox.http.ContentType;
 import ir.moke.microfox.http.OpenApiGenerator;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
-@WebServlet(urlPatterns = {"/docs","/docs/*"})
+@WebServlet(urlPatterns = {"/docs", "/docs/*"})
 public class OpenApiServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(OpenApiServlet.class);
     private String json;
@@ -30,18 +31,18 @@ public class OpenApiServlet extends HttpServlet {
         String pathInfo = req.getRequestURI();
         resp.setCharacterEncoding("UTF-8");
         if (pathInfo.equalsIgnoreCase("/docs/rapidoc-min.js")) {
-            resp.setContentType("text/javascript");
+            resp.setContentType(ContentType.APPLICATION_JSON.getType());
             resp.getWriter().write(rapidocJS());
         } else if (pathInfo.endsWith("woff2")) {
             String[] split = pathInfo.split("/");
             String fontFile = split[split.length - 1];
-            resp.setContentType("font/woff2");
+            resp.setContentType(ContentType.FONT_WOFF2.getType());
             resp.getWriter().write(fontWOFF2(fontFile));
         } else if (pathInfo.equalsIgnoreCase("/docs/openapi.json")) {
-            resp.setContentType("application/json");
+            resp.setContentType(ContentType.APPLICATION_JSON.getType());
             resp.getWriter().write(json);
         } else {
-            resp.setContentType("text/html");
+            resp.setContentType(ContentType.TEXT_HTML.getType());
             resp.getWriter().write(indexHTML());
         }
     }
