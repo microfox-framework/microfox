@@ -10,7 +10,7 @@ With a focus on ease of use and minimal configuration, MicroFox helps teams get 
 from development to deployment.    
 Whether you're building a small service or scaling up a complex system, MicroFox keeps things simple and efficient.
 
-### Dependency
+### Dependency :
 
 ```xml
 
@@ -21,7 +21,7 @@ Whether you're building a small service or scaling up a complex system, MicroFox
 </dependency>
 ```
 
-### Usage
+### Usage :
 
 ```java
 import static ir.moke.microfox.MicroFox.*;
