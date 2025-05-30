@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class HttpUtils {
     private static Pattern compilePattern(String pattern) {
-        String regex = pattern.replaceAll(":([^/]+)", "([^/]+)");
+        String regex = pattern.replaceAll("\\{([^/]+)\\}", "([^/]+)");
         return Pattern.compile("^" + regex + "$");
     }
 
@@ -49,8 +49,8 @@ public class HttpUtils {
         }
 
         for (int i = 0; i < patternParts.length; i++) {
-            if (patternParts[i].startsWith(":")) {
-                String key = patternParts[i].substring(1);
+            if (patternParts[i].startsWith("{") && patternParts[i].endsWith("}")) {
+                String key = patternParts[i].substring(1, patternParts[i].length() - 1);
                 String value = pathParts[i];
                 params.put(key, value);
             }

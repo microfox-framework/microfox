@@ -1,6 +1,8 @@
 package ir.moke.microfox.http;
 
 import ir.moke.microfox.MicroFoxConfig;
+import ir.moke.microfox.http.servlet.OpenApiServlet;
+import ir.moke.microfox.http.servlet.SwaggerUiServlet;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.slf4j.LoggerFactory;
@@ -48,7 +50,8 @@ public class HttpContainer {
              * add filters
              * Note : Filter could be ordered by @WebFilter#filterName method
              * */
-            context.addServletContainerInitializer(new EmbeddedFilterContainerInitializer(), Set.of(BaseFilter.class));
+            Set<Class<?>> classes = Set.of(BaseFilter.class, OpenApiServlet.class, SwaggerUiServlet.class);
+            context.addServletContainerInitializer(new EmbeddedFilterContainerInitializer(), classes);
 
             tomcat.start();
             tomcat.getServer().await();

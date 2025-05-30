@@ -10,6 +10,7 @@
         </layout>
     </appender>
 
+    <logger name="io.swagger" level="OFF"/>
     <logger name="org.apache.ibatis.io" level="OFF"/>
     <logger name="ir.moke.microfox" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE"/>

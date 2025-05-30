@@ -1,5 +1,9 @@
-package ir.moke.microfox.http;
+package ir.moke.microfox.http.servlet;
 
+import ir.moke.microfox.http.Method;
+import ir.moke.microfox.http.Request;
+import ir.moke.microfox.http.Response;
+import ir.moke.microfox.http.RouteInfo;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
 
 @WebServlet("/*")
-class BaseServlet extends HttpServlet {
+public class BaseServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseServlet.class);
 
