@@ -31,7 +31,7 @@ public class OpenApiServlet extends HttpServlet {
         String pathInfo = req.getRequestURI();
         resp.setCharacterEncoding("UTF-8");
         if (pathInfo.equalsIgnoreCase("/docs/rapidoc-min.js")) {
-            resp.setContentType(ContentType.APPLICATION_JSON.getType());
+            resp.setContentType(ContentType.TEXT_JAVASCRIPT.getType());
             resp.getWriter().write(rapidocJS());
         } else if (pathInfo.endsWith("woff2")) {
             String[] split = pathInfo.split("/");
@@ -41,6 +41,12 @@ public class OpenApiServlet extends HttpServlet {
         } else if (pathInfo.equalsIgnoreCase("/docs/openapi.json")) {
             resp.setContentType(ContentType.APPLICATION_JSON.getType());
             resp.getWriter().write(json);
+        } else if (pathInfo.equalsIgnoreCase("/docs/microfox.png")) {
+            resp.setContentType(ContentType.IMAGE_PNG.getType());
+            byte[] bytes = logoPNG();
+            if (bytes != null) {
+                resp.getOutputStream().write(bytes);
+            }
         } else {
             resp.setContentType(ContentType.TEXT_HTML.getType());
             resp.getWriter().write(indexHTML());
@@ -75,6 +81,17 @@ public class OpenApiServlet extends HttpServlet {
                 return new String(inputStream.readAllBytes());
             }
             return "";
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static byte[] logoPNG() {
+        try (InputStream inputStream = OpenApiServlet.class.getClassLoader().getResourceAsStream("open-api/%s".formatted("microfox.png"))) {
+            if (inputStream != null) {
+                return inputStream.readAllBytes();
+            }
+            return null;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
