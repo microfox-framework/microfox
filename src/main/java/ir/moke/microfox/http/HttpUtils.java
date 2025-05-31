@@ -62,6 +62,6 @@ public class HttpUtils {
     }
 
     public static String concatContextPath(String path) {
-        return MicroFoxConfig.MICROFOX_HTTP_BASE_CONTEXT + path;
+        return MicroFoxConfig.MICROFOX_HTTP_BASE_API + path;
     }
 }

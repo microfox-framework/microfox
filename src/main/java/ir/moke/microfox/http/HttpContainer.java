@@ -16,11 +16,11 @@ import java.util.logging.Logger;
 
 public class HttpContainer {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HttpContainer.class);
-    private static final String contextPath = MicroFoxConfig.MICROFOX_HTTP_BASE_CONTEXT;
+    private static final String contextPath = "/";
     private static final String baseDir = "/tmp/tomcat";
 
     static {
-        if (!contextPath.startsWith("/") || contextPath.endsWith("/"))
+        if (!MicroFoxConfig.MICROFOX_HTTP_BASE_API.startsWith("/") || MicroFoxConfig.MICROFOX_HTTP_BASE_API.endsWith("/"))
             throw new MicrofoxException("Context path must start with '/' and must not end with '/'. Example: '/api/v1'");
         try {
             // Disable tomcat logs
