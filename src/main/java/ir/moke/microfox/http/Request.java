@@ -1,6 +1,7 @@
 package ir.moke.microfox.http;
 
 import ir.moke.kafir.utils.JsonUtils;
+import ir.moke.microfox.validation.MicroFoxValidator;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.Cookie;
@@ -24,11 +25,17 @@ public class Request {
         }
     }
 
+    public Locale locale() {
+        return request.getLocale();
+    }
+
     public <T> T body(Class<T> clazzType) {
         try (ServletInputStream inputStream = request.getInputStream()) {
             String json = new String(inputStream.readAllBytes()).trim();
-            return JsonUtils.toObject(json, clazzType);
-        } catch (IOException e) {
+            T object = JsonUtils.toObject(json, clazzType);
+            MicroFoxValidator.validate(object, locale());
+            return object;
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

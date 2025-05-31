@@ -8,7 +8,7 @@ import ir.moke.microfox.http.Method;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.Route;
 import ir.moke.microfox.job.JobSchedulerContainer;
-import ir.moke.microfox.persistence.BatisExecutor;
+import ir.moke.microfox.persistence.MicroFoxSQL;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.ibatis.session.SqlSession;
 import org.quartz.Job;
@@ -90,21 +90,21 @@ public class MicroFox {
     }
 
     public static <T, R> R sqlFetch(String databaseId, Class<T> mapper, Function<T, R> function) {
-        try (SqlSession sqlSession = BatisExecutor.getSqlSessionFactory(databaseId).openSession(true)) {
+        try (SqlSession sqlSession = MicroFoxSQL.getSqlSessionFactory(databaseId).openSession(true)) {
             T t = sqlSession.getMapper(mapper);
             return function.apply(t);
         }
     }
 
     public static <T> void sqlExecute(String databaseId, Class<T> mapper, Consumer<T> consumer) {
-        try (SqlSession sqlSession = BatisExecutor.getSqlSessionFactory(databaseId).openSession(true)) {
+        try (SqlSession sqlSession = MicroFoxSQL.getSqlSessionFactory(databaseId).openSession(true)) {
             T t = sqlSession.getMapper(mapper);
             consumer.accept(t);
         }
     }
 
     public static <T> void sqlBatch(String databaseId, Class<T> mapper, Consumer<T> consumer) {
-        SqlSession batchSession = BatisExecutor.getBatchSession(databaseId);
+        SqlSession batchSession = MicroFoxSQL.getBatchSession(databaseId);
         T t = batchSession.getMapper(mapper);
         try {
             consumer.accept(t);

@@ -14,8 +14,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class HttpContainer {
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HttpContainer.class);
+public class MicroFoxHttpContainer {
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MicroFoxHttpContainer.class);
     private static final String contextPath = "/";
     private static final String baseDir = "/tmp/tomcat";
 
