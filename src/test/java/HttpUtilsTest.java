@@ -2,8 +2,6 @@ import ir.moke.microfox.MicroFoxConfig;
 import ir.moke.microfox.http.HttpUtils;
 import org.junit.jupiter.api.Test;
 
-import static ir.moke.microfox.MicroFox.httpGet;
-
 public class HttpUtilsTest {
 
     @Test
