@@ -1,6 +1,6 @@
 package ir.moke.microfox.http;
 
-import ir.moke.microfox.MicrofoxException;
+import ir.moke.microfox.exception.MicrofoxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

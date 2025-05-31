@@ -25,7 +25,7 @@ public class MicroFoxConfig {
             properties.load(is);
             MICROFOX_HTTP_HOST = Optional.ofNullable(System.getenv("MICROFOX_HTTP_HOST")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_HTTP_HOST"))).orElse("0.0.0.0");
             MICROFOX_HTTP_PORT = Optional.ofNullable(System.getenv("MICROFOX_HTTP_PORT")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_HTTP_PORT"))).orElse("8080");
-            MICROFOX_HTTP_BASE_API = Optional.ofNullable(System.getenv("MICROFOX_HTTP_BASE_CONTEXT")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_HTTP_BASE_CONTEXT"))).orElse("/");
+            MICROFOX_HTTP_BASE_API = Optional.ofNullable(System.getenv("MICROFOX_HTTP_BASE_API")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_HTTP_BASE_API"))).orElse("/api");
             MICROFOX_OPEN_API_TITLE = Optional.ofNullable(System.getenv("MICROFOX_OPEN_API_TITLE")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_OPEN_API_TITLE"))).orElse("Microfox OpenAPI");
             MICROFOX_OPEN_API_VERSION = Optional.ofNullable(System.getenv("MICROFOX_OPEN_API_VERSION")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_OPEN_API_VERSION"))).orElse("0.2");
             MICROFOX_OPEN_API_DESCRIPTION = Optional.ofNullable(System.getenv("MICROFOX_OPEN_API_DESCRIPTION")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_OPEN_API_DESCRIPTION"))).orElse("MicroFox OpenAPI is a lightweight, modular Java microframework designed for building RestFul APIs with minimal configuration. It provides a streamlined approach to developing scalable and maintainable web services, featuring built-in support for routing, request handling, and OpenAPI documentation generation. Ideal for microservices and modern cloud-native applications, MicroFox emphasizes simplicity, extensibility, and developer productivity.");
@@ -40,7 +40,7 @@ public class MicroFoxConfig {
     private static void printEnvironments() {
         logger.info("MICROFOX_HTTP_HOST {}", MICROFOX_HTTP_HOST);
         logger.info("MICROFOX_HTTP_PORT {}", MICROFOX_HTTP_PORT);
-        logger.info("MICROFOX_HTTP_BASE_CONTEXT {}", MICROFOX_HTTP_BASE_API);
+        logger.info("MICROFOX_HTTP_BASE_API {}", MICROFOX_HTTP_BASE_API);
         logger.info("MICROFOX_OPEN_API_TITLE {}", MICROFOX_OPEN_API_TITLE);
         logger.info("MICROFOX_OPEN_API_VERSION {}", MICROFOX_OPEN_API_VERSION);
         logger.info("MICROFOX_RESOURCE_BUNDLE_NAME {}", MICROFOX_RESOURCE_BUNDLE_NAME);

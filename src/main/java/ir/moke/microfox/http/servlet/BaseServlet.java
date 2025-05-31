@@ -21,56 +21,56 @@ public class BaseServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         findMatchingRouteInfo(req.getRequestURI(), Method.GET)
-                .ifPresentOrElse(item -> getHandle(req, resp, item), () -> notFound(resp));
+                .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         findMatchingRouteInfo(req.getRequestURI(), Method.POST)
-                .ifPresentOrElse(item -> getHandle(req, resp, item), () -> notFound(resp));
+                .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         findMatchingRouteInfo(req.getRequestURI(), Method.DELETE)
-                .ifPresentOrElse(item -> getHandle(req, resp, item), () -> notFound(resp));
+                .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         findMatchingRouteInfo(req.getRequestURI(), Method.PUT)
-                .ifPresentOrElse(item -> getHandle(req, resp, item), () -> notFound(resp));
+                .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
     }
 
     @Override
     protected void doHead(HttpServletRequest req, HttpServletResponse resp) {
         findMatchingRouteInfo(req.getRequestURI(), Method.HEAD)
-                .ifPresentOrElse(item -> getHandle(req, resp, item), () -> notFound(resp));
+                .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
     }
 
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) {
         findMatchingRouteInfo(req.getRequestURI(), Method.OPTIONS)
-                .ifPresentOrElse(item -> getHandle(req, resp, item), () -> notFound(resp));
+                .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
     }
 
     @Override
     protected void doPatch(HttpServletRequest req, HttpServletResponse resp) {
         findMatchingRouteInfo(req.getRequestURI(), Method.PATCH)
-                .ifPresentOrElse(item -> getHandle(req, resp, item), () -> notFound(resp));
+                .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
     }
 
     @Override
     protected void doTrace(HttpServletRequest req, HttpServletResponse resp) {
         findMatchingRouteInfo(req.getRequestURI(), Method.TRACE)
-                .ifPresentOrElse(item -> getHandle(req, resp, item), () -> notFound(resp));
+                .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
     }
 
-    private static void getHandle(HttpServletRequest req, HttpServletResponse resp, RouteInfo item) {
+    private static void handle(HttpServletRequest req, HttpServletResponse resp, RouteInfo item) {
         try {
             item.route().handle(new Request(req), new Response(resp));
         } catch (Exception e) {
-            logger.error("Microfox Error", e);
+            logger.error("Microfox Unknown Error", e);
             internalServerError(resp);
         }
     }
