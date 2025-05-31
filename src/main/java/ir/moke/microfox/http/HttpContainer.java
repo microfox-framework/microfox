@@ -1,6 +1,7 @@
 package ir.moke.microfox.http;
 
 import ir.moke.microfox.MicroFoxConfig;
+import ir.moke.microfox.MicrofoxException;
 import ir.moke.microfox.http.servlet.OpenApiServlet;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
@@ -19,6 +20,8 @@ public class HttpContainer {
     private static final String baseDir = "/tmp/tomcat";
 
     static {
+        if (!contextPath.startsWith("/") || contextPath.endsWith("/"))
+            throw new MicrofoxException("Context path must start with '/' and must not end with '/'. Example: '/api/v1'");
         try {
             // Disable tomcat logs
             Logger.getLogger("org.apache").setLevel(Level.OFF);

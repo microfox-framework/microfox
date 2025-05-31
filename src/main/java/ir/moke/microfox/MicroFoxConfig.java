@@ -38,7 +38,7 @@ public class MicroFoxConfig {
         logger.info("MICROFOX_HTTP_PORT {}", MICROFOX_HTTP_PORT);
         logger.info("MICROFOX_HTTP_BASE_CONTEXT {}", MICROFOX_HTTP_BASE_CONTEXT);
         logger.info("MICROFOX_OPEN_API_TITLE {}", MICROFOX_OPEN_API_TITLE);
-        logger.info("MICROFOX_OPEN_API_VERSION {}", MICROFOX_OPEN_API_DESCRIPTION);
+        logger.info("MICROFOX_OPEN_API_VERSION {}", MICROFOX_OPEN_API_VERSION);
     }
 
     private static void printLogo() {

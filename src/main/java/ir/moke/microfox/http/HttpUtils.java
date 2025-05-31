@@ -1,5 +1,7 @@
 package ir.moke.microfox.http;
 
+import ir.moke.microfox.MicroFoxConfig;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -57,5 +59,9 @@ public class HttpUtils {
         }
 
         return params;
+    }
+
+    public static String concatContextPath(String path) {
+        return MicroFoxConfig.MICROFOX_HTTP_BASE_CONTEXT + path;
     }
 }
