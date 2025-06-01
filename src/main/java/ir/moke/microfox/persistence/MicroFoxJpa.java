@@ -9,6 +9,7 @@ import jakarta.persistence.Persistence;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MicroFoxJpa {
@@ -41,9 +42,9 @@ public class MicroFoxJpa {
         hikariConfig.setPassword(config.password());
 
         // Optional pool settings
-        hikariConfig.setMaximumPoolSize(config.maxPoolSize());
-        hikariConfig.setMinimumIdle(config.minimumIdle());
-        hikariConfig.setAutoCommit(config.autoCommit());
+        Optional.ofNullable(config.maxPoolSize()).ifPresent(hikariConfig::setMaximumPoolSize);
+        Optional.ofNullable(config.minimumIdle()).ifPresent(hikariConfig::setMinimumIdle);
+        Optional.ofNullable(config.autoCommit()).ifPresent(hikariConfig::setAutoCommit);
 
         return hikariConfig;
     }

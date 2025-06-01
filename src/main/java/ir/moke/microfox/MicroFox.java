@@ -2,7 +2,7 @@ package ir.moke.microfox;
 
 import ir.moke.kafir.http.Kafir;
 import ir.moke.microfox.ftp.FtpClient;
-import ir.moke.microfox.ftp.FtpConfig;
+import ir.moke.microfox.ftp.MicroFoxFtpConfig;
 import ir.moke.microfox.http.Filter;
 import ir.moke.microfox.http.Method;
 import ir.moke.microfox.http.ResourceHolder;
@@ -117,33 +117,33 @@ public class MicroFox {
         }
     }
 
-    public static void ftpDownload(FtpConfig ftpConfig, String remoteFilePath, Path localDownloadDir) {
+    public static void ftpDownload(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, Path localDownloadDir) {
         try {
             FtpClient ftpClient = new FtpClient();
-            ftpClient.connect(ftpConfig.host(), ftpConfig.port());
-            ftpClient.login(ftpConfig.username(), ftpConfig.password());
+            ftpClient.connect(microFoxFtpConfig.host(), microFoxFtpConfig.port());
+            ftpClient.login(microFoxFtpConfig.username(), microFoxFtpConfig.password());
             ftpClient.ftpDownload(remoteFilePath, localDownloadDir);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }
 
-    public static void ftpBatchDownload(FtpConfig ftpConfig, List<String> remoteFilePath, Path localDownloadDir) {
+    public static void ftpBatchDownload(MicroFoxFtpConfig microFoxFtpConfig, List<String> remoteFilePath, Path localDownloadDir) {
         try {
             FtpClient ftpClient = new FtpClient();
-            ftpClient.connect(ftpConfig.host(), ftpConfig.port());
-            ftpClient.login(ftpConfig.username(), ftpConfig.password());
+            ftpClient.connect(microFoxFtpConfig.host(), microFoxFtpConfig.port());
+            ftpClient.login(microFoxFtpConfig.username(), microFoxFtpConfig.password());
             ftpClient.ftpBatchDownload(remoteFilePath, localDownloadDir);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }
 
-    public static void ftpUpload(FtpConfig ftpConfig, String remoteFilePath, File file) {
+    public static void ftpUpload(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, File file) {
         try {
             FtpClient ftpClient = new FtpClient();
-            ftpClient.connect(ftpConfig.host(), ftpConfig.port());
-            ftpClient.login(ftpConfig.username(), ftpConfig.password());
+            ftpClient.connect(microFoxFtpConfig.host(), microFoxFtpConfig.port());
+            ftpClient.login(microFoxFtpConfig.username(), microFoxFtpConfig.password());
             ftpClient.ftpUpload(remoteFilePath, file);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -151,11 +151,11 @@ public class MicroFox {
         }
     }
 
-    public static void ftpBatchUpload(FtpConfig ftpConfig, String remoteFilePath, List<File> files) {
+    public static void ftpBatchUpload(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, List<File> files) {
         try {
             FtpClient ftpClient = new FtpClient();
-            ftpClient.connect(ftpConfig.host(), ftpConfig.port());
-            ftpClient.login(ftpConfig.username(), ftpConfig.password());
+            ftpClient.connect(microFoxFtpConfig.host(), microFoxFtpConfig.port());
+            ftpClient.login(microFoxFtpConfig.username(), microFoxFtpConfig.password());
             ftpClient.ftpBatchUpload(remoteFilePath, files);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -163,22 +163,22 @@ public class MicroFox {
         }
     }
 
-    public static void ftpDelete(FtpConfig ftpConfig, String remoteFilePath) {
+    public static void ftpDelete(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath) {
         try {
             FtpClient ftpClient = new FtpClient();
-            ftpClient.connect(ftpConfig.host(), ftpConfig.port());
-            ftpClient.login(ftpConfig.username(), ftpConfig.password());
+            ftpClient.connect(microFoxFtpConfig.host(), microFoxFtpConfig.port());
+            ftpClient.login(microFoxFtpConfig.username(), microFoxFtpConfig.password());
             ftpClient.delete(remoteFilePath);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }
 
-    public static void ftpList(FtpConfig ftpConfig, String remoteFilePath, Consumer<FTPFile[]> consumer) {
+    public static void ftpList(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, Consumer<FTPFile[]> consumer) {
         try {
             FtpClient ftpClient = new FtpClient();
-            ftpClient.connect(ftpConfig.host(), ftpConfig.port());
-            ftpClient.login(ftpConfig.username(), ftpConfig.password());
+            ftpClient.connect(microFoxFtpConfig.host(), microFoxFtpConfig.port());
+            ftpClient.login(microFoxFtpConfig.username(), microFoxFtpConfig.password());
             consumer.accept(ftpClient.listFiles(remoteFilePath));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
