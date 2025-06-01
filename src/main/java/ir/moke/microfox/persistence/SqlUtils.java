@@ -1,5 +1,7 @@
 package ir.moke.microfox.persistence;
 
+import jakarta.persistence.Column;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -12,7 +14,7 @@ public class SqlUtils {
             if (declaredField.isSynthetic()) continue;
 
             if (declaredField.isAnnotationPresent(Column.class)) {
-                String value = declaredField.getDeclaredAnnotation(Column.class).value();
+                String value = declaredField.getDeclaredAnnotation(Column.class).name();
                 sb.append(value);
             } else {
                 sb.append(declaredField.getName());
