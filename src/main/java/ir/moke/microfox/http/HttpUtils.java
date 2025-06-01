@@ -17,7 +17,7 @@ public class HttpUtils {
         for (RouteInfo routeInfo : ResourceHolder.instance.listRoutes()) {
             String path = routeInfo.path();
             Pattern regex = compilePattern(path);
-            if (regex.matcher(reqPath).matches() && method.equals(routeInfo.method())) {
+            if (regex.matcher(normalizePath(reqPath)).matches() && method.equals(routeInfo.method())) {
                 return Optional.of(routeInfo);
             }
         }
@@ -62,6 +62,13 @@ public class HttpUtils {
     }
 
     public static String concatContextPath(String path) {
-        return MicroFoxConfig.MICROFOX_HTTP_BASE_API + path;
+        return !MicroFoxConfig.MICROFOX_HTTP_BASE_API.equals("/") ? MicroFoxConfig.MICROFOX_HTTP_BASE_API + path : path;
+    }
+
+    private static String normalizePath(String path) {
+        if (path != null && path.endsWith("/") && path.length() > 1) {
+            return path.substring(0, path.length() - 1); // remove trailing slash
+        }
+        return path;
     }
 }

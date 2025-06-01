@@ -1,7 +1,6 @@
 package ir.moke.microfox.validation;
 
 import ir.moke.microfox.MicroFoxConfig;
-import ir.moke.microfox.exception.MicroFoxValidationException;
 import jakarta.validation.*;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
@@ -20,7 +19,7 @@ public class MicroFoxValidator {
             Validator validator = factory.getValidator();
             Set<ConstraintViolation<T>> violations = validator.validate(t);
             for (ConstraintViolation<T> violation : violations) {
-                throw new MicroFoxValidationException(violation.getMessage());
+                throw new ValidationException(violation.getMessage());
             }
         }
     }

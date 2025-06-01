@@ -8,8 +8,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
 
@@ -70,16 +73,28 @@ public class BaseServlet extends HttpServlet {
         try {
             item.route().handle(new Request(req), new Response(resp));
         } catch (Exception e) {
-            logger.error("Microfox Unknown Error", e);
-            internalServerError(resp);
+            if (e.getClass().isAssignableFrom(ValidationException.class)) {
+                logger.debug("Validation exception {}", e.getLocalizedMessage());
+                handleExceptionResponse(resp, HttpServletResponse.SC_BAD_REQUEST, e);
+            } else {
+                logger.error("Microfox Unknown Error", e);
+                handleExceptionResponse(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+            }
+        }
+    }
+
+    private static void handleExceptionResponse(HttpServletResponse resp, int statusCode, Exception e) {
+        try {
+            resp.setStatus(statusCode);
+            String localizedMessage = e.getCause().getLocalizedMessage();
+            String message = e.getCause().getMessage();
+            resp.getWriter().write((localizedMessage != null && !localizedMessage.isEmpty()) ? localizedMessage : message);
+        } catch (IOException io) {
+            logger.error("Microfox IO Error", io);
         }
     }
 
     private static void notFound(HttpServletResponse resp) {
         resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-    }
-
-    private static void internalServerError(HttpServletResponse resp) {
-        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 }
