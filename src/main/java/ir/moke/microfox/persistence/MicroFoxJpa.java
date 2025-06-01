@@ -11,10 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DatabaseInitializer {
+public class MicroFoxJpa {
     private static final Map<String, EntityManagerFactory> emfMap = new ConcurrentHashMap<>();
 
-    public static void createConnectionPoolEntityManagerFactory(DatabaseConfig config) {
+    public static void createConnectionPoolEntityManagerFactory(MicroFoxDatabaseConfig config) {
 
         HikariDataSource dataSource = new HikariDataSource(getHikariConfig(config));
 
@@ -33,7 +33,7 @@ public class DatabaseInitializer {
         return emf.createEntityManager();
     }
 
-    public static HikariConfig getHikariConfig(DatabaseConfig config) {
+    public static HikariConfig getHikariConfig(MicroFoxDatabaseConfig config) {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName(config.driver());
         hikariConfig.setJdbcUrl(config.url());

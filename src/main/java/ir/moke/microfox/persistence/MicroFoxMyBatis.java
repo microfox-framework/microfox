@@ -5,7 +5,7 @@ import org.apache.ibatis.session.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MicroFoxSQL {
+public class MicroFoxMyBatis {
     private static final Map<String, SqlSessionFactory> factories = new HashMap<>();
 
     public static <T> void configure(Configuration configuration) {
