@@ -4,7 +4,7 @@
     <groupId>ir.moke</groupId>
     <artifactId>microfox</artifactId>
     <packaging>jar</packaging>
-    <version>0.2</version>
+    <version>0.3</version>
     <name>microfox</name>
 
     <url>https://github.com/mah454/microfox</url>
@@ -39,9 +39,14 @@
     <dependencies>
         <!-- JPA -->
         <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.2.0</version>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>7.0.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.tool</groupId>
+            <artifactId>hibernate-tools-orm</artifactId>
+            <version>7.0.0.Final</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -137,6 +142,13 @@
             <groupId>ir.moke</groupId>
             <artifactId>kafir</artifactId>
             <version>1.4.6</version>
+        </dependency>
+
+        <!-- Reflections -->
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.2</version>
         </dependency>
 
         <!-- Log -->

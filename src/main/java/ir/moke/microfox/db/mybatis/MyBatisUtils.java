@@ -1,11 +1,11 @@
-package ir.moke.microfox.persistence;
+package ir.moke.microfox.db.mybatis;
 
 import jakarta.persistence.Column;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class SqlUtils {
+public class MyBatisUtils {
     public static <T> String getColumns(Class<T> tClass) {
         StringBuilder sb = new StringBuilder();
         for (Field declaredField : tClass.getDeclaredFields()) {

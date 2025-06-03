@@ -1,6 +1,9 @@
 package ir.moke.microfox;
 
 import ir.moke.kafir.http.Kafir;
+import ir.moke.microfox.db.jpa.MicroFoxJpa;
+import ir.moke.microfox.db.jpa.MicrofoxQueryGenerator;
+import ir.moke.microfox.db.mybatis.MicroFoxMyBatis;
 import ir.moke.microfox.ftp.FtpClient;
 import ir.moke.microfox.ftp.MicroFoxFtpConfig;
 import ir.moke.microfox.http.Filter;
@@ -8,7 +11,6 @@ import ir.moke.microfox.http.Method;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.Route;
 import ir.moke.microfox.job.JobSchedulerContainer;
-import ir.moke.microfox.persistence.MicroFoxMyBatis;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.ibatis.session.SqlSession;
 import org.quartz.Job;
@@ -23,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class MicroFox {
     private static final Logger logger = LoggerFactory.getLogger(MicroFox.class);
@@ -89,22 +90,13 @@ public class MicroFox {
         JobSchedulerContainer.instance.register(jobClass, Date.from(zonedDateTime.toInstant()));
     }
 
-    public static <T, R> R sqlFetch(String databaseId, Class<T> mapper, Function<T, R> function) {
-        try (SqlSession sqlSession = MicroFoxMyBatis.getSqlSessionFactory(databaseId).openSession(true)) {
-            T t = sqlSession.getMapper(mapper);
-            return function.apply(t);
-        }
+    public static <T> T mybatis(String identity, Class<T> mapper) {
+        SqlSession sqlSession = MicroFoxMyBatis.getSession(identity);
+        return sqlSession.getMapper(mapper);
     }
 
-    public static <T> void sqlExecute(String databaseId, Class<T> mapper, Consumer<T> consumer) {
-        try (SqlSession sqlSession = MicroFoxMyBatis.getSqlSessionFactory(databaseId).openSession(true)) {
-            T t = sqlSession.getMapper(mapper);
-            consumer.accept(t);
-        }
-    }
-
-    public static <T> void sqlBatch(String databaseId, Class<T> mapper, Consumer<T> consumer) {
-        SqlSession batchSession = MicroFoxMyBatis.getBatchSession(databaseId);
+    public static <T> void mybatisBatch(String identity, Class<T> mapper, Consumer<T> consumer) {
+        SqlSession batchSession = MicroFoxMyBatis.getBatchSession(identity);
         T t = batchSession.getMapper(mapper);
         try {
             consumer.accept(t);
@@ -183,5 +175,17 @@ public class MicroFox {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    public static <T> T jpa(Class<T> repositoryClass, String persistenceUnitName) {
+        return MicroFoxJpa.create(repositoryClass, persistenceUnitName);
+    }
+
+    public static void jpaGenerateCreateSchemaSQL(String persistenceUnitName) {
+        MicrofoxQueryGenerator.createSchema(persistenceUnitName);
+    }
+
+    public static void jpaGenerateUpdateSchemaSQL(String persistenceUnitName) {
+        MicrofoxQueryGenerator.updateSchema(persistenceUnitName);
     }
 }
