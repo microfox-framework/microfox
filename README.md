@@ -77,6 +77,7 @@ public class MicroFoxTest {
 | Job Scheduler    | Quartz                                |
 | SQL Framework    | MyBatis                               |
 | FTP Client       | Apache Commons-net                    |
+| Hibernate        | ORM Framework
 | RestClient       | Kafir Project (Pure Java Http Client) |
 | OpenAPI / Web UI | Swagger annotations / RapiDoc         |    
 
