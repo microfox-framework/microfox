@@ -4,7 +4,6 @@ import ir.moke.microfox.db.jpa.annotation.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.StoredProcedureQuery;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,26 +29,31 @@ public class RepositoryHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String name = method.getName();
         logger.debug("Called: {}, args: {}", name, Arrays.toString(args));
+        try {
+            if (method.isAnnotationPresent(NamedQuery.class)) {
+                return invokeNamedQuery(em, method, args);
+            } else if (method.isAnnotationPresent(Query.class)) {
+                return invokeQueryString(em, method, args);
+            } else if (method.isAnnotationPresent(Find.class)) {
+                return findByPrimaryKey(em, method, args);
+            } else if (method.isAnnotationPresent(Merge.class)) {
+                return merge(em, method, args);
+            } else if (method.isAnnotationPresent(Remove.class)) {
+                return remove(em, method, args);
+            } else if (method.isAnnotationPresent(Persist.class)) {
+                return persist(em, method, args);
+            } else if (method.isAnnotationPresent(NamedStoredProcedure.class)) {
+                return invokeNamedStoredProcedure(em, method, args);
+            } else if (method.isAnnotationPresent(StoredProcedure.class)) {
+                return invokeStoredProcedure(em, method, args);
+            }
 
-        if (method.isAnnotationPresent(NamedQuery.class)) {
-            return invokeNamedQuery(em, method, args);
-        } else if (method.isAnnotationPresent(Query.class)) {
-            return invokeQueryString(em, method, args);
-        } else if (method.isAnnotationPresent(Find.class)) {
-            return findByPrimaryKey(em, method, args);
-        } else if (method.isAnnotationPresent(Merge.class)) {
-            return merge(em, method, args);
-        } else if (method.isAnnotationPresent(Remove.class)) {
-            return remove(em, method, args);
-        } else if (method.isAnnotationPresent(Persist.class)) {
-            return persist(em, method, args);
-        } else if (method.isAnnotationPresent(NamedStoredProcedure.class)) {
-            return invokeNamedStoredProcedure(em, method, args);
-        } else if (method.isAnnotationPresent(StoredProcedure.class)) {
-            return invokeStoredProcedure(em, method, args);
+            throw new AbstractMethodError("No handler logic for method: " + method);
+        } finally {
+            if (!em.getTransaction().isActive() && em.isOpen()) {
+                em.close();
+            }
         }
-
-        throw new AbstractMethodError("No handler logic for method: " + method);
     }
 
     public static Object persist(final EntityManager em, final Method method, final Object[] args) throws Throwable {
@@ -90,7 +94,6 @@ public class RepositoryHandler implements InvocationHandler {
     public static Object invokeQueryString(final EntityManager em, final Method method, final Object[] args) throws Throwable {
         final Query queryString = method.getAnnotation(Query.class);
         final jakarta.persistence.Query query = em.createQuery(queryString.value());
-
         if (queryString.update()) {
             return update(method, args, query);
         } else {

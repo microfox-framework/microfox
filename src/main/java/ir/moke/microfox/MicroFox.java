@@ -11,7 +11,6 @@ import ir.moke.microfox.http.Method;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.Route;
 import ir.moke.microfox.job.JobSchedulerContainer;
-import jakarta.persistence.EntityTransaction;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.ibatis.session.SqlSession;
 import org.quartz.Job;
@@ -91,9 +90,25 @@ public class MicroFox {
         JobSchedulerContainer.instance.register(jobClass, Date.from(zonedDateTime.toInstant()));
     }
 
-    public static <T> T mybatis(String identity, Class<T> mapper) {
+    public static <T> void mybatis(String identity, Class<T> mapper, Consumer<T> consumer) {
+        try (SqlSession sqlSession = MicroFoxMyBatis.getSession(identity)) {
+            T t = sqlSession.getMapper(mapper);
+            consumer.accept(t);
+        }
+    }
+
+    public static <T> void mybatisTx(String identity, Class<T> mapper, Consumer<T> consumer) {
         SqlSession sqlSession = MicroFoxMyBatis.getSession(identity);
-        return sqlSession.getMapper(mapper);
+        try {
+            T t = sqlSession.getMapper(mapper);
+            consumer.accept(t);
+            sqlSession.commit();
+        } catch (Exception e) {
+            logger.error("MyBatis transaction exception");
+            sqlSession.rollback();
+        } finally {
+            sqlSession.close();
+        }
     }
 
     public static <T> void mybatisBatch(String identity, Class<T> mapper, Consumer<T> consumer) {
@@ -178,29 +193,35 @@ public class MicroFox {
         }
     }
 
-    public static <T> T jpa(Class<T> repositoryClass, String persistenceUnitName) {
-        return MicroFoxJpa.create(repositoryClass, persistenceUnitName);
+    public static <T> void jpa(Class<T> repositoryClass, String persistenceUnitName, Consumer<T> consumer) {
+        T t = MicroFoxJpa.create(repositoryClass, persistenceUnitName);
+        consumer.accept(t);
+    }
+
+    public static <T> void jpaTx(Class<T> repositoryClass, String persistenceUnitName, Consumer<T> action) {
+        try {
+            T t = MicroFoxJpa.create(repositoryClass, persistenceUnitName);
+            MicroFoxJpa.beginTx(persistenceUnitName);
+            action.accept(t);
+            MicroFoxJpa.commitTx(persistenceUnitName);
+        } catch (Exception e) {
+            logger.error("JPA transaction exception", e);
+            MicroFoxJpa.rollbackTx(persistenceUnitName);
+        } finally {
+            MicroFoxJpa.closeEntityManager(persistenceUnitName);
+        }
     }
 
     public static void jpaTxBegin(String persistenceUnitName) {
-        EntityTransaction transaction = MicroFoxJpa.getEntityManager(persistenceUnitName).getTransaction();
-        if (!transaction.isActive()) {
-            transaction.begin();
-        }
+        MicroFoxJpa.beginTx(persistenceUnitName);
     }
 
     public static void jpaTxCommit(String persistenceUnitName) {
-        EntityTransaction transaction = MicroFoxJpa.getEntityManager(persistenceUnitName).getTransaction();
-        if (transaction.isActive()) {
-            transaction.commit();
-        }
+        MicroFoxJpa.commitTx(persistenceUnitName);
     }
 
     public static void jpaTxRollback(String persistenceUnitName) {
-        EntityTransaction transaction = MicroFoxJpa.getEntityManager(persistenceUnitName).getTransaction();
-        if (transaction.isActive()) {
-            transaction.rollback();
-        }
+        MicroFoxJpa.rollbackTx(persistenceUnitName);
     }
 
     public static void jpaGenerateCreateSchemaSQL(String persistenceUnitName) {

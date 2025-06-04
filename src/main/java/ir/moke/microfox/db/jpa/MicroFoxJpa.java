@@ -6,6 +6,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
@@ -14,17 +15,18 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Proxy;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MicroFoxJpa {
     private static final Map<String, EntityManagerFactory> ENTITY_MANAGER_FACTORY_MAP = new ConcurrentHashMap<>();
     private static final Map<String, MetadataSources> METADATA_SOURCES_MAP = new ConcurrentHashMap<>();
+    private static final ThreadLocal<Map<String, EntityManager>> CONTEXT = ThreadLocal.withInitial(HashMap::new);
 
-    public static void createConnectionPoolEntityManagerFactory(HikariConfig hikariConfig, JpaConfig jpaConfig) {
+    private MicroFoxJpa() {
+    }
+
+    public static void register(HikariConfig hikariConfig, JpaConfig jpaConfig) {
         MetadataSources metadataSources = getMetadataSources(hikariConfig, jpaConfig);
         Metadata metadata = metadataSources.buildMetadata();
         SessionFactory sessionFactory = metadata.buildSessionFactory();
@@ -59,14 +61,51 @@ public class MicroFoxJpa {
         return reflections.getTypesAnnotatedWith(Entity.class);
     }
 
-    public static EntityManager getEntityManager(String unit) {
-        EntityManagerFactory emf = ENTITY_MANAGER_FACTORY_MAP.get(unit);
+    public static EntityManager getEntityManager(String unitName) {
+        EntityManagerFactory emf = ENTITY_MANAGER_FACTORY_MAP.get(unitName);
         if (emf == null) {
-            throw new IllegalArgumentException("No EntityManagerFactory registered for unit: " + unit);
+            throw new IllegalArgumentException("No EntityManagerFactory registered for unit name: " + unitName);
         }
-        return emf.createEntityManager();
+
+        Map<String, EntityManager> contextMap = CONTEXT.get();
+        EntityManager em = contextMap.get(unitName);
+
+        if (em == null || !em.isOpen()) {
+            em = emf.createEntityManager();
+            contextMap.put(unitName, em);
+        }
+
+        return em;
     }
 
+    public static void closeEntityManager(String unitName) {
+        Map<String, EntityManager> contextMap = CONTEXT.get();
+        EntityManager em = contextMap.remove(unitName);
+        if (em != null && em.isOpen()) {
+            em.close();
+        }
+    }
+
+    public static void beginTx(String unitName) {
+        EntityTransaction tx = getEntityManager(unitName).getTransaction();
+        if (!tx.isActive()) {
+            tx.begin();
+        }
+    }
+
+    public static void commitTx(String unitName) {
+        EntityTransaction tx = getEntityManager(unitName).getTransaction();
+        if (tx.isActive()) {
+            tx.commit();
+        }
+    }
+
+    public static void rollbackTx(String unitName) {
+        EntityTransaction tx = getEntityManager(unitName).getTransaction();
+        if (tx.isActive()) {
+            tx.rollback();
+        }
+    }
 
     public static MetadataSources getMetadataSources(String persistenceUnitName) {
         return METADATA_SOURCES_MAP.get(persistenceUnitName);
