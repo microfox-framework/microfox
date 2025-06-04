@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface QueryString {
+public @interface Query {
     String value();
 
     boolean update() default false;

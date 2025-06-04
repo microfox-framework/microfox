@@ -3,7 +3,8 @@ package ir.moke.microfox.db.jpa;
 import ir.moke.microfox.db.jpa.annotation.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.Query;
+import jakarta.persistence.StoredProcedureQuery;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class RepositoryHandler implements InvocationHandler {
 
         if (method.isAnnotationPresent(NamedQuery.class)) {
             return invokeNamedQuery(em, method, args);
-        } else if (method.isAnnotationPresent(QueryString.class)) {
+        } else if (method.isAnnotationPresent(Query.class)) {
             return invokeQueryString(em, method, args);
         } else if (method.isAnnotationPresent(Find.class)) {
             return findByPrimaryKey(em, method, args);
@@ -42,6 +43,10 @@ public class RepositoryHandler implements InvocationHandler {
             return remove(em, method, args);
         } else if (method.isAnnotationPresent(Persist.class)) {
             return persist(em, method, args);
+        } else if (method.isAnnotationPresent(NamedStoredProcedure.class)) {
+            return invokeNamedStoredProcedure(em, method, args);
+        } else if (method.isAnnotationPresent(StoredProcedure.class)) {
+            return invokeStoredProcedure(em, method, args);
         }
 
         throw new AbstractMethodError("No handler logic for method: " + method);
@@ -74,7 +79,7 @@ public class RepositoryHandler implements InvocationHandler {
 
     public static Object invokeNamedQuery(final EntityManager em, final Method method, final Object[] args) throws Throwable {
         final NamedQuery namedQuery = method.getAnnotation(NamedQuery.class);
-        final Query query = em.createNamedQuery(namedQuery.value());
+        final jakarta.persistence.Query query = em.createNamedQuery(namedQuery.value());
         if (namedQuery.update()) {
             return update(method, args, query);
         } else {
@@ -83,8 +88,8 @@ public class RepositoryHandler implements InvocationHandler {
     }
 
     public static Object invokeQueryString(final EntityManager em, final Method method, final Object[] args) throws Throwable {
-        final QueryString queryString = method.getAnnotation(QueryString.class);
-        final Query query = em.createQuery(queryString.value());
+        final Query queryString = method.getAnnotation(Query.class);
+        final jakarta.persistence.Query query = em.createQuery(queryString.value());
 
         if (queryString.update()) {
             return update(method, args, query);
@@ -93,7 +98,7 @@ public class RepositoryHandler implements InvocationHandler {
         }
     }
 
-    private static Object select(Method method, Object[] args, Query query) {
+    private static Object select(Method method, Object[] args, jakarta.persistence.Query query) {
         Integer offset = null;
         Integer maxResults = null;
 
@@ -124,15 +129,13 @@ public class RepositoryHandler implements InvocationHandler {
         }
 
         try {
-
             return (isList(method)) ? query.getResultList() : query.getSingleResult();
-
         } catch (final NoResultException e) {
             return null;
         }
     }
 
-    private static Object update(Method method, Object[] args, Query query) {
+    private static Object update(Method method, Object[] args, jakarta.persistence.Query query) {
         for (final Parameter parameter : params(method, args)) {
             final QueryParam queryParam = parameter.getAnnotation(QueryParam.class);
             if (queryParam != null) {
@@ -174,16 +177,40 @@ public class RepositoryHandler implements InvocationHandler {
         return null;
     }
 
+    private static Object invokeNamedStoredProcedure(EntityManager em, Method method, Object[] args) {
+        NamedStoredProcedure ann = method.getAnnotation(NamedStoredProcedure.class);
+        StoredProcedureQuery query = em.createNamedStoredProcedureQuery(ann.value());
+        setParameters(query, method, args);
+        return query.getResultList();
+    }
+
+    private static Object invokeStoredProcedure(EntityManager em, Method method, Object[] args) {
+        StoredProcedure ann = method.getAnnotation(StoredProcedure.class);
+        StoredProcedureQuery query = em.createStoredProcedureQuery(ann.procedureName());
+        setParameters(query, method, args);
+        return query.getResultList();
+    }
+
+    private static void setParameters(StoredProcedureQuery query, Method method, Object[] args) {
+        List<Parameter> params = params(method, args);
+        for (int i = 0; i < params.size(); i++) {
+            QueryParam param = params.get(i).getAnnotation(QueryParam.class);
+            if (param != null) {
+                query.setParameter(param.value(), args[i]);
+            }
+        }
+    }
+
     private static boolean isList(final Method method) {
         return Collection.class.isAssignableFrom(method.getReturnType());
     }
 
     private static boolean isInt(final Class<?> clazz) {
-        return Integer.class.isAssignableFrom(clazz) || Integer.TYPE.isAssignableFrom(clazz);
+        return Integer.class.isAssignableFrom(clazz) || clazz == int.class;
     }
 
     private static boolean isVoid(final Class<?> clazz) {
-        return Void.class.equals(clazz) || Void.TYPE.equals(clazz);
+        return void.class.equals(clazz) || Void.class.equals(clazz);
     }
 
     public static List<Parameter> params(Method method, Object[] values) {
