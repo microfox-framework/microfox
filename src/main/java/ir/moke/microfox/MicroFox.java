@@ -11,6 +11,7 @@ import ir.moke.microfox.http.Method;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.Route;
 import ir.moke.microfox.job.JobSchedulerContainer;
+import jakarta.persistence.EntityTransaction;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.ibatis.session.SqlSession;
 import org.quartz.Job;
@@ -179,6 +180,27 @@ public class MicroFox {
 
     public static <T> T jpa(Class<T> repositoryClass, String persistenceUnitName) {
         return MicroFoxJpa.create(repositoryClass, persistenceUnitName);
+    }
+
+    public static void jpaTxBegin(String persistenceUnitName) {
+        EntityTransaction transaction = MicroFoxJpa.getEntityManager(persistenceUnitName).getTransaction();
+        if (!transaction.isActive()) {
+            transaction.begin();
+        }
+    }
+
+    public static void jpaTxCommit(String persistenceUnitName) {
+        EntityTransaction transaction = MicroFoxJpa.getEntityManager(persistenceUnitName).getTransaction();
+        if (transaction.isActive()) {
+            transaction.commit();
+        }
+    }
+
+    public static void jpaTxRollback(String persistenceUnitName) {
+        EntityTransaction transaction = MicroFoxJpa.getEntityManager(persistenceUnitName).getTransaction();
+        if (transaction.isActive()) {
+            transaction.rollback();
+        }
     }
 
     public static void jpaGenerateCreateSchemaSQL(String persistenceUnitName) {
