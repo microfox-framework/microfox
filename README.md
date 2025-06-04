@@ -17,7 +17,7 @@ Whether you're building a small service or scaling up a complex system, MicroFox
 <dependency>
     <groupId>ir.moke</groupId>
     <artifactId>microfox</artifactId>
-    <version>0.2</version>
+    <version>0.3</version>
 </dependency>
 ```
 
