@@ -1,5 +1,7 @@
 package ir.moke.microfox.http;
 
+import java.util.Arrays;
+
 public enum ContentType {
     APPLICATION_JAVA_ARCHIVE("application/java-archive"),
     MULTIPART_FORM_DATA("multipart/form-data"),
@@ -10,6 +12,7 @@ public enum ContentType {
     APPLICATION_XML("application/xml"),
     APPLICATION_ZIP("application/zip"),
     APPLICATION_X_WWW_FORM_URLENCODED("application/x-www-form-urlencoded"),
+    APPLICATION_OPENMETRICS_TEXT("application/openmetrics-text"),
     TEXT_CSS("text/css"),
     TEXT_CSV("text/csv"),
     TEXT_EVENT_STREAM("text/event-stream"),
@@ -34,5 +37,12 @@ public enum ContentType {
 
     public String getType() {
         return type;
+    }
+
+    public static ContentType fromValue(String str) {
+        return Arrays.stream(ContentType.class.getEnumConstants())
+                .filter(item -> item.type.equalsIgnoreCase(str))
+                .findFirst()
+                .orElse(null);
     }
 }

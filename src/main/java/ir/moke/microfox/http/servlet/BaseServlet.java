@@ -1,9 +1,8 @@
 package ir.moke.microfox.http.servlet;
 
-import ir.moke.microfox.http.Method;
-import ir.moke.microfox.http.Request;
-import ir.moke.microfox.http.Response;
-import ir.moke.microfox.http.RouteInfo;
+import io.micrometer.core.instrument.Timer;
+import ir.moke.microfox.http.*;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +19,21 @@ import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
 public class BaseServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseServlet.class);
+
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String method = req.getMethod();
+        String path = req.getRequestURI();
+        String metricBase = method + "_" + path.replace("/", "_");
+
+        Metrics.counter(metricBase + "_count").increment();
+        Timer.Sample sample = Timer.start(Metrics.getRegistry());
+        try {
+            super.service(req, resp);
+        } finally {
+            sample.stop(Metrics.timer(metricBase + "_latency"));
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
