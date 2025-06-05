@@ -4,6 +4,11 @@ import ir.moke.microfox.db.jpa.annotation.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.StoredProcedureQuery;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +16,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.lang.reflect.ParameterizedType;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -46,6 +50,8 @@ public class RepositoryHandler implements InvocationHandler {
                 return invokeNamedStoredProcedure(em, method, args);
             } else if (method.isAnnotationPresent(StoredProcedure.class)) {
                 return invokeStoredProcedure(em, method, args);
+            } else if (method.isAnnotationPresent(Criteria.class)) {
+                return invokeCriteria(em, method, args);
             }
 
             throw new AbstractMethodError("No handler logic for method: " + method);
@@ -194,6 +200,85 @@ public class RepositoryHandler implements InvocationHandler {
         return query.getResultList();
     }
 
+    private static <T> Object invokeCriteria(EntityManager em, Method method, Object[] args) {
+        Class<T> entityClass = getEntityClassFromReturnType(method);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<T> query = cb.createQuery(entityClass);
+        Root<T> root = query.from(entityClass);
+        Criteria criteriaAnn = method.getAnnotation(Criteria.class);
+
+        Predicate predicate = null;
+        Integer offset = null;
+        Integer maxResults = null;
+
+        // Extract @QueryParam values
+        Map<String, Object> queryParams = new HashMap<>();
+        java.lang.reflect.Parameter[] parameters = method.getParameters();
+
+        for (int i = 0; i < parameters.length; i++) {
+            java.lang.reflect.Parameter p = parameters[i];
+            Object value = args[i];
+            boolean ignoreNullValues = criteriaAnn.ignoreNullValues();
+            if (p.isAnnotationPresent(QueryParam.class)) {
+                String name = p.getAnnotation(QueryParam.class).value();
+                if (!ignoreNullValues || value != null) {
+                    queryParams.put(name, value);
+                }
+            }
+
+            if (p.isAnnotationPresent(Offset.class)) {
+                offset = (Integer) value;
+            }
+
+            if (p.isAnnotationPresent(MaxResults.class)) {
+                maxResults = (Integer) value;
+            }
+        }
+
+        // Handle @Criteria
+        if (criteriaAnn != null) {
+            try {
+                Class<? extends CriteriaProvider<?>> providerClass = criteriaAnn.provider();
+                CriteriaProvider<?> provider = providerClass.getDeclaredConstructor().newInstance();
+                predicate = invokeTypedProvider(cb, root, provider, entityClass, queryParams);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to invoke CriteriaProvider", e);
+            }
+        }
+
+        if (predicate != null) {
+            query.where(predicate);
+        }
+        query.select(root);
+
+        TypedQuery<?> typedQuery = em.createQuery(query);
+        if (offset != null) typedQuery.setFirstResult(offset);
+        if (maxResults != null) typedQuery.setMaxResults(maxResults);
+
+        try {
+            return isList(method) ? typedQuery.getResultList() : typedQuery.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Predicate invokeTypedProvider(CriteriaBuilder cb, Root<?> rawRoot, CriteriaProvider<?> provider, Class<?> entityClass, Map<String, Object> queryParams) {
+        Root<T> typedRoot = (Root<T>) rawRoot;
+        CriteriaProvider<T> typedProvider = (CriteriaProvider<T>) provider;
+        return typedProvider.execute(cb, typedRoot, queryParams);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<T> getEntityClassFromReturnType(Method method) {
+        if (Collection.class.isAssignableFrom(method.getReturnType())) {
+            ParameterizedType pt = (ParameterizedType) method.getGenericReturnType();
+            return (Class<T>) pt.getActualTypeArguments()[0];
+        } else {
+            return (Class<T>) method.getReturnType();
+        }
+    }
+
     private static void setParameters(StoredProcedureQuery query, Method method, Object[] args) {
         List<Parameter> params = params(method, args);
         for (int i = 0; i < params.size(); i++) {
@@ -220,8 +305,6 @@ public class RepositoryHandler implements InvocationHandler {
         Annotation[][] annotations = method.getParameterAnnotations();
         Class<?>[] types = method.getParameterTypes();
 
-        return IntStream.range(0, method.getParameterCount())
-                .mapToObj(i -> new Parameter(annotations[i], types[i], values[i]))
-                .collect(Collectors.toList());
+        return IntStream.range(0, method.getParameterCount()).mapToObj(i -> new Parameter(annotations[i], types[i], values[i])).collect(Collectors.toList());
     }
 }
