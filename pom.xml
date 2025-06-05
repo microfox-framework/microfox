@@ -4,10 +4,10 @@
     <groupId>ir.moke</groupId>
     <artifactId>microfox</artifactId>
     <packaging>jar</packaging>
-    <version>0.3</version>
+    <version>0.4</version>
     <name>microfox</name>
 
-    <url>https://github.com/mah454/microfox</url>
+    <url>https://github.com/microfox-framework</url>
     <description>MicroFox Framework</description>
 
     <licenses>
@@ -25,9 +25,9 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git@github.com:mah454/microfox.git</connection>
-        <developerConnection>scm:git:git@github.com:mah454/microfox.git</developerConnection>
-        <url>https://github.com/mah454/microfox</url>
+        <connection>scm:git:git@github.com:microfox-framework/MicroFox.git</connection>
+        <developerConnection>scm:git:git@github.com:microfox-framework/MicroFox.git</developerConnection>
+        <url>https://github.com/microfox-framework</url>
     </scm>
 
     <properties>
@@ -37,6 +37,18 @@
     </properties>
 
     <dependencies>
+        <!-- Metrics -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+            <version>1.15.0</version>
+        </dependency>
+
         <!-- JPA -->
         <dependency>
             <groupId>org.hibernate</groupId>
