@@ -2,6 +2,7 @@ package ir.moke.microfox.http;
 
 import ir.moke.microfox.MicroFoxConfig;
 import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.http.servlet.MetricServlet;
 import ir.moke.microfox.http.servlet.OpenApiServlet;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
@@ -53,7 +54,7 @@ public class MicroFoxHttpContainer {
              * add filters
              * Note : Filter could be ordered by @WebFilter#filterName method
              * */
-            Set<Class<?>> classes = Set.of(BaseFilter.class, OpenApiServlet.class);
+            Set<Class<?>> classes = Set.of(BaseFilter.class, OpenApiServlet.class, MetricServlet.class);
             context.addServletContainerInitializer(new EmbeddedFilterContainerInitializer(), classes);
 
             tomcat.start();
