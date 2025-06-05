@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static ir.moke.microfox.http.HttpUtils.concatContextPath;
+import static ir.moke.microfox.log.TtyAsciiCodecs.*;
 
 public class ResourceHolder {
     private static final Logger logger = LoggerFactory.getLogger(ResourceHolder.class);
@@ -24,7 +25,7 @@ public class ResourceHolder {
         if (!path.startsWith("/")) throw new MicrofoxException("route path should started with '/'");
         if (ResourceHolder.instance.listRoutes().isEmpty()) es.execute(MicroFoxHttpContainer::start);
         path = concatContextPath(path);
-        logger.info("register route {} {}", method, path);
+        logger.info("register route {}{} {}{}{}", BLUE, method, GREEN, path, RESET);
         ROUTES.add(new RouteInfo(method, path, route));
     }
 

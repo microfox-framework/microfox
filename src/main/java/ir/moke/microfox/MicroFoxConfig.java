@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
 
+import static ir.moke.microfox.log.TtyAsciiCodecs.GREEN;
+import static ir.moke.microfox.log.TtyAsciiCodecs.RESET;
+
 public class MicroFoxConfig {
     private static final Logger logger = LoggerFactory.getLogger(MicroFoxConfig.class);
     public static String MICROFOX_HTTP_HOST;
@@ -38,13 +41,13 @@ public class MicroFoxConfig {
     }
 
     private static void printEnvironments() {
-        logger.info("MICROFOX_HTTP_HOST {}", MICROFOX_HTTP_HOST);
-        logger.info("MICROFOX_HTTP_PORT {}", MICROFOX_HTTP_PORT);
-        logger.info("MICROFOX_HTTP_BASE_API {}", MICROFOX_HTTP_BASE_API);
-        logger.info("MICROFOX_OPEN_API_TITLE {}", MICROFOX_OPEN_API_TITLE);
-        logger.info("MICROFOX_OPEN_API_VERSION {}", MICROFOX_OPEN_API_VERSION);
-        logger.info("MICROFOX_RESOURCE_BUNDLE_NAME {}", MICROFOX_RESOURCE_BUNDLE_NAME);
-        logger.info("MICROFOX_DEFAULT_LOCALE {}", MICROFOX_DEFAULT_LOCALE);
+        logger.info("{}MICROFOX_HTTP_HOST{} {}", GREEN, RESET, MICROFOX_HTTP_HOST);
+        logger.info("{}MICROFOX_HTTP_PORT{} {}", GREEN, RESET, MICROFOX_HTTP_PORT);
+        logger.info("{}MICROFOX_HTTP_BASE_API{} {}", GREEN, RESET, MICROFOX_HTTP_BASE_API);
+        logger.info("{}MICROFOX_OPEN_API_TITLE{} {}", GREEN, RESET, MICROFOX_OPEN_API_TITLE);
+        logger.info("{}MICROFOX_OPEN_API_VERSION{} {}", GREEN, RESET, MICROFOX_OPEN_API_VERSION);
+        logger.info("{}MICROFOX_RESOURCE_BUNDLE_NAME{} {}", GREEN, RESET, MICROFOX_RESOURCE_BUNDLE_NAME);
+        logger.info("{}MICROFOX_DEFAULT_LOCALE{} {}", GREEN, RESET, MICROFOX_DEFAULT_LOCALE);
     }
 
     private static void printLogo() {
