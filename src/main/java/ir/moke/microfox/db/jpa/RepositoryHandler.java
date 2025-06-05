@@ -1,10 +1,9 @@
 package ir.moke.microfox.db.jpa;
 
 import ir.moke.microfox.db.jpa.annotation.*;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.StoredProcedureQuery;
-import jakarta.persistence.TypedQuery;
+import ir.moke.microfox.db.jpa.annotation.NamedQuery;
+import ir.moke.microfox.db.jpa.annotation.Query;
+import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -46,11 +45,7 @@ public class RepositoryHandler implements InvocationHandler {
                 return remove(em, method, args);
             } else if (method.isAnnotationPresent(Persist.class)) {
                 return persist(em, method, args);
-            } else if (method.isAnnotationPresent(NamedStoredProcedure.class)) {
-                return invokeNamedStoredProcedure(em, method, args);
-            } else if (method.isAnnotationPresent(StoredProcedure.class)) {
-                return invokeStoredProcedure(em, method, args);
-            } else if (method.isAnnotationPresent(Criteria.class)) {
+            }  else if (method.isAnnotationPresent(Criteria.class)) {
                 return invokeCriteria(em, method, args);
             }
 
@@ -77,7 +72,7 @@ public class RepositoryHandler implements InvocationHandler {
         }
     }
 
-    public static Object findByPrimaryKey(final EntityManager em, final Method method, final Object[] args) throws Throwable {
+    public static Object findByPrimaryKey(final EntityManager em, final Method method, final Object[] args) {
         final Class<?> entityClass = method.getReturnType();
         final Object primaryKey = args[0];
 
@@ -87,7 +82,7 @@ public class RepositoryHandler implements InvocationHandler {
         return em.find(entityClass, primaryKey);
     }
 
-    public static Object invokeNamedQuery(final EntityManager em, final Method method, final Object[] args) throws Throwable {
+    public static Object invokeNamedQuery(final EntityManager em, final Method method, final Object[] args) {
         final NamedQuery namedQuery = method.getAnnotation(NamedQuery.class);
         final jakarta.persistence.Query query = em.createNamedQuery(namedQuery.value());
         if (namedQuery.update()) {
@@ -97,7 +92,7 @@ public class RepositoryHandler implements InvocationHandler {
         }
     }
 
-    public static Object invokeQueryString(final EntityManager em, final Method method, final Object[] args) throws Throwable {
+    public static Object invokeQueryString(final EntityManager em, final Method method, final Object[] args) {
         final Query queryString = method.getAnnotation(Query.class);
         final jakarta.persistence.Query query = em.createQuery(queryString.value());
         if (queryString.update()) {
@@ -186,20 +181,6 @@ public class RepositoryHandler implements InvocationHandler {
         return null;
     }
 
-    private static Object invokeNamedStoredProcedure(EntityManager em, Method method, Object[] args) {
-        NamedStoredProcedure ann = method.getAnnotation(NamedStoredProcedure.class);
-        StoredProcedureQuery query = em.createNamedStoredProcedureQuery(ann.value());
-        setParameters(query, method, args);
-        return query.getResultList();
-    }
-
-    private static Object invokeStoredProcedure(EntityManager em, Method method, Object[] args) {
-        StoredProcedure ann = method.getAnnotation(StoredProcedure.class);
-        StoredProcedureQuery query = em.createStoredProcedureQuery(ann.procedureName());
-        setParameters(query, method, args);
-        return query.getResultList();
-    }
-
     private static <T> Object invokeCriteria(EntityManager em, Method method, Object[] args) {
         Class<T> entityClass = getEntityClassFromReturnType(method);
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -240,7 +221,7 @@ public class RepositoryHandler implements InvocationHandler {
             try {
                 Class<? extends CriteriaProvider<?>> providerClass = criteriaAnn.provider();
                 CriteriaProvider<?> provider = providerClass.getDeclaredConstructor().newInstance();
-                predicate = invokeTypedProvider(cb, root, provider, entityClass, queryParams);
+                predicate = invokeTypedProvider(cb, root, provider, queryParams);
             } catch (Exception e) {
                 throw new RuntimeException("Failed to invoke CriteriaProvider", e);
             }
@@ -263,7 +244,7 @@ public class RepositoryHandler implements InvocationHandler {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> Predicate invokeTypedProvider(CriteriaBuilder cb, Root<?> rawRoot, CriteriaProvider<?> provider, Class<?> entityClass, Map<String, Object> queryParams) {
+    private static <T> Predicate invokeTypedProvider(CriteriaBuilder cb, Root<?> rawRoot, CriteriaProvider<?> provider, Map<String, Object> queryParams) {
         Root<T> typedRoot = (Root<T>) rawRoot;
         CriteriaProvider<T> typedProvider = (CriteriaProvider<T>) provider;
         return typedProvider.execute(cb, typedRoot, queryParams);
@@ -276,16 +257,6 @@ public class RepositoryHandler implements InvocationHandler {
             return (Class<T>) pt.getActualTypeArguments()[0];
         } else {
             return (Class<T>) method.getReturnType();
-        }
-    }
-
-    private static void setParameters(StoredProcedureQuery query, Method method, Object[] args) {
-        List<Parameter> params = params(method, args);
-        for (int i = 0; i < params.size(); i++) {
-            QueryParam param = params.get(i).getAnnotation(QueryParam.class);
-            if (param != null) {
-                query.setParameter(param.value(), args[i]);
-            }
         }
     }
 

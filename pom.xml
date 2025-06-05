@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ir.moke</groupId>
     <artifactId>microfox</artifactId>
+    <version>0.4.1</version>
     <packaging>jar</packaging>
-    <version>0.4</version>
     <name>microfox</name>
 
     <url>https://github.com/microfox-framework</url>
