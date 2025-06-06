@@ -2,14 +2,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <tomcatVersion>11.0.4</tomcatVersion>
-        <jackson.version>2.19.0</jackson.version>
-        <microfox.version>0.5</microfox.version>
-    </properties>
-
     <groupId>ir.moke.microfox</groupId>
     <artifactId>microfox-parent</artifactId>
     <version>0.5</version>
@@ -48,6 +40,17 @@
         <module>microfox-jpa</module>
         <module>microfox-redis</module>
     </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <tomcatVersion>11.0.4</tomcatVersion>
+        <jackson.version>2.19.0</jackson.version>
+        <microfox.version>0.5</microfox.version>
+        <micrometer.version>1.15.0</micrometer.version>
+        <hibernate.version>7.0.0.Final</hibernate.version>
+        <swagger.version>2.2.30</swagger.version>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -91,24 +94,24 @@
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-prometheus</artifactId>
-                <version>1.15.0</version>
+                <version>${micrometer.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-core</artifactId>
-                <version>1.15.0</version>
+                <version>${micrometer.version}</version>
             </dependency>
 
             <!-- JPA -->
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>7.0.0.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate.tool</groupId>
                 <artifactId>hibernate-tools-orm</artifactId>
-                <version>7.0.0.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.zaxxer</groupId>
@@ -132,17 +135,17 @@
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-core-jakarta</artifactId>
-                <version>2.2.30</version>
+                <version>${swagger.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-models-jakarta</artifactId>
-                <version>2.2.30</version>
+                <version>${swagger.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations-jakarta</artifactId>
-                <version>2.2.30</version>
+                <version>${swagger.version}</version>
             </dependency>
 
             <!-- Network  -->
