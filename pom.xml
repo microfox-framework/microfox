@@ -44,7 +44,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <tomcatVersion>11.0.4</tomcatVersion>
+        <tomcat.version>11.0.4</tomcat.version>
         <jackson.version>2.19.0</jackson.version>
         <microfox.version>0.5</microfox.version>
         <micrometer.version>1.15.0</micrometer.version>
@@ -184,22 +184,22 @@
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
-                <version>${tomcatVersion}</version>
+                <version>${tomcat.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-websocket</artifactId>
-                <version>${tomcatVersion}</version>
+                <version>${tomcat.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-jasper</artifactId>
-                <version>${tomcatVersion}</version>
+                <version>${tomcat.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-el</artifactId>
-                <version>${tomcatVersion}</version>
+                <version>${tomcat.version}</version>
             </dependency>
 
             <!-- Http Client -->
