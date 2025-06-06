@@ -31,7 +31,7 @@ public class MicroFox {
     private static final RedisProvider redisProvider = ServiceLoader.load(RedisProvider.class).findFirst().orElse(null);
 
     static {
-        MicroFoxConfig.introduce();
+        ApplicationEnvironment.introduce();
     }
 
     public static void httpFilter(String path, Filter... filters) {

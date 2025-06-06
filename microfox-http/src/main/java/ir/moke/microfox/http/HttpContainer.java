@@ -1,6 +1,5 @@
 package ir.moke.microfox.http;
 
-import ir.moke.microfox.MicroFoxConfig;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.http.servlet.MetricServlet;
 import ir.moke.microfox.http.servlet.OpenApiServlet;
@@ -15,8 +14,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MicroFoxHttpContainer {
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MicroFoxHttpContainer.class);
+public class HttpContainer {
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HttpContainer.class);
     private static final String contextPath = "/";
     private static final String baseDir = "/tmp/tomcat";
 
@@ -36,7 +35,7 @@ public class MicroFoxHttpContainer {
 
     public static void start() {
         try {
-            if (MicroFoxConfig.MICROFOX_HTTP_BASE_API.length() > 1 && (!MicroFoxConfig.MICROFOX_HTTP_BASE_API.startsWith("/") || MicroFoxConfig.MICROFOX_HTTP_BASE_API.endsWith("/"))) {
+            if (HttpContainerConfig.MICROFOX_HTTP_BASE_API.length() > 1 && (!HttpContainerConfig.MICROFOX_HTTP_BASE_API.startsWith("/") || HttpContainerConfig.MICROFOX_HTTP_BASE_API.endsWith("/"))) {
                 throw new MicrofoxException("Base api path must start with '/' and must not end with '/'. Example: '/api/v1'");
             }
             var tomcat = new Tomcat();
@@ -65,10 +64,10 @@ public class MicroFoxHttpContainer {
     }
 
     private static Connector createHttpConnector() {
-        String port = MicroFoxConfig.MICROFOX_HTTP_PORT;
+        String port = HttpContainerConfig.MICROFOX_HTTP_PORT;
         logger.info("HTTP connector is ready, listening to port 8080");
         Connector connector = new Connector();
-        connector.setProperty("address", MicroFoxConfig.MICROFOX_HTTP_HOST);
+        connector.setProperty("address", HttpContainerConfig.MICROFOX_HTTP_HOST);
         connector.setPort(Integer.parseInt(port));
         return connector;
     }

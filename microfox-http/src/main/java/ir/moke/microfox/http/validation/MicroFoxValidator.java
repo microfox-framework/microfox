@@ -1,6 +1,6 @@
 package ir.moke.microfox.http.validation;
 
-import ir.moke.microfox.MicroFoxConfig;
+import ir.moke.microfox.http.HttpContainerConfig;
 import jakarta.validation.*;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
@@ -25,7 +25,7 @@ public class MicroFoxValidator {
     }
 
     private static MessageInterpolator getMessageInterpolator(Locale locale) {
-        PlatformResourceBundleLocator resourceBundleLocator = new PlatformResourceBundleLocator(MicroFoxConfig.MICROFOX_RESOURCE_BUNDLE_NAME, Set.of(locale));
+        PlatformResourceBundleLocator resourceBundleLocator = new PlatformResourceBundleLocator(HttpContainerConfig.MICROFOX_RESOURCE_BUNDLE_NAME, Set.of(locale));
         ResourceBundleMessageInterpolator messageInterpolator = new ResourceBundleMessageInterpolator(resourceBundleLocator, true);
         return new FixedLocaleMessageInterpolator(messageInterpolator, locale);
     }

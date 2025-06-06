@@ -25,7 +25,7 @@ public class ResourceHolder {
 
     public void addRoute(Method method, String path, Route route) {
         if (!path.startsWith("/")) throw new MicrofoxException("route path should started with '/'");
-        if (ResourceHolder.instance.listRoutes().isEmpty()) es.execute(MicroFoxHttpContainer::start);
+        if (ResourceHolder.instance.listRoutes().isEmpty()) es.execute(HttpContainer::start);
         path = concatContextPath(path);
         logger.info("register route {}{} {}{}{}", BLUE, method, GREEN, path, RESET);
         ROUTES.add(new RouteInfo(method, path, route));
