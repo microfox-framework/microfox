@@ -22,7 +22,7 @@ public class JobProviderImpl implements JobProvider {
         }
     }
 
-    public void register(Runnable task, String cronExpression) {
+    private void register(Runnable task, String cronExpression) {
         try {
             JobDetail job = JobBuilder.newJob(DelegateJob.class)
                     .withIdentity("job-" + UUID.randomUUID())
@@ -39,7 +39,7 @@ public class JobProviderImpl implements JobProvider {
         }
     }
 
-    public void register(Runnable task, Date startAt) {
+    private void register(Runnable task, Date startAt) {
         try {
             JobDetail job = JobBuilder.newJob(DelegateJob.class)
                     .withIdentity("job-" + UUID.randomUUID())
