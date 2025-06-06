@@ -9,6 +9,7 @@ import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.job.JobProvider;
 import ir.moke.microfox.api.jpa.JpaProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
+import ir.moke.microfox.api.redis.Redis;
 import ir.moke.microfox.api.redis.RedisProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,14 +160,17 @@ public class MicroFox {
     }
 
     public static void jpaPrintCreateSchemaSQL(String persistenceUnitName) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
         jpaProvider.jpaPrintCreateSchemaSQL(persistenceUnitName);
     }
 
     public static void jpaPrintGenerateUpdateSchemaSQL(String persistenceUnitName) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
         jpaProvider.jpaPrintUpdateSchemaSQL(persistenceUnitName);
     }
 
-    public static <T> void redis(String identity, Consumer<T> consumer) {
+    public static <T> void redis(String identity, Consumer<Redis> consumer) {
+        if (redisProvider == null) throw new UnsupportedOperationException("Redis support not available");
         redisProvider.redis(identity, consumer);
     }
 }
