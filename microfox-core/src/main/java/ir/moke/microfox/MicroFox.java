@@ -9,6 +9,7 @@ import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.job.JobProvider;
 import ir.moke.microfox.api.jpa.JpaProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
+import ir.moke.microfox.api.redis.RedisProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,7 @@ public class MicroFox {
     private static final FtpProvider ftpProvider = ServiceLoader.load(FtpProvider.class).findFirst().orElse(null);
     private static final MyBatisProvider myBatisProvider = ServiceLoader.load(MyBatisProvider.class).findFirst().orElse(null);
     private static final JpaProvider jpaProvider = ServiceLoader.load(JpaProvider.class).findFirst().orElse(null);
+    private static final RedisProvider redisProvider = ServiceLoader.load(RedisProvider.class).findFirst().orElse(null);
 
     static {
         MicroFoxConfig.introduce();
@@ -162,5 +164,9 @@ public class MicroFox {
 
     public static void jpaPrintGenerateUpdateSchemaSQL(String persistenceUnitName) {
         jpaProvider.jpaPrintUpdateSchemaSQL(persistenceUnitName);
+    }
+
+    public static <T> void redis(String identity, Consumer<T> consumer) {
+        redisProvider.redis(identity, consumer);
     }
 }
