@@ -59,6 +59,12 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
+        <!-- BOUNCY CASTLE -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+        </dependency>
+
         <!-- Metrics -->
         <dependency>
             <groupId>io.micrometer</groupId>

@@ -3,8 +3,13 @@ package ir.moke.microfox.http;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.http.servlet.MetricServlet;
 import ir.moke.microfox.http.servlet.OpenApiServlet;
+import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.apache.tomcat.util.net.SSLHostConfig;
+import org.apache.tomcat.util.net.SSLHostConfigCertificate;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -40,8 +45,10 @@ public class HttpContainer {
             }
             var tomcat = new Tomcat();
             tomcat.setConnector(createHttpConnector());
+            tomcat.setConnector(createHttpsConnector());
 
             var context = tomcat.addWebapp(contextPath, baseDir);
+            addSecurityConstraint(context);
 
             // add websockets
 //            context.addServletContainerInitializer(new WsSci(), new HashSet<>(List.of(SampleWebSocket.class)));
@@ -65,10 +72,54 @@ public class HttpContainer {
 
     private static Connector createHttpConnector() {
         String port = HttpContainerConfig.MICROFOX_HTTP_PORT;
-        logger.info("HTTP connector is ready, listening to port 8080");
         Connector connector = new Connector();
         connector.setProperty("address", HttpContainerConfig.MICROFOX_HTTP_HOST);
         connector.setPort(Integer.parseInt(port));
+        logger.info("HTTP connector is ready, listening to port {}", port);
         return connector;
+    }
+
+    public static Connector createHttpsConnector() {
+        String port = HttpContainerConfig.MICROFOX_HTTPS_PORT;
+        SSLHostConfig sslHostConfig = getSslHostConfig();
+        Connector connector = new Connector();
+        connector.setPort(Integer.parseInt(port));
+        connector.setSecure(true);
+        connector.setScheme("https");
+        connector.setProperty("SSLEnabled", "true");
+        connector.addSslHostConfig(sslHostConfig);
+        logger.info("HTTPS connector is ready, listening to port {}", port);
+        return connector;
+    }
+
+    private static SSLHostConfig getSslHostConfig() {
+        String keystorePassword = "tompass";
+        String keystoreAliasName = "tomcat-embedded";
+
+        // by default generated with keytool
+        Path keystoreFile = Path.of("/tmp/application.keystore");
+
+        // Generate pkcs12 keystore programmatically if jks does not exist
+        if (!Files.exists(keystoreFile)) {
+            KeystoreUtils.createPKCS12(keystoreFile, keystorePassword, keystoreAliasName, null);
+        }
+        SSLHostConfig sslHostConfig = new SSLHostConfig();
+        SSLHostConfigCertificate certificate = new SSLHostConfigCertificate(sslHostConfig, SSLHostConfigCertificate.Type.RSA);
+        certificate.setCertificateKeystoreFile(keystoreFile.toFile().getAbsolutePath());
+        certificate.setCertificateKeystorePassword(keystorePassword);
+        certificate.setCertificateKeyAlias(keystoreAliasName);
+        sslHostConfig.addCertificate(certificate);
+        return sslHostConfig;
+    }
+
+    private static void addSecurityConstraint(Context context) {
+        SecurityConstraint securityConstraint = new SecurityConstraint();
+        SecurityCollection collection = new SecurityCollection();
+        collection.addPattern("/*");
+        securityConstraint.addCollection(collection);
+
+        // Enforce HTTPS
+        securityConstraint.setUserConstraint("CONFIDENTIAL");
+        context.addConstraint(securityConstraint);
     }
 }

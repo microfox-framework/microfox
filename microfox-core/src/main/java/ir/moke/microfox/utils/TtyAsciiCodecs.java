@@ -1,4 +1,4 @@
-package ir.moke.microfox.log;
+package ir.moke.microfox.utils;
 
 public interface TtyAsciiCodecs {
     char ESC = (char) 27;

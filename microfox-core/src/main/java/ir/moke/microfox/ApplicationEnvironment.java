@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import static ir.moke.microfox.log.TtyAsciiCodecs.GREEN;
-import static ir.moke.microfox.log.TtyAsciiCodecs.RESET;
+import static ir.moke.microfox.utils.TtyAsciiCodecs.GREEN;
+import static ir.moke.microfox.utils.TtyAsciiCodecs.RESET;
 
 public class ApplicationEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationEnvironment.class);
@@ -18,6 +18,7 @@ public class ApplicationEnvironment {
         for (String key : envMap.keySet()) {
             if (key.startsWith("MICROFOX_")) {
                 String value = System.getenv(key);
+                if (key.endsWith("PASSWORD")) value = "************";
                 logger.info("{}{}{} {}", GREEN, key, RESET, value);
             }
         }

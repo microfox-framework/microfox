@@ -12,6 +12,9 @@ public class HttpContainerConfig {
     private static final Logger logger = LoggerFactory.getLogger(HttpContainerConfig.class);
     public static String MICROFOX_HTTP_HOST;
     public static String MICROFOX_HTTP_PORT;
+    public static String MICROFOX_HTTPS_PORT;
+    public static String MICROFOX_KEYSTORE_PASSWORD;
+    public static String MICROFOX_KEYSTORE_ALIAS_NAME;
     public static String MICROFOX_HTTP_BASE_API;
     public static String MICROFOX_OPEN_API_TITLE;
     public static String MICROFOX_OPEN_API_VERSION;
@@ -24,6 +27,9 @@ public class HttpContainerConfig {
             properties.load(is);
             MICROFOX_HTTP_HOST = Optional.ofNullable(System.getenv("MICROFOX_HTTP_HOST")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_HTTP_HOST"))).orElse("0.0.0.0");
             MICROFOX_HTTP_PORT = Optional.ofNullable(System.getenv("MICROFOX_HTTP_PORT")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_HTTP_PORT"))).orElse("8080");
+            MICROFOX_HTTPS_PORT = Optional.ofNullable(System.getenv("MICROFOX_HTTPS_PORT")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_HTTPS_PORT"))).orElse("8443");
+            MICROFOX_KEYSTORE_PASSWORD = Optional.ofNullable(System.getenv("MICROFOX_KEYSTORE_PASSWORD")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_KEYSTORE_PASSWORD"))).orElse("tomp@ss");
+            MICROFOX_KEYSTORE_ALIAS_NAME = Optional.ofNullable(System.getenv("MICROFOX_KEYSTORE_ALIAS_NAME")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_KEYSTORE_ALIAS_NAME"))).orElse("tomcat-embedded");
             MICROFOX_HTTP_BASE_API = Optional.ofNullable(System.getenv("MICROFOX_HTTP_BASE_API")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_HTTP_BASE_API"))).orElse("/");
             MICROFOX_OPEN_API_TITLE = Optional.ofNullable(System.getenv("MICROFOX_OPEN_API_TITLE")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_OPEN_API_TITLE"))).orElse("Microfox OpenAPI");
             MICROFOX_OPEN_API_VERSION = Optional.ofNullable(System.getenv("MICROFOX_OPEN_API_VERSION")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_OPEN_API_VERSION"))).orElse("0.2");
