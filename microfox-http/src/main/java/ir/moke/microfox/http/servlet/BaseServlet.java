@@ -1,6 +1,7 @@
 package ir.moke.microfox.http.servlet;
 
 import io.micrometer.core.instrument.Timer;
+import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.http.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -37,8 +38,18 @@ public class BaseServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        findMatchingRouteInfo(req.getRequestURI(), Method.GET)
-                .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
+        String accept = req.getHeader("Accept");
+        if (accept.equalsIgnoreCase(ContentType.TEXT_EVENT_STREAM.getType())) {
+            resp.setContentType(ContentType.TEXT_EVENT_STREAM.getType());
+            resp.setCharacterEncoding("UTF-8");
+            resp.setHeader("Cache-Control", "no-cache");
+            resp.setHeader("Connection", "keep-alive");
+            findMatchingRouteInfo(req.getRequestURI(), Method.GET)
+                    .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
+        } else {
+            findMatchingRouteInfo(req.getRequestURI(), Method.GET)
+                    .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
+        }
     }
 
     @Override

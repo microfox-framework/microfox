@@ -10,6 +10,14 @@ public interface Response {
 
     void body(Object o);
 
+    void sse(String event, String data, String id, Long retry);
+
+    void sse(String event, String data, String id);
+
+    void sse(String event, String data);
+
+    void sse(String data);
+
     void contentType(ContentType contentType);
 
     void status(int status);

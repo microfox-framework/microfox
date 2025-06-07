@@ -23,6 +23,9 @@ public class HttpContainer {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HttpContainer.class);
     private static final String contextPath = "/";
     private static final String baseDir = "/tmp/tomcat";
+    private static final Integer HTTP_PORT = Integer.parseInt(HttpContainerConfig.MICROFOX_HTTP_PORT);
+    private static final Integer HTTPS_PORT = Integer.parseInt(HttpContainerConfig.MICROFOX_HTTPS_PORT);
+    private static final boolean FORCE_REDIRECT = Boolean.parseBoolean(HttpContainerConfig.MICROFOX_FORCE_REDIRECT_HTTPS);
 
     static {
         try {
@@ -44,11 +47,11 @@ public class HttpContainer {
                 throw new MicrofoxException("Base api path must start with '/' and must not end with '/'. Example: '/api/v1'");
             }
             var tomcat = new Tomcat();
-            tomcat.setConnector(createHttpConnector());
-            tomcat.setConnector(createHttpsConnector());
+            tomcat.getService().addConnector(createHttpConnector());
+            tomcat.getService().addConnector(createHttpsConnector());
 
             var context = tomcat.addWebapp(contextPath, baseDir);
-            addSecurityConstraint(context);
+            if (FORCE_REDIRECT) addSecurityConstraint(context);
 
             // add websockets
 //            context.addServletContainerInitializer(new WsSci(), new HashSet<>(List.of(SampleWebSocket.class)));
@@ -71,24 +74,23 @@ public class HttpContainer {
     }
 
     private static Connector createHttpConnector() {
-        String port = HttpContainerConfig.MICROFOX_HTTP_PORT;
         Connector connector = new Connector();
         connector.setProperty("address", HttpContainerConfig.MICROFOX_HTTP_HOST);
-        connector.setPort(Integer.parseInt(port));
-        logger.info("HTTP connector is ready, listening to port {}", port);
+        connector.setPort(HTTP_PORT);
+        if (FORCE_REDIRECT) connector.setRedirectPort(HTTPS_PORT);
+        logger.info("HTTP connector is ready, listening to port {}", HTTP_PORT);
         return connector;
     }
 
     public static Connector createHttpsConnector() {
-        String port = HttpContainerConfig.MICROFOX_HTTPS_PORT;
         SSLHostConfig sslHostConfig = getSslHostConfig();
         Connector connector = new Connector();
-        connector.setPort(Integer.parseInt(port));
+        connector.setPort(HTTPS_PORT);
         connector.setSecure(true);
         connector.setScheme("https");
         connector.setProperty("SSLEnabled", "true");
         connector.addSslHostConfig(sslHostConfig);
-        logger.info("HTTPS connector is ready, listening to port {}", port);
+        logger.info("HTTPS connector is ready, listening to port {}", HTTPS_PORT);
         return connector;
     }
 

@@ -2,6 +2,7 @@ package ir.moke.microfox.http;
 
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Response;
+import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.utils.JsonUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 public class ResponseImpl implements Response {
     private static final Logger logger = LoggerFactory.getLogger(ResponseImpl.class);
@@ -28,7 +30,7 @@ public class ResponseImpl implements Response {
             writer.write(payload);
             writer.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 
@@ -41,8 +43,37 @@ public class ResponseImpl implements Response {
             writer.write(json);
             writer.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
+    }
+
+    @Override
+    public void sse(String event, String data, String id, Long retry) {
+        try {
+            PrintWriter writer = response.getWriter();
+            Optional.ofNullable(retry).ifPresent(item -> writer.write("retry: %s \n".formatted(retry)));
+            Optional.ofNullable(id).ifPresent(item -> writer.write("id: %s \n".formatted(id)));
+            Optional.ofNullable(event).ifPresent(item -> writer.write("event: %s \n".formatted(event)));
+            Optional.ofNullable(data).ifPresent(item -> writer.write("data: %s \n\n".formatted(data)));
+            writer.flush();
+        } catch (IOException e) {
+            throw new MicrofoxException(e);
+        }
+    }
+
+    @Override
+    public void sse(String event, String data, String id) {
+        sse(event, data, id, null);
+    }
+
+    @Override
+    public void sse(String event, String data) {
+        sse(event, data, null, null);
+    }
+
+    @Override
+    public void sse(String data) {
+        sse(data, null, null, null);
     }
 
     @Override
