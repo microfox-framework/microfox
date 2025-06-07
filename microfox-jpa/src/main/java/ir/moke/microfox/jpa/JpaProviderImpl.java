@@ -4,12 +4,13 @@ import ir.moke.microfox.api.jpa.JpaProvider;
 import ir.moke.microfox.exception.MicrofoxException;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class JpaProviderImpl implements JpaProvider {
     @Override
-    public <T> void jpa(Class<T> repositoryClass, String persistenceUnitName, Consumer<T> consumer) {
+    public <T, R> R jpa(Class<T> repositoryClass, String persistenceUnitName, Function<T, R> function) {
         T t = JpaFactory.create(repositoryClass, persistenceUnitName);
-        consumer.accept(t);
+        return function.apply(t);
     }
 
     @Override

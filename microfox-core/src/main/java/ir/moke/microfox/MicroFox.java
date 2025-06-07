@@ -20,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MicroFox {
     private static final Logger logger = LoggerFactory.getLogger(MicroFox.class);
@@ -119,9 +120,9 @@ public class MicroFox {
         ftpProvider.ftpList(microFoxFtpConfig, remoteFilePath, consumer);
     }
 
-    public static <T> void mybatis(String identity, Class<T> mapper, Consumer<T> consumer) {
+    public static <T, R> R mybatis(String identity, Class<T> mapper, Function<T, R> function) {
         if (myBatisProvider == null) throw new UnsupportedOperationException("MyBatis support not available");
-        myBatisProvider.mybatis(identity, mapper, consumer);
+        return myBatisProvider.mybatis(identity, mapper, function);
     }
 
     public static <T> void mybatisTx(String identity, Class<T> mapper, Consumer<T> consumer) {
@@ -134,9 +135,9 @@ public class MicroFox {
         myBatisProvider.mybatisBatch(identity, mapper, consumer);
     }
 
-    public static <T> void jpa(Class<T> repositoryClass, String persistenceUnitName, Consumer<T> consumer) {
+    public static <T, R> R jpa(Class<T> repositoryClass, String persistenceUnitName, Function<T, R> function) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpa(repositoryClass, persistenceUnitName, consumer);
+        return jpaProvider.jpa(repositoryClass, persistenceUnitName, function);
     }
 
     public static <T> void jpaTx(Class<T> repositoryClass, String persistenceUnitName, Consumer<T> consumer) {

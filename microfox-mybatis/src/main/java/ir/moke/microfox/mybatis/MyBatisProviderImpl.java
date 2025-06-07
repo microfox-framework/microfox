@@ -7,16 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MyBatisProviderImpl implements MyBatisProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(MyBatisProviderImpl.class);
 
     @Override
-    public <T> void mybatis(String identity, Class<T> mapper, Consumer<T> consumer) {
+    public <T, R> R mybatis(String identity, Class<T> mapper, Function<T, R> function) {
         try (SqlSession sqlSession = MyBatisFactory.getSession(identity)) {
             T t = sqlSession.getMapper(mapper);
-            consumer.accept(t);
+            return function.apply(t);
         }
     }
 

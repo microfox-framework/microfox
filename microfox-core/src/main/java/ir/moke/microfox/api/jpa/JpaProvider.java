@@ -1,9 +1,10 @@
 package ir.moke.microfox.api.jpa;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface JpaProvider {
-    <T> void jpa(Class<T> repositoryClass, String persistenceUnitName, Consumer<T> consumer);
+    <T, R> R jpa(Class<T> repositoryClass, String persistenceUnitName, Function<T, R> function);
 
     <T> void jpaTx(Class<T> repositoryClass, String persistenceUnitName, Consumer<T> consumer);
 
