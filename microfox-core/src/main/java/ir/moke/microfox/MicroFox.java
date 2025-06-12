@@ -7,11 +7,15 @@ import ir.moke.microfox.api.http.Filter;
 import ir.moke.microfox.api.http.HttpProvider;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.sse.SseObject;
+import ir.moke.microfox.api.ibmmq.AcknowledgeType;
+import ir.moke.microfox.api.ibmmq.IbmMqProvider;
 import ir.moke.microfox.api.job.JobProvider;
 import ir.moke.microfox.api.jpa.JpaProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.redis.Redis;
 import ir.moke.microfox.api.redis.RedisProvider;
+import jakarta.jms.MessageListener;
+import jakarta.jms.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +36,7 @@ public class MicroFox {
     private static final MyBatisProvider myBatisProvider = ServiceLoader.load(MyBatisProvider.class).findFirst().orElse(null);
     private static final JpaProvider jpaProvider = ServiceLoader.load(JpaProvider.class).findFirst().orElse(null);
     private static final RedisProvider redisProvider = ServiceLoader.load(RedisProvider.class).findFirst().orElse(null);
+    private static final IbmMqProvider ibmMqProvider = ServiceLoader.load(IbmMqProvider.class).findFirst().orElse(null);
 
     static {
         ApplicationEnvironment.introduce();
@@ -185,5 +190,35 @@ public class MicroFox {
     public static <T> void redis(String identity, Consumer<Redis> consumer) {
         if (redisProvider == null) throw new UnsupportedOperationException("Redis support not available");
         redisProvider.redis(identity, consumer);
+    }
+
+    public static void ibmMQConsumeQueue(String identity, String queue, AcknowledgeType type, MessageListener listener) {
+        if (ibmMqProvider == null) throw new UnsupportedOperationException("IBM-MQ support not available");
+        ibmMqProvider.ibmMQConsumeQueue(identity, queue, type, listener);
+    }
+
+    public static void ibmMQConsumeTopic(String identity, String topic, AcknowledgeType type, MessageListener listener) {
+        if (ibmMqProvider == null) throw new UnsupportedOperationException("IBM-MQ support not available");
+        ibmMqProvider.ibmMQConsumeTopic(identity, topic, type, listener);
+    }
+
+    public static void ibmMQProducerQueue(String identity, AcknowledgeType type, Consumer<Session> consumer) {
+        if (ibmMqProvider == null) throw new UnsupportedOperationException("IBM-MQ support not available");
+        ibmMqProvider.ibmMQProducerQueue(identity, type, consumer);
+    }
+
+    public static void ibmMQProducerQueueTx(String identity, AcknowledgeType type, Consumer<Session> consumer) {
+        if (ibmMqProvider == null) throw new UnsupportedOperationException("IBM-MQ support not available");
+        ibmMqProvider.ibmMQProducerQueueTx(identity, type, consumer);
+    }
+
+    public static void ibmMQProducerTopic(String identity, AcknowledgeType type, Consumer<Session> consumer) {
+        if (ibmMqProvider == null) throw new UnsupportedOperationException("IBM-MQ support not available");
+        ibmMqProvider.ibmMQProducerTopic(identity, type, consumer);
+    }
+
+    public static void ibmMQProducerTopicTx(String identity, AcknowledgeType type, Consumer<Session> consumer) {
+        if (ibmMqProvider == null) throw new UnsupportedOperationException("IBM-MQ support not available");
+        ibmMqProvider.ibmMQProducerTopicTx(identity, type, consumer);
     }
 }
