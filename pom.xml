@@ -90,6 +90,11 @@
                 <artifactId>microfox-redis</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
+            <dependency>
+                <groupId>ir.moke.microfox</groupId>
+                <artifactId>microfox-ibmmq</artifactId>
+                <version>${microfox.version}</version>
+            </dependency>
 
             <!-- Metrics -->
             <dependency>

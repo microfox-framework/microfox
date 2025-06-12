@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>microfox-ibmmq</artifactId>
+    <name>Microfox Framework :: IBM MQ</name>
 
     <dependencies>
         <dependency>

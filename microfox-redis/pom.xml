@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>microfox-redis</artifactId>
+    <name>Microfox Framework :: Redis</name>
 
     <dependencies>
         <dependency>

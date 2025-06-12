@@ -4,6 +4,7 @@ import com.ibm.msg.client.jakarta.jms.JmsConnectionFactory;
 import com.ibm.msg.client.jakarta.jms.JmsFactoryFactory;
 import com.ibm.msg.client.jakarta.wmq.WMQConstants;
 import ir.moke.microfox.api.ibmmq.AcknowledgeType;
+import ir.moke.microfox.exception.MicrofoxException;
 import jakarta.jms.*;
 
 import java.lang.IllegalStateException;
@@ -14,20 +15,25 @@ import java.util.function.Consumer;
 public class IbmMQFactory {
     private static final Map<String, JmsConnectionFactory> QUEUE_MAP = new HashMap<>();
 
-    public static void createConnectionFactory(String identity, String host, int port, String queueManager, String channel, String username, String password) throws JMSException {
-        JmsFactoryFactory ff = JmsFactoryFactory.getInstance(WMQConstants.JAKARTA_WMQ_PROVIDER);
-        JmsConnectionFactory cf = ff.createConnectionFactory();
+    public static void createConnectionFactory(String identity, String host, int port, String queueManager, String channel, String username, String password) {
+        try {
+            JmsFactoryFactory ff = JmsFactoryFactory.getInstance(WMQConstants.JAKARTA_WMQ_PROVIDER);
+            JmsConnectionFactory cf = ff.createConnectionFactory();
 
-        // Set connection properties
-        cf.setStringProperty(WMQConstants.WMQ_HOST_NAME, host);
-        cf.setIntProperty(WMQConstants.WMQ_PORT, port);
-        cf.setStringProperty(WMQConstants.WMQ_CHANNEL, channel);
-        cf.setStringProperty(WMQConstants.WMQ_QUEUE_MANAGER, queueManager);
-        cf.setStringProperty(WMQConstants.WMQ_APPLICATIONNAME, "microfox-ibm-mq");
-        if (username != null) cf.setStringProperty(WMQConstants.USERID, username);
-        if (password != null) cf.setStringProperty(WMQConstants.PASSWORD, password);
+            // Set connection properties
+            cf.setStringProperty(WMQConstants.WMQ_HOST_NAME, host);
+            cf.setIntProperty(WMQConstants.WMQ_PORT, port);
+            cf.setStringProperty(WMQConstants.WMQ_CHANNEL, channel);
+            cf.setStringProperty(WMQConstants.WMQ_QUEUE_MANAGER, queueManager);
+            cf.setStringProperty(WMQConstants.WMQ_APPLICATIONNAME, "microfox-ibm-mq");
+            cf.setIntProperty(WMQConstants.WMQ_CONNECTION_MODE, WMQConstants.WMQ_CM_CLIENT);
+            if (username != null) cf.setStringProperty(WMQConstants.USERID, username);
+            if (password != null) cf.setStringProperty(WMQConstants.PASSWORD, password);
 
-        QUEUE_MAP.put(identity, cf);
+            QUEUE_MAP.put(identity, cf);
+        } catch (Exception e) {
+            throw new MicrofoxException(e);
+        }
     }
 
     public static void produceQueue(String identity, boolean transacted, AcknowledgeType type, Consumer<Session> consumer) {
