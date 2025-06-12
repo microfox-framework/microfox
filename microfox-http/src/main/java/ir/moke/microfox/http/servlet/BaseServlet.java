@@ -2,7 +2,10 @@ package ir.moke.microfox.http.servlet;
 
 import io.micrometer.core.instrument.Timer;
 import ir.moke.microfox.api.http.ContentType;
+import ir.moke.microfox.api.http.sse.SseInfo;
+import ir.moke.microfox.api.http.sse.SseSubscriber;
 import ir.moke.microfox.http.*;
+import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
 
@@ -35,15 +39,10 @@ public class BaseServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String accept = req.getHeader("Accept");
-        if (accept.equalsIgnoreCase(ContentType.TEXT_EVENT_STREAM.getType())) {
-            resp.setContentType(ContentType.TEXT_EVENT_STREAM.getType());
-            resp.setCharacterEncoding("UTF-8");
-            resp.setHeader("Cache-Control", "no-cache");
-            resp.setHeader("Connection", "keep-alive");
-            findMatchingRouteInfo(req.getRequestURI(), Method.GET)
-                    .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
+        if (accept != null && accept.equalsIgnoreCase(ContentType.TEXT_EVENT_STREAM.getType())) {
+            handleSse(req, resp);
         } else {
             findMatchingRouteInfo(req.getRequestURI(), Method.GET)
                     .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
@@ -98,6 +97,26 @@ public class BaseServlet extends HttpServlet {
                 handleExceptionResponse(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         }
+    }
+
+    private static void handleSse(HttpServletRequest req, HttpServletResponse resp) {
+        resp.setContentType(ContentType.TEXT_EVENT_STREAM.getType());
+        resp.setCharacterEncoding("UTF-8");
+        resp.setHeader("Cache-Control", "no-cache");
+        resp.setHeader("Connection", "keep-alive");
+
+        final AsyncContext async = req.startAsync();
+        async.setTimeout(0);
+
+        Optional<SseInfo> opt = ResourceHolder.instance.getSsePublisher(req.getRequestURI());
+        if (opt.isEmpty()) {
+            notFound(resp);
+            return;
+        }
+
+        SseInfo info = opt.get();
+        SseSubscriber subscriber = new SseSubscriber(new ResponseImpl(resp));
+        info.getPublisher().subscribe(subscriber);
     }
 
     private static void handleExceptionResponse(HttpServletResponse resp, int statusCode, Exception e) {

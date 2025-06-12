@@ -6,6 +6,7 @@ import ir.moke.microfox.api.ftp.MicroFoxFtpConfig;
 import ir.moke.microfox.api.http.Filter;
 import ir.moke.microfox.api.http.HttpProvider;
 import ir.moke.microfox.api.http.Route;
+import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.api.job.JobProvider;
 import ir.moke.microfox.api.jpa.JpaProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class MicroFox {
     private static final Logger logger = LoggerFactory.getLogger(MicroFox.class);
@@ -78,6 +80,16 @@ public class MicroFox {
     public static void httpTrace(String path, Route route) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.trace(path, route);
+    }
+
+    public static void sseRegister(String identity, String path) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.sseRegister(identity, path);
+    }
+
+    public static void ssePublisher(String identity, Supplier<SseObject> supplier) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.ssePublisher(identity, supplier);
     }
 
     public static void job(Runnable task, String cronExpression) {

@@ -1,5 +1,6 @@
 package ir.moke.microfox.api.http;
 
+import ir.moke.microfox.api.http.sse.SseObject;
 import jakarta.servlet.http.Cookie;
 
 import java.time.Instant;
@@ -10,13 +11,7 @@ public interface Response {
 
     void body(Object o);
 
-    void sse(String event, String data, String id, Long retry);
-
-    void sse(String event, String data, String id);
-
-    void sse(String event, String data);
-
-    void sse(String data);
+    void sse(SseObject sseObject);
 
     void contentType(ContentType contentType);
 

@@ -20,13 +20,13 @@ public class HttpContainer {
     private static final Integer HTTP_PORT = Integer.parseInt(HttpContainerConfig.MICROFOX_HTTP_PORT);
     private static final Integer HTTPS_PORT = Integer.parseInt(HttpContainerConfig.MICROFOX_HTTPS_PORT);
     private static final boolean FORCE_REDIRECT = Boolean.parseBoolean(HttpContainerConfig.MICROFOX_FORCE_REDIRECT_HTTPS);
+    private static final Server server = new Server(HTTP_PORT);
 
     public static void start() {
         try {
-            Server server = new Server(HTTP_PORT);
 
             ServletContextHandler context = new ServletContextHandler();
-            context.setContextPath("/");
+            context.setContextPath(contextPath);
 
             /* Redoc & Swagger */
             context.addServlet(OpenApiServlet.class, "/docs");
@@ -47,5 +47,9 @@ public class HttpContainer {
         } catch (Exception e) {
             throw new MicrofoxException(e);
         }
+    }
+
+    public static boolean isStarted() {
+        return server.isStarted();
     }
 }

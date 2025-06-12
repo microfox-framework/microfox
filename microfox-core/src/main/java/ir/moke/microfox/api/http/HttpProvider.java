@@ -1,5 +1,11 @@
 package ir.moke.microfox.api.http;
 
+import ir.moke.microfox.api.http.sse.SseObject;
+import ir.moke.microfox.api.http.sse.SseSubscriber;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 public interface HttpProvider {
     void filter(String path, Filter... filters);
 
@@ -18,4 +24,8 @@ public interface HttpProvider {
     void options(String path, Route route);
 
     void trace(String path, Route route);
+
+    void sseRegister(String identity, String path);
+
+    void ssePublisher(String identity, Supplier<SseObject> supplier);
 }

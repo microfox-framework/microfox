@@ -2,6 +2,7 @@ package ir.moke.microfox.http;
 
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Response;
+import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.utils.JsonUtils;
 import jakarta.servlet.http.Cookie;
@@ -48,32 +49,17 @@ public class ResponseImpl implements Response {
     }
 
     @Override
-    public void sse(String event, String data, String id, Long retry) {
+    public void sse(SseObject sseObject) {
         try {
             PrintWriter writer = response.getWriter();
-            Optional.ofNullable(retry).ifPresent(item -> writer.write("retry: %s \n".formatted(retry)));
-            Optional.ofNullable(id).ifPresent(item -> writer.write("id: %s \n".formatted(id)));
-            Optional.ofNullable(event).ifPresent(item -> writer.write("event: %s \n".formatted(event)));
-            Optional.ofNullable(data).ifPresent(item -> writer.write("data: %s \n\n".formatted(data)));
+            Optional.ofNullable(sseObject.retry()).ifPresent(item -> writer.write("retry: %s \n".formatted(sseObject.retry())));
+            Optional.ofNullable(sseObject.id()).ifPresent(item -> writer.write("id: %s \n".formatted(sseObject.id())));
+            Optional.ofNullable(sseObject.event()).ifPresent(item -> writer.write("event: %s \n".formatted(sseObject.event())));
+            Optional.ofNullable(sseObject.data()).ifPresent(item -> writer.write("data: %s \n\n".formatted(sseObject.data())));
             writer.flush();
         } catch (IOException e) {
             throw new MicrofoxException(e);
         }
-    }
-
-    @Override
-    public void sse(String event, String data, String id) {
-        sse(event, data, id, null);
-    }
-
-    @Override
-    public void sse(String event, String data) {
-        sse(event, data, null, null);
-    }
-
-    @Override
-    public void sse(String data) {
-        sse(data, null, null, null);
     }
 
     @Override
