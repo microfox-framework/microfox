@@ -4,7 +4,6 @@ import io.swagger.v3.oas.models.OpenAPI;
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.http.OpenApiGenerator;
 import ir.moke.microfox.utils.JsonUtils;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
-@WebServlet(urlPatterns = {"/docs", "/docs/*"})
 public class OpenApiServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(OpenApiServlet.class);
     private String json;

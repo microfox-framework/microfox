@@ -4,7 +4,6 @@ import io.micrometer.core.instrument.Timer;
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.http.*;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +15,6 @@ import java.io.IOException;
 
 import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
 
-@WebServlet("/*")
 public class BaseServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseServlet.class);
@@ -79,12 +77,6 @@ public class BaseServlet extends HttpServlet {
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) {
         findMatchingRouteInfo(req.getRequestURI(), Method.OPTIONS)
-                .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
-    }
-
-    @Override
-    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) {
-        findMatchingRouteInfo(req.getRequestURI(), Method.PATCH)
                 .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
     }
 

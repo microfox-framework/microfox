@@ -4,7 +4,7 @@
 
     <groupId>ir.moke.microfox</groupId>
     <artifactId>microfox-parent</artifactId>
-    <version>0.5</version>
+    <version>0.6</version>
     <packaging>pom</packaging>
     <name>Microfox Framework</name>
 
@@ -44,12 +44,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <tomcat.version>11.0.4</tomcat.version>
+        <jetty.version>12.0.22</jetty.version>
         <jackson.version>2.19.0</jackson.version>
-        <microfox.version>0.5</microfox.version>
         <micrometer.version>1.15.0</micrometer.version>
         <hibernate.version>7.0.0.Final</hibernate.version>
         <swagger.version>2.2.30</swagger.version>
+        <microfox.version>0.6</microfox.version>
     </properties>
 
     <dependencyManagement>
@@ -182,24 +182,14 @@
 
             <!-- Web Server (Tomcat) -->
             <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-core</artifactId>
-                <version>${tomcat.version}</version>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-websocket</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-jasper</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-el</artifactId>
-                <version>${tomcat.version}</version>
+                <groupId>org.eclipse.jetty.ee10</groupId>
+                <artifactId>jetty-ee10-servlet</artifactId>
+                <version>${jetty.version}</version>
             </dependency>
 
             <!-- BOUNCY CASTLE -->
@@ -232,8 +222,8 @@
             <dependency>
                 <groupId>jakarta.servlet</groupId>
                 <artifactId>jakarta.servlet-api</artifactId>
-                <version>6.1.0</version>
-                <scope>provided</scope>
+                <version>6.0.0</version>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>

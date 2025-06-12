@@ -70,16 +70,16 @@ public class MicroFoxTest {
 
 ### Implementations :
 
-| **Feature**      | **Technology**                        |
-|------------------|---------------------------------------|
-| JDK Compatible   | Java 21+                              |
-| Rest API         | [Apache Tomcat ](https://github.com/apache/tomcat)                        |
-| Job Scheduler    | [Quartz](https://github.com/quartz-scheduler)                                |
-| SQL Framework    | [MyBatis](https://github.com/mybatis/mybatis-3)                               |
-| FTP Client       | [Apache Commons-net](https://github.com/apache/commons-net)                    |
-| ORM Framework    | [Hibernate](https://github.com/hibernate/hibernate-orm)                             |
+| **Feature**      | **Technology**                                                           |
+|------------------|--------------------------------------------------------------------------|
+| JDK Compatible   | Java 21+                                                                 |
+| Rest API         | [Apache Tomcat ](https://github.com/apache/tomcat)                       |
+| Job Scheduler    | [Quartz](https://github.com/quartz-scheduler)                            |
+| SQL Framework    | [MyBatis](https://github.com/mybatis/mybatis-3)                          |
+| FTP Client       | [Apache Commons-net](https://github.com/apache/commons-net)              |
+| ORM Framework    | [Hibernate](https://github.com/hibernate/hibernate-orm)                  |
 | RestClient       | [Kafir Project (Pure Java Http Client)](https://github.com/mah454/kafir) |
-| OpenAPI / Web UI | Swagger annotations / [RapiDoc](https://github.com/rapi-doc/RapiDoc)         |    
+| OpenAPI / Web UI | Swagger annotations / [RapiDoc](https://github.com/rapi-doc/RapiDoc)     |    
 
 ### Example Project:
 

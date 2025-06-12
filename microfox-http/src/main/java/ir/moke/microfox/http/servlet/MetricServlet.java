@@ -2,7 +2,6 @@ package ir.moke.microfox.http.servlet;
 
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.http.Metrics;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet("/metrics")
 public class MetricServlet extends HttpServlet {
 
     @Override
