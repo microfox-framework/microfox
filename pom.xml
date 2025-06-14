@@ -39,7 +39,7 @@
         <module>microfox-mybatis</module>
         <module>microfox-jpa</module>
         <module>microfox-redis</module>
-        <module>microfox-ibmmq</module>
+        <module>microfox-jms</module>
     </modules>
 
     <properties>
@@ -92,7 +92,7 @@
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
-                <artifactId>microfox-ibmmq</artifactId>
+                <artifactId>microfox-jms</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
 
@@ -224,11 +224,6 @@
                 <artifactId>jakarta.jms-api</artifactId>
                 <version>3.0.0</version>
             </dependency>
-            <dependency>
-                <groupId>com.ibm.mq</groupId>
-                <artifactId>com.ibm.mq.jakarta.client</artifactId>
-                <version>9.4.2.1</version>
-            </dependency>
 
             <!-- Reflections -->
             <dependency>
@@ -236,7 +231,6 @@
                 <artifactId>reflections</artifactId>
                 <version>0.10.2</version>
             </dependency>
-
             <dependency>
                 <groupId>jakarta.servlet</groupId>
                 <artifactId>jakarta.servlet-api</artifactId>

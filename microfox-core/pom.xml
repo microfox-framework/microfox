@@ -17,9 +17,14 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.1.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>jakarta.jms</groupId>
+            <artifactId>jakarta.jms-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
@@ -31,10 +36,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-parameter-names</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.jms</groupId>
-            <artifactId>jakarta.jms-api</artifactId>
         </dependency>
     </dependencies>
 
