@@ -16,6 +16,7 @@
     <logger name="org.apache.ibatis.io" level="OFF"/>
     <logger name="org.apache.commons" level="OFF"/>
     <logger name="org.apache.activemq" level="OFF"/>
+    <logger name="com.rabbitmq" level="OFF"/>
     <logger name="io.netty" level="OFF"/>
     <logger name="org.eclipse" level="OFF"/>
     <logger name="ir.moke.microfox" level="DEBUG" additivity="false">
