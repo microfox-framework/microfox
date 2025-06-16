@@ -46,11 +46,6 @@ public class IbmMqTest {
         messageProducer();
     }
 
-    @AfterAll
-    public static void shutdown() {
-        System.exit(0);
-    }
-
     public static void messageProducer() {
         MicroFox.producerQueue(IDENTITY, false, Session.AUTO_ACKNOWLEDGE, session -> {
             try {
