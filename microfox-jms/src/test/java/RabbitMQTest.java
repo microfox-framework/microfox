@@ -17,8 +17,7 @@ import static ir.moke.microfox.MicroFox.jmsProducer;
 /**
  * Run artemis container with this command :
  * <p>
- * podman run -d --name artemis -e ARTEMIS_USER=admin -e ARTEMIS_PASSWORD=adminpass -p 61616:61616 -p 8161:8161 --rm apache/activemq-artemis:latest-al
- * pine
+ * podman run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:latest
  * </p>
  */
 public class RabbitMQTest {

@@ -19,8 +19,7 @@ import static ir.moke.microfox.MicroFox.jmsProducer;
 /**
  * Run artemis container with this command :
  * <p>
- * podman run -d --name artemis -e ARTEMIS_USER=admin -e ARTEMIS_PASSWORD=adminpass -p 61616:61616 -p 8161:8161 --rm apache/activemq-artemis:latest-al
- * pine
+ * podman run -d --name ibm-mq -e LICENSE=accept -e MQ_QMGR_NAME=QM1 -e MQ_APP_USER=app -e MQ_APP_PASSWORD=adminpass -e MQ_ADMIN_USER=admin -e MQ_ADMIN_PASSWORD=adminpass -p 1414:1414 -p 9443:9443 icr.io/ibm-messaging/mq:latest
  * </p>
  */
 public class IbmMqTest {
