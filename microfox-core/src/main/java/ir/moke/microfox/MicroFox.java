@@ -9,6 +9,7 @@ import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.api.jms.JmsProvider;
 import ir.moke.microfox.api.job.JobProvider;
+import ir.moke.microfox.api.jpa.DestinationType;
 import ir.moke.microfox.api.jpa.JpaProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.redis.Redis;
@@ -191,23 +192,21 @@ public class MicroFox {
         redisProvider.redis(identity, consumer);
     }
 
-    public static void consumeQueue(String identity, String queue, int acknowledgeMode, MessageListener listener) {
+    public static void jmsListener(String identity, String destination, DestinationType type, int acknowledgeMode, MessageListener listener) {
         if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.consumeQueue(identity, queue, acknowledgeMode, listener);
+        if (type.equals(DestinationType.QUEUE)) {
+            jmsProvider.consumeQueue(identity, destination, acknowledgeMode, listener);
+        } else {
+            jmsProvider.consumeTopic(identity, destination, acknowledgeMode, listener);
+        }
     }
 
-    public static void consumeTopic(String identity, String topic, int acknowledgeMode, MessageListener listener) {
+    public static void jmsProducer(String identity, boolean transacted, int acknowledgeMode, DestinationType type, Consumer<Session> consumer) {
         if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.consumeTopic(identity, topic, acknowledgeMode, listener);
-    }
-
-    public static void producerQueue(String identity, boolean transacted, int acknowledgeMode, Consumer<Session> consumer) {
-        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.produceQueue(identity, transacted, acknowledgeMode, consumer);
-    }
-
-    public static void producerTopic(String identity, boolean transacted, int acknowledgeMode, Consumer<Session> consumer) {
-        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.produceTopic(identity, transacted, acknowledgeMode, consumer);
+        if (type.equals(DestinationType.QUEUE)) {
+            jmsProvider.produceQueue(identity, transacted, acknowledgeMode, consumer);
+        } else {
+            jmsProvider.produceTopic(identity, transacted, acknowledgeMode, consumer);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package ir.moke.microfox.jms;
 
+import ir.moke.microfox.api.jpa.DestinationType;
 import jakarta.jms.ExceptionListener;
 import jakarta.jms.JMSException;
 import jakarta.jms.MessageListener;

@@ -1,4 +1,4 @@
-import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.api.jpa.DestinationType;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.jms.JmsFactory;
 import jakarta.jms.MessageProducer;
@@ -6,13 +6,13 @@ import jakarta.jms.Queue;
 import jakarta.jms.Session;
 import jakarta.jms.TextMessage;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static ir.moke.microfox.MicroFox.consumeQueue;
+import static ir.moke.microfox.MicroFox.jmsListener;
+import static ir.moke.microfox.MicroFox.jmsProducer;
 
 /**
  * Run artemis container with this command :
@@ -37,18 +37,12 @@ public class ArtemisTest {
 
     @Test
     public void checkConsumer() {
-        consumeQueue(IDENTITY, QUEUE_NAME, Session.AUTO_ACKNOWLEDGE, new CustomMessageListener());
-        /*while (true) {
-            try {
-                Thread.sleep(1000);
-                messageProducer();
-            } catch (InterruptedException ignore) {
-            }
-        }*/
+        jmsListener(IDENTITY, QUEUE_NAME, DestinationType.QUEUE, Session.AUTO_ACKNOWLEDGE, new CustomMessageListener());
+        sendTestMessage();
     }
 
-    public static void messageProducer() {
-        MicroFox.producerQueue(IDENTITY, false, Session.AUTO_ACKNOWLEDGE, session -> {
+    public static void sendTestMessage() {
+        jmsProducer(IDENTITY, false, Session.AUTO_ACKNOWLEDGE, DestinationType.QUEUE, session -> {
             try {
                 Queue destination = session.createQueue(QUEUE_NAME);
                 MessageProducer messageProducer = session.createProducer(destination);
@@ -66,7 +60,6 @@ public class ArtemisTest {
         connectionFactory.setUser(USERNAME);
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setConnectionTTL(CONNECTION_TTL);
-//        connectionFactory.setReconnectAttempts(-1); //auto reconnect
         JmsFactory.registerConnectionFactory(IDENTITY, connectionFactory);
     }
 }

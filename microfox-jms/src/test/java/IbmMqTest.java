@@ -1,20 +1,20 @@
 import com.ibm.msg.client.jakarta.jms.JmsConnectionFactory;
 import com.ibm.msg.client.jakarta.jms.JmsFactoryFactory;
 import com.ibm.msg.client.jakarta.wmq.WMQConstants;
-import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.api.jpa.DestinationType;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.jms.JmsFactory;
 import jakarta.jms.MessageProducer;
 import jakarta.jms.Queue;
 import jakarta.jms.Session;
 import jakarta.jms.TextMessage;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static ir.moke.microfox.MicroFox.consumeQueue;
+import static ir.moke.microfox.MicroFox.jmsListener;
+import static ir.moke.microfox.MicroFox.jmsProducer;
 
 /**
  * Run artemis container with this command :
@@ -42,12 +42,12 @@ public class IbmMqTest {
 
     @Test
     public void checkConsumer() {
-        consumeQueue(IDENTITY, QUEUE_NAME, Session.AUTO_ACKNOWLEDGE, new CustomMessageListener());
+        jmsListener(IDENTITY, QUEUE_NAME, DestinationType.QUEUE, Session.AUTO_ACKNOWLEDGE, new CustomMessageListener());
         messageProducer();
     }
 
     public static void messageProducer() {
-        MicroFox.producerQueue(IDENTITY, false, Session.AUTO_ACKNOWLEDGE, session -> {
+        jmsProducer(IDENTITY, false, Session.AUTO_ACKNOWLEDGE, DestinationType.QUEUE, session -> {
             try {
                 Queue destination = session.createQueue(QUEUE_NAME);
                 MessageProducer messageProducer = session.createProducer(destination);
