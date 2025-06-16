@@ -10,8 +10,8 @@ import java.util.Map;
 import static ir.moke.microfox.utils.TtyAsciiCodecs.GREEN;
 import static ir.moke.microfox.utils.TtyAsciiCodecs.RESET;
 
-public class ApplicationEnvironment {
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationEnvironment.class);
+public class MicrofoxEnvironment {
+    private static final Logger logger = LoggerFactory.getLogger(MicrofoxEnvironment.class);
 
     private static void printEnvironments() {
         Map<String, String> envMap = System.getenv();
@@ -25,7 +25,7 @@ public class ApplicationEnvironment {
     }
 
     private static void printLogo() {
-        try (InputStream inputStream = ApplicationEnvironment.class.getClassLoader().getResourceAsStream("logo")) {
+        try (InputStream inputStream = MicrofoxEnvironment.class.getClassLoader().getResourceAsStream("logo")) {
             if (inputStream != null) {
                 System.out.println(new String(inputStream.readAllBytes()));
             }

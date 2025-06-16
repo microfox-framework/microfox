@@ -17,6 +17,7 @@ import static ir.moke.microfox.jms.DestinationType.TOPIC;
 public class JmsProviderImpl implements JmsProvider {
     private static final Logger logger = LoggerFactory.getLogger(JmsProviderImpl.class);
     private final ScheduledExecutorService reconnectScheduler = Executors.newSingleThreadScheduledExecutor();
+    private static final Integer RETRY_TIMEOUT = Integer.valueOf(JmsConfig.MICROFOX_JMS_RETRY_TIMEOUT);
 
     public void produceQueue(String identity, boolean transacted, int acknowledgeMode, Consumer<Session> consumer) {
         ConnectionFactory connectionFactory = JmsFactory.getConnectionFactory(identity);
@@ -53,7 +54,7 @@ public class JmsProviderImpl implements JmsProvider {
                 JmsFactory.closeContext(identity);
                 consumeQueue(identity, queueName, acknowledgeMode, listener);
             }
-        }, 0, 5, TimeUnit.SECONDS);
+        }, 0, RETRY_TIMEOUT, TimeUnit.SECONDS);
     }
 
     public void consumeTopic(String identity, String topicName, int acknowledgeMode, MessageListener listener) {
@@ -71,6 +72,6 @@ public class JmsProviderImpl implements JmsProvider {
                 JmsFactory.closeContext(identity);
                 consumeTopic(identity, topicName, acknowledgeMode, listener);
             }
-        }, 0, 5, TimeUnit.SECONDS);
+        }, 0, RETRY_TIMEOUT, TimeUnit.SECONDS);
     }
 }

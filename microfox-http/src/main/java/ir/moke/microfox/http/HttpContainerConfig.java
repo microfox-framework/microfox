@@ -1,6 +1,6 @@
 package ir.moke.microfox.http;
 
-import ir.moke.microfox.ApplicationEnvironment;
+import ir.moke.microfox.MicrofoxEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class HttpContainerConfig {
     public static String MICROFOX_RESOURCE_BUNDLE_NAME;
 
     static {
-        try (InputStream is = ApplicationEnvironment.class.getClassLoader().getResourceAsStream("application.properties")) {
+        try (InputStream is = MicrofoxEnvironment.class.getClassLoader().getResourceAsStream("application.properties")) {
             Properties properties = new Properties();
             properties.load(is);
             MICROFOX_HTTP_HOST = Optional.ofNullable(System.getenv("MICROFOX_HTTP_HOST")).or(() -> Optional.ofNullable(properties.getProperty("MICROFOX_HTTP_HOST"))).orElse("0.0.0.0");

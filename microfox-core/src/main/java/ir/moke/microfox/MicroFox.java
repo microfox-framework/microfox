@@ -38,7 +38,7 @@ public class MicroFox {
     private static final JmsProvider jmsProvider = ServiceLoader.load(JmsProvider.class).findFirst().orElse(null);
 
     static {
-        ApplicationEnvironment.introduce();
+        MicrofoxEnvironment.introduce();
     }
 
     public static void httpFilter(String path, Filter... filters) {
