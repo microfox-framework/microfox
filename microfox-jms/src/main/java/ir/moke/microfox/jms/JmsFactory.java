@@ -1,5 +1,6 @@
 package ir.moke.microfox.jms;
 
+import ir.moke.microfox.exception.MicrofoxException;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSContext;
 
@@ -12,6 +13,7 @@ public class JmsFactory {
     private static final Map<String, JMSContext> CONTEXT_MAP = new HashMap<>();
 
     public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory) {
+        if (FACTORY_MAP.containsKey(identity)) throw new MicrofoxException("JMS connection factory with identity %s already registered".formatted(identity));
         FACTORY_MAP.put(identity, connectionFactory);
     }
 
