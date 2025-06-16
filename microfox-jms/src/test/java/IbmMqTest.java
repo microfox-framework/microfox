@@ -26,14 +26,14 @@ import static ir.moke.microfox.MicroFox.consumeQueue;
 public class IbmMqTest {
     private static final String IDENTITY = "ibm-mq";
     private static final String APPLICATION_NAME = "microfox-ibm-mq";
-    private static final String CHANNEL_NAME = "DEV.APP.SVRCONN";
+    private static final String CHANNEL_NAME = "DEV.ADMIN.SVRCONN";
     private static final String QUEUE_MANAGER = "QM1";
     private static final String HOST = "127.0.0.1";
     private static final int PORT = 1414;
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "adminpass";
     private static final String CONNECTION_TTL = "3600";
-    private static final String QUEUE_NAME = "test";
+    private static final String QUEUE_NAME = "DEV.QUEUE.1";
 
     @BeforeAll
     public static void init() {

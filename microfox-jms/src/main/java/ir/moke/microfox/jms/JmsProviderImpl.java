@@ -39,7 +39,7 @@ public class JmsProviderImpl implements JmsProvider {
     }
 
     public void consumeQueue(String identity, String queueName, int acknowledgeMode, MessageListener listener) {
-        reconnectScheduler.schedule(() -> {
+        reconnectScheduler.scheduleWithFixedDelay(() -> {
             try {
                 ConnectionFactory connectionFactory = JmsFactory.getConnectionFactory(identity);
                 JMSContext context = connectionFactory.createContext(acknowledgeMode);
@@ -53,11 +53,11 @@ public class JmsProviderImpl implements JmsProvider {
                 JmsFactory.closeContext(identity);
                 consumeQueue(identity, queueName, acknowledgeMode, listener);
             }
-        }, 5, TimeUnit.SECONDS);
+        }, 0, 5, TimeUnit.SECONDS);
     }
 
     public void consumeTopic(String identity, String topicName, int acknowledgeMode, MessageListener listener) {
-        reconnectScheduler.schedule(() -> {
+        reconnectScheduler.scheduleWithFixedDelay(() -> {
             try {
                 ConnectionFactory connectionFactory = JmsFactory.getConnectionFactory(identity);
                 JMSContext context = connectionFactory.createContext(acknowledgeMode);
@@ -71,6 +71,6 @@ public class JmsProviderImpl implements JmsProvider {
                 JmsFactory.closeContext(identity);
                 consumeTopic(identity, topicName, acknowledgeMode, listener);
             }
-        }, 5, TimeUnit.SECONDS);
+        }, 0, 5, TimeUnit.SECONDS);
     }
 }
