@@ -26,7 +26,7 @@ public class KafkaControllerHandler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String name = method.getName();
         logger.debug("Called: {}, args: {}", name, Arrays.toString(args));
 
@@ -36,6 +36,10 @@ public class KafkaControllerHandler implements InvocationHandler {
             return System.identityHashCode(proxy);
         if (name.equals("equals") && method.getParameterCount() == 1)
             return proxy == args[0];
+
+        if (method.isDefault()) {
+            return InvocationHandler.invokeDefault(proxy, method, args);
+        }
 
         switch (method.getName()) {
             case "send" -> invokeSend(args);
@@ -82,10 +86,10 @@ public class KafkaControllerHandler implements InvocationHandler {
     @SuppressWarnings("unchecked")
     private <K, V> void invokeSend(Object[] args) {
         String topic = (String) args[0];
-        Integer partition = (Integer) args[1];
-        Long timestamp = (Long) args[2];
-        K key = (K) args[3];
-        V value = (V) args[4];
+        K key = (K) args[1];
+        V value = (V) args[2];
+        Integer partition = (Integer) args[3];
+        Long timestamp = (Long) args[4];
         Map<String, byte[]> map = (Map<String, byte[]>) args[5];
 
         if (value == null) {
@@ -105,10 +109,10 @@ public class KafkaControllerHandler implements InvocationHandler {
     @SuppressWarnings("unchecked")
     private <K, V> void invokeBatchSend(Object[] args) {
         String topic = (String) args[0];
-        Integer partition = (Integer) args[1];
-        Long timestamp = (Long) args[2];
-        List<K> keys = (List<K>) args[3];
-        List<V> values = (List<V>) args[4];
+        List<K> keys = (List<K>) args[1];
+        List<V> values = (List<V>) args[2];
+        Integer partition = (Integer) args[3];
+        Long timestamp = (Long) args[4];
         Map<String, byte[]> map = (Map<String, byte[]>) args[5];
 
         if (values == null || values.isEmpty()) {

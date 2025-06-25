@@ -29,8 +29,8 @@ public class KafkaTest {
     }
 
     private static void send(KafkaProducerController<String, String> kafkaProducerController) {
-        kafkaProducerController.send("sample", null, null, null, "Hello mahdi", null);
-        kafkaProducerController.send("sample", null, null, null, "Hello mahdi", null);
-        kafkaProducerController.send("sample", null, null, null, "Hello mahdi", null);
+        kafkaProducerController.send("sample", "Hello mahdi");
+        kafkaProducerController.send("sample", "K1", "Hello mahdi");
+        kafkaProducerController.send("sample", "K2", "Hello mahdi", null, 1234567891L);
     }
 }
