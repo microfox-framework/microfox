@@ -11,6 +11,7 @@ import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsProvider;
 import ir.moke.microfox.api.job.JobProvider;
 import ir.moke.microfox.api.jpa.JpaProvider;
+import ir.moke.microfox.api.kafka.KafkaConsumerController;
 import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
@@ -216,5 +217,10 @@ public class MicroFox {
     public static <K, V> void kafkaProducer(String identity, Consumer<KafkaProducerController<K, V>> consumer) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
         kafkaProvider.produce(identity, consumer);
+    }
+
+    public static <K, V> void kafkaConsumer(String identity, Consumer<KafkaConsumerController<K, V>> consumer) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.consumer(identity, consumer);
     }
 }

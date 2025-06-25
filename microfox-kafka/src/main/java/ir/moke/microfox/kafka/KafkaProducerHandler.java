@@ -16,12 +16,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class KafkaControllerHandler implements InvocationHandler {
+public class KafkaProducerHandler implements InvocationHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(KafkaControllerHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(KafkaProducerHandler.class);
     private final String identity;
 
-    public KafkaControllerHandler(String identity) {
+    public KafkaProducerHandler(String identity) {
         this.identity = identity;
     }
 
@@ -55,27 +55,27 @@ public class KafkaControllerHandler implements InvocationHandler {
     }
 
     private <K, V> void invokeTxFlush() {
-        KafkaProducer<K, V> kafkaProducer = KafkaFactory.getKafkaProducer(identity);
+        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
         kafkaProducer.flush();
     }
 
     private <K, V> void invokeTxAbort() {
-        KafkaProducer<K, V> kafkaProducer = KafkaFactory.getKafkaProducer(identity);
+        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
         kafkaProducer.abortTransaction();
     }
 
     private <K, V> void invokeTxCommit() {
-        KafkaProducer<K, V> kafkaProducer = KafkaFactory.getKafkaProducer(identity);
+        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
         kafkaProducer.commitTransaction();
     }
 
     private <K, V> void invokeTxBegin() {
-        KafkaProducer<K, V> kafkaProducer = KafkaFactory.getKafkaProducer(identity);
+        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
         kafkaProducer.beginTransaction();
     }
 
     private <K, V> void invokeClose(Object[] args) {
-        KafkaProducer<K, V> kafkaProducer = KafkaFactory.getKafkaProducer(identity);
+        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
         if (args != null && args.length == 0) {
             kafkaProducer.close();
         } else if (args != null) {
@@ -99,7 +99,7 @@ public class KafkaControllerHandler implements InvocationHandler {
         Headers headers = new RecordHeaders();
         if (map != null) map.keySet().forEach(item -> headers.add(new RecordHeader(item, map.get(item))));
 
-        try (KafkaProducer<K, V> kafkaProducer = KafkaFactory.getKafkaProducer(identity)) {
+        try (KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity)) {
             ProducerRecord<K, V> record = new ProducerRecord<>(topic, partition, timestamp, key, value, headers);
             kafkaProducer.send(record);
             kafkaProducer.flush();
@@ -125,7 +125,7 @@ public class KafkaControllerHandler implements InvocationHandler {
         Headers headers = new RecordHeaders();
         if (map != null) map.keySet().forEach(item -> headers.add(new RecordHeader(item, map.get(item))));
 
-        try (KafkaProducer<K, V> kafkaProducer = KafkaFactory.getKafkaProducer(identity)) {
+        try (KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity)) {
             for (int i = 0; i < values.size(); i++) {
                 V value = values.get(i);
                 K key = keys != null ? keys.get(i) : null;

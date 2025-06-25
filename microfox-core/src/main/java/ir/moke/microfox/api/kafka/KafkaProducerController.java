@@ -11,7 +11,7 @@ public interface KafkaProducerController<K, V> {
     }
 
     default void send(String topic, K key, V value, Integer partition, Map<String, byte[]> headers) {
-        send(topic, key, value, partition, null, null);
+        send(topic, key, value, partition, null, headers);
     }
 
     default void send(String topic, K key, V value, Integer partition) {

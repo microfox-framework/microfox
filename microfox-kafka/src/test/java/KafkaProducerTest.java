@@ -1,5 +1,5 @@
 import ir.moke.microfox.api.kafka.KafkaProducerController;
-import ir.moke.microfox.kafka.KafkaFactory;
+import ir.moke.microfox.kafka.KafkaProducerFactory;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -7,30 +7,28 @@ import java.util.Properties;
 
 import static ir.moke.microfox.MicroFox.kafkaProducer;
 
-public class KafkaTest {
+public class KafkaProducerTest {
     private static final String IDENTITY = "kafka-test";
     private static final String HOST = "127.0.0.1";
     private static final int PORT = 9092;
 
     static {
-        initialize();
+        initializeProducer();
     }
 
-    private static void initialize() {
+    private static void initializeProducer() {
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "%s:%s".formatted(HOST, PORT));
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        KafkaFactory.registerKafkaProducer(IDENTITY, properties, false);
+        KafkaProducerFactory.register(IDENTITY, properties, false);
     }
 
-    public static void main(String[] args) {
-        kafkaProducer(IDENTITY, KafkaTest::send);
+    public static void main(String... str) {
+        kafkaProducer(IDENTITY, KafkaProducerTest::send);
     }
 
     private static void send(KafkaProducerController<String, String> kafkaProducerController) {
         kafkaProducerController.send("sample", "Hello mahdi");
-        kafkaProducerController.send("sample", "K1", "Hello mahdi");
-        kafkaProducerController.send("sample", "K2", "Hello mahdi", null, 1234567891L);
     }
 }
