@@ -11,8 +11,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import static ir.moke.microfox.api.jpa.DestinationType.QUEUE;
-import static ir.moke.microfox.api.jpa.DestinationType.TOPIC;
+import static ir.moke.microfox.api.jms.DestinationType.QUEUE;
+import static ir.moke.microfox.api.jms.DestinationType.TOPIC;
 
 public class JmsProviderImpl implements JmsProvider {
     private static final Logger logger = LoggerFactory.getLogger(JmsProviderImpl.class);

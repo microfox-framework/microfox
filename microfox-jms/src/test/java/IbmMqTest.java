@@ -1,7 +1,7 @@
 import com.ibm.msg.client.jakarta.jms.JmsConnectionFactory;
 import com.ibm.msg.client.jakarta.jms.JmsFactoryFactory;
 import com.ibm.msg.client.jakarta.wmq.WMQConstants;
-import ir.moke.microfox.api.jpa.DestinationType;
+import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.jms.JmsFactory;
 import jakarta.jms.MessageProducer;

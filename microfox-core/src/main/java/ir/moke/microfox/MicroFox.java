@@ -7,10 +7,12 @@ import ir.moke.microfox.api.http.Filter;
 import ir.moke.microfox.api.http.HttpProvider;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.sse.SseObject;
+import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsProvider;
 import ir.moke.microfox.api.job.JobProvider;
-import ir.moke.microfox.api.jpa.DestinationType;
 import ir.moke.microfox.api.jpa.JpaProvider;
+import ir.moke.microfox.api.kafka.KafkaProducerController;
+import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.redis.Redis;
 import ir.moke.microfox.api.redis.RedisProvider;
@@ -37,6 +39,7 @@ public class MicroFox {
     private static final JpaProvider jpaProvider = ServiceLoader.load(JpaProvider.class).findFirst().orElse(null);
     private static final RedisProvider redisProvider = ServiceLoader.load(RedisProvider.class).findFirst().orElse(null);
     private static final JmsProvider jmsProvider = ServiceLoader.load(JmsProvider.class).findFirst().orElse(null);
+    private static final KafkaProvider kafkaProvider = ServiceLoader.load(KafkaProvider.class).findFirst().orElse(null);
 
     static {
         MicrofoxEnvironment.introduce();
@@ -208,5 +211,10 @@ public class MicroFox {
         } else {
             jmsProvider.produceTopic(identity, transacted, acknowledgeMode, consumer);
         }
+    }
+
+    public static <K, V> void kafkaProducer(String identity, Consumer<KafkaProducerController<K, V>> consumer) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.produce(identity, consumer);
     }
 }

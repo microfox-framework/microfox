@@ -40,6 +40,7 @@
         <module>microfox-jpa</module>
         <module>microfox-redis</module>
         <module>microfox-jms</module>
+        <module>microfox-kafka</module>
     </modules>
 
     <properties>
@@ -243,6 +244,13 @@
                 <artifactId>rabbitmq-jms</artifactId>
                 <version>3.4.0</version>
                 <scope>test</scope>
+            </dependency>
+
+            <!-- Kafka -->
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>4.0.0</version>
             </dependency>
 
             <!-- Reflections -->

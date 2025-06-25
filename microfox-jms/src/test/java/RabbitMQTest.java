@@ -1,5 +1,5 @@
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
-import ir.moke.microfox.api.jpa.DestinationType;
+import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.jms.JmsFactory;
 import jakarta.jms.MessageProducer;
