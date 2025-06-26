@@ -38,7 +38,6 @@
         <module>microfox-ftp</module>
         <module>microfox-mybatis</module>
         <module>microfox-jpa</module>
-        <module>microfox-redis</module>
         <module>microfox-jms</module>
         <module>microfox-kafka</module>
     </modules>
@@ -84,11 +83,6 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-mybatis</artifactId>
-                <version>${microfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ir.moke.microfox</groupId>
-                <artifactId>microfox-redis</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
             <dependency>
@@ -211,12 +205,6 @@
                 <groupId>ir.moke</groupId>
                 <artifactId>kafir</artifactId>
                 <version>1.4.6</version>
-            </dependency>
-
-            <dependency>
-                <groupId>redis.clients</groupId>
-                <artifactId>jedis</artifactId>
-                <version>6.0.0</version>
             </dependency>
 
             <!-- JMS -->

@@ -15,8 +15,6 @@ import ir.moke.microfox.api.kafka.KafkaConsumerController;
 import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
-import ir.moke.microfox.api.redis.Redis;
-import ir.moke.microfox.api.redis.RedisProvider;
 import jakarta.jms.MessageListener;
 import jakarta.jms.Session;
 import org.slf4j.Logger;
@@ -38,7 +36,6 @@ public class MicroFox {
     private static final FtpProvider ftpProvider = ServiceLoader.load(FtpProvider.class).findFirst().orElse(null);
     private static final MyBatisProvider myBatisProvider = ServiceLoader.load(MyBatisProvider.class).findFirst().orElse(null);
     private static final JpaProvider jpaProvider = ServiceLoader.load(JpaProvider.class).findFirst().orElse(null);
-    private static final RedisProvider redisProvider = ServiceLoader.load(RedisProvider.class).findFirst().orElse(null);
     private static final JmsProvider jmsProvider = ServiceLoader.load(JmsProvider.class).findFirst().orElse(null);
     private static final KafkaProvider kafkaProvider = ServiceLoader.load(KafkaProvider.class).findFirst().orElse(null);
 
@@ -189,11 +186,6 @@ public class MicroFox {
     public static void jpaPrintGenerateUpdateSchemaSQL(String persistenceUnitName) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
         jpaProvider.jpaPrintUpdateSchemaSQL(persistenceUnitName);
-    }
-
-    public static <T> void redis(String identity, Consumer<Redis> consumer) {
-        if (redisProvider == null) throw new UnsupportedOperationException("Redis support not available");
-        redisProvider.redis(identity, consumer);
     }
 
     public static void jmsListener(String identity, String destination, DestinationType type, int acknowledgeMode, MessageListener listener) {
