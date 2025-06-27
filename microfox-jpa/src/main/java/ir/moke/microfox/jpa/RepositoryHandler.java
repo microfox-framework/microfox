@@ -94,8 +94,9 @@ public class RepositoryHandler implements InvocationHandler {
 
     public static Object invokeQueryString(final EntityManager em, final Method method, final Object[] args) {
         final Query queryString = method.getAnnotation(Query.class);
-        final jakarta.persistence.Query query = em.createQuery(queryString.value());
-        if (queryString.update()) {
+        String value = queryString.value();
+        final jakarta.persistence.Query query = em.createQuery(value);
+        if (value.startsWith("update") || value.startsWith("UPDATE")) {
             return update(method, args, query);
         } else {
             return select(method, args, query);
