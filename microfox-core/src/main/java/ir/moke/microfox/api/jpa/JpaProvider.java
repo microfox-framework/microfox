@@ -4,9 +4,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public interface JpaProvider {
-    <T, R> R jpa(Class<T> repositoryClass, String persistenceUnitName, Function<T, R> function);
+    <T, R> R jpa(String identity, Class<T> repositoryClass, Function<T, R> function);
 
-    <T> void jpaTx(Class<T> repositoryClass, String persistenceUnitName, Consumer<T> consumer);
+    <T> void jpaTx(String identity, Class<T> repositoryClass, Consumer<T> consumer);
 
     void jpaTxBegin(String persistenceUnitName);
 

@@ -153,39 +153,39 @@ public class MicroFox {
         myBatisProvider.mybatisBatch(identity, mapper, consumer);
     }
 
-    public static <T, R> R jpa(Class<T> repositoryClass, String persistenceUnitName, Function<T, R> function) {
+    public static <T, R> R jpa(String identity, Class<T> repositoryClass, Function<T, R> function) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        return jpaProvider.jpa(repositoryClass, persistenceUnitName, function);
+        return jpaProvider.jpa(identity, repositoryClass, function);
     }
 
-    public static <T> void jpaTx(Class<T> repositoryClass, String persistenceUnitName, Consumer<T> consumer) {
+    public static <T> void jpaTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaTx(repositoryClass, persistenceUnitName, consumer);
+        jpaProvider.jpaTx(identity, repositoryClass, consumer);
     }
 
-    public static void jpaTxBegin(String persistenceUnitName) {
+    public static void jpaTxBegin(String identity) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaTxBegin(persistenceUnitName);
+        jpaProvider.jpaTxBegin(identity);
     }
 
-    public static void jpaTxCommit(String persistenceUnitName) {
+    public static void jpaTxCommit(String identity) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaTxCommit(persistenceUnitName);
+        jpaProvider.jpaTxCommit(identity);
     }
 
-    public static void jpaTxRollback(String persistenceUnitName) {
+    public static void jpaTxRollback(String identity) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaTxRollback(persistenceUnitName);
+        jpaProvider.jpaTxRollback(identity);
     }
 
-    public static void jpaPrintCreateSchemaSQL(String persistenceUnitName) {
+    public static void jpaPrintCreateSchemaSQL(String identity) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaPrintCreateSchemaSQL(persistenceUnitName);
+        jpaProvider.jpaPrintCreateSchemaSQL(identity);
     }
 
-    public static void jpaPrintGenerateUpdateSchemaSQL(String persistenceUnitName) {
+    public static void jpaPrintGenerateUpdateSchemaSQL(String identity) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaPrintUpdateSchemaSQL(persistenceUnitName);
+        jpaProvider.jpaPrintUpdateSchemaSQL(identity);
     }
 
     public static void jmsListener(String identity, String destination, DestinationType type, int acknowledgeMode, MessageListener listener) {

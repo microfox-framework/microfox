@@ -8,49 +8,49 @@ import java.util.function.Function;
 
 public class JpaProviderImpl implements JpaProvider {
     @Override
-    public <T, R> R jpa(Class<T> repositoryClass, String persistenceUnitName, Function<T, R> function) {
-        T t = JpaFactory.create(repositoryClass, persistenceUnitName);
+    public <T, R> R jpa(String identity, Class<T> repositoryClass, Function<T, R> function) {
+        T t = JpaFactory.create(repositoryClass, identity);
         return function.apply(t);
     }
 
     @Override
-    public <T> void jpaTx(Class<T> repositoryClass, String persistenceUnitName, Consumer<T> consumer) {
+    public <T> void jpaTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
         try {
-            T t = JpaFactory.create(repositoryClass, persistenceUnitName);
-            JpaFactory.beginTx(persistenceUnitName);
+            T t = JpaFactory.create(repositoryClass, identity);
+            JpaFactory.beginTx(identity);
             consumer.accept(t);
-            JpaFactory.commitTx(persistenceUnitName);
+            JpaFactory.commitTx(identity);
         } catch (Exception e) {
-            JpaFactory.rollbackTx(persistenceUnitName);
+            JpaFactory.rollbackTx(identity);
             throw new MicrofoxException(e);
         } finally {
-            JpaFactory.closeEntityManager(persistenceUnitName);
+            JpaFactory.closeEntityManager(identity);
         }
 
     }
 
     @Override
-    public void jpaTxBegin(String persistenceUnitName) {
-        JpaFactory.beginTx(persistenceUnitName);
+    public void jpaTxBegin(String identity) {
+        JpaFactory.beginTx(identity);
     }
 
     @Override
-    public void jpaTxCommit(String persistenceUnitName) {
-        JpaFactory.commitTx(persistenceUnitName);
+    public void jpaTxCommit(String identity) {
+        JpaFactory.commitTx(identity);
     }
 
     @Override
-    public void jpaTxRollback(String persistenceUnitName) {
-        JpaFactory.rollbackTx(persistenceUnitName);
+    public void jpaTxRollback(String identity) {
+        JpaFactory.rollbackTx(identity);
     }
 
     @Override
-    public void jpaPrintCreateSchemaSQL(String persistenceUnitName) {
-        JpaQueryGenerator.createSchema(persistenceUnitName);
+    public void jpaPrintCreateSchemaSQL(String identity) {
+        JpaQueryGenerator.createSchema(identity);
     }
 
     @Override
-    public void jpaPrintUpdateSchemaSQL(String persistenceUnitName) {
-        JpaQueryGenerator.updateSchema(persistenceUnitName);
+    public void jpaPrintUpdateSchemaSQL(String identity) {
+        JpaQueryGenerator.updateSchema(identity);
     }
 }

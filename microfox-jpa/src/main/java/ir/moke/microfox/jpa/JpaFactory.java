@@ -61,62 +61,62 @@ public class JpaFactory {
         return reflections.getTypesAnnotatedWith(Entity.class);
     }
 
-    public static EntityManager getEntityManager(String unitName) {
-        EntityManagerFactory emf = ENTITY_MANAGER_FACTORY_MAP.get(unitName);
+    public static EntityManager getEntityManager(String identity) {
+        EntityManagerFactory emf = ENTITY_MANAGER_FACTORY_MAP.get(identity);
         if (emf == null) {
-            throw new IllegalArgumentException("No EntityManagerFactory registered for unit name: " + unitName);
+            throw new IllegalArgumentException("No EntityManagerFactory registered for unit name: " + identity);
         }
 
         Map<String, EntityManager> contextMap = CONTEXT.get();
-        EntityManager em = contextMap.get(unitName);
+        EntityManager em = contextMap.get(identity);
 
         if (em == null || !em.isOpen()) {
             em = emf.createEntityManager();
-            contextMap.put(unitName, em);
+            contextMap.put(identity, em);
         }
 
         return em;
     }
 
-    public static void closeEntityManager(String unitName) {
+    public static void closeEntityManager(String identity) {
         Map<String, EntityManager> contextMap = CONTEXT.get();
-        EntityManager em = contextMap.remove(unitName);
+        EntityManager em = contextMap.remove(identity);
         if (em != null && em.isOpen()) {
             em.close();
         }
     }
 
-    public static void beginTx(String unitName) {
-        EntityTransaction tx = getEntityManager(unitName).getTransaction();
+    public static void beginTx(String identity) {
+        EntityTransaction tx = getEntityManager(identity).getTransaction();
         if (!tx.isActive()) {
             tx.begin();
         }
     }
 
-    public static void commitTx(String unitName) {
-        EntityTransaction tx = getEntityManager(unitName).getTransaction();
+    public static void commitTx(String identity) {
+        EntityTransaction tx = getEntityManager(identity).getTransaction();
         if (tx.isActive()) {
             tx.commit();
         }
     }
 
-    public static void rollbackTx(String unitName) {
-        EntityTransaction tx = getEntityManager(unitName).getTransaction();
+    public static void rollbackTx(String identity) {
+        EntityTransaction tx = getEntityManager(identity).getTransaction();
         if (tx.isActive()) {
             tx.rollback();
         }
     }
 
-    public static MetadataSources getMetadataSources(String persistenceUnitName) {
-        return METADATA_SOURCES_MAP.get(persistenceUnitName);
+    public static MetadataSources getMetadataSources(String identity) {
+        return METADATA_SOURCES_MAP.get(identity);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T create(Class<T> repositoryInterface, String persistenceUnitName) {
+    public static <T> T create(Class<T> repositoryInterface, String identity) {
         return (T) Proxy.newProxyInstance(
                 repositoryInterface.getClassLoader(),
                 new Class<?>[]{repositoryInterface},
-                new RepositoryHandler(persistenceUnitName)
+                new RepositoryHandler(identity)
         );
     }
 }
