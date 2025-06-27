@@ -84,8 +84,9 @@ public class RepositoryHandler implements InvocationHandler {
 
     public static Object invokeNamedQuery(final EntityManager em, final Method method, final Object[] args) {
         final NamedQuery namedQuery = method.getAnnotation(NamedQuery.class);
-        final jakarta.persistence.Query query = em.createNamedQuery(namedQuery.value());
-        if (namedQuery.update()) {
+        String value = namedQuery.value();
+        final jakarta.persistence.Query query = em.createNamedQuery(value);
+        if (value.toUpperCase().startsWith("UPDATE")) {
             return update(method, args, query);
         } else {
             return select(method, args, query);
@@ -96,7 +97,7 @@ public class RepositoryHandler implements InvocationHandler {
         final Query queryString = method.getAnnotation(Query.class);
         String value = queryString.value();
         final jakarta.persistence.Query query = em.createQuery(value);
-        if (value.startsWith("update") || value.startsWith("UPDATE")) {
+        if (value.toUpperCase().startsWith("UPDATE")) {
             return update(method, args, query);
         } else {
             return select(method, args, query);

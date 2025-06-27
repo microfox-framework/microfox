@@ -9,6 +9,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NamedQuery {
     String value();
-
-    boolean update() default false;
 }
