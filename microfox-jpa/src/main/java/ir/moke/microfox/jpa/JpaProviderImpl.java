@@ -8,9 +8,8 @@ import java.util.function.Function;
 
 public class JpaProviderImpl implements JpaProvider {
     @Override
-    public <T, R> R jpa(String identity, Class<T> repositoryClass, Function<T, R> function) {
-        T t = JpaFactory.create(repositoryClass, identity);
-        return function.apply(t);
+    public <T> T jpa(String identity, Class<T> repositoryClass) {
+        return JpaFactory.create(repositoryClass, identity);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package ir.moke.microfox;
 
+import ir.moke.microfox.api.elastic.ElasticProvider;
+import ir.moke.microfox.api.elastic.ElasticRepository;
 import ir.moke.microfox.api.ftp.FtpFile;
 import ir.moke.microfox.api.ftp.FtpProvider;
 import ir.moke.microfox.api.ftp.MicroFoxFtpConfig;
@@ -38,6 +40,7 @@ public class MicroFox {
     private static final JpaProvider jpaProvider = ServiceLoader.load(JpaProvider.class).findFirst().orElse(null);
     private static final JmsProvider jmsProvider = ServiceLoader.load(JmsProvider.class).findFirst().orElse(null);
     private static final KafkaProvider kafkaProvider = ServiceLoader.load(KafkaProvider.class).findFirst().orElse(null);
+    private static final ElasticProvider elasticProvider = ServiceLoader.load(ElasticProvider.class).findFirst().orElse(null);
 
     static {
         MicrofoxEnvironment.introduce();
@@ -153,9 +156,9 @@ public class MicroFox {
         myBatisProvider.mybatisBatch(identity, mapper, consumer);
     }
 
-    public static <T, R> R jpa(String identity, Class<T> repositoryClass, Function<T, R> function) {
+    public static <T> T jpa(String identity, Class<T> repositoryClass) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        return jpaProvider.jpa(identity, repositoryClass, function);
+        return jpaProvider.jpa(identity, repositoryClass);
     }
 
     public static <T> void jpaTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
@@ -214,5 +217,10 @@ public class MicroFox {
     public static <K, V> void kafkaConsumer(String identity, Consumer<KafkaConsumerController<K, V>> consumer) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
         kafkaProvider.consumer(identity, consumer);
+    }
+
+    public static <T> ElasticRepository<T> elastic(String identity, Class<T> entityClass) {
+        if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");
+        return elasticProvider.elastic(identity, entityClass);
     }
 }

@@ -4,14 +4,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import ir.moke.microfox.exception.MicrofoxException;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +45,7 @@ public class JsonUtils {
         try {
             return objectMapper.writeValueAsString(o);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 
@@ -50,7 +53,7 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(str, clazz);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 
@@ -62,7 +65,7 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(file, clazz);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 
@@ -72,7 +75,7 @@ public class JsonUtils {
             };
             return objectMapper.readValue(str, typeRef);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
 
     }
@@ -82,7 +85,7 @@ public class JsonUtils {
             CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(collectionType, genericType);
             return objectMapper.readValue(str, listType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 
@@ -91,7 +94,7 @@ public class JsonUtils {
             JavaType javaType = objectMapper.getTypeFactory().constructFromCanonical(canonicalType);
             return objectMapper.readValue(str, javaType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 
@@ -100,7 +103,7 @@ public class JsonUtils {
             MapType mapType = objectMapper.getTypeFactory().constructMapType(mapClassType, String.class, genericType);
             return objectMapper.readValue(str, mapType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 
@@ -110,7 +113,7 @@ public class JsonUtils {
             };
             return objectMapper.readValue(str, typeRef);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 
@@ -118,7 +121,7 @@ public class JsonUtils {
         try {
             objectMapper.writeValue(file, object);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 
@@ -133,5 +136,25 @@ public class JsonUtils {
 
     public static ObjectMapper getObjectMapper() {
         return objectMapper;
+    }
+
+    public static <T> T convert(Object o, Class<T> clazz) {
+        return objectMapper.convertValue(o, clazz);
+    }
+
+    public static JsonNode readTree(String str) {
+        try {
+            return objectMapper.readTree(str);
+        } catch (JsonProcessingException e) {
+            throw new MicrofoxException(e);
+        }
+    }
+
+    public static <T> T treeToValue(TreeNode treeNode, Class<T> clazz) {
+        try {
+            return objectMapper.treeToValue(treeNode, clazz);
+        } catch (JsonProcessingException e) {
+            throw new MicrofoxException(e);
+        }
     }
 }

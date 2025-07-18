@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public interface JpaProvider {
-    <T, R> R jpa(String identity, Class<T> repositoryClass, Function<T, R> function);
+    <T> T jpa(String identity, Class<T> repositoryClass);
 
     <T> void jpaTx(String identity, Class<T> repositoryClass, Consumer<T> consumer);
 
