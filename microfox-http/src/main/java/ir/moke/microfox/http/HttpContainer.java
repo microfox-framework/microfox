@@ -24,7 +24,6 @@ public class HttpContainer {
 
     public static void start() {
         try {
-
             ServletContextHandler context = new ServletContextHandler();
             context.setContextPath(contextPath);
 

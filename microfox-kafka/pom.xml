@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>microfox-kafka</artifactId>
+    <name>Microfox Framework :: Kafka</name>
+
     <dependencies>
         <dependency>
             <groupId>ir.moke.microfox</groupId>

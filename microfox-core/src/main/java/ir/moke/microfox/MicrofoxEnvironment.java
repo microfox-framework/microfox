@@ -18,7 +18,7 @@ public class MicrofoxEnvironment {
         for (String key : envMap.keySet()) {
             if (key.startsWith("MICROFOX_")) {
                 String value = System.getenv(key);
-                if (key.endsWith("PASSWORD")) value = "************";
+                if (key.endsWith("PASSWORD")) value = "********************************";
                 logger.info("{}{}{} {}", GREEN, key, RESET, value);
             }
         }
