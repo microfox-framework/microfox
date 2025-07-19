@@ -46,7 +46,7 @@ public class OpenApiGenerator {
             PathItem item = paths.computeIfAbsent(routeInfo.path(), k -> new PathItem());
 
             Operation op = extractSwaggerAnnotation(routeInfo.route());
-
+            if (op == null) continue;
             switch (routeInfo.method()) {
                 case GET -> item.get(op);
                 case POST -> item.post(op);
@@ -67,27 +67,31 @@ public class OpenApiGenerator {
 
     private static Operation extractSwaggerAnnotation(Route route) {
         try {
-            Method handle = route.getClass().getDeclaredMethod("handle", Request.class, ResponseImpl.class);
-            Operation operation = new Operation();
-            if (handle.isAnnotationPresent(io.swagger.v3.oas.annotations.Operation.class)) {
-                io.swagger.v3.oas.annotations.Operation operationAnnotation = handle.getDeclaredAnnotation(io.swagger.v3.oas.annotations.Operation.class);
-                operation.setSummary(operationAnnotation.summary());
-                operation.setOperationId(operationAnnotation.operationId());
-                operation.setDeprecated(operationAnnotation.deprecated());
-                operation.setDescription(operationAnnotation.description());
-                operation.setExtensions(convertExtensions(operationAnnotation.extensions()));
-                operation.setExternalDocs(convertExternalDocs(operationAnnotation.externalDocs()));
-                operation.setRequestBody(convertRequestBody(operationAnnotation.requestBody()));
-                operation.setParameters(convertParameters(operationAnnotation.parameters()));
-                operation.setSecurity(convertSecurityRequirement(operationAnnotation.security()));
-                operation.setTags(convertTags(operationAnnotation.tags()));
-                operation.setServers(convertServers(operationAnnotation.servers()));
-                operation.setResponses(convertApiResponses(operationAnnotation.responses()));
+            Class<? extends Route> rClass = route.getClass();
+            if (Arrays.stream(rClass.getDeclaredMethods()).anyMatch(item -> item.getName().equals("handle"))) {
+                Method handle = rClass.getDeclaredMethod("handle", Request.class, ResponseImpl.class);
+                Operation operation = new Operation();
+                if (handle.isAnnotationPresent(io.swagger.v3.oas.annotations.Operation.class)) {
+                    io.swagger.v3.oas.annotations.Operation operationAnnotation = handle.getDeclaredAnnotation(io.swagger.v3.oas.annotations.Operation.class);
+                    operation.setSummary(operationAnnotation.summary());
+                    operation.setOperationId(operationAnnotation.operationId());
+                    operation.setDeprecated(operationAnnotation.deprecated());
+                    operation.setDescription(operationAnnotation.description());
+                    operation.setExtensions(convertExtensions(operationAnnotation.extensions()));
+                    operation.setExternalDocs(convertExternalDocs(operationAnnotation.externalDocs()));
+                    operation.setRequestBody(convertRequestBody(operationAnnotation.requestBody()));
+                    operation.setParameters(convertParameters(operationAnnotation.parameters()));
+                    operation.setSecurity(convertSecurityRequirement(operationAnnotation.security()));
+                    operation.setTags(convertTags(operationAnnotation.tags()));
+                    operation.setServers(convertServers(operationAnnotation.servers()));
+                    operation.setResponses(convertApiResponses(operationAnnotation.responses()));
+                }
+                return operation;
             }
-            return operation;
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
     private static ApiResponses convertApiResponses(io.swagger.v3.oas.annotations.responses.ApiResponse[] responses) {
