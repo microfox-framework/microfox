@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.Properties;
 
 import static ir.moke.microfox.utils.TtyAsciiCodecs.GREEN;
@@ -25,7 +24,6 @@ public class MicrofoxEnvironment {
                 if (key.endsWith("PASSWORD")) value = "********************************";
                 logger.info("{}{}{} {}", GREEN, key, RESET, value);
             }
-
         }
     }
 

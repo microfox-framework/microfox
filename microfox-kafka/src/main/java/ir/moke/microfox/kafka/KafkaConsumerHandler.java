@@ -1,5 +1,6 @@
 package ir.moke.microfox.kafka;
 
+import ir.moke.microfox.MicrofoxEnvironment;
 import ir.moke.microfox.api.kafka.KafkaListener;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -82,11 +83,11 @@ public class KafkaConsumerHandler implements InvocationHandler {
         Collection<String> topics = (Collection<String>) args[0];
         KafkaListener<K, V> listener = (KafkaListener<K, V>) args[1];
         consumer.subscribe(topics);
-        task = ses.scheduleWithFixedDelay(() -> consume(consumer, listener), 0, Long.parseLong(KafkaConfig.MICROFOX_KAFKA_IDLE_BETWEEN_POOL), TimeUnit.MILLISECONDS);
+        task = ses.scheduleWithFixedDelay(() -> consume(consumer, listener), 0, Long.parseLong(MicrofoxEnvironment.getEnv("MICROFOX_KAFKA_IDLE_INTERVAL")), TimeUnit.MILLISECONDS);
     }
 
     private static <K, V> void consume(KafkaConsumer<K, V> consumer, KafkaListener<K, V> listener) {
-        ConsumerRecords<K, V> records = consumer.poll(Duration.ofMillis(Long.parseLong(KafkaConfig.MICROFOX_KAFKA_POOL_TIMEOUT)));
+        ConsumerRecords<K, V> records = consumer.poll(Duration.ofMillis(Long.parseLong(MicrofoxEnvironment.getEnv("MICROFOX_KAFKA_POOL_TIMEOUT"))));
         for (ConsumerRecord<K, V> record : records) {
             try {
                 Map<String, byte[]> headerMap = new HashMap<>();

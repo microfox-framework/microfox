@@ -26,12 +26,11 @@ public class KafkaConsumerTest {
         KafkaConsumerFactory.register(IDENTITY, properties);
     }
 
-
     public static void main(String... str) {
-        kafkaConsumer(IDENTITY, KafkaConsumerTest::getListen);
+        kafkaConsumer(IDENTITY, KafkaConsumerTest::listen);
     }
 
-    private static void getListen(KafkaConsumerController<String, String> kafkaConsumerController) {
+    private static void listen(KafkaConsumerController<String, String> kafkaConsumerController) {
         kafkaConsumerController.listen(List.of("sample"), (topic, key, value, partition, offset, timestamp, serializedKeySize, serializedValueSize, headers, leaderEpoch, deliveryCount) -> System.out.printf("Key: %s   | Value: %s%n", key, value));
     }
 }
