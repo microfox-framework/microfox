@@ -19,7 +19,8 @@
     <logger name="com.rabbitmq" level="OFF"/>
     <logger name="io.netty" level="OFF"/>
     <logger name="org.eclipse" level="OFF"/>
-    <logger name="ir.moke.microfox" level="DEBUG" additivity="false">
+
+    <logger name="ir.moke.microfox" level="ALL" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
