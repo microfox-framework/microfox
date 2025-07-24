@@ -4,7 +4,7 @@ import com.ibm.msg.client.jakarta.wmq.WMQConstants;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.jms.JmsFactory;
-import jakarta.jms.MessageProducer;
+import jakarta.jms.JMSProducer;
 import jakarta.jms.Queue;
 import jakarta.jms.Session;
 import jakarta.jms.TextMessage;
@@ -46,12 +46,12 @@ public class IbmMqTest {
     }
 
     public static void messageProducer() {
-        jmsProducer(IDENTITY, false, Session.AUTO_ACKNOWLEDGE, DestinationType.QUEUE, session -> {
+        jmsProducer(IDENTITY, false, Session.AUTO_ACKNOWLEDGE, DestinationType.QUEUE, context -> {
             try {
-                Queue destination = session.createQueue(QUEUE_NAME);
-                MessageProducer messageProducer = session.createProducer(destination);
-                TextMessage textMessage = session.createTextMessage(LocalDateTime.now() + " Hello consumer");
-                messageProducer.send(textMessage);
+                Queue destination = context.createQueue(QUEUE_NAME);
+                JMSProducer producer = context.createProducer();
+                TextMessage textMessage = context.createTextMessage(LocalDateTime.now() + " Hello consumer");
+                producer.send(destination, textMessage);
             } catch (Exception e) {
                 throw new MicrofoxException(e);
             }

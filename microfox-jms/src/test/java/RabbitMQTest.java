@@ -2,10 +2,7 @@ import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.jms.JmsFactory;
-import jakarta.jms.MessageProducer;
-import jakarta.jms.Queue;
-import jakarta.jms.Session;
-import jakarta.jms.TextMessage;
+import jakarta.jms.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -37,16 +34,16 @@ public class RabbitMQTest {
     @Test
     public void checkConsumer() {
         jmsListener(IDENTITY, QUEUE_NAME, DestinationType.QUEUE, Session.AUTO_ACKNOWLEDGE, new CustomMessageListener());
-        messageProducer();
+        sendTestMessage();
     }
 
-    public static void messageProducer() {
-        jmsProducer(IDENTITY, false, Session.AUTO_ACKNOWLEDGE, DestinationType.QUEUE, session -> {
+    public static void sendTestMessage() {
+        jmsProducer(IDENTITY, false, Session.AUTO_ACKNOWLEDGE, DestinationType.QUEUE, context -> {
             try {
-                Queue destination = session.createQueue(QUEUE_NAME);
-                MessageProducer messageProducer = session.createProducer(destination);
-                TextMessage textMessage = session.createTextMessage(LocalDateTime.now() + " Hello consumer");
-                messageProducer.send(textMessage);
+                Queue destination = context.createQueue(QUEUE_NAME);
+                JMSProducer producer = context.createProducer();
+                TextMessage textMessage = context.createTextMessage(LocalDateTime.now() + " Hello consumer");
+                producer.send(destination, textMessage);
             } catch (Exception e) {
                 throw new MicrofoxException(e);
             }

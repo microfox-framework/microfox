@@ -17,6 +17,7 @@ import ir.moke.microfox.api.kafka.KafkaConsumerController;
 import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
+import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
 import jakarta.jms.Session;
 import org.slf4j.Logger;
@@ -200,7 +201,7 @@ public class MicroFox {
         }
     }
 
-    public static void jmsProducer(String identity, boolean transacted, int acknowledgeMode, DestinationType type, Consumer<Session> consumer) {
+    public static void jmsProducer(String identity, boolean transacted, int acknowledgeMode, DestinationType type, Consumer<JMSContext> consumer) {
         if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
         if (type.equals(DestinationType.QUEUE)) {
             jmsProvider.produceQueue(identity, transacted, acknowledgeMode, consumer);
