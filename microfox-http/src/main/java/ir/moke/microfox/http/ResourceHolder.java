@@ -1,6 +1,7 @@
 package ir.moke.microfox.http;
 
 import ir.moke.microfox.api.http.Filter;
+import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.sse.SseInfo;
 import ir.moke.microfox.api.http.sse.SseObject;

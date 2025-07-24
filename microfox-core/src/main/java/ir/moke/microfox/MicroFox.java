@@ -7,6 +7,7 @@ import ir.moke.microfox.api.ftp.FtpProvider;
 import ir.moke.microfox.api.ftp.MicroFoxFtpConfig;
 import ir.moke.microfox.api.http.Filter;
 import ir.moke.microfox.api.http.HttpProvider;
+import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.api.jms.DestinationType;
@@ -50,44 +51,9 @@ public class MicroFox {
         httpProvider.filter(path, filters);
     }
 
-    public static void httpGet(String path, Route route) {
+    public static void httpRouter(String path, Method method, Route route) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.get(path, route);
-    }
-
-    public static void httpPost(String path, Route route) {
-        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.post(path, route);
-    }
-
-    public static void httpDelete(String path, Route route) {
-        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.delete(path, route);
-    }
-
-    public static void httpPut(String path, Route route) {
-        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.put(path, route);
-    }
-
-    public static void httpPatch(String path, Route route) {
-        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.patch(path, route);
-    }
-
-    public static void httpHead(String path, Route route) {
-        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.head(path, route);
-    }
-
-    public static void httpOptions(String path, Route route) {
-        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.options(path, route);
-    }
-
-    public static void httpTrace(String path, Route route) {
-        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.trace(path, route);
+        httpProvider.http(path, method, route);
     }
 
     public static void sseRegister(String identity, String path) {

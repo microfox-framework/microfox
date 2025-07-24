@@ -1,5 +1,6 @@
 package ir.moke.microfox.http;
 
+import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Route;
 
 import java.util.Objects;

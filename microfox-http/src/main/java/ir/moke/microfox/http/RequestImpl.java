@@ -1,5 +1,6 @@
 package ir.moke.microfox.http;
 
+import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.http.validation.MicroFoxValidator;
 import ir.moke.microfox.utils.JsonUtils;

@@ -2,6 +2,7 @@ package ir.moke.microfox.http.servlet;
 
 import io.micrometer.core.instrument.Timer;
 import ir.moke.microfox.api.http.ContentType;
+import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.sse.SseInfo;
 import ir.moke.microfox.api.http.sse.SseSubscriber;
 import ir.moke.microfox.http.*;

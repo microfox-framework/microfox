@@ -1,6 +1,7 @@
 package ir.moke.microfox.http;
 
 import ir.moke.microfox.MicrofoxEnvironment;
+import ir.moke.microfox.api.http.Method;
 
 import java.util.HashMap;
 import java.util.Map;
