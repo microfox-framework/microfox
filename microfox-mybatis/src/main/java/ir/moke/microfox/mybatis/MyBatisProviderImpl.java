@@ -7,25 +7,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class MyBatisProviderImpl implements MyBatisProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(MyBatisProviderImpl.class);
 
     @Override
-    public <T, R> R mybatis(String identity, Class<T> mapper, Function<T, R> function) {
-        try (SqlSession sqlSession = MyBatisFactory.getSession(identity)) {
-            T t = sqlSession.getMapper(mapper);
-            return function.apply(t);
-        }
+    public <T> T mybatis(String identity, Class<T> mapper) {
+        SqlSession sqlSession = MyBatisFactory.getSession(identity);
+        return sqlSession.getMapper(mapper);
     }
 
     @Override
     public <T> void mybatisTx(String identity, Class<T> mapper, Consumer<T> consumer) {
         SqlSession sqlSession = MyBatisFactory.getSession(identity);
+        T t = sqlSession.getMapper(mapper);
         try {
-            T t = sqlSession.getMapper(mapper);
             consumer.accept(t);
             sqlSession.commit();
         } catch (Exception e) {
@@ -38,16 +35,16 @@ public class MyBatisProviderImpl implements MyBatisProvider {
 
     @Override
     public <T> void mybatisBatch(String identity, Class<T> mapper, Consumer<T> consumer) {
-        SqlSession batchSession = MyBatisFactory.getBatchSession(identity);
-        T t = batchSession.getMapper(mapper);
+        SqlSession sqlSession = MyBatisFactory.getSession(identity);
+        T t = sqlSession.getMapper(mapper);
         try {
             consumer.accept(t);
-            batchSession.commit();
+            sqlSession.commit();
         } catch (Exception e) {
-            batchSession.rollback();
+            sqlSession.rollback();
             throw new MicrofoxException(e);
         } finally {
-            batchSession.close();
+            sqlSession.close();
         }
     }
 }

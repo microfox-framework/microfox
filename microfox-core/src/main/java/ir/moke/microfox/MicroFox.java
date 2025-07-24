@@ -142,9 +142,9 @@ public class MicroFox {
         ftpProvider.ftpList(microFoxFtpConfig, remoteFilePath, consumer);
     }
 
-    public static <T, R> R mybatis(String identity, Class<T> mapper, Function<T, R> function) {
+    public static <T> T mybatis(String identity, Class<T> mapper) {
         if (myBatisProvider == null) throw new UnsupportedOperationException("MyBatis support not available");
-        return myBatisProvider.mybatis(identity, mapper, function);
+        return myBatisProvider.mybatis(identity, mapper);
     }
 
     public static <T> void mybatisTx(String identity, Class<T> mapper, Consumer<T> consumer) {
