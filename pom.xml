@@ -215,26 +215,6 @@
                 <version>3.0.0</version>
             </dependency>
 
-            <!-- JMS Test -->
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-jakarta-client</artifactId>
-                <version>2.41.0</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-jms-client</artifactId>
-                <version>2.41.0</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.rabbitmq.jms</groupId>
-                <artifactId>rabbitmq-jms</artifactId>
-                <version>3.4.0</version>
-                <scope>test</scope>
-            </dependency>
-
             <!-- Kafka -->
             <dependency>
                 <groupId>org.apache.kafka</groupId>
@@ -281,6 +261,26 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>2.2.224</version>
+            </dependency>
+
+            <!-- JMS Test -->
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-jakarta-client</artifactId>
+                <version>2.41.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-jms-client</artifactId>
+                <version>2.41.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.rabbitmq.jms</groupId>
+                <artifactId>rabbitmq-jms</artifactId>
+                <version>3.4.0</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
