@@ -1,8 +1,9 @@
 import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.api.http.Method;
 
 public class HttpTest {
 
     public static void main(String[] args) {
-        MicroFox.httpGet("/hello", (request, response) -> response.body("Hello dear !"));
+        MicroFox.httpRouter("/hello", Method.GET, (request, response) -> response.body("Hello dear !"));
     }
 }
