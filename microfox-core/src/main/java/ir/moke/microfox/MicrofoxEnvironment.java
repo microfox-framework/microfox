@@ -5,22 +5,27 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.Map;
+import java.util.Properties;
 
 import static ir.moke.microfox.utils.TtyAsciiCodecs.GREEN;
 import static ir.moke.microfox.utils.TtyAsciiCodecs.RESET;
 
 public class MicrofoxEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(MicrofoxEnvironment.class);
+    private static final Properties properties = loadEnvironments();
 
     private static void printEnvironments() {
-        Map<String, String> envMap = System.getenv();
-        for (String key : envMap.keySet()) {
+        Enumeration<Object> keys = properties.keys();
+        while (keys.hasMoreElements()) {
+            String key = (String) keys.nextElement();
+            String value = properties.getProperty(key);
             if (key.startsWith("MICROFOX_")) {
-                String value = System.getenv(key);
                 if (key.endsWith("PASSWORD")) value = "********************************";
                 logger.info("{}{}{} {}", GREEN, key, RESET, value);
             }
+
         }
     }
 
@@ -37,5 +42,21 @@ public class MicrofoxEnvironment {
     public static void introduce() {
         printLogo();
         printEnvironments();
+    }
+
+    private static Properties loadEnvironments() {
+        Properties properties = new Properties();
+        try (InputStream is = MicrofoxEnvironment.class.getClassLoader().getResourceAsStream("application.properties")) {
+            if (is != null) properties.load(is);
+            properties.putAll(System.getenv());
+        } catch (Exception e) {
+            logger.error("Unknown error", e);
+            System.exit(0);
+        }
+        return properties;
+    }
+
+    public static String getEnv(String key) {
+        return properties.getProperty(key);
     }
 }

@@ -1,5 +1,7 @@
 package ir.moke.microfox.http;
 
+import ir.moke.microfox.MicrofoxEnvironment;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -60,7 +62,7 @@ public class HttpUtils {
     }
 
     public static String concatContextPath(String path) {
-        return !HttpContainerConfig.MICROFOX_HTTP_BASE_API.equals("/") ? HttpContainerConfig.MICROFOX_HTTP_BASE_API + path : path;
+        return !MicrofoxEnvironment.getEnv("MICROFOX_HTTP_BASE_API").equals("/") ? MicrofoxEnvironment.getEnv("MICROFOX_HTTP_BASE_API") + path : path;
     }
 
     private static String normalizePath(String path) {

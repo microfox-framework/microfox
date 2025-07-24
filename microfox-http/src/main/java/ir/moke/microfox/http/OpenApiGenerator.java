@@ -20,6 +20,7 @@ import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.servers.ServerVariables;
+import ir.moke.microfox.MicrofoxEnvironment;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.Route;
@@ -37,9 +38,9 @@ public class OpenApiGenerator {
     public static OpenAPI generate() {
         OpenAPI openAPI = new OpenAPI();
         openAPI.info(new Info()
-                .title(HttpContainerConfig.MICROFOX_OPEN_API_TITLE)
-                .version(HttpContainerConfig.MICROFOX_OPEN_API_VERSION)
-                .description(HttpContainerConfig.MICROFOX_OPEN_API_DESCRIPTION));
+                .title(MicrofoxEnvironment.getEnv("MICROFOX_OPEN_API_TITLE"))
+                .version(MicrofoxEnvironment.getEnv("MICROFOX_OPEN_API_VERSION"))
+                .description(MicrofoxEnvironment.getEnv("MICROFOX_OPEN_API_DESCRIPTION")));
         Paths paths = new Paths();
 
 
