@@ -19,7 +19,6 @@ import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
-import jakarta.jms.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +28,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MicroFox {
