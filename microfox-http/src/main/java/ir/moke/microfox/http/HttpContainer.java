@@ -69,11 +69,15 @@ public class HttpContainer {
         context.setContextPath(contextPath);
 
         /* Redoc & Swagger */
-        context.addServlet(OpenApiServlet.class, "/docs");
-        context.addServlet(OpenApiServlet.class, "/docs/*");
+        if (MicrofoxEnvironment.getEnv("MICROFOX_ACTIVATE_OPEN_API") != null) {
+            context.addServlet(OpenApiServlet.class, "/docs");
+            context.addServlet(OpenApiServlet.class, "/docs/*");
+        }
 
         /* Metrics */
-        context.addServlet(MetricServlet.class, "/metrics");
+        if (MicrofoxEnvironment.getEnv("MICROFOX_ACTIVATE_METRICS") != null) {
+            context.addServlet(MetricServlet.class, "/metrics");
+        }
 
         /* Rest Apis */
         context.addFilter(BaseFilter.class, "/*", EnumSet.of(FORWARD, ASYNC, REQUEST, INCLUDE, ERROR));

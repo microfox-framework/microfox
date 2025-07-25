@@ -18,6 +18,8 @@ import ir.moke.microfox.api.kafka.KafkaConsumerController;
 import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
+import ir.moke.microfox.discovery.MicroFoxDiscoveryController;
+import ir.moke.microfox.healthcheck.MicroFoxHealthCheckService;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
 import org.slf4j.Logger;
@@ -44,6 +46,8 @@ public class MicroFox {
 
     static {
         MicrofoxEnvironment.introduce();
+        MicroFoxHealthCheckService.start();
+        MicroFoxDiscoveryController.register();
     }
 
     public static void httpFilter(String path, Filter... filters) {

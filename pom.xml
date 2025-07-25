@@ -47,7 +47,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jetty.version>12.0.22</jetty.version>
-        <jackson.version>2.19.0</jackson.version>
         <micrometer.version>1.15.0</micrometer.version>
         <hibernate.version>7.0.0.Final</hibernate.version>
         <swagger.version>2.2.30</swagger.version>
@@ -205,7 +204,7 @@
             <dependency>
                 <groupId>ir.moke</groupId>
                 <artifactId>kafir</artifactId>
-                <version>1.4.6</version>
+                <version>1.4.7</version>
             </dependency>
 
             <!-- JMS -->
@@ -239,21 +238,6 @@
                 <artifactId>jakarta.servlet-api</artifactId>
                 <version>6.0.0</version>
                 <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-parameter-names</artifactId>
-                <version>${jackson.version}</version>
             </dependency>
 
             <!-- H2 Database -->
