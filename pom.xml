@@ -41,16 +41,20 @@
         <module>microfox-jms</module>
         <module>microfox-kafka</module>
         <module>microfox-elastic</module>
+        <module>microfox-openapi</module>
+        <module>microfox-metrics</module>
+        <module>microfox-service-discovery</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <microfox.version>0.6</microfox.version>
         <jetty.version>12.0.22</jetty.version>
         <micrometer.version>1.15.0</micrometer.version>
         <hibernate.version>7.0.0.Final</hibernate.version>
         <swagger.version>2.2.30</swagger.version>
-        <microfox.version>0.6</microfox.version>
+        <jackson.version>2.19.0</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -58,6 +62,11 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-core</artifactId>
+                <version>${microfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ir.moke.microfox</groupId>
+                <artifactId>microfox-elastic</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
             <dependency>
@@ -72,6 +81,11 @@
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
+                <artifactId>microfox-jms</artifactId>
+                <version>${microfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-job</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
@@ -82,14 +96,30 @@
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
+                <artifactId>microfox-kafka</artifactId>
+                <version>${microfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ir.moke.microfox</groupId>
+                <artifactId>microfox-metrics</artifactId>
+                <version>${microfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-mybatis</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
-                <artifactId>microfox-jms</artifactId>
+                <artifactId>microfox-openapi</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
+            <dependency>
+                <groupId>ir.moke.microfox</groupId>
+                <artifactId>microfox-service-discovery</artifactId>
+                <version>${microfox.version}</version>
+            </dependency>
+
 
             <!-- Metrics -->
             <dependency>
@@ -245,6 +275,23 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>2.2.224</version>
+            </dependency>
+
+            <!-- Jackson -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-parameter-names</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
 
             <!-- JMS Test -->

@@ -1,13 +1,14 @@
 package ir.moke.microfox.http.servlet;
 
-import io.micrometer.core.instrument.Timer;
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.sse.SseInfo;
 import ir.moke.microfox.api.http.sse.SseSubscriber;
-import ir.moke.microfox.http.*;
+import ir.moke.microfox.http.RequestImpl;
+import ir.moke.microfox.http.ResourceHolder;
+import ir.moke.microfox.http.ResponseImpl;
+import ir.moke.microfox.http.RouteInfo;
 import jakarta.servlet.AsyncContext;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,22 +26,7 @@ public class BaseServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(BaseServlet.class);
 
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String method = req.getMethod();
-        String path = req.getRequestURI();
-        String metricBase = method + "_" + path.replace("/", "_");
-
-        Metrics.counter(metricBase + "_count").increment();
-        Timer.Sample sample = Timer.start(Metrics.getRegistry());
-        try {
-            super.service(req, resp);
-        } finally {
-            sample.stop(Metrics.timer(metricBase + "_latency"));
-        }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         String accept = req.getHeader("Accept");
         if (accept != null && accept.equalsIgnoreCase(ContentType.TEXT_EVENT_STREAM.getType())) {
             handleSse(req, resp);

@@ -50,7 +50,7 @@ public class DB {
     }
 
     private static List<String> loadSqlScript() {
-        try (InputStream inputStream = MainClass.class.getClassLoader().getResourceAsStream("initialize_db.sql")) {
+        try (InputStream inputStream = MyBatisTest.class.getClassLoader().getResourceAsStream("initialize_db.sql")) {
             if (inputStream != null) {
                 String content = new String(inputStream.readAllBytes());
                 return Arrays.stream(content.replaceAll("\\n", "").replaceAll("\\s+", " ").split(";")).toList();

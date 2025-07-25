@@ -1,4 +1,4 @@
-package ir.moke.microfox.http;
+package ir.moke.microfox.openapi;
 
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.converter.ResolvedSchema;
@@ -24,6 +24,8 @@ import ir.moke.microfox.MicrofoxEnvironment;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.Route;
+import ir.moke.microfox.http.ResourceHolder;
+import ir.moke.microfox.http.RouteInfo;
 import ir.moke.microfox.utils.JsonUtils;
 
 import java.lang.reflect.Method;

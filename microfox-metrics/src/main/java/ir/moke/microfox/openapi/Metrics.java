@@ -1,4 +1,4 @@
-package ir.moke.microfox.http;
+package ir.moke.microfox.openapi;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;

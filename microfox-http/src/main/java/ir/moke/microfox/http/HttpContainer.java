@@ -4,8 +4,8 @@ import ir.moke.microfox.MicrofoxEnvironment;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.http.filter.BaseFilter;
 import ir.moke.microfox.http.servlet.BaseServlet;
-import ir.moke.microfox.http.servlet.MetricServlet;
-import ir.moke.microfox.http.servlet.OpenApiServlet;
+import jakarta.servlet.Filter;
+import jakarta.servlet.Servlet;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -20,6 +20,7 @@ public class HttpContainer {
     private static final Logger logger = LoggerFactory.getLogger(HttpContainer.class);
     private static final String contextPath = "/";
     private static final Server server = new Server();
+    private static final ServletContextHandler context = new ServletContextHandler();
 
     public static void start() {
         try {
@@ -65,19 +66,7 @@ public class HttpContainer {
     }
 
     private static void initializeHandlers() {
-        ServletContextHandler context = new ServletContextHandler();
         context.setContextPath(contextPath);
-
-        /* Redoc & Swagger */
-        if (MicrofoxEnvironment.getEnv("MICROFOX_ACTIVATE_OPEN_API") != null) {
-            context.addServlet(OpenApiServlet.class, "/docs");
-            context.addServlet(OpenApiServlet.class, "/docs/*");
-        }
-
-        /* Metrics */
-        if (MicrofoxEnvironment.getEnv("MICROFOX_ACTIVATE_METRICS") != null) {
-            context.addServlet(MetricServlet.class, "/metrics");
-        }
 
         /* Rest Apis */
         context.addFilter(BaseFilter.class, "/*", EnumSet.of(FORWARD, ASYNC, REQUEST, INCLUDE, ERROR));
@@ -87,5 +76,17 @@ public class HttpContainer {
 
     public static boolean isStarted() {
         return server.isStarted();
+    }
+
+    public static void addServlet(Class<? extends Servlet> servletClass, String... paths) {
+        for (String path : paths) {
+            context.addServlet(servletClass, path);
+        }
+    }
+
+    public static void addFilter(Class<? extends Filter> filterClass, String... paths) {
+        for (String path : paths) {
+            context.addFilter(filterClass, path, EnumSet.of(FORWARD, ASYNC, REQUEST, INCLUDE, ERROR));
+        }
     }
 }

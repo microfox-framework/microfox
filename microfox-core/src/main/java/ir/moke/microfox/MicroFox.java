@@ -1,5 +1,6 @@
 package ir.moke.microfox;
 
+import ir.moke.microfox.api.discovery.ServiceDiscoveryProvider;
 import ir.moke.microfox.api.elastic.ElasticProvider;
 import ir.moke.microfox.api.elastic.ElasticRepository;
 import ir.moke.microfox.api.ftp.FtpFile;
@@ -17,13 +18,12 @@ import ir.moke.microfox.api.jpa.JpaProvider;
 import ir.moke.microfox.api.kafka.KafkaConsumerController;
 import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
+import ir.moke.microfox.api.metrics.MetricsProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
-import ir.moke.microfox.discovery.MicroFoxDiscoveryController;
+import ir.moke.microfox.api.openapi.OpenApiProvider;
 import ir.moke.microfox.healthcheck.MicroFoxHealthCheckService;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -34,7 +34,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class MicroFox {
-    private static final Logger logger = LoggerFactory.getLogger(MicroFox.class);
     private static final HttpProvider httpProvider = ServiceLoader.load(HttpProvider.class).findFirst().orElse(null);
     private static final JobProvider jobProvider = ServiceLoader.load(JobProvider.class).findFirst().orElse(null);
     private static final FtpProvider ftpProvider = ServiceLoader.load(FtpProvider.class).findFirst().orElse(null);
@@ -43,11 +42,16 @@ public class MicroFox {
     private static final JmsProvider jmsProvider = ServiceLoader.load(JmsProvider.class).findFirst().orElse(null);
     private static final KafkaProvider kafkaProvider = ServiceLoader.load(KafkaProvider.class).findFirst().orElse(null);
     private static final ElasticProvider elasticProvider = ServiceLoader.load(ElasticProvider.class).findFirst().orElse(null);
+    private static final OpenApiProvider openApiProvider = ServiceLoader.load(OpenApiProvider.class).findFirst().orElse(null);
+    private static final MetricsProvider metricsProvider = ServiceLoader.load(MetricsProvider.class).findFirst().orElse(null);
+    private static final ServiceDiscoveryProvider serviceDiscoveryProvider = ServiceLoader.load(ServiceDiscoveryProvider.class).findFirst().orElse(null);
 
     static {
         MicrofoxEnvironment.introduce();
         MicroFoxHealthCheckService.start();
-        MicroFoxDiscoveryController.register();
+        if (openApiProvider != null) openApiProvider.registerOpenAPI();
+        if (metricsProvider != null) metricsProvider.registerMetrics();
+        if (serviceDiscoveryProvider != null) serviceDiscoveryProvider.registerServiceDiscovery();
     }
 
     public static void httpFilter(String path, Filter... filters) {

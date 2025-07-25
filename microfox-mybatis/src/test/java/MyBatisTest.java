@@ -8,7 +8,7 @@ import java.util.List;
 import static ir.moke.microfox.MicroFox.mybatis;
 import static ir.moke.microfox.MicroFox.mybatisTx;
 
-public class MainClass {
+public class MyBatisTest {
     static {
         DB.initializeMyBatis();
         DB.initializeDatabase();
