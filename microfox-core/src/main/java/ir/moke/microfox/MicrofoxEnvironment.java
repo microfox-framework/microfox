@@ -5,24 +5,27 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.Properties;
+import java.net.URL;
+import java.util.*;
 
-import static ir.moke.microfox.utils.TtyAsciiCodecs.GREEN;
-import static ir.moke.microfox.utils.TtyAsciiCodecs.RESET;
+import static ir.moke.microfox.utils.TtyAsciiCodecs.*;
 
 public class MicrofoxEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(MicrofoxEnvironment.class);
-    private static final Properties properties = loadEnvironments();
+    private static final Map<Object, Object> sortedMap = new TreeMap<>(loadEnvironments());
 
     private static void printEnvironments() {
-        Enumeration<Object> keys = properties.keys();
-        while (keys.hasMoreElements()) {
-            String key = (String) keys.nextElement();
-            String value = properties.getProperty(key);
+        Set<Object> keys = sortedMap.keySet();
+        for (Object o : keys) {
+            String key = (String) o;
+            String value = (String) sortedMap.get(key);
             if (key.startsWith("MICROFOX_")) {
-                if (key.endsWith("PASSWORD")) value = "********************************";
-                logger.info("{}{}{} {}", GREEN, key, RESET, value);
+                if (value.isEmpty()) {
+                    logger.info("{}{}{}", BACKGROUND_YELLOW, key, RESET);
+                } else {
+                    if (key.endsWith("PASSWORD")) value = "********************************";
+                    logger.info("{}{}{} {}", GREEN, key, RESET, value);
+                }
             }
         }
     }
@@ -44,10 +47,16 @@ public class MicrofoxEnvironment {
 
     private static Properties loadEnvironments() {
         Properties properties = new Properties();
-        try (InputStream is = MicrofoxEnvironment.class.getClassLoader().getResourceAsStream("application.properties")) {
-            if (is != null) properties.load(is);
-            properties.putAll(System.getenv());
-        } catch (Exception e) {
+        try {
+            Enumeration<URL> resources = MicrofoxEnvironment.class.getClassLoader().getResources("application.properties");
+            while (resources.hasMoreElements()) {
+                URL url = resources.nextElement();
+                try (InputStream is = url.openStream()) {
+                    properties.load(is);
+                }
+            }
+            return properties;
+        } catch (IOException e) {
             logger.error("Unknown error", e);
             System.exit(0);
         }
@@ -55,6 +64,6 @@ public class MicrofoxEnvironment {
     }
 
     public static String getEnv(String key) {
-        return properties.getProperty(key);
+        return (String) sortedMap.get(key);
     }
 }
