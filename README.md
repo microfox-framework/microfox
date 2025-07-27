@@ -10,77 +10,62 @@ With a focus on ease of use and minimal configuration, MicroFox helps teams get 
 from development to deployment.    
 Whether you're building a small service or scaling up a complex system, MicroFox keeps things simple and efficient.
 
-### Dependency :
+### Example Project Setup :
 
 ```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.example</groupId>
+    <artifactId>Training</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
-<dependency>
-    <groupId>ir.moke</groupId>
-    <artifactId>microfox</artifactId>
-    <version>0.4</version>
-</dependency>
+    <parent>
+        <groupId>ir.moke.microfox</groupId>
+        <artifactId>microfox-parent</artifactId>
+        <version>0.6</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-job</artifactId>
+        </dependency>
+        
+        <!-- Base on you project can add other implementations by microfox -->
+    </dependencies>
+</project>
+
 ```
 
-### Usage :
+### Simple Usage :
 
 ```java
 import static ir.moke.microfox.MicroFox.*;
 
 public class MicroFoxTest {
-
-    private interface BookService {
-        @GET("/book/find")
-        HttpResponse<String> findBooks();
-    }
-
-    private class EchoJob implements Job {
-        @Override
-        public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-            System.out.println("Job executed");
-        }
-    }
-
-    private interface BookMapper {
-        @InsertProvider(type = BookProvider.class, method = "insert")
-        @SelectKey(statement = "SELECT book_seq.NEXTVAL FROM dual", keyProperty = "id", before = true, resultType = Long.class)
-        void save(Book book);
-
-        @Select("select * from book")
-        List<Address> findAll();
-    }
-
+    
     public static void main(String[] args) {
 
         /* Easy Implement Rest API */
-        httpFilter("/book/add", ((request, response) -> {/*...*/}));
-        httpPost("/book/add", (req, resp) -> {/*...*/});
-        httpGet("/book/findAll", (request, response) -> {/*...*/});
-        httpDelete("/book/remove?id=12", (request, response) -> {/*...*/});
-        httpGet("/api/:name/:age", (request, response) -> {/*...*/});
-        httpDelete("/redirect", (request, response) -> response.redirect("/book/find"));
-
-        /* Easy call rest api */
-        httpCall("http://w.x.y.z:8080/book", BookService.class, bookService -> {/*...*/});
+        httpRouter("/book/add",Method.GET, ((request, response) -> {/*...*/}));
 
         /* Easy setup job */
         job(EchoJob.class, "*/3 * * * * ? *");
     }
 }
 ```
+---
+### [Wiki page for more information](https://github.com/microfox-framework/MicroFox/wiki)   
 
-### Implementations :
-
-| **Feature**      | **Technology**                                                           |
-|------------------|--------------------------------------------------------------------------|
-| JDK Compatible   | Java 21+                                                                 |
-| Rest API         | [Apache Tomcat ](https://github.com/apache/tomcat)                       |
-| Job Scheduler    | [Quartz](https://github.com/quartz-scheduler)                            |
-| SQL Framework    | [MyBatis](https://github.com/mybatis/mybatis-3)                          |
-| FTP Client       | [Apache Commons-net](https://github.com/apache/commons-net)              |
-| ORM Framework    | [Hibernate](https://github.com/hibernate/hibernate-orm)                  |
-| RestClient       | [Kafir Project (Pure Java Http Client)](https://github.com/mah454/kafir) |
-| OpenAPI / Web UI | Swagger annotations / [RapiDoc](https://github.com/rapi-doc/RapiDoc)     |    
-
+---
 ### Example Project:
 
 https://github.com/microfox-framework/Microfox-Example
