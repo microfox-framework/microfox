@@ -1,20 +1,16 @@
 package ir.moke.microfox.http.validation;
 
-import ir.moke.microfox.MicrofoxEnvironment;
 import jakarta.validation.*;
-import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
-import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 
-import java.util.Locale;
 import java.util.Set;
 
 public class MicroFoxValidator {
 
-    public static <T> void validate(T t, Locale locale) {
-        MessageInterpolator messageInterpolator = getMessageInterpolator(locale);
+    public static <T> void validate(T t) {
         try (ValidatorFactory factory = Validation.byDefaultProvider()
                 .configure()
-                .messageInterpolator(messageInterpolator)
+                .messageInterpolator(new ParameterMessageInterpolator())
                 .buildValidatorFactory()) {
             Validator validator = factory.getValidator();
             Set<ConstraintViolation<T>> violations = validator.validate(t);
@@ -22,11 +18,5 @@ public class MicroFoxValidator {
                 throw new ValidationException(violation.getMessage());
             }
         }
-    }
-
-    private static MessageInterpolator getMessageInterpolator(Locale locale) {
-        PlatformResourceBundleLocator resourceBundleLocator = new PlatformResourceBundleLocator(MicrofoxEnvironment.getEnv("MICROFOX_RESOURCE_BUNDLE_NAME"), Set.of(locale));
-        ResourceBundleMessageInterpolator messageInterpolator = new ResourceBundleMessageInterpolator(resourceBundleLocator, true);
-        return new FixedLocaleMessageInterpolator(messageInterpolator, locale);
     }
 }

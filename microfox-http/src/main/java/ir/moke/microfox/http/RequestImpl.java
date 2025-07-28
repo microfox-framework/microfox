@@ -38,7 +38,7 @@ public class RequestImpl implements Request {
         try (ServletInputStream inputStream = request.getInputStream()) {
             String json = new String(inputStream.readAllBytes()).trim();
             T object = JsonUtils.toObject(json, clazzType);
-            MicroFoxValidator.validate(object, locale());
+            MicroFoxValidator.validate(object);
             return object;
         } catch (Exception e) {
             throw new RuntimeException(e);
