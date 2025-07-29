@@ -208,7 +208,7 @@ public class RequestImpl implements Request {
     @Override
     public Set<String> attributes() {
         Set<String> attrList = new HashSet<>();
-        Enumeration<String> attributes = (Enumeration<String>) request.getAttributeNames();
+        Enumeration<String> attributes = request.getAttributeNames();
         while (attributes.hasMoreElements()) {
             attrList.add(attributes.nextElement());
         }
