@@ -26,7 +26,7 @@ Whether you're building a small service or scaling up a complex system, MicroFox
     <parent>
         <groupId>ir.moke.microfox</groupId>
         <artifactId>microfox-parent</artifactId>
-        <version>0.6</version>
+        <version>0.6.1</version>
     </parent>
 
     <dependencies>
