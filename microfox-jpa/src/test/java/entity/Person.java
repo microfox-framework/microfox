@@ -1,6 +1,6 @@
 package entity;
 
-import ir.moke.microfox.utils.JsonUtils;
+import ir.moke.kafir.utils.JsonUtils;
 import jakarta.persistence.*;
 
 @Entity

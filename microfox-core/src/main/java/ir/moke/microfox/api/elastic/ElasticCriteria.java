@@ -1,11 +1,9 @@
 package ir.moke.microfox.api.elastic;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import ir.moke.microfox.utils.JsonUtils;
+import ir.moke.kafir.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 public class ElasticCriteria {

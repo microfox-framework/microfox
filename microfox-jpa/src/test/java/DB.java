@@ -24,7 +24,7 @@ public class DB {
                 .setHbm2ddl("update")
                 .setDialect(H2Dialect.class)
                 .setShowSql(true)
-                .setPackages(List.of("ir.moke.example.entity"))
+                .setPackages(List.of("entity"))
                 .build();
 
         JpaFactory.register(hikariDataSource, databaseConfig);

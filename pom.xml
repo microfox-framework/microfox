@@ -4,7 +4,7 @@
 
     <groupId>ir.moke.microfox</groupId>
     <artifactId>microfox-parent</artifactId>
-    <version>0.6.1</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
     <name>Microfox Framework</name>
 
@@ -47,9 +47,9 @@
     </modules>
 
     <properties>
+        <revision>0.6.2</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <microfox.version>0.6</microfox.version>
         <jetty.version>12.0.22</jetty.version>
         <micrometer.version>1.15.0</micrometer.version>
         <hibernate.version>7.0.0.Final</hibernate.version>
@@ -62,62 +62,62 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-core</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-elastic</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-ftp</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-http</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-jms</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-job</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-jpa</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-kafka</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-metrics</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-mybatis</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-openapi</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-service-discovery</artifactId>
-                <version>${microfox.version}</version>
+                <version>${revision}</version>
             </dependency>
 
 
@@ -230,13 +230,6 @@
                 <version>1.80</version>
             </dependency>
 
-            <!-- Http Client -->
-            <dependency>
-                <groupId>ir.moke</groupId>
-                <artifactId>kafir</artifactId>
-                <version>1.4.7</version>
-            </dependency>
-
             <!-- JMS -->
             <dependency>
                 <groupId>jakarta.jms</groupId>
@@ -293,6 +286,11 @@
                 <artifactId>jackson-module-parameter-names</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
 
             <!-- JMS Test -->
             <dependency>
@@ -317,6 +315,13 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Http Client -->
+        <dependency>
+            <groupId>ir.moke</groupId>
+            <artifactId>kafir</artifactId>
+            <version>1.4.9</version>
+        </dependency>
+
         <!-- Log -->
         <dependency>
             <groupId>ch.qos.logback</groupId>

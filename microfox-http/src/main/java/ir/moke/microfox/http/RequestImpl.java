@@ -1,9 +1,9 @@
 package ir.moke.microfox.http;
 
+import ir.moke.kafir.utils.JsonUtils;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.http.validation.MicroFoxValidator;
-import ir.moke.microfox.utils.JsonUtils;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.Cookie;

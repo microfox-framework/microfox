@@ -1,10 +1,10 @@
 package ir.moke.microfox.http;
 
+import ir.moke.kafir.utils.JsonUtils;
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicrofoxException;
-import ir.moke.microfox.utils.JsonUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;

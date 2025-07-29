@@ -7,7 +7,7 @@
     <parent>
         <groupId>ir.moke.microfox</groupId>
         <artifactId>microfox-parent</artifactId>
-        <version>0.6.1</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>microfox-service-discovery</artifactId>
@@ -17,10 +17,6 @@
         <dependency>
             <groupId>ir.moke.microfox</groupId>
             <artifactId>microfox-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ir.moke</groupId>
-            <artifactId>kafir</artifactId>
         </dependency>
     </dependencies>
     

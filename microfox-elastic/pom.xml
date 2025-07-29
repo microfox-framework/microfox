@@ -7,7 +7,7 @@
     <parent>
         <groupId>ir.moke.microfox</groupId>
         <artifactId>microfox-parent</artifactId>
-        <version>0.6.1</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>microfox-elastic</artifactId>

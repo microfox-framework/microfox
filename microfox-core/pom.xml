@@ -7,7 +7,7 @@
     <parent>
         <groupId>ir.moke.microfox</groupId>
         <artifactId>microfox-parent</artifactId>
-        <version>0.6.1</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>microfox-core</artifactId>
@@ -23,10 +23,6 @@
             <groupId>jakarta.jms</groupId>
             <artifactId>jakarta.jms-api</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>ir.moke</groupId>
-            <artifactId>kafir</artifactId>
         </dependency>
     </dependencies>
 
