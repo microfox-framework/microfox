@@ -77,7 +77,7 @@ public class BaseServlet extends HttpServlet {
             item.route().handle(new RequestImpl(req), new ResponseImpl(resp));
         } catch (Exception e) {
             if (e.getClass().isAssignableFrom(ValidationException.class)) {
-                logger.debug("Validation exception {}", e.getLocalizedMessage());
+                logger.debug("Validation exception {}", e.getMessage());
                 handleExceptionResponse(resp, HttpServletResponse.SC_BAD_REQUEST, e);
             } else {
                 logger.error("Microfox Unknown Error", e);
@@ -109,9 +109,7 @@ public class BaseServlet extends HttpServlet {
     private static void handleExceptionResponse(HttpServletResponse resp, int statusCode, Exception e) {
         try {
             resp.setStatus(statusCode);
-            String localizedMessage = e.getCause().getLocalizedMessage();
-            String message = e.getCause().getMessage();
-            resp.getWriter().write((localizedMessage != null && !localizedMessage.isEmpty()) ? localizedMessage : message);
+            resp.getWriter().write(e.getMessage());
         } catch (IOException io) {
             logger.error("Microfox IO Error", io);
         }
