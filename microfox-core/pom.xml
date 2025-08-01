@@ -24,6 +24,10 @@
             <artifactId>jakarta.jms-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

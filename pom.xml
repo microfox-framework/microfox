@@ -49,6 +49,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <microfox.version>0.6.3</microfox.version>
         <jetty.version>12.0.22</jetty.version>
         <micrometer.version>1.15.0</micrometer.version>
         <hibernate.version>7.0.0.Final</hibernate.version>
@@ -61,62 +62,62 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-core</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-elastic</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-ftp</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-http</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-jms</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-job</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-jpa</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-kafka</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-metrics</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-mybatis</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-openapi</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-service-discovery</artifactId>
-                <version>${project.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
 
 
@@ -289,6 +290,13 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+
+            <!-- Date & Time -->
+            <dependency>
+                <groupId>com.ibm.icu</groupId>
+                <artifactId>icu4j</artifactId>
+                <version>77.1</version>
             </dependency>
 
             <!-- JMS Test -->
