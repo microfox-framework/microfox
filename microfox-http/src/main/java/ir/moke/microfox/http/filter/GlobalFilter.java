@@ -19,7 +19,7 @@ public class GlobalFilter implements Filter, TtyAsciiCodecs {
             chain.doFilter(request, response);
             LocalDateTime after = LocalDateTime.now();
             long duration = ChronoUnit.MILLIS.between(before, after);
-            logger.info("Request processed in {} ms{}", BACKGROUND_BLUE, duration);
+            logger.info("Request processed in {} ms", duration);
         } catch (IOException | ServletException e) {
             throw new RuntimeException(e);
         }
