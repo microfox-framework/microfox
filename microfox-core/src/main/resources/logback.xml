@@ -20,6 +20,7 @@
     <logger name="com.rabbitmq" level="OFF"/>
     <logger name="io.netty" level="OFF"/>
     <logger name="org.eclipse" level="OFF"/>
+    <logger name="org.quartz" level="OFF"/>
 
     <logger name="ir.moke.microfox" level="ALL" additivity="false">
         <appender-ref ref="CONSOLE"/>

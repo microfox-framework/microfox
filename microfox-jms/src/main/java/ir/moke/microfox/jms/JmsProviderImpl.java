@@ -48,7 +48,7 @@ public class JmsProviderImpl implements JmsProvider {
                 logger.error("JMS identity:{} queue:{} {}", identity, queueName, e.getMessage());
                 JmsFactory.closeContext(identity);
             }
-        }, 0, Long.parseLong(MicrofoxEnvironment.getEnv("MICROFOX_JMS_RETRY_INTERVAL")), TimeUnit.MILLISECONDS);
+        }, 0, Long.parseLong(MicrofoxEnvironment.getEnv("MICROFOX_JMS_CONNECTION_RETRY_INTERVAL")), TimeUnit.MILLISECONDS);
     }
 
     public void consumeTopic(String identity, String topicName, int acknowledgeMode, MessageListener listener) {
@@ -66,6 +66,6 @@ public class JmsProviderImpl implements JmsProvider {
                 logger.error("JMS identity:{} topic:{} {}", topicName, identity, e.getMessage());
                 JmsFactory.closeContext(identity);
             }
-        }, 0, Long.parseLong(MicrofoxEnvironment.getEnv("MICROFOX_JMS_RETRY_INTERVAL")), TimeUnit.SECONDS);
+        }, 0, Long.parseLong(MicrofoxEnvironment.getEnv("MICROFOX_JMS_CONNECTION_RETRY_INTERVAL")), TimeUnit.SECONDS);
     }
 }

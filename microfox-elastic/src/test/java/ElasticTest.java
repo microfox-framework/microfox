@@ -99,8 +99,6 @@ public class ElasticTest {
         BulkOperation<Person> bulkOperation2 = new BulkOperation<>(BulkActionType.SAVE,"2",p2);
         BulkOperation<Person> bulkOperation3 = new BulkOperation<>(BulkActionType.SAVE,"3",p3);
 
-//        BulkOperation<Person> bulkOperation = new BulkOperation<>(BulkActionType.DELETE,)
-
         ElasticRepository<Person> elasticRepository = MicroFox.elastic("el", Person.class);
         elasticRepository.bulk(List.of(bulkOperation1,bulkOperation2,bulkOperation3));
     }

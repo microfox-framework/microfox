@@ -159,7 +159,7 @@ public class MicroFox {
         jpaProvider.jpaPrintCreateSchemaSQL(identity);
     }
 
-    public static void jpaPrintGenerateUpdateSchemaSQL(String identity) {
+    public static void jpaPrintUpdateSchemaSQL(String identity) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
         jpaProvider.jpaPrintUpdateSchemaSQL(identity);
     }
