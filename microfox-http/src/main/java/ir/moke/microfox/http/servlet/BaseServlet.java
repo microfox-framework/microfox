@@ -3,6 +3,7 @@ package ir.moke.microfox.http.servlet;
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.ResponseObject;
+import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.sse.SseInfo;
 import ir.moke.microfox.api.http.sse.SseSubscriber;
 import ir.moke.microfox.exception.ExceptionMapper;
@@ -89,6 +90,7 @@ public class BaseServlet extends HttpServlet {
                 Optional.of(ro.getBody()).ifPresent(item -> sendResponse(resp, item));
             } else {
                 logger.error("Microfox Unknown Error", e);
+                resp.setStatus(StatusCode.INTERNAL_SERVER_ERROR.getCode());
                 sendResponse(resp, e.getMessage().getBytes(StandardCharsets.UTF_8));
             }
         }
