@@ -3,9 +3,9 @@ import ir.moke.microfox.utils.DatePattern;
 import ir.moke.microfox.utils.DateTimeUtils;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.Temporal;
 import java.util.Locale;
 
 public class DateTimeTest {
@@ -43,5 +43,18 @@ public class DateTimeTest {
         // Migrate TimeZone : UTC
         ZonedDateTime utc = enOutput.withZoneSameInstant(ZoneId.of("UTC"));
         System.out.println(utc);
+    }
+
+
+    @Test
+    public void checkStringToLocalTime() {
+        // TimeZone : Asia/Tehran
+        String fullDateTimeZoneString = "1404-05-12T23:16:22.386Z";
+        LocalTime output1 = DateTimeUtils.fromString(fullDateTimeZoneString, ZoneId.of("Asia/Tehran"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.ISO_8601, LocalTime.class);
+        System.out.println(output1);
+
+        String timeString = "23:16:22";
+        LocalTime output2 = DateTimeUtils.fromString(timeString, ZoneId.of("Asia/Tehran"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_PATTERN, LocalTime.class);
+        System.out.println(output2);
     }
 }
