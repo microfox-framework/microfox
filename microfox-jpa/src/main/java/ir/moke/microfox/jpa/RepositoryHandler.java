@@ -100,7 +100,7 @@ public class RepositoryHandler implements InvocationHandler {
 
         jakarta.persistence.Query query;
         if (isNative) {
-            query = em.createNamedQuery(value);
+            query = em.createNativeQuery(value);
         } else {
             query = em.createQuery(value);
         }
