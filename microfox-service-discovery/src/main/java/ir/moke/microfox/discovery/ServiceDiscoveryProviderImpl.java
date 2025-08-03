@@ -40,7 +40,7 @@ public class ServiceDiscoveryProviderImpl implements ServiceDiscoveryProvider, T
         CheckDTO checkDTO = new CheckDTO("http://%s:%s/%s".formatted(host, port, path), interval + "s");
         RegisterDTO registerDTO = new RegisterDTO("1", "test", host, Integer.parseInt(port), checkDTO);
         HttpResponse<String> response = serviceDiscovery.register(registerDTO);
-        if (response.statusCode() != 200) logger.warn("Service discovery registry failed, {}", response.body());
+        if (response.statusCode() != 200) logger.warn("Service discovery registration failed, {}", response.body());
         logger.info("{}{}{}", BACKGROUND_BLUE, "Service Discovery Activated", RESET);
     }
 }
