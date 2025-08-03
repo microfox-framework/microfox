@@ -5,12 +5,12 @@ import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.ResponseObject;
 import ir.moke.microfox.api.http.sse.SseInfo;
 import ir.moke.microfox.api.http.sse.SseSubscriber;
+import ir.moke.microfox.exception.ExceptionMapper;
+import ir.moke.microfox.exception.ExceptionMapperHolder;
 import ir.moke.microfox.http.RequestImpl;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.ResponseImpl;
 import ir.moke.microfox.http.RouteInfo;
-import ir.moke.microfox.exception.ExceptionMapper;
-import ir.moke.microfox.exception.ExceptionMapperHolder;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
@@ -86,7 +86,7 @@ public class BaseServlet extends HttpServlet {
                 Optional.of(ro.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
                 Optional.of(ro.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
                 Optional.of(ro.getHeaders()).ifPresent(item -> item.forEach(resp::addHeader));
-                Optional.of(ro.getBody()).ifPresent(item -> sendResponse(resp,item) );
+                Optional.of(ro.getBody()).ifPresent(item -> sendResponse(resp, item));
             } else {
                 logger.error("Microfox Unknown Error", e);
                 sendResponse(resp, e.getMessage().getBytes(StandardCharsets.UTF_8));
