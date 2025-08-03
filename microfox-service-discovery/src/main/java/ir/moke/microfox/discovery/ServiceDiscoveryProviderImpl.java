@@ -35,8 +35,9 @@ public class ServiceDiscoveryProviderImpl implements ServiceDiscoveryProvider, T
         String host = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_HOST");
         String port = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_PORT");
         String interval = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_INTERVAL");
+        String path = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_API_PATH");
 
-        CheckDTO checkDTO = new CheckDTO("http://%s:%s/health".formatted(host, port), interval + "s");
+        CheckDTO checkDTO = new CheckDTO("http://%s:%s/%s".formatted(host, port, path), interval + "s");
         RegisterDTO registerDTO = new RegisterDTO("1", "test", host, Integer.parseInt(port), checkDTO);
         HttpResponse<String> response = serviceDiscovery.register(registerDTO);
         if (response.statusCode() != 200) logger.warn("Service discovery registry failed, {}", response.body());

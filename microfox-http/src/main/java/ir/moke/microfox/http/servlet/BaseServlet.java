@@ -2,21 +2,25 @@ package ir.moke.microfox.http.servlet;
 
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Method;
+import ir.moke.microfox.api.http.ResponseObject;
 import ir.moke.microfox.api.http.sse.SseInfo;
 import ir.moke.microfox.api.http.sse.SseSubscriber;
 import ir.moke.microfox.http.RequestImpl;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.ResponseImpl;
 import ir.moke.microfox.http.RouteInfo;
+import ir.moke.microfox.exception.ExceptionMapper;
+import ir.moke.microfox.exception.ExceptionMapperHolder;
 import jakarta.servlet.AsyncContext;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
@@ -72,16 +76,20 @@ public class BaseServlet extends HttpServlet {
                 .ifPresentOrElse(item -> handle(req, resp, item), () -> notFound(resp));
     }
 
-    private static void handle(HttpServletRequest req, HttpServletResponse resp, RouteInfo item) {
+    private static void handle(HttpServletRequest req, HttpServletResponse resp, RouteInfo routeInfo) {
         try {
-            item.route().handle(new RequestImpl(req), new ResponseImpl(resp));
+            routeInfo.route().handle(new RequestImpl(req), new ResponseImpl(resp));
         } catch (Exception e) {
-            if (e.getClass().isAssignableFrom(ValidationException.class)) {
-                logger.debug("Validation exception {}", e.getMessage());
-                handleExceptionResponse(resp, HttpServletResponse.SC_BAD_REQUEST, e);
+            ExceptionMapper<Throwable> mapper = ExceptionMapperHolder.get(e);
+            if (mapper != null) {
+                ResponseObject ro = mapper.toResponse(e);
+                Optional.of(ro.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
+                Optional.of(ro.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
+                Optional.of(ro.getHeaders()).ifPresent(item -> item.forEach(resp::addHeader));
+                Optional.of(ro.getBody()).ifPresent(item -> sendResponse(resp,item) );
             } else {
                 logger.error("Microfox Unknown Error", e);
-                handleExceptionResponse(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+                sendResponse(resp, e.getMessage().getBytes(StandardCharsets.UTF_8));
             }
         }
     }
@@ -106,10 +114,10 @@ public class BaseServlet extends HttpServlet {
         info.getPublisher().subscribe(subscriber);
     }
 
-    private static void handleExceptionResponse(HttpServletResponse resp, int statusCode, Exception e) {
-        try {
-            resp.setStatus(statusCode);
-            resp.getWriter().write(e.getMessage());
+    private static void sendResponse(HttpServletResponse resp, byte[] bytes) {
+        try (ServletOutputStream os = resp.getOutputStream()) {
+            os.write(bytes);
+            os.flush();
         } catch (IOException io) {
             logger.error("Microfox IO Error", io);
         }

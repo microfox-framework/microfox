@@ -4,7 +4,7 @@
 
     <groupId>ir.moke.microfox</groupId>
     <artifactId>microfox-parent</artifactId>
-    <version>0.6.3</version>
+    <version>0.6.4</version>
     <packaging>pom</packaging>
     <name>Microfox Framework</name>
 
@@ -49,7 +49,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <microfox.version>0.6.3</microfox.version>
+        <microfox.version>0.6.4</microfox.version>
         <jetty.version>12.0.22</jetty.version>
         <micrometer.version>1.15.0</micrometer.version>
         <hibernate.version>7.0.0.Final</hibernate.version>

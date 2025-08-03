@@ -8,7 +8,6 @@ import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ValidationException;
 
 import java.io.IOException;
 import java.util.*;
@@ -41,8 +40,6 @@ public class RequestImpl implements Request {
             T object = JsonUtils.toObject(json, clazzType);
             MicroFoxValidator.validate(object);
             return object;
-        } catch (ValidationException ve) {
-            throw ve;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

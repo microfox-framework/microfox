@@ -28,8 +28,9 @@ public class HttpUtils {
     public static Optional<FilterInfo> findMatchingFilterInfo(String reqPath) {
         for (FilterInfo filterInfo : ResourceHolder.instance.listFilters()) {
             String path = filterInfo.path();
-            Pattern regex = compilePattern(path);
-            if (regex.matcher(reqPath).matches()) {
+            if (path.endsWith("*") && reqPath.startsWith(path.substring(0,path.length() - 1))) {
+                return Optional.of(filterInfo);
+            } else if (path.equals(reqPath)) {
                 return Optional.of(filterInfo);
             }
         }

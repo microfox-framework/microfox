@@ -21,6 +21,8 @@ import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.metrics.MetricsProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
+import ir.moke.microfox.exception.ExceptionMapper;
+import ir.moke.microfox.exception.ExceptionMapperHolder;
 import ir.moke.microfox.healthcheck.MicroFoxHealthCheckService;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
@@ -52,6 +54,12 @@ public class MicroFox {
         if (openApiProvider != null) openApiProvider.registerOpenAPI();
         if (metricsProvider != null) metricsProvider.registerMetrics();
         if (serviceDiscoveryProvider != null) serviceDiscoveryProvider.registerServiceDiscovery();
+    }
+
+    public static <T extends Throwable, E> void registerExceptionMapper(ExceptionMapper<T>... mappers) {
+        for (ExceptionMapper<T> mapper : mappers) {
+            ExceptionMapperHolder.add(mapper);
+        }
     }
 
     public static void httpFilter(String path, Filter... filters) {

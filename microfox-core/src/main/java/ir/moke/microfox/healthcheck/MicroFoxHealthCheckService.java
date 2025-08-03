@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Map;
-import java.util.Optional;
 
 public class MicroFoxHealthCheckService {
     private static final Logger logger = LoggerFactory.getLogger(MicroFoxHealthCheckService.class);
-    private static final String host = Optional.ofNullable(MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_HOST")).orElse("0.0.0.0");
-    private static final String port = Optional.ofNullable(MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_PORT")).orElse("9091");
+    private static final String host = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_HOST");
+    private static final String port = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_PORT");
+    private static final String path = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_API_PATH");
     private static final HttpServer server;
 
     static {
@@ -27,9 +27,9 @@ public class MicroFoxHealthCheckService {
     }
 
     public static void start() {
-        server.createContext("/health", MicroFoxHealthCheckService::healthCheckController);
+        server.createContext(MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_API_PATH"), MicroFoxHealthCheckService::healthCheckController);
         server.start();
-        logger.info("Health check HTTP server started at : http://{}:{}/health", host, port);
+        logger.info("Health check HTTP server started at : http://{}:{}{}", host, port, path);
     }
 
     private static void healthCheckController(HttpExchange exchange) throws IOException {

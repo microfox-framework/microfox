@@ -49,8 +49,8 @@ public class MicrofoxEnvironment {
         Properties properties = new Properties();
         try {
             Enumeration<URL> resources = MicrofoxEnvironment.class.getClassLoader().getResources("application.properties");
-            while (resources.hasMoreElements()) {
-                URL url = resources.nextElement();
+            List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
+            for (URL url : urls) {
                 try (InputStream is = url.openStream()) {
                     properties.load(is);
                 }

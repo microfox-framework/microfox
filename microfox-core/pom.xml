@@ -7,7 +7,7 @@
     <parent>
         <groupId>ir.moke.microfox</groupId>
         <artifactId>microfox-parent</artifactId>
-        <version>0.6.3</version>
+        <version>0.6.4</version>
     </parent>
 
     <artifactId>microfox-core</artifactId>
