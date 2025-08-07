@@ -31,7 +31,7 @@ public class JpaFactory {
         Metadata metadata = metadataSources.buildMetadata();
         SessionFactory sessionFactory = metadata.buildSessionFactory();
         EntityManagerFactory emf = sessionFactory.unwrap(EntityManagerFactory.class);
-        ENTITY_MANAGER_FACTORY_MAP.put(jpaConfig.getPersistenceUnit(), emf);
+        ENTITY_MANAGER_FACTORY_MAP.put(jpaConfig.getIdentity(), emf);
     }
 
     private static MetadataSources getMetadataSources(HikariConfig hikariConfig, JpaConfig jpaConfig) {
@@ -52,7 +52,7 @@ public class JpaFactory {
                 metadataSources.addAnnotatedClasses(classes.toArray(Class[]::new));
             }
         }
-        METADATA_SOURCES_MAP.put(jpaConfig.getPersistenceUnit(), metadataSources);
+        METADATA_SOURCES_MAP.put(jpaConfig.getIdentity(), metadataSources);
         return metadataSources;
     }
 

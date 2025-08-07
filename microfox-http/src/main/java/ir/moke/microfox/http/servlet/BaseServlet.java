@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Optional;
 
 import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
@@ -84,16 +85,27 @@ public class BaseServlet extends HttpServlet {
             ExceptionMapper<Throwable> mapper = ExceptionMapperHolder.get(e);
             if (mapper != null) {
                 ResponseObject ro = mapper.toResponse(e);
-                Optional.of(ro.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
-                Optional.of(ro.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
-                Optional.of(ro.getHeaders()).ifPresent(item -> item.forEach(resp::addHeader));
-                Optional.of(ro.getBody()).ifPresent(item -> sendResponse(resp, item));
+                Optional.ofNullable(ro.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
+                Optional.ofNullable(ro.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
+                Optional.ofNullable(ro.getHeaders()).ifPresent(item -> fillExtraHeaders(resp, item));
+                Optional.ofNullable(ro.getLocale()).ifPresent(resp::setLocale);
+                Optional.ofNullable(ro.getCharacterEncoding()).ifPresent(resp::setCharacterEncoding);
+                Optional.ofNullable(ro.getCookies()).ifPresent(item -> item.forEach(resp::addCookie));
+                Optional.ofNullable(ro.getBody()).ifPresent(item -> sendResponse(resp, item));
             } else {
                 logger.error("Microfox Unknown Error", e);
                 resp.setStatus(StatusCode.INTERNAL_SERVER_ERROR.getCode());
                 sendResponse(resp, e.getMessage().getBytes(StandardCharsets.UTF_8));
             }
         }
+    }
+
+    private static void fillExtraHeaders(HttpServletResponse resp, Map<String, Object> headers) {
+        headers.forEach((k, v) -> {
+            if (v instanceof Integer i) resp.addIntHeader(k, i);
+            if (v instanceof Long l) resp.addDateHeader(k, l);
+            if (v instanceof String s) resp.addHeader(k, s);
+        });
     }
 
     private static void handleSse(HttpServletRequest req, HttpServletResponse resp) {

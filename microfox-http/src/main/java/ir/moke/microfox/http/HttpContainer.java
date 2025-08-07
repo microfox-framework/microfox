@@ -43,8 +43,8 @@ public class HttpContainer {
         ServerConnector httpConnector = new ServerConnector(server);
         httpConnector.setHost(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_HOST"));
         httpConnector.setPort(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_PORT")));
-        httpConnector.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_SOCKET_IDLE_TIMEOUT")));
-        httpConnector.setAcceptQueueSize(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_SOCKET_ACCEPT_QUEUE_SIZE")));
+        httpConnector.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_SOCKET_IDLE_TIMEOUT")));
+        httpConnector.setAcceptQueueSize(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_SOCKET_ACCEPT_QUEUE_SIZE")));
         httpConnector.setReuseAddress(true);
         server.addConnector(httpConnector);
     }
@@ -66,8 +66,8 @@ public class HttpContainer {
                     new HttpConnectionFactory(httpsConfig));
             httpsConnector.setPort(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTPS_PORT")));
             httpsConnector.setHost(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_HOST"));
-            httpsConnector.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_SOCKET_IDLE_TIMEOUT")));
-            httpsConnector.setAcceptQueueSize(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_SOCKET_ACCEPT_QUEUE_SIZE")));
+            httpsConnector.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_SOCKET_IDLE_TIMEOUT")));
+            httpsConnector.setAcceptQueueSize(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_SOCKET_ACCEPT_QUEUE_SIZE")));
             httpsConnector.setReuseAddress(true);
             server.addConnector(httpsConnector);
         }
@@ -102,9 +102,9 @@ public class HttpContainer {
     private static QueuedThreadPool getWorkerThreadPool() {
         QueuedThreadPool threadPool = new QueuedThreadPool();
         threadPool.setName("jetty-http");
-        threadPool.setMinThreads(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_WORKER_THREAD_MIN")));
-        threadPool.setMaxThreads(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_WORKER_THREAD_MAX")));
-        threadPool.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_WORKER_THREAD_IDLE_TIMEOUT")));
+        threadPool.setMinThreads(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_WORKER_THREAD_MIN")));
+        threadPool.setMaxThreads(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_WORKER_THREAD_MAX")));
+        threadPool.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_WORKER_THREAD_IDLE_TIMEOUT")));
         return threadPool;
     }
 }

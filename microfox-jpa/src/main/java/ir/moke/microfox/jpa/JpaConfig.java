@@ -6,7 +6,7 @@ import org.hibernate.dialect.Dialect;
 import java.util.List;
 
 public class JpaConfig {
-    private final String persistenceUnit;
+    private final String identity;
     private final PersistenceProvider provider;
     private final List<String> packages;
     private final Class<? extends Dialect> dialect;
@@ -16,7 +16,7 @@ public class JpaConfig {
     private final String hbm2ddl;
 
     private JpaConfig(Builder builder) {
-        this.persistenceUnit = builder.persistenceUnit;
+        this.identity = builder.persistenceUnit;
         this.dialect = builder.dialect;
         this.showSql = builder.showSql;
         this.formatSQL = builder.formatSQL;
@@ -26,8 +26,8 @@ public class JpaConfig {
         this.packages = builder.packages;
     }
 
-    public String getPersistenceUnit() {
-        return persistenceUnit;
+    public String getIdentity() {
+        return identity;
     }
 
     public PersistenceProvider getProvider() {
