@@ -11,6 +11,7 @@ import ir.moke.microfox.api.http.HttpProvider;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.sse.SseObject;
+import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsProvider;
 import ir.moke.microfox.api.job.JobProvider;
@@ -172,22 +173,14 @@ public class MicroFox {
         jpaProvider.jpaPrintUpdateSchemaSQL(identity);
     }
 
-    public static void jmsListener(String identity, String destination, DestinationType type, int acknowledgeMode, MessageListener listener) {
+    public static void jmsListener(String identity, DestinationType type, String destination, AckMode acknowledgeMode, MessageListener listener) {
         if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        if (type.equals(DestinationType.QUEUE)) {
-            jmsProvider.consumeQueue(identity, destination, acknowledgeMode, listener);
-        } else {
-            jmsProvider.consumeTopic(identity, destination, acknowledgeMode, listener);
-        }
+        jmsProvider.consume(identity, destination, acknowledgeMode, type, listener);
     }
 
-    public static void jmsProducer(String identity, boolean transacted, int acknowledgeMode, DestinationType type, Consumer<JMSContext> consumer) {
+    public static void jmsProducer(String identity, Consumer<JMSContext> consumer) {
         if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        if (type.equals(DestinationType.QUEUE)) {
-            jmsProvider.produceQueue(identity, transacted, acknowledgeMode, consumer);
-        } else {
-            jmsProvider.produceTopic(identity, transacted, acknowledgeMode, consumer);
-        }
+        jmsProvider.produce(identity, consumer);
     }
 
     public static <K, V> void kafkaProducer(String identity, Consumer<KafkaProducerController<K, V>> consumer) {

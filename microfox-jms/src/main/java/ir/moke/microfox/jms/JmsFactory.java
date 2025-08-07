@@ -1,51 +1,84 @@
 package ir.moke.microfox.jms;
 
+import ir.moke.microfox.api.jms.AckMode;
+import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.exception.MicrofoxException;
 import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
+import jakarta.jms.MessageListener;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 public class JmsFactory {
-
-    private static final Map<String, ConnectionFactory> FACTORY_MAP = new ConcurrentHashMap<>();
     private static final Map<String, JmsConnectionInfo> INFO_MAP = new ConcurrentHashMap<>();
 
     public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory) {
-        if (FACTORY_MAP.containsKey(identity))
+        JmsConnectionInfo connectionInfo = new JmsConnectionInfo();
+        connectionInfo.setConnectionFactory(connectionFactory);
+        if (INFO_MAP.containsKey(identity))
             throw new MicrofoxException("JMS connection factory with identity %s already registered".formatted(identity));
-        FACTORY_MAP.put(identity, connectionFactory);
+        INFO_MAP.put(identity, connectionInfo);
     }
 
-    public static ConnectionFactory getConnectionFactory(String identity) {
-        ConnectionFactory connectionFactory = FACTORY_MAP.get(identity);
-        if (connectionFactory == null) {
+    public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory, int concurrency, int maxConcurrency, int keepAliveTimeout) {
+        JmsConnectionInfo connectionInfo = new JmsConnectionInfo();
+        connectionInfo.setConnectionFactory(connectionFactory);
+        connectionInfo.setConcurrency(concurrency);
+        connectionInfo.setMaxConcurrency(maxConcurrency);
+        connectionInfo.setKeepAliveTimeout(keepAliveTimeout);
+        if (INFO_MAP.containsKey(identity))
+            throw new MicrofoxException("JMS connection factory with identity %s already registered".formatted(identity));
+        INFO_MAP.put(identity, connectionInfo);
+    }
+
+    static ConnectionFactory getConnectionFactory(String identity) {
+        JmsConnectionInfo connectionInfo = INFO_MAP.get(identity);
+        if (connectionInfo.getConnectionFactory() == null) {
             throw new IllegalStateException("No connection factory found for identity: " + identity);
         }
-        return connectionFactory;
+        return connectionInfo.getConnectionFactory();
     }
 
-    public static void registerContext(String identity, JmsConnectionInfo info) {
-        INFO_MAP.put(identity, info);
+    static void registerContext(String identity,
+                                ConnectionFactory connectionFactory,
+                                JMSContext context,
+                                JMSConsumer consumer,
+                                String destinationName,
+                                AckMode ackMode,
+                                DestinationType type,
+                                MessageListener listener,
+                                CountDownLatch latch) {
+        JmsConnectionInfo info = INFO_MAP.get(identity);
+        info.setConnectionFactory(connectionFactory);
+        info.setContext(context);
+        info.setConsumer(consumer);
+        info.setDestination(destinationName);
+        info.setMode(ackMode);
+        info.setType(type);
+        info.setListener(listener);
+        info.setLatch(latch);
     }
 
-    public static void closeContext(String identity) {
+    static JmsConnectionInfo closeContext(String identity) {
         JmsConnectionInfo inf = INFO_MAP.get(identity);
-        if (inf == null) return;
-        try {
-            if (inf.getConsumer() != null) inf.getConsumer().close();
-            if (inf.getContext() != null) inf.getContext().close();
-        } catch (Exception ignore) {
-        } finally {
-            INFO_MAP.remove(identity);
-        }
+        if (inf == null) return null;
+
+        inf.setConnected(false);
+        if (inf.getConsumer() != null) inf.getConsumer().close();
+        if (inf.getContext() != null) inf.getContext().close();
+        if (inf.getLatch() != null) inf.getLatch().countDown();
+
+        return inf;
     }
 
     public static boolean isConnected(String identity) {
-        return INFO_MAP.getOrDefault(identity, new JmsConnectionInfo(false)).isConnected();
+        return INFO_MAP.getOrDefault(identity, new JmsConnectionInfo()).isConnected();
     }
 
-    public static JmsConnectionInfo getConnectionInfo(String identity) {
+    static JmsConnectionInfo getConnectionInfo(String identity) {
         return INFO_MAP.get(identity);
     }
 }

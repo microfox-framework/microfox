@@ -229,4 +229,8 @@ public class RequestImpl implements Request {
     public boolean isAsyncSupported() {
         return request.isAsyncSupported();
     }
+
+    public Method getMethod() {
+        return Method.valueOf(request.getMethod().toUpperCase());
+    }
 }

@@ -7,11 +7,7 @@ import java.util.function.Consumer;
 
 public interface JmsProvider {
 
-    void produceQueue(String identity, boolean transacted, int acknowledgeMode, Consumer<JMSContext> consumer);
+    void produce(String identity, Consumer<JMSContext> consumer);
 
-    void produceTopic(String identity, boolean transacted, int acknowledgeMode, Consumer<JMSContext> consumer);
-
-    void consumeQueue(String identity, String queueName, int acknowledgeMode, MessageListener listener);
-
-    void consumeTopic(String identity, String topicName, int acknowledgeMode, MessageListener listener);
+    void consume(String identity, String queueName, AckMode acknowledgeMode, DestinationType type, MessageListener listener);
 }

@@ -1,15 +1,17 @@
+import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.jms.JmsFactory;
+import ir.moke.microfox.utils.CalendarType;
+import ir.moke.microfox.utils.DatePattern;
+import ir.moke.microfox.utils.DateTimeUtils;
 import jakarta.jms.JMSProducer;
 import jakarta.jms.Queue;
-import jakarta.jms.Session;
 import jakarta.jms.TextMessage;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Locale;
 
 import static ir.moke.microfox.MicroFox.jmsListener;
 import static ir.moke.microfox.MicroFox.jmsProducer;
@@ -27,25 +29,29 @@ public class ArtemisTest {
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "adminpass";
     private static final String QUEUE_NAME = "test";
-    private static final int CONNECTION_TTL = 100;
+    private static final int CONNECTION_TTL = 5000;
 
-    @BeforeAll
-    public static void init() {
+    static {
         registerArtemisConnectionFactory();
     }
 
-    @Test
-    public void checkConsumer() {
-        jmsListener(IDENTITY, QUEUE_NAME, DestinationType.QUEUE, Session.AUTO_ACKNOWLEDGE, new CustomMessageListener());
+    public static void main(String... str) {
+        jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
         sendTestMessage();
+        try {
+            Thread.sleep(100000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void sendTestMessage() {
-        jmsProducer(IDENTITY, false, Session.AUTO_ACKNOWLEDGE, DestinationType.QUEUE, context -> {
+        jmsProducer(IDENTITY, context -> {
             try {
                 Queue destination = context.createQueue(QUEUE_NAME);
                 JMSProducer producer = context.createProducer();
-                TextMessage textMessage = context.createTextMessage(LocalDateTime.now() + " Hello consumer");
+                String currentDateTime = DateTimeUtils.toString(ZonedDateTime.now(), Locale.ENGLISH, CalendarType.GREGORIAN, DatePattern.DATE_TIME_PATTERN);
+                TextMessage textMessage = context.createTextMessage(currentDateTime + " Hello consumer");
                 producer.send(destination, textMessage);
             } catch (Exception e) {
                 throw new MicrofoxException(e);
@@ -59,6 +65,6 @@ public class ArtemisTest {
         connectionFactory.setUser(USERNAME);
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setConnectionTTL(CONNECTION_TTL);
-        JmsFactory.registerConnectionFactory(IDENTITY, connectionFactory);
+        JmsFactory.registerConnectionFactory(IDENTITY, connectionFactory, 10, 20, 20000);
     }
 }

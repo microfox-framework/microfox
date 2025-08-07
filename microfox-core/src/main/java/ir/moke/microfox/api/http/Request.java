@@ -70,4 +70,6 @@ public interface Request {
     boolean isAsyncStarted();
 
     boolean isAsyncSupported();
+
+    Method getMethod();
 }

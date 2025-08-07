@@ -1,12 +1,12 @@
 import com.ibm.msg.client.jakarta.jms.JmsConnectionFactory;
 import com.ibm.msg.client.jakarta.jms.JmsFactoryFactory;
 import com.ibm.msg.client.jakarta.wmq.WMQConstants;
+import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.jms.JmsFactory;
 import jakarta.jms.JMSProducer;
 import jakarta.jms.Queue;
-import jakarta.jms.Session;
 import jakarta.jms.TextMessage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -41,12 +41,12 @@ public class IbmMqTest {
 
     @Test
     public void checkConsumer() {
-        jmsListener(IDENTITY, QUEUE_NAME, DestinationType.QUEUE, Session.AUTO_ACKNOWLEDGE, new CustomMessageListener());
+        jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
         messageProducer();
     }
 
     public static void messageProducer() {
-        jmsProducer(IDENTITY, false, Session.AUTO_ACKNOWLEDGE, DestinationType.QUEUE, context -> {
+        jmsProducer(IDENTITY, context -> {
             try {
                 Queue destination = context.createQueue(QUEUE_NAME);
                 JMSProducer producer = context.createProducer();
