@@ -55,6 +55,7 @@ public class MicrofoxEnvironment {
                     properties.load(is);
                 }
             }
+            properties.putAll(System.getenv());
             return properties;
         } catch (IOException e) {
             logger.error("Unknown error", e);

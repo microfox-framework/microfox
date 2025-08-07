@@ -45,7 +45,6 @@ public class DateTimeTest {
         System.out.println(utc);
     }
 
-
     @Test
     public void checkStringToLocalTime() {
         // TimeZone : Asia/Tehran
