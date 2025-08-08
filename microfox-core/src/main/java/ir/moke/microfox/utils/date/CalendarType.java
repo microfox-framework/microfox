@@ -1,4 +1,4 @@
-package ir.moke.microfox.utils;
+package ir.moke.microfox.utils.date;
 
 public enum CalendarType {
     BUDDHIST("buddhist"),

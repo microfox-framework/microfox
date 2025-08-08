@@ -1,4 +1,4 @@
-package ir.moke.microfox.utils;
+package ir.moke.microfox.utils.date;
 
 import com.ibm.icu.text.SimpleDateFormat;
 import com.ibm.icu.util.Calendar;
