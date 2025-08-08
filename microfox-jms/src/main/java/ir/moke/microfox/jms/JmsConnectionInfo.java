@@ -18,8 +18,6 @@ public class JmsConnectionInfo {
     private DestinationType type;
     private boolean connected;
     private int concurrency;
-    private int maxConcurrency;
-    private int keepAliveTimeout;
     private MessageListener listener;
     private CountDownLatch latch;
 
@@ -99,22 +97,6 @@ public class JmsConnectionInfo {
 
     public void setConcurrency(int concurrency) {
         this.concurrency = concurrency;
-    }
-
-    public int getMaxConcurrency() {
-        return maxConcurrency;
-    }
-
-    public void setMaxConcurrency(int maxConcurrency) {
-        this.maxConcurrency = maxConcurrency;
-    }
-
-    public int getKeepAliveTimeout() {
-        return keepAliveTimeout;
-    }
-
-    public void setKeepAliveTimeout(int keepAliveTimeout) {
-        this.keepAliveTimeout = keepAliveTimeout;
     }
 
     public MessageListener getListener() {

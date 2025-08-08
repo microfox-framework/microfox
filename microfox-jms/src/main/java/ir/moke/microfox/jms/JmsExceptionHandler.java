@@ -34,7 +34,7 @@ public class JmsExceptionHandler implements ExceptionListener {
                     } catch (Exception ex) {
                         logger.error("Failed to reconnect JMS consumer for {}: {}", identity, ex.getMessage());
                     }
-                }, 3, TimeUnit.SECONDS);
+                }, 5, TimeUnit.SECONDS);
             }
         }
     }

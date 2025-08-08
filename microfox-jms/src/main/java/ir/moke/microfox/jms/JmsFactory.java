@@ -27,12 +27,10 @@ public class JmsFactory {
         logger.info("Jms with identity {} registered", identity);
     }
 
-    public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory, int concurrency, int maxConcurrency, int keepAliveTimeout) {
+    public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory, int concurrency) {
         JmsConnectionInfo connectionInfo = new JmsConnectionInfo();
         connectionInfo.setConnectionFactory(connectionFactory);
         connectionInfo.setConcurrency(concurrency);
-        connectionInfo.setMaxConcurrency(maxConcurrency);
-        connectionInfo.setKeepAliveTimeout(keepAliveTimeout);
         if (INFO_MAP.containsKey(identity))
             throw new MicrofoxException("JMS connection factory with identity %s already registered".formatted(identity));
         INFO_MAP.put(identity, connectionInfo);

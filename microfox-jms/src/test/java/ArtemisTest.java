@@ -38,11 +38,6 @@ public class ArtemisTest {
     public static void main(String... str) {
         jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
         sendTestMessage();
-        try {
-            Thread.sleep(100000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static void sendTestMessage() {
@@ -65,6 +60,6 @@ public class ArtemisTest {
         connectionFactory.setUser(USERNAME);
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setConnectionTTL(CONNECTION_TTL);
-        JmsFactory.registerConnectionFactory(IDENTITY, connectionFactory, 10, 20, 20000);
+        JmsFactory.registerConnectionFactory(IDENTITY, connectionFactory, 10);
     }
 }

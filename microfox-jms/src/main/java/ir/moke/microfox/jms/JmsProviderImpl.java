@@ -9,17 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
 public class JmsProviderImpl implements JmsProvider {
     private static final Logger logger = LoggerFactory.getLogger(JmsProviderImpl.class);
-    private static final int DEFAULT_CONCURRENCY = 1;
-    private static final int MAX_CONCURRENCY = 1;
-    private static final int KEEP_ALIVE_TIMEOUT = 3600;
-    private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(DEFAULT_CONCURRENCY, MAX_CONCURRENCY, KEEP_ALIVE_TIMEOUT, TimeUnit.SECONDS, new SynchronousQueue<>(), new ThreadPoolExecutor.CallerRunsPolicy());
 
     static {
         shutdownHook();
@@ -38,15 +34,11 @@ public class JmsProviderImpl implements JmsProvider {
         JmsConnectionInfo connectionInfo = JmsFactory.getConnectionInfo(identity);
         ConnectionFactory connectionFactory = connectionInfo.getConnectionFactory();
         int concurrency = connectionInfo.getConcurrency();
-        int maxConcurrency = connectionInfo.getMaxConcurrency();
-        int keepAliveTimeout = connectionInfo.getKeepAliveTimeout();
 
-        threadPoolExecutor.setMaximumPoolSize(maxConcurrency);
-        threadPoolExecutor.setCorePoolSize(concurrency);
-        threadPoolExecutor.setKeepAliveTime(keepAliveTimeout, TimeUnit.SECONDS);
-
-        for (int i = 0; i < concurrency; i++) {
-            threadPoolExecutor.submit(() -> consumeMessage(identity, destinationName, acknowledgeMode, type, listener, connectionFactory));
+        try (ExecutorService es = Executors.newFixedThreadPool(concurrency, r -> new Thread(r,"jms-thread"))) {
+            for (int i = 0; i < concurrency; i++) {
+                es.execute(() -> consumeMessage(identity, destinationName, acknowledgeMode, type, listener, connectionFactory));
+            }
         }
     }
 
