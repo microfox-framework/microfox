@@ -12,16 +12,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ResponseObject {
-    private StatusCode statusCode;
-    private ContentType contentType;
-    private Map<String, Object> headers;
-    private byte[] body;
-    private Locale locale;
-    private String characterEncoding;
-    private List<Cookie> cookies;
-
-    private ResponseObject() {
-    }
+    private final StatusCode statusCode;
+    private final ContentType contentType;
+    private final Map<String, Object> headers;
+    private final byte[] body;
+    private final Locale locale;
+    private final String characterEncoding;
+    private final List<Cookie> cookies;
 
     private ResponseObject(Builder builder) {
         this.statusCode = builder.statusCode;
@@ -64,7 +61,7 @@ public class ResponseObject {
     public static class Builder {
         private StatusCode statusCode;
         private ContentType contentType;
-        private Map<String, Object> headers = new ConcurrentHashMap<>();
+        private final Map<String, Object> headers = new ConcurrentHashMap<>();
         private Locale locale;
         private String characterEncoding;
         private List<Cookie> cookies;
