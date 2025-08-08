@@ -12,7 +12,7 @@ import java.util.Locale;
 
 public class DateTimeUtils {
     @SuppressWarnings("unchecked")
-    public static <T extends Temporal> T fromString(String input, ZoneId id, Locale locale, CalendarType type, DatePattern pattern, Class<? extends Temporal> clazz) {
+    public static <T extends Temporal> T fromString(String input, ZoneId id, Locale locale, CalendarType type, DatePattern pattern, Class<T> clazz) {
         if (input == null || id == null || locale == null || type == null || pattern == null || clazz == null) {
             throw new IllegalArgumentException("Input parameters must not be null");
         }
