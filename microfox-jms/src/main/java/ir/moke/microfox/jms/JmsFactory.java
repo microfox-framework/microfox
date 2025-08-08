@@ -7,12 +7,15 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 public class JmsFactory {
+    private static final Logger logger = LoggerFactory.getLogger(JmsFactory.class);
     private static final Map<String, JmsConnectionInfo> INFO_MAP = new ConcurrentHashMap<>();
 
     public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory) {
@@ -21,6 +24,7 @@ public class JmsFactory {
         if (INFO_MAP.containsKey(identity))
             throw new MicrofoxException("JMS connection factory with identity %s already registered".formatted(identity));
         INFO_MAP.put(identity, connectionInfo);
+        logger.info("Jms with identity {} registered", identity);
     }
 
     public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory, int concurrency, int maxConcurrency, int keepAliveTimeout) {
@@ -32,6 +36,7 @@ public class JmsFactory {
         if (INFO_MAP.containsKey(identity))
             throw new MicrofoxException("JMS connection factory with identity %s already registered".formatted(identity));
         INFO_MAP.put(identity, connectionInfo);
+        logger.info("Jms with identity {} registered", identity);
     }
 
     static ConnectionFactory getConnectionFactory(String identity) {
@@ -71,6 +76,7 @@ public class JmsFactory {
         if (inf.getContext() != null) inf.getContext().close();
         if (inf.getLatch() != null) inf.getLatch().countDown();
 
+        logger.info("Jms context with identity {} closed", identity);
         return inf;
     }
 
@@ -80,5 +86,9 @@ public class JmsFactory {
 
     static JmsConnectionInfo getConnectionInfo(String identity) {
         return INFO_MAP.get(identity);
+    }
+
+    static Map<String, JmsConnectionInfo> getInfoMap() {
+        return INFO_MAP;
     }
 }

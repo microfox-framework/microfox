@@ -19,6 +19,7 @@ import ir.moke.microfox.api.jpa.JpaProvider;
 import ir.moke.microfox.api.kafka.KafkaConsumerController;
 import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
+import ir.moke.microfox.api.kafka.KafkaStreamController;
 import ir.moke.microfox.api.metrics.MetricsProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
@@ -191,6 +192,11 @@ public class MicroFox {
     public static <K, V> void kafkaConsumer(String identity, Consumer<KafkaConsumerController<K, V>> consumer) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
         kafkaProvider.consumer(identity, consumer);
+    }
+
+    public static <K, V> void kafkaStream(String identity, Consumer<KafkaStreamController> consumer) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.stream(identity, consumer);
     }
 
     public static <T> ElasticRepository<T> elastic(String identity, Class<T> entityClass) {
