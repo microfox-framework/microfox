@@ -1,6 +1,6 @@
 package ir.moke.microfox.jms;
 
-import ir.moke.microfox.api.jms.JmsProvider;
+import ir.moke.microfox.MicrofoxEnvironment;
 import jakarta.jms.ExceptionListener;
 import jakarta.jms.JMSException;
 import org.slf4j.Logger;
@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class JmsExceptionHandler implements ExceptionListener {
     private static final Logger logger = LoggerFactory.getLogger(JmsExceptionHandler.class);
     private final String identity;
+    private static final Integer retry = Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_JMS_CONNECTION_RETRY_INTERVAL"));
 
     public JmsExceptionHandler(String identity) {
         this.identity = identity;
@@ -24,17 +25,17 @@ public class JmsExceptionHandler implements ExceptionListener {
         JmsConnectionInfo info = JmsFactory.closeContext(identity);
 
         if (info != null) {
-            // Retry after 3 seconds
+            // Retry after (n) seconds
             try (ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()) {
                 scheduledExecutorService.schedule(() -> {
                     try {
                         JmsProviderImpl provider = new JmsProviderImpl();
-                        provider.consumeMessage(identity, info.getDestination(), info.getMode(), info.getType(), info.getListener(),info.getConnectionFactory());
+                        provider.consumeMessage(identity, info.getDestination(), info.getMode(), info.getType(), info.getListener(), info.getConnectionFactory());
                         logger.info("Reconnected JMS consumer: {}", identity);
                     } catch (Exception ex) {
                         logger.error("Failed to reconnect JMS consumer for {}: {}", identity, ex.getMessage());
                     }
-                }, 5, TimeUnit.SECONDS);
+                }, retry, TimeUnit.MILLISECONDS);
             }
         }
     }
