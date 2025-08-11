@@ -7,13 +7,17 @@
     <parent>
         <groupId>ir.moke.microfox</groupId>
         <artifactId>microfox-parent</artifactId>
-        <version>0.6.5</version>
+        <version>0.6.6</version>
     </parent>
 
     <artifactId>microfox-ftp</artifactId>
     <name>Microfox Framework :: FTP</name>
 
     <dependencies>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-core</artifactId>
+        </dependency>
         <!-- Network  -->
         <dependency>
             <groupId>commons-net</groupId>

@@ -4,7 +4,7 @@
 
     <groupId>ir.moke.microfox</groupId>
     <artifactId>microfox-parent</artifactId>
-    <version>0.6.5</version>
+    <version>0.6.6</version>
     <packaging>pom</packaging>
     <name>Microfox Framework</name>
 
@@ -49,7 +49,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <microfox.version>0.6.5</microfox.version>
         <jetty.version>12.0.22</jetty.version>
         <micrometer.version>1.15.0</micrometer.version>
         <hibernate.version>7.0.0.Final</hibernate.version>
@@ -62,62 +61,62 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-core</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-elastic</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-ftp</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-http</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-jms</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-job</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-jpa</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-kafka</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-metrics</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-mybatis</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-openapi</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-service-discovery</artifactId>
-                <version>${microfox.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
 
@@ -327,11 +326,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>ir.moke.microfox</groupId>
-            <artifactId>microfox-core</artifactId>
-        </dependency>
-
         <!-- Http Client -->
         <dependency>
             <groupId>ir.moke</groupId>

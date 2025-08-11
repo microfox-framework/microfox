@@ -7,13 +7,18 @@
     <parent>
         <groupId>ir.moke.microfox</groupId>
         <artifactId>microfox-parent</artifactId>
-        <version>0.6.5</version>
+        <version>0.6.6</version>
     </parent>
 
     <artifactId>microfox-openapi</artifactId>
     <name>Microfox Framework :: OpenAPI</name>
 
     <dependencies>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-core</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>ir.moke.microfox</groupId>
             <artifactId>microfox-http</artifactId>
