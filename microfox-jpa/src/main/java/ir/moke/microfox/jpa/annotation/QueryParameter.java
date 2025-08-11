@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(value = ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface QueryParam {
+public @interface QueryParameter {
     String value();
 }

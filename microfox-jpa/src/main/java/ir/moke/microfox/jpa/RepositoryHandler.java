@@ -117,13 +117,13 @@ public class RepositoryHandler implements InvocationHandler {
         Integer maxResults = null;
 
         for (final Parameter parameter : params(method, args)) {
-            final QueryParam queryParam = parameter.getAnnotation(QueryParam.class);
-            if (queryParam != null) {
+            final QueryParameter queryParameter = parameter.getAnnotation(QueryParameter.class);
+            if (queryParameter != null) {
                 if (parameter.getValue() == null) {
-                    throw new MicrofoxException(queryParam.value() + " is null");
+                    throw new MicrofoxException(queryParameter.value() + " is null");
                 }
 
-                query.setParameter(queryParam.value(), parameter.getValue());
+                query.setParameter(queryParameter.value(), parameter.getValue());
             }
 
             final Offset o = parameter.getAnnotation(Offset.class);
@@ -151,12 +151,12 @@ public class RepositoryHandler implements InvocationHandler {
 
     private static Object update(Method method, Object[] args, jakarta.persistence.Query query) {
         for (final Parameter parameter : params(method, args)) {
-            final QueryParam queryParam = parameter.getAnnotation(QueryParam.class);
-            if (queryParam != null) {
+            final QueryParameter queryParameter = parameter.getAnnotation(QueryParameter.class);
+            if (queryParameter != null) {
                 if (parameter.getValue() == null) {
-                    throw new MicrofoxException(queryParam.value() + " is null");
+                    throw new MicrofoxException(queryParameter.value() + " is null");
                 }
-                query.setParameter(queryParam.value(), parameter.getValue());
+                query.setParameter(queryParameter.value(), parameter.getValue());
             }
         }
         if (isInt(method.getReturnType())) {
@@ -210,8 +210,8 @@ public class RepositoryHandler implements InvocationHandler {
             java.lang.reflect.Parameter p = parameters[i];
             Object value = args[i];
             boolean ignoreNullValues = criteriaAnn.ignoreNullValues();
-            if (p.isAnnotationPresent(QueryParam.class)) {
-                String name = p.getAnnotation(QueryParam.class).value();
+            if (p.isAnnotationPresent(QueryParameter.class)) {
+                String name = p.getAnnotation(QueryParameter.class).value();
                 if (!ignoreNullValues || value != null) {
                     queryParams.put(name, value);
                 }

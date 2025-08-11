@@ -19,21 +19,21 @@ public interface PersonRepository {
     Person find(long id);
 
     @Query(value = "select p from Person p where p.name=:name")
-    Person findByName(@QueryParam("name") String name);
+    Person findByName(@QueryParameter("name") String name);
 
     @Merge
     void update(Person person);
 
     @Query("select p from Person p where p.id=:id")
-    Person findById(@QueryParam("id") long id);
+    Person findById(@QueryParameter("id") long id);
 
     @Remove
     void delete(Person person);
 
     @Criteria(provider = PersonCriteriaProvider.class, ignoreNullValues = true)
-    List<Person> find(@QueryParam("id") Long id,
-                      @QueryParam("name") String name,
-                      @QueryParam("family") String family,
+    List<Person> find(@QueryParameter("id") Long id,
+                      @QueryParameter("name") String name,
+                      @QueryParameter("family") String family,
                       @Offset int offset,
                       @MaxResults int maxResult);
 }
