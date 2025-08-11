@@ -14,11 +14,6 @@
     <name>Microfox Framework :: HTTP</name>
 
     <dependencies>
-        <dependency>
-            <groupId>ir.moke.microfox</groupId>
-            <artifactId>microfox-core</artifactId>
-        </dependency>
-
         <!-- Web Server (Tomcat) -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>

@@ -14,10 +14,6 @@
     <name>Microfox Framework :: JPA</name>
 
     <dependencies>
-        <dependency>
-            <groupId>ir.moke.microfox</groupId>
-            <artifactId>microfox-core</artifactId>
-        </dependency>
         <!-- JPA -->
         <dependency>
             <groupId>org.hibernate</groupId>

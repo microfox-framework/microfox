@@ -13,11 +13,4 @@
     <artifactId>microfox-service-discovery</artifactId>
     <name>Microfox Framework :: Service Discovery</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>ir.moke.microfox</groupId>
-            <artifactId>microfox-core</artifactId>
-        </dependency>
-    </dependencies>
-    
 </project>
