@@ -83,11 +83,11 @@ public class KafkaConsumerHandler implements InvocationHandler {
         Collection<String> topics = (Collection<String>) args[0];
         KafkaListener<K, V> listener = (KafkaListener<K, V>) args[1];
         consumer.subscribe(topics);
-        task = ses.scheduleWithFixedDelay(() -> consume(consumer, listener), 0, Long.parseLong(MicrofoxEnvironment.getEnv("MICROFOX_KAFKA_IDLE_INTERVAL")), TimeUnit.MILLISECONDS);
+        task = ses.scheduleWithFixedDelay(() -> consume(consumer, listener), 0, Long.parseLong(MicrofoxEnvironment.getEnv("microfox.kafka.idle.interval")), TimeUnit.MILLISECONDS);
     }
 
     private static <K, V> void consume(KafkaConsumer<K, V> consumer, KafkaListener<K, V> listener) {
-        ConsumerRecords<K, V> records = consumer.poll(Duration.ofMillis(Long.parseLong(MicrofoxEnvironment.getEnv("MICROFOX_KAFKA_POOL_TIMEOUT"))));
+        ConsumerRecords<K, V> records = consumer.poll(Duration.ofMillis(Long.parseLong(MicrofoxEnvironment.getEnv("microfox.kafka.pool.timeout"))));
         for (ConsumerRecord<K, V> record : records) {
             try {
                 Map<String, byte[]> headerMap = new HashMap<>();

@@ -64,7 +64,7 @@ public class HttpUtils {
     }
 
     public static String concatContextPath(String path) {
-        return !MicrofoxEnvironment.getEnv("MICROFOX_HTTP_BASE_API").equals("/") ? MicrofoxEnvironment.getEnv("MICROFOX_HTTP_BASE_API") + path : path;
+        return !MicrofoxEnvironment.getEnv("microfox.http.base.api").equals("/") ? MicrofoxEnvironment.getEnv("microfox.http.base.api") + path : path;
     }
 
     private static String normalizePath(String path) {

@@ -1,0 +1,17 @@
+microfox:
+  http:
+    base-api: /
+    host: 0.0.0.0
+    port: 8080
+    ssl-port: 8443
+    keystore:
+      path:
+      password:
+      alias-name:
+    worker-thread:
+      min: 10
+      max: 100
+      idle-timeout: 30000
+    socket:
+      idle-timeout: 60000
+      queue-size: 100

@@ -16,10 +16,10 @@ public class ServiceDiscoveryProviderImpl implements ServiceDiscoveryProvider, T
     private static final String baseURL = "http://%s:%s";
 
     private static ServiceDiscovery getServiceDiscoveryAPI() {
-        String discoveryHost = MicrofoxEnvironment.getEnv("MICROFOX_SERVICE_DISCOVERY_HOST");
-        String discoveryPort = MicrofoxEnvironment.getEnv("MICROFOX_SERVICE_DISCOVERY_PORT");
+        String discoveryHost = MicrofoxEnvironment.getEnv("microfox.service.discovery.host");
+        String discoveryPort = MicrofoxEnvironment.getEnv("microfox.service.discovery.port");
         if (discoveryHost == null || discoveryPort == null) {
-            logger.warn("Service discovery environment variables is empty: [MICROFOX_SERVICE_DISCOVERY_HOST , MICROFOX_SERVICE_DISCOVERY_HOST]");
+            logger.warn("Service discovery environment variables is empty: [microfox.service.discovery.host , microfox.service.discovery.host]");
             return null;
         }
         return new Kafir.KafirBuilder()
@@ -32,10 +32,10 @@ public class ServiceDiscoveryProviderImpl implements ServiceDiscoveryProvider, T
         ServiceDiscovery serviceDiscovery = getServiceDiscoveryAPI();
         if (serviceDiscovery == null) return;
 
-        String host = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_HOST");
-        String port = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_PORT");
-        String interval = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_INTERVAL");
-        String path = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_API_PATH");
+        String host = MicrofoxEnvironment.getEnv("microfox.health.check.host");
+        String port = MicrofoxEnvironment.getEnv("microfox.health.check.port");
+        String interval = MicrofoxEnvironment.getEnv("microfox.health.check.interval");
+        String path = MicrofoxEnvironment.getEnv("microfox.health.api.path");
 
         CheckDTO checkDTO = new CheckDTO("http://%s:%s/%s".formatted(host, port, path), interval + "s");
         RegisterDTO registerDTO = new RegisterDTO("1", "test", host, Integer.parseInt(port), checkDTO);

@@ -13,9 +13,9 @@ import java.util.Map;
 
 public class MicroFoxHealthCheckService {
     private static final Logger logger = LoggerFactory.getLogger(MicroFoxHealthCheckService.class);
-    private static final String host = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_HOST");
-    private static final String port = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_CHECK_PORT");
-    private static final String path = MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_API_PATH");
+    private static final String host = MicrofoxEnvironment.getEnv("microfox.health.check.host");
+    private static final String port = MicrofoxEnvironment.getEnv("microfox.health.check.port");
+    private static final String path = MicrofoxEnvironment.getEnv("microfox.health.api.path");
     private static final HttpServer server;
 
     static {
@@ -27,7 +27,7 @@ public class MicroFoxHealthCheckService {
     }
 
     public static void start() {
-        server.createContext(MicrofoxEnvironment.getEnv("MICROFOX_HEALTH_API_PATH"), MicroFoxHealthCheckService::healthCheckController);
+        server.createContext(MicrofoxEnvironment.getEnv("microfox.health.api.path"), MicroFoxHealthCheckService::healthCheckController);
         server.start();
         logger.info("Health check HTTP server started at : http://{}:{}{}", host, port, path);
     }

@@ -41,33 +41,33 @@ public class HttpContainer {
 
     private static void initializeHttpConnector() {
         ServerConnector httpConnector = new ServerConnector(server);
-        httpConnector.setHost(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_HOST"));
-        httpConnector.setPort(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_PORT")));
-        httpConnector.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_SOCKET_IDLE_TIMEOUT")));
-        httpConnector.setAcceptQueueSize(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_SOCKET_ACCEPT_QUEUE_SIZE")));
+        httpConnector.setHost(MicrofoxEnvironment.getEnv("microfox.http.host"));
+        httpConnector.setPort(Integer.parseInt(MicrofoxEnvironment.getEnv("microfox.http.port")));
+        httpConnector.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("microfox.http.socket.idle.timeout")));
+        httpConnector.setAcceptQueueSize(Integer.parseInt(MicrofoxEnvironment.getEnv("microfox.http.socket.queue.size")));
         httpConnector.setReuseAddress(true);
         server.addConnector(httpConnector);
     }
 
     private static void initializeHttpsConnector() {
-        if (MicrofoxEnvironment.getEnv("MICROFOX_KEYSTORE_PATH") != null) {
+        if (MicrofoxEnvironment.getEnv("microfox.keystore.path") != null) {
             SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
-            sslContextFactory.setKeyStorePath(MicrofoxEnvironment.getEnv("MICROFOX_KEYSTORE_PATH"));
-            sslContextFactory.setKeyStorePassword(MicrofoxEnvironment.getEnv("MICROFOX_KEYSTORE_PASSWORD"));
-            sslContextFactory.setCertAlias(MicrofoxEnvironment.getEnv("MICROFOX_KEYSTORE_ALIAS_NAME"));
+            sslContextFactory.setKeyStorePath(MicrofoxEnvironment.getEnv("microfox.keystore.path"));
+            sslContextFactory.setKeyStorePassword(MicrofoxEnvironment.getEnv("microfox.keystore.password"));
+            sslContextFactory.setCertAlias(MicrofoxEnvironment.getEnv("microfox.keystore.alias.name"));
 
             HttpConfiguration httpsConfig = new HttpConfiguration();
             httpsConfig.setSecureScheme("https");
-            httpsConfig.setSecurePort(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTPS_PORT")));
+            httpsConfig.setSecurePort(Integer.parseInt(MicrofoxEnvironment.getEnv("microfox.https.port")));
             httpsConfig.addCustomizer(new SecureRequestCustomizer());
 
             ServerConnector httpsConnector = new ServerConnector(server,
                     new SslConnectionFactory(sslContextFactory, "HTTP/1.1"),
                     new HttpConnectionFactory(httpsConfig));
-            httpsConnector.setPort(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTPS_PORT")));
-            httpsConnector.setHost(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_HOST"));
-            httpsConnector.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_SOCKET_IDLE_TIMEOUT")));
-            httpsConnector.setAcceptQueueSize(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_SOCKET_ACCEPT_QUEUE_SIZE")));
+            httpsConnector.setPort(Integer.parseInt(MicrofoxEnvironment.getEnv("microfox.https.port")));
+            httpsConnector.setHost(MicrofoxEnvironment.getEnv("microfox.http.host"));
+            httpsConnector.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("microfox.http.socket.idle.timeout")));
+            httpsConnector.setAcceptQueueSize(Integer.parseInt(MicrofoxEnvironment.getEnv("microfox.http.socket.accept.queue.size")));
             httpsConnector.setReuseAddress(true);
             server.addConnector(httpsConnector);
         }
@@ -102,9 +102,9 @@ public class HttpContainer {
     private static QueuedThreadPool getWorkerThreadPool() {
         QueuedThreadPool threadPool = new QueuedThreadPool();
         threadPool.setName("jetty-http");
-        threadPool.setMinThreads(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_WORKER_THREAD_MIN")));
-        threadPool.setMaxThreads(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_WORKER_THREAD_MAX")));
-        threadPool.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_HTTP_WORKER_THREAD_IDLE_TIMEOUT")));
+        threadPool.setMinThreads(Integer.parseInt(MicrofoxEnvironment.getEnv("microfox.http.worker.thread.min")));
+        threadPool.setMaxThreads(Integer.parseInt(MicrofoxEnvironment.getEnv("microfox.http.worker.thread.max")));
+        threadPool.setIdleTimeout(Integer.parseInt(MicrofoxEnvironment.getEnv("microfox.http.worker.thread.idle.timeout")));
         return threadPool;
     }
 }

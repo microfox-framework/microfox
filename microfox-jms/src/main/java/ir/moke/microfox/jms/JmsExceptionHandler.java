@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class JmsExceptionHandler implements ExceptionListener {
     private static final Logger logger = LoggerFactory.getLogger(JmsExceptionHandler.class);
     private final String identity;
-    private static final Integer retry = Integer.parseInt(MicrofoxEnvironment.getEnv("MICROFOX_JMS_CONNECTION_RETRY_INTERVAL"));
+    private static final Integer retry = Integer.parseInt(MicrofoxEnvironment.getEnv("microfox.jms.connection.retry.interval"));
 
     public JmsExceptionHandler(String identity) {
         this.identity = identity;

@@ -40,9 +40,8 @@ public class OpenApiGenerator {
     public static OpenAPI generate() {
         OpenAPI openAPI = new OpenAPI();
         openAPI.info(new Info()
-                .title(MicrofoxEnvironment.getEnv("MICROFOX_OPEN_API_TITLE"))
-                .version(MicrofoxEnvironment.getEnv("MICROFOX_OPEN_API_VERSION"))
-                .description(MicrofoxEnvironment.getEnv("MICROFOX_OPEN_API_DESCRIPTION")));
+                .title(MicrofoxEnvironment.getEnv("microfox.open.api.title"))
+                .description(MicrofoxEnvironment.getEnv("microfox.open.api.description")));
         Paths paths = new Paths();
 
 

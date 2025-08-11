@@ -1,0 +1,4 @@
+# milliseconds
+microfox:
+  jms:
+    connection-retry-interval: 3000
