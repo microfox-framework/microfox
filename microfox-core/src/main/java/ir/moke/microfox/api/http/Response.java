@@ -1,8 +1,10 @@
 package ir.moke.microfox.api.http;
 
 import ir.moke.microfox.api.http.sse.SseObject;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 
+import java.io.OutputStream;
 import java.time.Instant;
 import java.util.Date;
 
@@ -34,4 +36,8 @@ public interface Response {
     void redirect(String location);
 
     void redirect(String location, int httpStatusCode);
+
+    void flushBuffer();
+
+    ServletOutputStream outputStream() ;
 }

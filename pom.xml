@@ -61,62 +61,62 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-core</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-elastic</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-ftp</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-http</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-jms</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-job</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-jpa</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-kafka</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-metrics</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-mybatis</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-openapi</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-service-discovery</artifactId>
-                <version>${project.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
 
 
@@ -301,6 +301,23 @@
                 <groupId>com.ibm.icu</groupId>
                 <artifactId>icu4j</artifactId>
                 <version>77.1</version>
+            </dependency>
+
+            <!-- JSysBox -->
+            <dependency>
+                <groupId>ir.moke</groupId>
+                <artifactId>jsysbox</artifactId>
+                <version>0.3.5</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- JMS Test -->

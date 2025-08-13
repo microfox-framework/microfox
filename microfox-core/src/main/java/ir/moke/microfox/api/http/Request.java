@@ -1,6 +1,7 @@
 package ir.moke.microfox.api.http;
 
 import jakarta.servlet.AsyncContext;
+import jakarta.servlet.ServletInputStream;
 
 import java.util.Locale;
 import java.util.Map;
@@ -72,4 +73,6 @@ public interface Request {
     boolean isAsyncSupported();
 
     Method getMethod();
+
+    ServletInputStream inputStream();
 }

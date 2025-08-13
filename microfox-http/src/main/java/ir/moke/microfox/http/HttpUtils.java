@@ -1,14 +1,25 @@
 package ir.moke.microfox.http;
 
+import ir.moke.jsysbox.file.JFile;
 import ir.moke.microfox.MicrofoxEnvironment;
 import ir.moke.microfox.api.http.Method;
+import ir.moke.microfox.api.http.Request;
+import ir.moke.microfox.api.http.Response;
+import ir.moke.microfox.api.http.StatusCode;
+import jakarta.servlet.ServletOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class HttpUtils {
+    private static final Logger logger = LoggerFactory.getLogger(HttpUtils.class);
+
     private static Pattern compilePattern(String pattern) {
         String regex = pattern.replaceAll("\\{([^/]+)\\}", "([^/]+)");
         return Pattern.compile("^" + regex + "$");
@@ -28,7 +39,7 @@ public class HttpUtils {
     public static Optional<FilterInfo> findMatchingFilterInfo(String reqPath) {
         for (FilterInfo filterInfo : ResourceHolder.instance.listFilters()) {
             String path = filterInfo.path();
-            if (path.endsWith("*") && reqPath.startsWith(path.substring(0,path.length() - 1))) {
+            if (path.endsWith("*") && reqPath.startsWith(path.substring(0, path.length() - 1))) {
                 return Optional.of(filterInfo);
             } else if (path.equals(reqPath)) {
                 return Optional.of(filterInfo);
@@ -67,10 +78,52 @@ public class HttpUtils {
         return !MicrofoxEnvironment.getEnv("microfox.http.base.api").equals("/") ? MicrofoxEnvironment.getEnv("microfox.http.base.api") + path : path;
     }
 
-    private static String normalizePath(String path) {
+    public static String normalizePath(String path) {
         if (path != null && path.endsWith("/") && path.length() > 1) {
             return path.substring(0, path.length() - 1); // remove trailing slash
         }
         return path;
+    }
+
+    public static void loadHtmlContent(Request req, Response resp) {
+        String pageDirectory = MicrofoxEnvironment.getEnv("microfox.http.page");
+        if (pageDirectory == null || pageDirectory.isEmpty()) {
+            logger.warn("microfox.http.page value is null/empty");
+            return;
+        }
+        try {
+            String path = req.uri();
+            if (path.equals("/")) {
+                path = "index.html";
+            } else if (path.startsWith("/#/")) {
+                path = "index.html";
+            } else {
+                path = path.substring(1);
+            }
+
+            Path filePath = Path.of(pageDirectory).resolve(path);
+            if (Files.exists(filePath)) {
+                byte[] content = Files.readAllBytes(filePath);
+
+                // MIME Type
+                String mimeType = JFile.mime(filePath.toString());
+                resp.header("Content-Type", mimeType);
+
+                try (ServletOutputStream outputStream = resp.outputStream()) {
+                    outputStream.write(content);
+                    outputStream.flush();
+                }
+            } else {
+                sendEmptyResponse(resp);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void sendEmptyResponse(Response response) {
+        response.status(StatusCode.NO_CONTENT.getCode());
+        response.contentLength(0);
+        response.flushBuffer();
     }
 }

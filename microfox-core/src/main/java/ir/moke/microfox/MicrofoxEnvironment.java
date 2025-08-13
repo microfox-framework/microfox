@@ -50,7 +50,7 @@ public class MicrofoxEnvironment {
     private static Properties loadEnvironments() {
         Properties properties = new Properties();
         try {
-            Enumeration<URL> resources = MicrofoxEnvironment.class.getClassLoader().getResources("application.properties-bkp");
+            Enumeration<URL> resources = MicrofoxEnvironment.class.getClassLoader().getResources("application.properties");
             List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
             for (URL url : urls) {
                 try (InputStream is = url.openStream()) {
@@ -62,7 +62,7 @@ public class MicrofoxEnvironment {
             properties.putAll(YamlUtils.loadAndFlatten());
 
             // Merge environment variables
-            putSystemEnvironments();
+            properties.putAll(System.getenv());
             return properties;
         } catch (IOException e) {
             logger.error("Unknown error", e);
@@ -71,16 +71,7 @@ public class MicrofoxEnvironment {
         return properties;
     }
 
-    public static void putSystemEnvironments() {
-        Map<String, String> envs = System.getenv();
-        for (String s : envs.keySet()) {
-            String key = normalizeKey(s);
-            String value = envs.get(s);
-            sortedMap.put(key, value);
-        }
-    }
-
     public static String getEnv(String key) {
-        return (String) sortedMap.get(key);
+        return (String) sortedMap.get(normalizeKey(key));
     }
 }

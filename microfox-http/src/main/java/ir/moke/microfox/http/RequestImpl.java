@@ -3,6 +3,7 @@ package ir.moke.microfox.http;
 import ir.moke.kafir.utils.JsonUtils;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Request;
+import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.http.validation.MicroFoxValidator;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletInputStream;
@@ -232,5 +233,14 @@ public class RequestImpl implements Request {
 
     public Method getMethod() {
         return Method.valueOf(request.getMethod().toUpperCase());
+    }
+
+    @Override
+    public ServletInputStream inputStream() {
+        try {
+            return request.getInputStream();
+        } catch (IOException e) {
+            throw new MicrofoxException(e);
+        }
     }
 }

@@ -5,12 +5,14 @@ import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicrofoxException;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.time.Instant;
 import java.util.Date;
@@ -111,8 +113,8 @@ public class ResponseImpl implements Response {
     public void redirect(String location) {
         try {
             response.sendRedirect(location);
-        } catch (IOException ioException) {
-            logger.warn("Redirect failure", ioException);
+        } catch (IOException e) {
+            throw new MicrofoxException(e);
         }
     }
 
@@ -124,7 +126,25 @@ public class ResponseImpl implements Response {
         try {
             response.sendError(httpStatusCode);
         } catch (IOException e) {
-            logger.warn("Exception when trying to redirect permanently", e);
+            throw new MicrofoxException(e);
+        }
+    }
+
+    @Override
+    public void flushBuffer() {
+        try {
+            response.flushBuffer();
+        } catch (IOException e) {
+            throw new MicrofoxException(e);
+        }
+    }
+
+    @Override
+    public ServletOutputStream outputStream() {
+        try {
+            return response.getOutputStream();
+        } catch (IOException e) {
+            throw new MicrofoxException(e);
         }
     }
 }
