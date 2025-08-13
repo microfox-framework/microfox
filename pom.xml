@@ -119,7 +119,6 @@
                 <version>${project.parent.version}</version>
             </dependency>
 
-
             <!-- Metrics -->
             <dependency>
                 <groupId>io.micrometer</groupId>
@@ -210,7 +209,7 @@
                 </exclusions>
             </dependency>
 
-            <!-- Web Server (Tomcat) -->
+            <!-- Web Server (Jetty) -->
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-server</artifactId>
