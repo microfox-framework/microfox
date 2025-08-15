@@ -47,6 +47,7 @@
     </modules>
 
     <properties>
+        <microfox.version>0.6.6</microfox.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jetty.version>12.0.22</jetty.version>
@@ -61,62 +62,62 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-core</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-elastic</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-ftp</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-http</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-jms</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-job</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-jpa</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-kafka</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-metrics</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-mybatis</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-openapi</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-service-discovery</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${microfox.version}</version>
             </dependency>
 
             <!-- Metrics -->
