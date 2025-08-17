@@ -54,7 +54,7 @@ public class MicroFox {
 
     static {
         MicrofoxEnvironment.introduce();
-//        MicroFoxHealthCheckService.start();
+        MicroFoxHealthCheckService.start();
         if (openApiProvider != null) openApiProvider.registerOpenAPI();
         if (metricsProvider != null) metricsProvider.registerMetrics();
         if (serviceDiscoveryProvider != null) serviceDiscoveryProvider.registerServiceDiscovery();

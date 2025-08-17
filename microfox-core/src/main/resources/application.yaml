@@ -4,5 +4,6 @@ microfox:
       host: 0.0.0.0
       port: 7071
       interval: 5
+      active: false
     api:
       path: /health

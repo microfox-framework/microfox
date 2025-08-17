@@ -100,10 +100,11 @@ public class KafkaProducerHandler implements InvocationHandler {
         Headers headers = new RecordHeaders();
         if (map != null) map.keySet().forEach(item -> headers.add(new RecordHeader(item, map.get(item))));
 
-        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
-        ProducerRecord<K, V> record = new ProducerRecord<>(topic, partition, timestamp, key, value, headers);
-        kafkaProducer.send(record);
-//        kafkaProducer.flush();
+        try (KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity)) {
+            ProducerRecord<K, V> record = new ProducerRecord<>(topic, partition, timestamp, key, value, headers);
+            kafkaProducer.send(record);
+            kafkaProducer.flush();
+        }
     }
 
     @SuppressWarnings("unchecked")
