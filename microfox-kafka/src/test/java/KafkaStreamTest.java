@@ -49,7 +49,7 @@ public class KafkaStreamTest {
             });
 
             // add shutdown hook
-            controller.addShutdownHook();
+            controller.shutdown();
 
             // start stream
             controller.start();

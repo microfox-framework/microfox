@@ -49,9 +49,14 @@ public class KafkaProducerHandler implements InvocationHandler {
             case "txCommit" -> invokeTxCommit();
             case "txAbort" -> invokeTxAbort();
             case "flush" -> invokeTxFlush();
+            case "shutdown" -> invokeShutdown(args);
         }
 
         return null;
+    }
+
+    private void invokeShutdown(Object[] args) {
+        Runtime.getRuntime().addShutdownHook(new Thread(KafkaProducerFactory::closeAll, "kafka-producers-shutdown"));
     }
 
     private <K, V> void invokeTxFlush() {
@@ -75,12 +80,8 @@ public class KafkaProducerHandler implements InvocationHandler {
     }
 
     private <K, V> void invokeClose(Object[] args) {
-        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
-        if (args != null && args.length == 0) {
-            kafkaProducer.close();
-        } else if (args != null) {
-            kafkaProducer.close((Duration) args[0]);
-        }
+        Duration timeout = (args != null && args.length == 1 && args[0] instanceof Duration) ? (Duration) args[0] : null;
+        KafkaProducerFactory.close(identity, timeout);
     }
 
     @SuppressWarnings("unchecked")
@@ -99,11 +100,10 @@ public class KafkaProducerHandler implements InvocationHandler {
         Headers headers = new RecordHeaders();
         if (map != null) map.keySet().forEach(item -> headers.add(new RecordHeader(item, map.get(item))));
 
-        try (KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity)) {
-            ProducerRecord<K, V> record = new ProducerRecord<>(topic, partition, timestamp, key, value, headers);
-            kafkaProducer.send(record);
-            kafkaProducer.flush();
-        }
+        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
+        ProducerRecord<K, V> record = new ProducerRecord<>(topic, partition, timestamp, key, value, headers);
+        kafkaProducer.send(record);
+//        kafkaProducer.flush();
     }
 
     @SuppressWarnings("unchecked")

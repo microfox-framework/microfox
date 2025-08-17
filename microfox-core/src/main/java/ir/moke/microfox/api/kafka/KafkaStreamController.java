@@ -1,5 +1,7 @@
 package ir.moke.microfox.api.kafka;
 
+import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
+
 import java.time.Duration;
 import java.util.function.BiConsumer;
 
@@ -22,7 +24,7 @@ public interface KafkaStreamController {
 
     void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler handler);
 
-    void addShutdownHook();
+    void setUncaughtExceptionHandler(StreamsUncaughtExceptionHandler handler);
 
-    void removeShutdownHook();
+    void shutdown();
 }

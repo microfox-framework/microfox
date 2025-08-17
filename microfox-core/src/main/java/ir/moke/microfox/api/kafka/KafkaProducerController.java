@@ -1,5 +1,6 @@
 package ir.moke.microfox.api.kafka;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -33,4 +34,11 @@ public interface KafkaProducerController<K, V> {
     void txCommit();
 
     void txAbort();
+
+    void flush();
+
+    void close(Duration duration);
+
+    void close();
+    void shutdown();
 }

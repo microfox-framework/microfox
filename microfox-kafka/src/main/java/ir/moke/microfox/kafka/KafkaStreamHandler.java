@@ -60,11 +60,13 @@ public class KafkaStreamHandler implements InvocationHandler {
                 KafkaStreamFactory.removeStateListener(identity, listener);
             }
             case "setUncaughtExceptionHandler" -> {
-                StreamsUncaughtExceptionHandler handler = (StreamsUncaughtExceptionHandler) args[0];
-                streams.setUncaughtExceptionHandler(handler);
+                if (args[0] instanceof StreamsUncaughtExceptionHandler streamsHandler) {
+                    streams.setUncaughtExceptionHandler(streamsHandler);
+                } else if (args[0] instanceof Thread.UncaughtExceptionHandler threadHandler) {
+                    Thread.setDefaultUncaughtExceptionHandler(threadHandler);
+                }
             }
-            case "addShutdownHook" -> addShutdownHook();
-            case "removeShutdownHook" -> KafkaStreamFactory.removeShutdownHook(identity);
+            case "shutdown" -> shutdownHook();
             default -> {
                 // if default method on interface
                 if (method.isDefault()) {
@@ -90,17 +92,8 @@ public class KafkaStreamHandler implements InvocationHandler {
         fresh.start();
     }
 
-    private void addShutdownHook() {
-        Thread hook = new Thread(() -> {
-            try {
-                KafkaStreams s = KafkaStreamFactory.get(identity);
-                s.close();
-            } catch (Exception e) {
-                LoggerFactory.getLogger(KafkaStreamHandler.class).warn("Shutdown hook close failed", e);
-            }
-        }, "kafka-stream-shutdown-" + identity);
-
-        KafkaStreamFactory.addShutdownHook(identity, hook);
+    private void shutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(KafkaStreamFactory::closeAll, "kafka-streams-shutdown"));
     }
 }
 

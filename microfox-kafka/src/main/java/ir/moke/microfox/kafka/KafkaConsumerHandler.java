@@ -45,18 +45,22 @@ public class KafkaConsumerHandler implements InvocationHandler {
 
         switch (name) {
             case "listen" -> invokeListen(args);
-            case "stop" -> invokeStop();
             case "pause" -> invokePause();
             case "resume" -> invokeResume();
             case "close" -> invokeClose();
+            case "shutdown" -> invokeShutdown();
         }
         return null;
     }
 
+    private void invokeShutdown() {
+        Runtime.getRuntime().addShutdownHook(new Thread(KafkaStreamFactory::closeAll, "kafka-consumer-shutdown"));
+    }
+
     private <K, V> void invokeClose() {
-        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(identity);
-        invokeStop();
-        consumer.close();
+        if (task != null) task.cancel(true);
+        KafkaConsumerFactory.close(identity, null);
+        if (!ses.isShutdown()) ses.shutdown();
     }
 
     private <K, V> void invokeResume() {
@@ -67,14 +71,6 @@ public class KafkaConsumerHandler implements InvocationHandler {
     private <K, V> void invokePause() {
         KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(identity);
         consumer.pause(consumer.assignment());
-    }
-
-    private <K, V> void invokeStop() {
-        if (task != null) task.cancel(true);
-        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(identity);
-        consumer.wakeup();
-        consumer.close();
-        if (!ses.isShutdown()) ses.shutdown();
     }
 
     @SuppressWarnings("unchecked")

@@ -22,7 +22,6 @@ public class KafkaStreamFactory {
     private static final Map<String, Properties> PROP_MAP = new ConcurrentHashMap<>();
     private static final Map<String, KafkaStreams> STREAMS_MAP = new ConcurrentHashMap<>();
     private static final Map<String, CopyOnWriteArrayList<BiConsumer<KafkaStreamState, KafkaStreamState>>> LISTENERS = new ConcurrentHashMap<>();
-    private static final Map<String, Thread> SHUTDOWN_HOOKS = new ConcurrentHashMap<>();
 
     public static void register(String identity, Topology topology, Properties props) {
         if (TOPOLOGY_MAP.containsKey(identity)) {
@@ -85,20 +84,16 @@ public class KafkaStreamFactory {
         return PROP_MAP.get(identity);
     }
 
-    public static void addShutdownHook(String identity, Thread hook) {
-        Thread prev = SHUTDOWN_HOOKS.putIfAbsent(identity, hook);
-        if (prev == null) Runtime.getRuntime().addShutdownHook(hook);
+    public static void close(String identity) {
+        KafkaStreams kafkaStreams = STREAMS_MAP.remove(identity);
+        if (kafkaStreams != null) {
+            kafkaStreams.close();
+            kafkaStreams.cleanUp();
+        }
     }
 
-    public static void removeShutdownHook(String identity) {
-        Thread hook = SHUTDOWN_HOOKS.remove(identity);
-        if (hook != null) {
-            try {
-                Runtime.getRuntime().removeShutdownHook(hook);
-            } catch (IllegalStateException ignored) {
-                // JVM is shutting down already
-            }
-        }
+    public static void closeAll() {
+        STREAMS_MAP.keySet().forEach(KafkaStreamFactory::close);
     }
 
     public static KafkaStreamController createProxyInstance(String identity) {
