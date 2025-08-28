@@ -13,15 +13,24 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class JpaFactory {
+    private static final Logger logger = LoggerFactory.getLogger(JpaFactory.class);
     private static final Map<String, EntityManagerFactory> ENTITY_MANAGER_FACTORY_MAP = new ConcurrentHashMap<>();
     private static final Map<String, MetadataSources> METADATA_SOURCES_MAP = new ConcurrentHashMap<>();
     private static final ThreadLocal<Map<String, EntityManager>> CONTEXT = ThreadLocal.withInitial(HashMap::new);
+    private static final Object validatorFactory;
+
+    static {
+        validatorFactory = getMicroFoxValidationFactory();
+    }
 
     private JpaFactory() {
     }
@@ -41,6 +50,7 @@ public class JpaFactory {
         Optional.ofNullable(jpaConfig.getHbm2ddl()).ifPresent(item -> standardServiceRegistryBuilder.applySetting("hibernate.hbm2ddl.auto", jpaConfig.getHbm2ddl()));
         Optional.ofNullable(jpaConfig.getShowSql()).ifPresent(item -> standardServiceRegistryBuilder.applySetting("hibernate.show_sql", jpaConfig.getShowSql()));
         Optional.ofNullable(jpaConfig.getFormatSQL()).ifPresent(item -> standardServiceRegistryBuilder.applySetting("hibernate.format_sql", jpaConfig.getFormatSQL()));
+        Optional.ofNullable(validatorFactory).ifPresent(item -> standardServiceRegistryBuilder.applySetting("jakarta.persistence.validation.factory", item));
         standardServiceRegistryBuilder.applySetting("hibernate.connection.datasource", dataSource);
 
         StandardServiceRegistry serviceRegistry = standardServiceRegistryBuilder.build();
@@ -113,11 +123,18 @@ public class JpaFactory {
 
     @SuppressWarnings("unchecked")
     public static <T> T create(Class<T> repositoryInterface, String identity) {
-        return (T) Proxy.newProxyInstance(
-                repositoryInterface.getClassLoader(),
-                new Class<?>[]{repositoryInterface},
-                new RepositoryHandler(identity)
-        );
+        return (T) Proxy.newProxyInstance(repositoryInterface.getClassLoader(), new Class<?>[]{repositoryInterface}, new RepositoryHandler(identity));
+    }
+
+    private static Object getMicroFoxValidationFactory() {
+        try {
+            Class<?> microfoxValidatorClass = Class.forName("ir.moke.microfox.http.validation.MicroFoxValidator");
+            Field field = microfoxValidatorClass.getDeclaredField("factory");
+            return field.get(null);
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+            logger.warn("MicrofoxValidator not registered");
+        }
+        return null;
     }
 }
 
