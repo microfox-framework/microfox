@@ -5,6 +5,10 @@ public class MicrofoxException extends RuntimeException {
         super(message);
     }
 
+    public MicrofoxException(String message, Throwable e) {
+        super(message, e);
+    }
+
     public MicrofoxException(Throwable cause) {
         super(cause);
     }

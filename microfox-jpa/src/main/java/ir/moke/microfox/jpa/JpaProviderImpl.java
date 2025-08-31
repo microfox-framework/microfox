@@ -1,10 +1,13 @@
 package ir.moke.microfox.jpa;
 
 import ir.moke.microfox.api.jpa.JpaProvider;
+import ir.moke.microfox.api.jpa.TransactionPolicy;
 import ir.moke.microfox.exception.MicrofoxException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import org.hibernate.TransactionException;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class JpaProviderImpl implements JpaProvider {
     @Override
@@ -13,34 +16,59 @@ public class JpaProviderImpl implements JpaProvider {
     }
 
     @Override
-    public <T> void jpaTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
+    public <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Consumer<T> consumer) {
+        EntityManager em = JpaFactory.getEntityManager(identity);
+        EntityTransaction tx = em.getTransaction();
+
         try {
-            T t = JpaFactory.create(repositoryClass, identity);
-            JpaFactory.beginTx(identity);
-            consumer.accept(t);
-            JpaFactory.commitTx(identity);
+            switch (policy) {
+                case REQUIRED_NEW -> requiredNewTx(identity, repositoryClass, consumer);
+                case MANDATORY -> mandatoryTx(identity, repositoryClass, consumer, tx);
+                case NEVER -> neverTx(identity, repositoryClass, consumer, tx);
+                case REQUIRED -> requiredTx(identity, repositoryClass, consumer, tx);
+            }
         } catch (Exception e) {
-            JpaFactory.rollbackTx(identity);
-            throw new MicrofoxException(e);
+            if (tx.isActive()) tx.rollback();
+            throw new MicrofoxException("Transaction failed", e);
         } finally {
             JpaFactory.closeEntityManager(identity);
         }
-
     }
 
-    @Override
-    public void jpaTxBegin(String identity) {
-        JpaFactory.beginTx(identity);
+    private <T> void neverTx(String identity, Class<T> repositoryClass, Consumer<T> consumer, EntityTransaction tx) {
+        if (tx.isActive()) throw new IllegalStateException("Transaction exists but NEVER required");
+        consumer.accept(jpa(identity, repositoryClass));
     }
 
-    @Override
-    public void jpaTxCommit(String identity) {
-        JpaFactory.commitTx(identity);
+    private <T> void mandatoryTx(String identity, Class<T> repositoryClass, Consumer<T> consumer, EntityTransaction tx) {
+        if (!tx.isActive()) throw new IllegalStateException("Transaction is not currently active.");
+        requiredTx(identity, repositoryClass, consumer, tx);
     }
 
-    @Override
-    public void jpaTxRollback(String identity) {
-        JpaFactory.rollbackTx(identity);
+    private <T> void requiredNewTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
+        EntityManager em = JpaFactory.createEntityManager(identity);
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            consumer.accept(jpa(identity, repositoryClass));
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            throw new TransactionException("Transaction failed", e);
+        } finally {
+            JpaFactory.closeEntityManager(identity);
+        }
+    }
+
+    private <T> void requiredTx(String identity, Class<T> repositoryClass, Consumer<T> consumer, EntityTransaction tx) {
+        if (!tx.isActive()) tx.begin();
+        try {
+            consumer.accept(jpa(identity, repositoryClass));
+            if (!tx.isActive()) tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
+        }
     }
 
     @Override

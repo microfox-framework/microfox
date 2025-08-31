@@ -17,6 +17,7 @@ import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsProvider;
 import ir.moke.microfox.api.job.JobProvider;
 import ir.moke.microfox.api.jpa.JpaProvider;
+import ir.moke.microfox.api.jpa.TransactionPolicy;
 import ir.moke.microfox.api.kafka.KafkaConsumerController;
 import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
@@ -146,24 +147,14 @@ public class MicroFox {
         return jpaProvider.jpa(identity, repositoryClass);
     }
 
-    public static <T> void jpaTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
+    public static <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Consumer<T> consumer) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaTx(identity, repositoryClass, consumer);
+        jpaProvider.jpa(identity, repositoryClass, policy, consumer);
     }
 
-    public static void jpaTxBegin(String identity) {
+    public static <T> void jpa(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaTxBegin(identity);
-    }
-
-    public static void jpaTxCommit(String identity) {
-        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaTxCommit(identity);
-    }
-
-    public static void jpaTxRollback(String identity) {
-        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaTxRollback(identity);
+        jpaProvider.jpa(identity, repositoryClass, TransactionPolicy.REQUIRED, consumer);
     }
 
     public static void jpaPrintCreateSchemaSQL(String identity) {

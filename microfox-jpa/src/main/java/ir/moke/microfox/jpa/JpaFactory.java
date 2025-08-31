@@ -6,7 +6,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
@@ -25,7 +24,7 @@ public class JpaFactory {
     private static final Logger logger = LoggerFactory.getLogger(JpaFactory.class);
     private static final Map<String, EntityManagerFactory> ENTITY_MANAGER_FACTORY_MAP = new ConcurrentHashMap<>();
     private static final Map<String, MetadataSources> METADATA_SOURCES_MAP = new ConcurrentHashMap<>();
-    private static final ThreadLocal<Map<String, EntityManager>> CONTEXT = ThreadLocal.withInitial(HashMap::new);
+    private static final ThreadLocal<Map<String, Deque<EntityManager>>> CONTEXT = ThreadLocal.withInitial(HashMap::new);
     private static final Object validatorFactory;
 
     static {
@@ -77,43 +76,37 @@ public class JpaFactory {
             throw new IllegalArgumentException("No EntityManagerFactory registered for unit name: " + identity);
         }
 
-        Map<String, EntityManager> contextMap = CONTEXT.get();
-        EntityManager em = contextMap.get(identity);
+        Map<String, Deque<EntityManager>> contextMap = CONTEXT.get();
+        Deque<EntityManager> stack = contextMap.computeIfAbsent(identity, k -> new ArrayDeque<>());
 
+        EntityManager em = stack.peek();
         if (em == null || !em.isOpen()) {
             em = emf.createEntityManager();
-            contextMap.put(identity, em);
+            stack.push(em);
         }
 
         return em;
     }
 
+    public static EntityManager createEntityManager(String identity) {
+        EntityManagerFactory emf = ENTITY_MANAGER_FACTORY_MAP.get(identity);
+        if (emf == null) {
+            throw new IllegalArgumentException("No EntityManagerFactory registered for unit name: " + identity);
+        }
+
+        Map<String, Deque<EntityManager>> contextMap = CONTEXT.get();
+        Deque<EntityManager> stack = contextMap.computeIfAbsent(identity, k -> new ArrayDeque<>());
+        EntityManager em = emf.createEntityManager();
+        stack.push(em);
+        return em;
+    }
+
     public static void closeEntityManager(String identity) {
-        Map<String, EntityManager> contextMap = CONTEXT.get();
-        EntityManager em = contextMap.remove(identity);
-        if (em != null && em.isOpen()) {
-            em.close();
-        }
-    }
-
-    public static void beginTx(String identity) {
-        EntityTransaction tx = getEntityManager(identity).getTransaction();
-        if (!tx.isActive()) {
-            tx.begin();
-        }
-    }
-
-    public static void commitTx(String identity) {
-        EntityTransaction tx = getEntityManager(identity).getTransaction();
-        if (tx.isActive()) {
-            tx.commit();
-        }
-    }
-
-    public static void rollbackTx(String identity) {
-        EntityTransaction tx = getEntityManager(identity).getTransaction();
-        if (tx.isActive()) {
-            tx.rollback();
+        Map<String, Deque<EntityManager>> contextMap = CONTEXT.get();
+        Deque<EntityManager> stack = contextMap.get(identity);
+        if (stack != null && !stack.isEmpty()) {
+            EntityManager em = stack.pop();
+            if (em.isOpen()) em.close();
         }
     }
 
@@ -137,4 +130,3 @@ public class JpaFactory {
         return null;
     }
 }
-
