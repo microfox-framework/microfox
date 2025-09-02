@@ -29,35 +29,30 @@ public class RepositoryHandler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) {
         String name = method.getName();
         logger.debug("Called: {}, args: {}", name, Arrays.toString(args));
-        try {
-            if (method.isAnnotationPresent(NamedQuery.class)) {
-                return invokeNamedQuery(em, method, args);
-            } else if (method.isAnnotationPresent(Query.class)) {
-                return invokeQueryString(em, method, args);
-            } else if (method.isAnnotationPresent(Find.class)) {
-                return findByPrimaryKey(em, method, args);
-            } else if (method.isAnnotationPresent(Merge.class)) {
-                return merge(em, method, args);
-            } else if (method.isAnnotationPresent(Remove.class)) {
-                return remove(em, method, args);
-            } else if (method.isAnnotationPresent(Persist.class)) {
-                return persist(em, method, args);
-            } else if (method.isAnnotationPresent(Criteria.class)) {
-                return invokeCriteria(em, method, args);
-            }
 
-            throw new AbstractMethodError("No handler logic for method: " + method);
-        } finally {
-            if (!em.getTransaction().isActive() && em.isOpen()) {
-                em.close();
-            }
+        if (method.isAnnotationPresent(NamedQuery.class)) {
+            return invokeNamedQuery(em, method, args);
+        } else if (method.isAnnotationPresent(Query.class)) {
+            return invokeQueryString(em, method, args);
+        } else if (method.isAnnotationPresent(Find.class)) {
+            return findByPrimaryKey(em, method, args);
+        } else if (method.isAnnotationPresent(Merge.class)) {
+            return merge(em, method, args);
+        } else if (method.isAnnotationPresent(Remove.class)) {
+            return remove(em, method, args);
+        } else if (method.isAnnotationPresent(Persist.class)) {
+            return persist(em, method, args);
+        } else if (method.isAnnotationPresent(Criteria.class)) {
+            return invokeCriteria(em, method, args);
         }
+
+        throw new AbstractMethodError("No handler logic for method: " + method);
     }
 
-    public static Object persist(final EntityManager em, final Method method, final Object[] args) throws Throwable {
+    public static Object persist(final EntityManager em, final Method method, final Object[] args) {
         final Class<?> entityClass = method.getParameterTypes()[0];
         final Object entity = args[0];
 
@@ -169,7 +164,7 @@ public class RepositoryHandler implements InvocationHandler {
         }
     }
 
-    public static Object merge(final EntityManager em, final Method method, final Object[] args) throws Throwable {
+    public static Object merge(final EntityManager em, final Method method, final Object[] args) {
         final Class<?> entityClass = method.getParameterTypes()[0];
         final Object entity = args[0];
 
@@ -180,7 +175,7 @@ public class RepositoryHandler implements InvocationHandler {
         return em.merge(entity);
     }
 
-    public static Object remove(final EntityManager em, final Method method, final Object[] args) throws Throwable {
+    public static Object remove(final EntityManager em, final Method method, final Object[] args) {
         final Class<?> entityClass = method.getParameterTypes()[0];
         final Object entity = args[0];
 

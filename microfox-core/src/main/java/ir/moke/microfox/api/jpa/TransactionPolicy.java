@@ -4,5 +4,6 @@ public enum TransactionPolicy {
     REQUIRED,
     REQUIRED_NEW,
     MANDATORY,
-    NEVER
+    NEVER,
+    NOT_SUPPORTED
 }

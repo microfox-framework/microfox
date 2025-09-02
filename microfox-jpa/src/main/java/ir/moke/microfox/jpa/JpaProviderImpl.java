@@ -19,19 +19,23 @@ public class JpaProviderImpl implements JpaProvider {
     public <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Consumer<T> consumer) {
         EntityManager em = JpaFactory.getEntityManager(identity);
         EntityTransaction tx = em.getTransaction();
-
         try {
             switch (policy) {
                 case REQUIRED_NEW -> requiredNewTx(identity, repositoryClass, consumer);
                 case MANDATORY -> mandatoryTx(identity, repositoryClass, consumer, tx);
                 case NEVER -> neverTx(identity, repositoryClass, consumer, tx);
                 case REQUIRED -> requiredTx(identity, repositoryClass, consumer, tx);
+                case NOT_SUPPORTED -> notSupportedTx(identity, repositoryClass, consumer);
             }
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (tx != null && tx.isActive()) tx.rollback();
             throw new MicrofoxException("Transaction failed", e);
-        } finally {
-            JpaFactory.closeEntityManager(identity);
+        }
+    }
+
+    private <T> void notSupportedTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
+        try (EntityManager em = JpaFactory.createEntityManager(identity)) {
+            consumer.accept(jpa(identity, repositoryClass));
         }
     }
 
@@ -64,7 +68,7 @@ public class JpaProviderImpl implements JpaProvider {
         if (!tx.isActive()) tx.begin();
         try {
             consumer.accept(jpa(identity, repositoryClass));
-            if (!tx.isActive()) tx.commit();
+            if (tx.isActive()) tx.commit();
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
             throw e;
