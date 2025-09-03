@@ -6,6 +6,7 @@ import ir.moke.microfox.api.elastic.ElasticRepository;
 import ir.moke.microfox.api.ftp.FtpFile;
 import ir.moke.microfox.api.ftp.FtpProvider;
 import ir.moke.microfox.api.ftp.MicroFoxFtpConfig;
+import ir.moke.microfox.api.hc.HealthCheckProvider;
 import ir.moke.microfox.api.http.Filter;
 import ir.moke.microfox.api.http.HttpProvider;
 import ir.moke.microfox.api.http.Method;
@@ -26,7 +27,6 @@ import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
 import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.ExceptionMapperHolder;
-import ir.moke.microfox.healthcheck.MicroFoxHealthCheckService;
 import ir.moke.microfox.utils.HttpClientConfig;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
@@ -35,6 +35,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -50,12 +51,13 @@ public class MicroFox {
     private static final ElasticProvider elasticProvider = ServiceLoader.load(ElasticProvider.class).findFirst().orElse(null);
     private static final OpenApiProvider openApiProvider = ServiceLoader.load(OpenApiProvider.class).findFirst().orElse(null);
     private static final MetricsProvider metricsProvider = ServiceLoader.load(MetricsProvider.class).findFirst().orElse(null);
+    private static final HealthCheckProvider healthCheckProvider = ServiceLoader.load(HealthCheckProvider.class).findFirst().orElse(null);
 
     static {
         MicrofoxEnvironment.introduce();
-        MicroFoxHealthCheckService.start();
-        if (openApiProvider != null) openApiProvider.registerOpenAPI();
-        if (metricsProvider != null) metricsProvider.registerMetrics();
+        Optional.ofNullable(healthCheckProvider).ifPresent(HealthCheckProvider::activate);
+        Optional.ofNullable(openApiProvider).ifPresent(OpenApiProvider::registerOpenAPI);
+        Optional.ofNullable(metricsProvider).ifPresent(MetricsProvider::registerMetrics);
     }
 
     public static <T extends Throwable, E> void registerExceptionMapper(ExceptionMapper<T>... mappers) {

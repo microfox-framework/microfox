@@ -35,6 +35,7 @@
         <module>microfox-core</module>
         <module>microfox-elastic</module>
         <module>microfox-ftp</module>
+        <module>microfox-health-check</module>
         <module>microfox-http</module>
         <module>microfox-jms</module>
         <module>microfox-job</module>

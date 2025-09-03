@@ -1,4 +1,4 @@
-package ir.moke.microfox.healthcheck;
+package ir.moke.microfox.hc;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

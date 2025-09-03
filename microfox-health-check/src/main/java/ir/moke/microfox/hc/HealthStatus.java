@@ -1,4 +1,4 @@
-package ir.moke.microfox.healthcheck;
+package ir.moke.microfox.hc;
 
 public class HealthStatus {
     private final String status;
