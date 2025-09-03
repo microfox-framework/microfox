@@ -43,7 +43,6 @@
         <module>microfox-metrics</module>
         <module>microfox-mybatis</module>
         <module>microfox-openapi</module>
-        <module>microfox-service-discovery</module>
     </modules>
 
     <properties>

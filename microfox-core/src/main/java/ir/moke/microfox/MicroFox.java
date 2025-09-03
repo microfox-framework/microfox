@@ -1,7 +1,6 @@
 package ir.moke.microfox;
 
 import ir.moke.kafir.http.Kafir;
-import ir.moke.microfox.api.discovery.ServiceDiscoveryProvider;
 import ir.moke.microfox.api.elastic.ElasticProvider;
 import ir.moke.microfox.api.elastic.ElasticRepository;
 import ir.moke.microfox.api.ftp.FtpFile;
@@ -51,14 +50,12 @@ public class MicroFox {
     private static final ElasticProvider elasticProvider = ServiceLoader.load(ElasticProvider.class).findFirst().orElse(null);
     private static final OpenApiProvider openApiProvider = ServiceLoader.load(OpenApiProvider.class).findFirst().orElse(null);
     private static final MetricsProvider metricsProvider = ServiceLoader.load(MetricsProvider.class).findFirst().orElse(null);
-    private static final ServiceDiscoveryProvider serviceDiscoveryProvider = ServiceLoader.load(ServiceDiscoveryProvider.class).findFirst().orElse(null);
 
     static {
         MicrofoxEnvironment.introduce();
         MicroFoxHealthCheckService.start();
         if (openApiProvider != null) openApiProvider.registerOpenAPI();
         if (metricsProvider != null) metricsProvider.registerMetrics();
-        if (serviceDiscoveryProvider != null) serviceDiscoveryProvider.registerServiceDiscovery();
     }
 
     public static <T extends Throwable, E> void registerExceptionMapper(ExceptionMapper<T>... mappers) {
