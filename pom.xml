@@ -113,11 +113,6 @@
                 <artifactId>microfox-openapi</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
-            <dependency>
-                <groupId>ir.moke.microfox</groupId>
-                <artifactId>microfox-service-discovery</artifactId>
-                <version>${microfox.version}</version>
-            </dependency>
 
             <!-- Metrics -->
             <dependency>
