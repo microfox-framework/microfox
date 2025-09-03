@@ -1,5 +1,6 @@
 package ir.moke.microfox;
 
+import ir.moke.microfox.utils.StringUtils;
 import ir.moke.microfox.utils.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,13 +51,8 @@ public class MicrofoxEnvironment {
     private static Properties loadEnvironments() {
         Properties properties = new Properties();
         try {
-            Enumeration<URL> resources = MicrofoxEnvironment.class.getClassLoader().getResources("application.properties");
-            List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
-            for (URL url : urls) {
-                try (InputStream is = url.openStream()) {
-                    properties.load(is);
-                }
-            }
+            // Load and flatten application.properties (if exists)
+            properties.putAll(loadPropertiesFile());
 
             // Load and flatten application.yaml (if exists)
             properties.putAll(YamlUtils.loadAndFlatten());
@@ -67,6 +63,19 @@ public class MicrofoxEnvironment {
         } catch (IOException e) {
             logger.error("Unknown error", e);
             System.exit(0);
+        }
+        return properties;
+    }
+
+    private static Properties loadPropertiesFile() throws IOException {
+        Properties properties = new Properties();
+        Enumeration<URL> resources = MicrofoxEnvironment.class.getClassLoader().getResources("application.properties");
+        List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
+        for (URL url : urls) {
+            StringUtils.readAllLines(url.openStream())
+                    .filter(item -> !item.startsWith("#"))
+                    .map(item -> item.split("=", 2))
+                    .forEach(item -> properties.setProperty(StringUtils.normalizeKey(item[0].toLowerCase()), item[1]));
         }
         return properties;
     }
