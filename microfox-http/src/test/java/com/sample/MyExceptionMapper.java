@@ -1,3 +1,5 @@
+package com.sample;
+
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.ResponseObject;
 import ir.moke.microfox.api.http.StatusCode;

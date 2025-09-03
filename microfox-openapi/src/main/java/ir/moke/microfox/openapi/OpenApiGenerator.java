@@ -45,7 +45,7 @@ public class OpenApiGenerator {
         Paths paths = new Paths();
 
 
-        for (RouteInfo routeInfo : ResourceHolder.instance.listRoutes()) {
+        for (RouteInfo routeInfo : ResourceHolder.listRoutes()) {
             PathItem item = paths.computeIfAbsent(routeInfo.path(), k -> new PathItem());
 
             Operation op = extractSwaggerAnnotation(routeInfo.route());

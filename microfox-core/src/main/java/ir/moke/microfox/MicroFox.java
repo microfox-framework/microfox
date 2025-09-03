@@ -27,6 +27,8 @@ import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
 import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.ExceptionMapperHolder;
+import ir.moke.microfox.logger.LoggerManager;
+import ir.moke.microfox.logger.model.BaseLog;
 import ir.moke.microfox.utils.HttpClientConfig;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
@@ -54,10 +56,15 @@ public class MicroFox {
     private static final HealthCheckProvider healthCheckProvider = ServiceLoader.load(HealthCheckProvider.class).findFirst().orElse(null);
 
     static {
+        LoggerManager.init();
         MicrofoxEnvironment.introduce();
         Optional.ofNullable(healthCheckProvider).ifPresent(HealthCheckProvider::activate);
         Optional.ofNullable(openApiProvider).ifPresent(OpenApiProvider::registerOpenAPI);
         Optional.ofNullable(metricsProvider).ifPresent(MetricsProvider::registerMetrics);
+    }
+
+    public static void logger(BaseLog log) {
+        LoggerManager.registerLog(log);
     }
 
     public static <T extends Throwable, E> void registerExceptionMapper(ExceptionMapper<T>... mappers) {

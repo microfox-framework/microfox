@@ -1,3 +1,5 @@
+package com.sample;
+
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 
