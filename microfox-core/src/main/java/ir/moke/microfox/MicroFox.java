@@ -74,6 +74,11 @@ public class MicroFox {
         httpProvider.http(path, method, route);
     }
 
+    public static void websocket(Class<?> endpointClass) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.websocket(endpointClass);
+    }
+
     public static void sseRegister(String identity, String path) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.sseRegister(identity, path);

@@ -8,6 +8,7 @@ public interface HttpProvider {
     void filter(String path, Filter... filters);
 
     void http(String path, Method method, Route route);
+    void websocket(Class<?> endpointClass);
 
     void sseRegister(String identity, String path);
 

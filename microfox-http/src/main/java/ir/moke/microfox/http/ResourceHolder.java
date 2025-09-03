@@ -6,6 +6,7 @@ import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.sse.SseInfo;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicrofoxException;
+import jakarta.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,7 @@ public class ResourceHolder {
     private static final Set<RouteInfo> ROUTES = new HashSet<>();
     private static final List<FilterInfo> FILTERS = new ArrayList<>();
     private static final Set<SseInfo> SSE_LIST = new HashSet<>();
+    private static final Set<Class<?>> WEBSOCKET_LIST = new HashSet<>();
     public static final ResourceHolder instance = new ResourceHolder();
     private static final ExecutorService es = Executors.newSingleThreadExecutor();
 
@@ -40,10 +42,21 @@ public class ResourceHolder {
     public void addFilter(String path, Filter... filters) {
         if (!path.startsWith("/")) throw new MicrofoxException("filter path should started with '/'");
         path = concatContextPath(path);
-        logger.info("register filter {}", path);
+        logger.info("register filter {}{}{}", GREEN, path, RESET);
         for (Filter filter : filters) {
             FILTERS.add(new FilterInfo(path, filter));
         }
+    }
+
+    public void addWebsocket(Class<?> wsClass) {
+        if (!wsClass.isAnnotationPresent(ServerEndpoint.class))
+            throw new MicrofoxException("Websocket endpoint should annotated by ServerEndpoint.class");
+        logger.info("register websocket {}{}{}", GREEN, wsClass.getName(), RESET);
+        WEBSOCKET_LIST.add(wsClass);
+    }
+
+    public Set<Class<?>> listWebsockets() {
+        return WEBSOCKET_LIST;
     }
 
     public List<FilterInfo> listFilters() {
@@ -55,6 +68,7 @@ public class ResourceHolder {
         if (!HttpContainer.isStarted()) es.execute(HttpContainer::start);
         SSE_LIST.add(new SseInfo(identity, concatContextPath(path)));
     }
+
     public Optional<SseInfo> getSsePublisher(String path) {
         return SSE_LIST.stream().filter(item -> item.getPath().equals(path)).findFirst();
     }

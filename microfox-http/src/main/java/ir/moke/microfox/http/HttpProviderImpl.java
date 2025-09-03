@@ -23,6 +23,11 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
+    public void websocket(Class<?> endpointClass) {
+        ResourceHolder.instance.addWebsocket(endpointClass);
+    }
+
+    @Override
     public void sseRegister(String identity, String path) {
         ResourceHolder.instance.registerSse(identity, path);
     }

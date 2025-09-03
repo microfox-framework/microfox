@@ -7,7 +7,9 @@ import ir.moke.microfox.http.filter.GlobalFilter;
 import ir.moke.microfox.http.servlet.BaseServlet;
 import jakarta.servlet.Filter;
 import jakarta.servlet.Servlet;
+import jakarta.websocket.DeploymentException;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.websocket.jakarta.server.config.JakartaWebSocketServletContainerInitializer;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
@@ -30,6 +32,8 @@ public class HttpContainer {
             initializeHttpConnector();
             initializeHandlers();
 
+            initializeWebsocketContainer();
+
             // Start the server
             server.start();
             logger.info("Http server started");
@@ -37,6 +41,19 @@ public class HttpContainer {
         } catch (Exception e) {
             throw new MicrofoxException(e);
         }
+    }
+
+    private static void initializeWebsocketContainer() {
+        JakartaWebSocketServletContainerInitializer.configure(context, (servletContext, serverContainer) -> {
+            ResourceHolder.instance.listWebsockets()
+                    .forEach(item -> {
+                        try {
+                            serverContainer.addEndpoint(item);
+                        } catch (DeploymentException e) {
+                            throw new MicrofoxException(e);
+                        }
+                    });
+        });
     }
 
     private static void initializeHttpConnector() {

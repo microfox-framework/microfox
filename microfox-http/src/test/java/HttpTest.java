@@ -7,5 +7,6 @@ public class HttpTest {
         MicroFox.registerExceptionMapper(new MyExceptionMapper());
         MicroFox.httpFilter("/api/*", (request, response) -> response.body("Filter Executed\n"));
         MicroFox.httpRouter("/api/hello", Method.GET, (request, response) -> response.body("Hello dear !\n"));
+        MicroFox.websocket(EchoEndpoint.class);
     }
 }
