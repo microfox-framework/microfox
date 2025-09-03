@@ -117,7 +117,7 @@ public class BaseServlet extends HttpServlet {
         final AsyncContext async = req.startAsync();
         async.setTimeout(0);
 
-        Optional<SseInfo> opt = ResourceHolder.instance.getSsePublisher(req.getRequestURI());
+        Optional<SseInfo> opt = ResourceHolder.getSsePublisher(req.getRequestURI());
         if (opt.isEmpty()) {
             notFound(resp);
             return;

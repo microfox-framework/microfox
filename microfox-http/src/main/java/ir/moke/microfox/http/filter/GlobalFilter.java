@@ -2,6 +2,7 @@ package ir.moke.microfox.http.filter;
 
 import ir.moke.microfox.utils.TtyAsciiCodecs;
 import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,11 +16,13 @@ public class GlobalFilter implements Filter, TtyAsciiCodecs {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
         try {
+            HttpServletRequest req = (HttpServletRequest) request;
+            String uri = req.getRequestURI();
             LocalDateTime before = LocalDateTime.now();
             chain.doFilter(request, response);
             LocalDateTime after = LocalDateTime.now();
             long duration = ChronoUnit.MILLIS.between(before, after);
-            logger.info("Request processed in {} ms", duration);
+            logger.debug("Request {} processed in {} ms", uri, duration);
         } catch (IOException | ServletException e) {
             throw new RuntimeException(e);
         }

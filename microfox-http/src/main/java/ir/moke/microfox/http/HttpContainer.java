@@ -45,7 +45,7 @@ public class HttpContainer {
 
     private static void initializeWebsocketContainer() {
         JakartaWebSocketServletContainerInitializer.configure(context, (servletContext, serverContainer) -> {
-            ResourceHolder.instance.listWebsockets()
+            ResourceHolder.listWebsockets()
                     .forEach(item -> {
                         try {
                             serverContainer.addEndpoint(item);

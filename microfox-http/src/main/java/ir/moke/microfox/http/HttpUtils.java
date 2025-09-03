@@ -26,7 +26,7 @@ public class HttpUtils {
     }
 
     public static Optional<RouteInfo> findMatchingRouteInfo(String reqPath, Method method) {
-        for (RouteInfo routeInfo : ResourceHolder.instance.listRoutes()) {
+        for (RouteInfo routeInfo : ResourceHolder.listRoutes()) {
             String path = routeInfo.path();
             Pattern regex = compilePattern(path);
             if (regex.matcher(normalizePath(reqPath)).matches() && method.equals(routeInfo.method())) {
@@ -37,7 +37,7 @@ public class HttpUtils {
     }
 
     public static Optional<FilterInfo> findMatchingFilterInfo(String reqPath) {
-        for (FilterInfo filterInfo : ResourceHolder.instance.listFilters()) {
+        for (FilterInfo filterInfo : ResourceHolder.listFilters()) {
             String path = filterInfo.path();
             if (path.endsWith("*") && reqPath.startsWith(path.substring(0, path.length() - 1))) {
                 return Optional.of(filterInfo);

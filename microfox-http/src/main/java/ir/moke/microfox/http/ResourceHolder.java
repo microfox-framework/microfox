@@ -24,10 +24,9 @@ public class ResourceHolder {
     private static final List<FilterInfo> FILTERS = new ArrayList<>();
     private static final Set<SseInfo> SSE_LIST = new HashSet<>();
     private static final Set<Class<?>> WEBSOCKET_LIST = new HashSet<>();
-    public static final ResourceHolder instance = new ResourceHolder();
     private static final ExecutorService es = Executors.newSingleThreadExecutor();
 
-    public void addRoute(Method method, String path, Route route) {
+    public static void addRoute(Method method, String path, Route route) {
         if (!path.startsWith("/")) throw new MicrofoxException("route path should started with '/'");
         if (!HttpContainer.isStarted()) es.execute(HttpContainer::start);
         path = concatContextPath(path);
@@ -35,11 +34,11 @@ public class ResourceHolder {
         ROUTES.add(new RouteInfo(method, path, route));
     }
 
-    public Set<RouteInfo> listRoutes() {
+    public static Set<RouteInfo> listRoutes() {
         return ROUTES;
     }
 
-    public void addFilter(String path, Filter... filters) {
+    public static void addFilter(String path, Filter... filters) {
         if (!path.startsWith("/")) throw new MicrofoxException("filter path should started with '/'");
         path = concatContextPath(path);
         logger.info("register filter {}{}{}", GREEN, path, RESET);
@@ -48,32 +47,32 @@ public class ResourceHolder {
         }
     }
 
-    public void addWebsocket(Class<?> wsClass) {
+    public static void addWebsocket(Class<?> wsClass) {
         if (!wsClass.isAnnotationPresent(ServerEndpoint.class))
             throw new MicrofoxException("Websocket endpoint should annotated by ServerEndpoint.class");
         logger.info("register websocket {}{}{}", GREEN, wsClass.getName(), RESET);
         WEBSOCKET_LIST.add(wsClass);
     }
 
-    public Set<Class<?>> listWebsockets() {
+    public static Set<Class<?>> listWebsockets() {
         return WEBSOCKET_LIST;
     }
 
-    public List<FilterInfo> listFilters() {
+    public static List<FilterInfo> listFilters() {
         return FILTERS;
     }
 
-    public void registerSse(String identity, String path) {
+    public static void registerSse(String identity, String path) {
         logger.info("register sse {}{}{}", GREEN, path, RESET);
         if (!HttpContainer.isStarted()) es.execute(HttpContainer::start);
         SSE_LIST.add(new SseInfo(identity, concatContextPath(path)));
     }
 
-    public Optional<SseInfo> getSsePublisher(String path) {
+    public static Optional<SseInfo> getSsePublisher(String path) {
         return SSE_LIST.stream().filter(item -> item.getPath().equals(path)).findFirst();
     }
 
-    public SubmissionPublisher<SseObject> getSseByIdentity(String identity) {
+    public static SubmissionPublisher<SseObject> getSseByIdentity(String identity) {
         return SSE_LIST.stream()
                 .filter(item -> item.getIdentity().equals(identity))
                 .map(SseInfo::getPublisher)
