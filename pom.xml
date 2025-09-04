@@ -4,7 +4,7 @@
 
     <groupId>ir.moke.microfox</groupId>
     <artifactId>microfox-parent</artifactId>
-    <version>0.6.7</version>
+    <version>0.7.0</version>
     <packaging>pom</packaging>
     <name>Microfox Framework</name>
 
@@ -44,10 +44,11 @@
         <module>microfox-metrics</module>
         <module>microfox-mybatis</module>
         <module>microfox-openapi</module>
+        <module>microfox-statistics</module>
     </modules>
 
     <properties>
-        <microfox.version>0.6.7</microfox.version>
+        <microfox.version>0.7.0</microfox.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jetty.version>12.0.22</jetty.version>
@@ -274,7 +275,6 @@
                 <groupId>jakarta.servlet</groupId>
                 <artifactId>jakarta.servlet-api</artifactId>
                 <version>6.1.0</version>
-                <scope>compile</scope>
             </dependency>
 
             <!-- H2 Database -->

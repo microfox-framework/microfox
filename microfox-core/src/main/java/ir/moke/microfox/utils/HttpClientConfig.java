@@ -62,7 +62,7 @@ public class HttpClientConfig {
         return interceptor;
     }
 
-    static class Builder {
+    public static class Builder {
         private String baseUri;
         private Map<String, String> headers;
         private Interceptor interceptor;
