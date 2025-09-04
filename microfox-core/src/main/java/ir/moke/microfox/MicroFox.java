@@ -28,7 +28,7 @@ import ir.moke.microfox.api.openapi.OpenApiProvider;
 import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.ExceptionMapperHolder;
 import ir.moke.microfox.logger.LoggerManager;
-import ir.moke.microfox.logger.model.BaseLog;
+import ir.moke.microfox.logger.model.LogInfo;
 import ir.moke.microfox.utils.HttpClientConfig;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
@@ -63,7 +63,7 @@ public class MicroFox {
         Optional.ofNullable(metricsProvider).ifPresent(MetricsProvider::registerMetrics);
     }
 
-    public static void logger(BaseLog log) {
+    public static void logger(LogInfo log) {
         LoggerManager.registerLog(log);
     }
 

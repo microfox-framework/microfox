@@ -9,14 +9,14 @@ import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
-import ir.moke.microfox.logger.model.FileLog;
+import ir.moke.microfox.logger.model.FileLogInfo;
 import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
 
 public class FileAppender {
     private static final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-    public static void addFileLogger(FileLog log) {
+    public static void addFileLogger(FileLogInfo log) {
         addFileLogger(
                 log.getAppenderName(),
                 log.getPackageName(),

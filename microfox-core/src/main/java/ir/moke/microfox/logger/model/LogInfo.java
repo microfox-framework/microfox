@@ -4,12 +4,12 @@ import ch.qos.logback.classic.Level;
 
 import java.util.Objects;
 
-public class BaseLog {
+public class LogInfo {
     private final String appenderName;
     private final String packageName;
     private final Level level;
 
-    public BaseLog(String appenderName, String packageName, Level level) {
+    public LogInfo(String appenderName, String packageName, Level level) {
         this.appenderName = appenderName;
         this.packageName = packageName;
         this.level = level;
@@ -30,8 +30,8 @@ public class BaseLog {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        BaseLog baseLog = (BaseLog) o;
-        return Objects.equals(appenderName, baseLog.appenderName);
+        LogInfo logInfo = (LogInfo) o;
+        return Objects.equals(appenderName, logInfo.appenderName);
     }
 
     @Override
