@@ -1,4 +1,4 @@
-package ir.moke.microfox.statistics;
+package ir.moke.microfox.system;
 
 import ir.moke.jsysbox.dev.Device;
 import ir.moke.jsysbox.dev.JDevice;
@@ -11,6 +11,7 @@ import ir.moke.jsysbox.network.Netstat;
 import ir.moke.jsysbox.network.Route;
 import ir.moke.jsysbox.system.*;
 import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.MicrofoxEnvironment;
 import ir.moke.microfox.utils.HttpClientConfig;
 
 import java.time.ZonedDateTime;
@@ -24,14 +25,20 @@ public class StatisticTask extends TimerTask {
         send();
     }
 
-    private static void send() {
-        HttpClientConfig config = new HttpClientConfig.Builder().build();
+    public static void send() {
+        HttpClientConfig config = new HttpClientConfig.Builder()
+                .setBaseUri(MicrofoxEnvironment.getEnv("microfox.admin.base-url"))
+                .build();
         MicroFoxAdminAPI microFoxAdminAPI = MicroFox.httpClient(config, MicroFoxAdminAPI.class);
-        StatisticsDTO statisticsDTO = generateStatisticsDTO();
-        microFoxAdminAPI.statistics(statisticsDTO);
+        SystemDTO systemDTO = generateStatisticsDTO();
+        microFoxAdminAPI.statistics(systemDTO);
     }
 
-    private static StatisticsDTO generateStatisticsDTO() {
+    private static SystemDTO generateStatisticsDTO() {
+        String hostname = JSystem.getHostname();
+        Map<String, String> environments = System.getenv();
+        List<String> nameServers = JNetwork.getDnsNameServers();
+        Map<String, String> hosts = JNetwork.hosts();
         List<CpuStat> cpuStats = JSystem.cpuStats();
         CpuInfo cpuInfo = JSystem.cpuInfo();
         MemoryInfo memoryInfo = JSystem.memoryInfo();
@@ -46,7 +53,12 @@ public class StatisticTask extends TimerTask {
         List<Device> devices = JDevice.scanDevices();
         ZonedDateTime zonedDateTime = ZonedDateTime.now();
         Map<String, String> sysctl = JSystem.sysctl();
-        return new StatisticsDTO(cpuStats,
+        return new SystemDTO(
+                hostname,
+                environments,
+                nameServers,
+                hosts,
+                cpuStats,
                 cpuInfo,
                 memoryInfo,
                 loadAverage,

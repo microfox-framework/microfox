@@ -44,7 +44,7 @@
         <module>microfox-metrics</module>
         <module>microfox-mybatis</module>
         <module>microfox-openapi</module>
-        <module>microfox-statistics</module>
+        <module>microfox-system</module>
     </modules>
 
     <properties>
@@ -113,6 +113,11 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-openapi</artifactId>
+                <version>${microfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ir.moke.microfox</groupId>
+                <artifactId>microfox-system</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
 
@@ -317,7 +322,7 @@
             <dependency>
                 <groupId>ir.moke</groupId>
                 <artifactId>jsysbox</artifactId>
-                <version>0.4</version>
+                <version>0.4.0</version>
                 <exclusions>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.core</groupId>
@@ -357,7 +362,7 @@
         <dependency>
             <groupId>ir.moke</groupId>
             <artifactId>kafir</artifactId>
-            <version>1.4.10</version>
+            <version>1.4.11</version>
         </dependency>
 
         <dependency>

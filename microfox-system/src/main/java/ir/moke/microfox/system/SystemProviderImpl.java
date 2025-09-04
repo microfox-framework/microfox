@@ -1,11 +1,11 @@
-package ir.moke.microfox.statistics;
+package ir.moke.microfox.system;
 
-import ir.moke.microfox.api.statistic.StatisticProvider;
+import ir.moke.microfox.api.system.SystemProvider;
 
 import java.time.LocalTime;
 import java.util.Timer;
 
-public class StatisticProviderImpl implements StatisticProvider {
+public class SystemProviderImpl implements SystemProvider {
     private static final Timer timer = new Timer("microfox-statistic-task", true);
 
     static {
@@ -15,8 +15,8 @@ public class StatisticProviderImpl implements StatisticProvider {
     @Override
     public void activate() {
         LocalTime now = LocalTime.now();
-        long delay = 5 - (now.getSecond() % 5);
-        timer.scheduleAtFixedRate(new StatisticTask(), delay, 5);
+        long delay = 10 - (now.getSecond() % 10);
+        timer.scheduleAtFixedRate(new StatisticTask(), delay, 10);
     }
 
     private static void onShutdown() {

@@ -1,8 +1,8 @@
-package ir.moke.microfox.statistics;
+package ir.moke.microfox.system;
 
 import ir.moke.kafir.annotation.POST;
 
 public interface MicroFoxAdminAPI {
     @POST("/api/v1/statistics")
-    void statistics(StatisticsDTO dto);
+    void statistics(SystemDTO dto);
 }
