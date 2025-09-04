@@ -72,6 +72,7 @@ public class MicroFox {
         LoggerManager.registerLog(log);
     }
 
+    @SafeVarargs
     public static <T extends Throwable, E> void registerExceptionMapper(ExceptionMapper<T>... mappers) {
         for (ExceptionMapper<T> mapper : mappers) {
             ExceptionMapperHolder.add(mapper);
