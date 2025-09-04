@@ -46,9 +46,4 @@ public class LoggerManager {
             }
         }
     }
-
-    public static void init() {
-        ConsoleLogInfo log = new ConsoleLogInfo("microfox-console-log", "ir.moke.microfox", Level.DEBUG);
-        LoggerManager.registerLog(log);
-    }
 }

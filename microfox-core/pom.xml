@@ -33,6 +33,10 @@
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ir.moke</groupId>
+            <artifactId>jsysbox</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
