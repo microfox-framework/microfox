@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import java.util.Timer;
 
 public class SystemProviderImpl implements SystemProvider {
-    private static final Timer timer = new Timer("microfox-statistic-task", true);
+    private static final Timer timer = new Timer("microfox-system-task", true);
 
     static {
         onShutdown();
