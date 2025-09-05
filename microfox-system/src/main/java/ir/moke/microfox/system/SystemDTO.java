@@ -1,5 +1,6 @@
 package ir.moke.microfox.system;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import ir.moke.jsysbox.dev.Device;
 import ir.moke.jsysbox.disk.Disk;
 import ir.moke.jsysbox.disk.PartitionInformation;
@@ -35,6 +36,6 @@ public record SystemDTO(long pid,
                         List<Disk> disks,
                         List<PartitionInformation> partitions,
                         List<Device> devices,
-                        ZonedDateTime dateTime,
+                        @JsonSerialize(using = ZonedDateTimeSerializer.class) ZonedDateTime dateTime,
                         Map<String, String> sysctl) {
 }
