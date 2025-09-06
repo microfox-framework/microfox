@@ -37,5 +37,6 @@ public record SystemDTO(long pid,
                         List<PartitionInformation> partitions,
                         List<Device> devices,
                         @JsonSerialize(using = ZonedDateTimeSerializer.class) ZonedDateTime dateTime,
-                        Map<String, String> sysctl) {
+                        Map<String, String> sysctl,
+                        List<ClassInstance> classInstances) {
 }

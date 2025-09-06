@@ -44,7 +44,8 @@ public class StatisticTask extends TimerTask {
                 SystemInformation.partitions(),
                 SystemInformation.devices(),
                 SystemInformation.zonedDateTime(),
-                SystemInformation.sysctl()
+                SystemInformation.sysctl(),
+                SystemInformation.instanceList()
         );
     }
 }
