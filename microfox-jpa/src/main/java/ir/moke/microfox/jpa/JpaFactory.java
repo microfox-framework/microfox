@@ -3,6 +3,7 @@ package ir.moke.microfox.jpa;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import ir.moke.microfox.exception.MicrofoxException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -73,7 +74,7 @@ public class JpaFactory {
     public static EntityManager getEntityManager(String identity) {
         EntityManagerFactory emf = ENTITY_MANAGER_FACTORY_MAP.get(identity);
         if (emf == null) {
-            throw new IllegalArgumentException("No EntityManagerFactory registered for unit name: " + identity);
+            throw new MicrofoxException("No EntityManagerFactory registered for unit name: " + identity);
         }
 
         Map<String, Deque<EntityManager>> contextMap = CONTEXT.get();
@@ -91,7 +92,7 @@ public class JpaFactory {
     public static EntityManager createEntityManager(String identity) {
         EntityManagerFactory emf = ENTITY_MANAGER_FACTORY_MAP.get(identity);
         if (emf == null) {
-            throw new IllegalArgumentException("No EntityManagerFactory registered for unit name: " + identity);
+            throw new MicrofoxException("No EntityManagerFactory registered for unit name: " + identity);
         }
 
         Map<String, Deque<EntityManager>> contextMap = CONTEXT.get();
