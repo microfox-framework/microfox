@@ -45,6 +45,7 @@
         <module>microfox-mybatis</module>
         <module>microfox-openapi</module>
         <module>microfox-system</module>
+        <module>microfox-mongodb</module>
     </modules>
 
     <properties>
@@ -160,6 +161,13 @@
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>9.0.1.Final</version>
+            </dependency>
+
+            <!-- MongoDB -->
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>5.5.1</version>
             </dependency>
 
             <!-- Swagger -->

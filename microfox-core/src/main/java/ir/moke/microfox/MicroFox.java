@@ -1,6 +1,7 @@
 package ir.moke.microfox;
 
 import ch.qos.logback.classic.Level;
+import com.mongodb.client.MongoCollection;
 import ir.moke.kafir.http.Kafir;
 import ir.moke.microfox.api.elastic.ElasticProvider;
 import ir.moke.microfox.api.elastic.ElasticRepository;
@@ -24,6 +25,7 @@ import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.kafka.KafkaStreamController;
 import ir.moke.microfox.api.metrics.MetricsProvider;
+import ir.moke.microfox.api.mongodb.MongoProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
 import ir.moke.microfox.api.system.SystemProvider;
@@ -58,6 +60,7 @@ public class MicroFox {
     private static final MetricsProvider metricsProvider = ServiceLoader.load(MetricsProvider.class).findFirst().orElse(null);
     private static final HealthCheckProvider healthCheckProvider = ServiceLoader.load(HealthCheckProvider.class).findFirst().orElse(null);
     private static final SystemProvider systemProvider = ServiceLoader.load(SystemProvider.class).findFirst().orElse(null);
+    private static final MongoProvider mongoProvider = ServiceLoader.load(MongoProvider.class).findFirst().orElse(null);
 
     static {
         LoggerManager.registerLog(new ConsoleLogInfo("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
@@ -225,5 +228,10 @@ public class MicroFox {
                 .setVersion(config.getVersion())
                 .setSslContext(config.getSslContext())
                 .build(clazz);
+    }
+
+    public static <T> MongoCollection<T> mongo(String identity, Class<T> entityClass) {
+        if (mongoProvider == null) throw new UnsupportedOperationException("MongoDB support not available");
+        return mongoProvider.collection(identity, entityClass);
     }
 }
