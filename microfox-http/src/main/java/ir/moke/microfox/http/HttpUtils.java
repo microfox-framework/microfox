@@ -2,19 +2,14 @@ package ir.moke.microfox.http;
 
 import ir.moke.jsysbox.file.JFile;
 import ir.moke.microfox.MicrofoxEnvironment;
-import ir.moke.microfox.api.http.Method;
-import ir.moke.microfox.api.http.Request;
-import ir.moke.microfox.api.http.Response;
-import ir.moke.microfox.api.http.StatusCode;
+import ir.moke.microfox.api.http.*;
 import jakarta.servlet.ServletOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class HttpUtils {
@@ -86,9 +81,9 @@ public class HttpUtils {
     }
 
     public static void loadHtmlContent(Request req, Response resp) {
-        String pageDirectory = MicrofoxEnvironment.getEnv("microfox.http.page");
+        String pageDirectory = MicrofoxEnvironment.getEnv("microfox.http.html-directory");
         if (pageDirectory == null || pageDirectory.isEmpty()) {
-            logger.warn("microfox.http.page value is null/empty");
+            logger.warn("page-directory value is null/empty");
             return;
         }
         try {
@@ -125,5 +120,15 @@ public class HttpUtils {
         response.status(StatusCode.NO_CONTENT.getCode());
         response.contentLength(0);
         response.flushBuffer();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<String> authorities(Route route) {
+        try {
+            java.lang.reflect.Method method = route.getClass().getDeclaredMethod("authorities");
+            return (List<String>) method.invoke(route);
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 }

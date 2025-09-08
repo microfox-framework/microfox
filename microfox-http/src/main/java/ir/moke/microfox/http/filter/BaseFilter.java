@@ -22,8 +22,8 @@ public class BaseFilter implements Filter {
     }
 
     private static void applyFilter(FilterInfo item, HttpServletRequest req, HttpServletResponse resp, FilterChain chain) {
-        item.filter().handle(new RequestImpl(req), new ResponseImpl(resp));
-        doChain(req, resp, chain);
+        boolean doChain = item.filter().handle(new RequestImpl(req), new ResponseImpl(resp));
+        if (doChain) doChain(req, resp, chain);
     }
 
     private static void doChain(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
