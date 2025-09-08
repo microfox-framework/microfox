@@ -89,10 +89,6 @@ public class MicroFox {
         httpProvider.http(path, method, route);
     }
 
-    public static void httpSecurity(SecurityStrategy strategy) {
-        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-    }
-
     public static void websocket(Class<?> endpointClass) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.websocket(endpointClass);
