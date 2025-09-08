@@ -31,7 +31,6 @@ public class HttpContainer {
             initializeHttpsConnector();
             initializeHttpConnector();
             initializeHandlers();
-
             initializeWebsocketContainer();
 
             // Start the server
