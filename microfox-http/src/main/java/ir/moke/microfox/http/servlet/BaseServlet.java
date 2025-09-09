@@ -2,27 +2,20 @@ package ir.moke.microfox.http.servlet;
 
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Method;
-import ir.moke.microfox.api.http.ResponseObject;
-import ir.moke.microfox.api.http.StatusCode;
+import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.sse.SseInfo;
 import ir.moke.microfox.api.http.sse.SseSubscriber;
-import ir.moke.microfox.exception.ExceptionMapper;
-import ir.moke.microfox.exception.ExceptionMapperHolder;
-import ir.moke.microfox.http.RequestImpl;
+import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.http.HttpUtils;
 import ir.moke.microfox.http.ResourceHolder;
-import ir.moke.microfox.http.ResponseImpl;
 import ir.moke.microfox.http.RouteInfo;
 import jakarta.servlet.AsyncContext;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.Optional;
 
 import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
@@ -80,33 +73,13 @@ public class BaseServlet extends HttpServlet {
 
     private static void handle(HttpServletRequest req, HttpServletResponse resp, RouteInfo routeInfo) {
         try {
-            routeInfo.route().handle(new RequestImpl(req), new ResponseImpl(resp));
+            Route route = routeInfo.route();
+            route.handle(HttpUtils.getRequest(req), HttpUtils.getResponse(resp));
         } catch (Exception e) {
-            ExceptionMapper<Throwable> mapper = ExceptionMapperHolder.get(e);
-            if (mapper != null) {
-                ResponseObject ro = mapper.toResponse(e);
-                Optional.ofNullable(ro.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
-                Optional.ofNullable(ro.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
-                Optional.ofNullable(ro.getHeaders()).ifPresent(item -> fillExtraHeaders(resp, item));
-                Optional.ofNullable(ro.getLocale()).ifPresent(resp::setLocale);
-                Optional.ofNullable(ro.getCharacterEncoding()).ifPresent(resp::setCharacterEncoding);
-                Optional.ofNullable(ro.getCookies()).ifPresent(item -> item.forEach(resp::addCookie));
-                Optional.ofNullable(ro.getBody()).ifPresent(item -> sendResponse(resp, item));
-            } else {
-                logger.error("Microfox Unknown Error", e);
-                resp.setStatus(StatusCode.INTERNAL_SERVER_ERROR.getCode());
-                sendResponse(resp, e.getMessage().getBytes(StandardCharsets.UTF_8));
-            }
+            throw new MicrofoxException(e);
         }
     }
 
-    private static void fillExtraHeaders(HttpServletResponse resp, Map<String, Object> headers) {
-        headers.forEach((k, v) -> {
-            if (v instanceof Integer i) resp.addIntHeader(k, i);
-            if (v instanceof Long l) resp.addDateHeader(k, l);
-            if (v instanceof String s) resp.addHeader(k, s);
-        });
-    }
 
     private static void handleSse(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType(ContentType.TEXT_EVENT_STREAM.getType());
@@ -124,17 +97,8 @@ public class BaseServlet extends HttpServlet {
         }
 
         SseInfo info = opt.get();
-        SseSubscriber subscriber = new SseSubscriber(new ResponseImpl(resp));
+        SseSubscriber subscriber = new SseSubscriber(HttpUtils.getResponse(resp));
         info.getPublisher().subscribe(subscriber);
-    }
-
-    private static void sendResponse(HttpServletResponse resp, byte[] bytes) {
-        try (ServletOutputStream os = resp.getOutputStream()) {
-            os.write(bytes);
-            os.flush();
-        } catch (IOException io) {
-            logger.error("Microfox IO Error", io);
-        }
     }
 
     private static void notFound(HttpServletResponse resp) {

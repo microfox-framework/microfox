@@ -1,5 +1,6 @@
 package com.sample.security;
 
+import com.sample.exception.SampleException;
 import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
@@ -19,6 +20,7 @@ public class BasicAuthSecurity implements SecurityStrategy {
         *     return new UsernamePasswordCredential("user", "pass");
         * }
         * */
+//        throw new SampleException("ERROR");
         return new UsernamePasswordCredential("admin", "adminpass");
     }
 

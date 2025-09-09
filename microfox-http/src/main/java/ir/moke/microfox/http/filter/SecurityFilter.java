@@ -1,11 +1,14 @@
 package ir.moke.microfox.http.filter;
 
-import ir.moke.microfox.api.http.*;
+import ir.moke.microfox.api.http.Method;
+import ir.moke.microfox.api.http.Route;
+import ir.moke.microfox.api.http.SecuredRoute;
+import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
-import ir.moke.microfox.http.RequestImpl;
+import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.http.HttpUtils;
 import ir.moke.microfox.http.SecurityContext;
-import jakarta.servlet.Filter;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,7 +41,7 @@ public class SecurityFilter implements Filter {
             return;
         }
 
-        Credential credential = strategy.authenticate(new RequestImpl(req));
+        Credential credential = strategy.authenticate(HttpUtils.getRequest(req));
         if (credential == null) {
             sendError(resp, StatusCode.UNAUTHORIZED, "Unauthorized");
             return;
@@ -59,7 +62,7 @@ public class SecurityFilter implements Filter {
         try {
             chain.doFilter(req, resp);
         } catch (IOException | ServletException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 
@@ -68,7 +71,7 @@ public class SecurityFilter implements Filter {
             resp.setStatus(code.getCode());
             resp.getWriter().write(message);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 }

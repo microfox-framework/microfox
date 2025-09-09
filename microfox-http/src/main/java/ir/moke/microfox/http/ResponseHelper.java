@@ -2,7 +2,6 @@ package ir.moke.microfox.http;
 
 import ir.moke.kafir.utils.JsonUtils;
 import ir.moke.microfox.api.http.ContentType;
-import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicrofoxException;
 import jakarta.servlet.ServletOutputStream;
@@ -12,46 +11,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
-public class ResponseImpl implements Response {
-    private static final Logger logger = LoggerFactory.getLogger(ResponseImpl.class);
-    private final HttpServletResponse response;
+public class ResponseHelper {
+    private static final Logger logger = LoggerFactory.getLogger(ResponseHelper.class);
 
-    public ResponseImpl(HttpServletResponse response) {
-        this.response = response;
-    }
-
-    @Override
-    public void body(String payload) {
+    public static void body(String payload, HttpServletResponse response) {
         try {
             PrintWriter writer = response.getWriter();
             writer.write(payload);
-            writer.flush();
         } catch (IOException e) {
             throw new MicrofoxException(e);
         }
     }
 
-    @Override
-    public void body(Object o) {
+    public static void body(Object o, HttpServletResponse response) {
         try {
-            contentType(ContentType.APPLICATION_JSON);
+            contentType(ContentType.APPLICATION_JSON, response);
             String json = JsonUtils.toJson(o);
             PrintWriter writer = response.getWriter();
             writer.write(json);
-            writer.flush();
         } catch (IOException e) {
             throw new MicrofoxException(e);
         }
     }
 
-    @Override
-    public void sse(SseObject sseObject) {
+    public static void sse(SseObject sseObject, HttpServletResponse response) {
         try {
             PrintWriter writer = response.getWriter();
             Optional.ofNullable(sseObject.retry()).ifPresent(item -> writer.write("retry: %s \n".formatted(sseObject.retry())));
@@ -64,53 +52,43 @@ public class ResponseImpl implements Response {
         }
     }
 
-    @Override
-    public void contentType(ContentType contentType) {
+    public static void contentType(ContentType contentType, HttpServletResponse response) {
         response.setContentType(contentType.getType());
     }
 
-    @Override
-    public void status(int status) {
+    public static void status(int status, HttpServletResponse response) {
         response.setStatus(status);
     }
 
-    @Override
-    public void contentLength(int length) {
+    public static void contentLength(int length, HttpServletResponse response) {
         response.setContentLength(length);
     }
 
-    @Override
-    public void header(String name, String value) {
-        response.setHeader(name, value);
+    public static void header(String name, String value, HttpServletResponse response) {
+        response.addHeader(name, value);
     }
 
-    @Override
-    public void header(String header, int value) {
-        response.addIntHeader(header, value);
+    public static void header(String name, int value, HttpServletResponse response) {
+        response.addIntHeader(name, value);
     }
 
-    @Override
-    public void header(String header, Date value) {
-        response.addDateHeader(header, value.getTime());
+    public static void header(String name, Date value, HttpServletResponse response) {
+        response.addDateHeader(name, value.getTime());
     }
 
-    @Override
-    public void header(String header, java.sql.Date value) {
-        response.addDateHeader(header, value.getTime());
+    public static void header(String name, java.sql.Date value, HttpServletResponse response) {
+        response.addDateHeader(name, value.getTime());
     }
 
-    @Override
-    public void header(String header, Instant value) {
-        response.addDateHeader(header, value.toEpochMilli());
+    public static void header(String name, Instant value, HttpServletResponse response) {
+        response.addDateHeader(name, value.toEpochMilli());
     }
 
-    @Override
-    public void cookie(Cookie cookie) {
+    public static void cookie(Cookie cookie, HttpServletResponse response) {
         response.addCookie(cookie);
     }
 
-    @Override
-    public void redirect(String location) {
+    public static void redirect(String location, HttpServletResponse response) {
         try {
             response.sendRedirect(location);
         } catch (IOException e) {
@@ -118,8 +96,7 @@ public class ResponseImpl implements Response {
         }
     }
 
-    @Override
-    public void redirect(String location, int httpStatusCode) {
+    public static void redirect(String location, int httpStatusCode, HttpServletResponse response) {
         response.setStatus(httpStatusCode);
         response.setHeader("Location", location);
         response.setHeader("Connection", "close");
@@ -130,8 +107,7 @@ public class ResponseImpl implements Response {
         }
     }
 
-    @Override
-    public void flushBuffer() {
+    public static void flushBuffer(HttpServletResponse response) {
         try {
             response.flushBuffer();
         } catch (IOException e) {
@@ -139,8 +115,7 @@ public class ResponseImpl implements Response {
         }
     }
 
-    @Override
-    public ServletOutputStream outputStream() {
+    public static ServletOutputStream outputStream(HttpServletResponse response) {
         try {
             return response.getOutputStream();
         } catch (IOException e) {

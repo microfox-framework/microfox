@@ -3,13 +3,22 @@ package ir.moke.microfox.http;
 import ir.moke.jsysbox.file.JFile;
 import ir.moke.microfox.MicrofoxEnvironment;
 import ir.moke.microfox.api.http.*;
+import ir.moke.microfox.exception.ExceptionMapper;
+import ir.moke.microfox.exception.ExceptionMapperHolder;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.lang.reflect.Proxy;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class HttpUtils {
@@ -122,13 +131,45 @@ public class HttpUtils {
         response.flushBuffer();
     }
 
-    @SuppressWarnings("unchecked")
-    public static List<String> authorities(Route route) {
-        try {
-            java.lang.reflect.Method method = route.getClass().getDeclaredMethod("authorities");
-            return (List<String>) method.invoke(route);
-        } catch (Exception e) {
-            return Collections.emptyList();
+    public static Request getRequest(HttpServletRequest request) {
+        return (Request) Proxy.newProxyInstance(Request.class.getClassLoader(), new Class<?>[]{Request.class}, new RequestProxy(request));
+    }
+
+    public static Response getResponse(HttpServletResponse response) {
+        return (Response) Proxy.newProxyInstance(Response.class.getClassLoader(), new Class<?>[]{Response.class}, new ResponseProxy(response));
+    }
+
+    public static void handleExceptionMapper(HttpServletResponse resp, Exception e) {
+        ExceptionMapper<Throwable> mapper = ExceptionMapperHolder.get(e);
+        if (mapper != null) {
+            ResponseObject ro = mapper.toResponse(e);
+            Optional.ofNullable(ro.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
+            Optional.ofNullable(ro.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
+            Optional.ofNullable(ro.getHeaders()).ifPresent(item -> fillExtraHeaders(resp, item));
+            Optional.ofNullable(ro.getLocale()).ifPresent(resp::setLocale);
+            Optional.ofNullable(ro.getCharacterEncoding()).ifPresent(resp::setCharacterEncoding);
+            Optional.ofNullable(ro.getCookies()).ifPresent(item -> item.forEach(resp::addCookie));
+            Optional.ofNullable(ro.getBody()).ifPresent(item -> sendResponse(resp, item));
+        } else {
+            logger.error("Microfox Unknown Error", e);
+            resp.setStatus(StatusCode.INTERNAL_SERVER_ERROR.getCode());
+            sendResponse(resp, e.getMessage().getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    private static void fillExtraHeaders(HttpServletResponse resp, Map<String, Object> headers) {
+        headers.forEach((k, v) -> {
+            if (v instanceof Integer i) resp.addIntHeader(k, i);
+            if (v instanceof Long l) resp.addDateHeader(k, l);
+            if (v instanceof String s) resp.addHeader(k, s);
+        });
+    }
+
+    private static void sendResponse(HttpServletResponse resp, byte[] bytes) {
+        try (ServletOutputStream os = resp.getOutputStream()) {
+            os.write(bytes);
+        } catch (IOException io) {
+            logger.error("Microfox IO Error", io);
         }
     }
 }

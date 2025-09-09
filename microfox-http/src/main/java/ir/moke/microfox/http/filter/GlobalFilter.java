@@ -1,5 +1,6 @@
 package ir.moke.microfox.http.filter;
 
+import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.utils.TtyAsciiCodecs;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ public class GlobalFilter implements Filter, TtyAsciiCodecs {
             long duration = ChronoUnit.MILLIS.between(before, after);
             logger.debug("Request {} processed in {} ms", uri, duration);
         } catch (IOException | ServletException e) {
-            throw new RuntimeException(e);
+            throw new MicrofoxException(e);
         }
     }
 }
