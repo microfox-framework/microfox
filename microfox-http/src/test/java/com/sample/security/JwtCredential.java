@@ -1,6 +1,6 @@
 package com.sample.security;
 
-import ir.moke.microfox.api.http.Credential;
+import ir.moke.microfox.api.http.security.Credential;
 
 import java.time.ZonedDateTime;
 import java.util.List;

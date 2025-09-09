@@ -5,7 +5,7 @@ import com.sample.security.BasicAuthSecurity;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.SecuredRoute;
-import ir.moke.microfox.api.http.SecurityStrategy;
+import ir.moke.microfox.api.http.security.SecurityStrategy;
 
 import java.util.List;
 

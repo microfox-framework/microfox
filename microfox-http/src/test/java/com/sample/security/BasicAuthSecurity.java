@@ -1,9 +1,9 @@
 package com.sample.security;
 
-import ir.moke.microfox.api.http.Credential;
+import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.Request;
-import ir.moke.microfox.api.http.SecurityStrategy;
-import ir.moke.microfox.api.http.UsernamePasswordCredential;
+import ir.moke.microfox.api.http.security.SecurityStrategy;
+import ir.moke.microfox.api.http.security.UsernamePasswordCredential;
 
 import java.util.List;
 

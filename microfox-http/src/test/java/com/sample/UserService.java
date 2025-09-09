@@ -1,6 +1,6 @@
 package com.sample;
 
-import ir.moke.microfox.api.http.UsernamePasswordCredential;
+import ir.moke.microfox.api.http.security.UsernamePasswordCredential;
 import ir.moke.microfox.http.SecurityContext;
 
 public class UserService {

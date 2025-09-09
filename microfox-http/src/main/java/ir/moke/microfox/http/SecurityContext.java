@@ -1,10 +1,6 @@
 package ir.moke.microfox.http;
 
-import ir.moke.microfox.api.http.Credential;
-import ir.moke.microfox.api.http.SecurityStrategy;
-
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import ir.moke.microfox.api.http.security.Credential;
 
 public class SecurityContext {
     private static final ThreadLocal<Credential> CREDENTIAL_HOLDER = new ThreadLocal<>();
