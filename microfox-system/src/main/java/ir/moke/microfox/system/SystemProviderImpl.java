@@ -15,8 +15,8 @@ public class SystemProviderImpl implements SystemProvider {
     @Override
     public void activate() {
         LocalTime now = LocalTime.now();
-        long delay = 10 - (now.getSecond() % 10);
-        timer.scheduleAtFixedRate(new StatisticTask(), delay, 10);
+        long delay = 10 - (now.getSecond() % 10) * 1000;
+        timer.scheduleAtFixedRate(new StatisticTask(), delay, 10000);
     }
 
     private static void onShutdown() {
