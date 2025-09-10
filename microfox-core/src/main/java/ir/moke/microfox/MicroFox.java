@@ -1,15 +1,20 @@
 package ir.moke.microfox;
 
 import ch.qos.logback.classic.Level;
+import com.jcraft.jsch.ChannelSftp;
 import com.mongodb.client.MongoCollection;
 import ir.moke.kafir.http.Kafir;
 import ir.moke.microfox.api.elastic.ElasticProvider;
 import ir.moke.microfox.api.elastic.ElasticRepository;
-import ir.moke.microfox.api.ftp.FtpFile;
 import ir.moke.microfox.api.ftp.FtpProvider;
 import ir.moke.microfox.api.ftp.MicroFoxFtpConfig;
+import ir.moke.microfox.api.ftp.MicroFoxSftpConfig;
+import ir.moke.microfox.api.ftp.SftpProvider;
 import ir.moke.microfox.api.hc.HealthCheckProvider;
-import ir.moke.microfox.api.http.*;
+import ir.moke.microfox.api.http.Filter;
+import ir.moke.microfox.api.http.HttpProvider;
+import ir.moke.microfox.api.http.Method;
+import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
@@ -34,13 +39,14 @@ import ir.moke.microfox.logger.model.LogInfo;
 import ir.moke.microfox.utils.HttpClientConfig;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
+import org.apache.commons.net.ftp.FTPFile;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.Vector;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -48,6 +54,7 @@ public class MicroFox {
     private static final HttpProvider httpProvider = ServiceLoader.load(HttpProvider.class).findFirst().orElse(null);
     private static final JobProvider jobProvider = ServiceLoader.load(JobProvider.class).findFirst().orElse(null);
     private static final FtpProvider ftpProvider = ServiceLoader.load(FtpProvider.class).findFirst().orElse(null);
+    private static final SftpProvider sftpProvider = ServiceLoader.load(SftpProvider.class).findFirst().orElse(null);
     private static final MyBatisProvider myBatisProvider = ServiceLoader.load(MyBatisProvider.class).findFirst().orElse(null);
     private static final JpaProvider jpaProvider = ServiceLoader.load(JpaProvider.class).findFirst().orElse(null);
     private static final JmsProvider jmsProvider = ServiceLoader.load(JmsProvider.class).findFirst().orElse(null);
@@ -114,34 +121,64 @@ public class MicroFox {
         jobProvider.job(task, zonedDateTime);
     }
 
-    public static void ftpDownload(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, Path localDownloadDir) {
+    public static void ftpDownload(MicroFoxFtpConfig config, Path remoteFilePath, Path localDownloadDir) {
         if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpDownload(microFoxFtpConfig, remoteFilePath, localDownloadDir);
+        ftpProvider.ftpDownload(config, remoteFilePath, localDownloadDir);
     }
 
-    public static void ftpBatchDownload(MicroFoxFtpConfig microFoxFtpConfig, List<String> remoteFilePath, Path localDownloadDir) {
+    public static void ftpBatchDownload(MicroFoxFtpConfig config, List<Path> remoteFilePath, Path localDownloadDir) {
         if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpBatchDownload(microFoxFtpConfig, remoteFilePath, localDownloadDir);
+        ftpProvider.ftpBatchDownload(config, remoteFilePath, localDownloadDir);
     }
 
-    public static void ftpUpload(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, File file) {
+    public static void ftpUpload(MicroFoxFtpConfig config, Path remoteFilePath, Path file) {
         if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpUpload(microFoxFtpConfig, remoteFilePath, file);
+        ftpProvider.ftpUpload(config, remoteFilePath, file);
     }
 
-    public static void ftpBatchUpload(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, List<File> files) {
+    public static void ftpBatchUpload(MicroFoxFtpConfig config, Path remoteFilePath, List<Path> files) {
         if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpBatchUpload(microFoxFtpConfig, remoteFilePath, files);
+        ftpProvider.ftpBatchUpload(config, remoteFilePath, files);
     }
 
-    public static void ftpDelete(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath) {
+    public static void ftpDelete(MicroFoxFtpConfig config, Path remoteFilePath) {
         if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpDelete(microFoxFtpConfig, remoteFilePath);
+        ftpProvider.ftpDelete(config, remoteFilePath);
     }
 
-    public static void ftpList(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, Consumer<List<FtpFile>> consumer) {
+    public static void ftpList(MicroFoxFtpConfig config, Path remoteFilePath, Consumer<FTPFile[]> consumer) {
         if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpList(microFoxFtpConfig, remoteFilePath, consumer);
+        ftpProvider.ftpList(config, remoteFilePath, consumer);
+    }
+
+    public static void sftpDownload(MicroFoxSftpConfig config, Path remoteFilePath, Path localDownloadDir) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpDownload(config, remoteFilePath, localDownloadDir);
+    }
+
+    public static void sftpBatchDownload(MicroFoxSftpConfig config, List<Path> remoteFilePath, Path localDownloadDir) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpBatchDownload(config, remoteFilePath, localDownloadDir);
+    }
+
+    public static void sftpUpload(MicroFoxSftpConfig config, Path remoteFilePath, Path file) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpUpload(config, remoteFilePath, file);
+    }
+
+    public static void sftpBatchUpload(MicroFoxSftpConfig config, Path remoteFilePath, List<Path> files) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpBatchUpload(config, remoteFilePath, files);
+    }
+
+    public static void sftpDelete(MicroFoxSftpConfig config, Path remoteFilePath) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpDelete(config, remoteFilePath);
+    }
+
+    public static void sftpList(MicroFoxSftpConfig config, Path remoteFilePath, Consumer<Vector<ChannelSftp.LsEntry>> consumer) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpList(config, remoteFilePath, consumer);
     }
 
     public static <T> T mybatis(String identity, Class<T> mapper) {

@@ -23,6 +23,10 @@
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.mwiede</groupId>
+            <artifactId>jsch</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -1,23 +1,25 @@
 package ir.moke.microfox.api.ftp;
 
-import java.io.File;
+import org.apache.commons.net.ftp.FTPFile;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
 
 public interface FtpProvider {
-    void ftpDownload(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, Path localDownloadDir);
+    void ftpDownload(MicroFoxFtpConfig config, Path remoteFilePath, Path localDownloadDir);
 
-    void ftpBatchDownload(MicroFoxFtpConfig microFoxFtpConfig, List<String> remoteFilePath, Path localDownloadDir);
+    void ftpBatchDownload(MicroFoxFtpConfig config, List<Path> remoteFilePath, Path localDownloadDir);
 
-    void ftpUpload(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, File file);
+    void ftpUpload(MicroFoxFtpConfig config, Path remoteFilePath, Path file);
 
-    void ftpBatchUpload(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, List<File> files);
+    void ftpBatchUpload(MicroFoxFtpConfig config, Path remoteFilePath, List<Path> files);
 
-    void ftpDelete(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath);
-    void batchDelete(MicroFoxFtpConfig microFoxFtpConfig, List<String> remoteFilePath);
+    void ftpDelete(MicroFoxFtpConfig config, Path remoteFilePath);
 
-    void ftpList(MicroFoxFtpConfig microFoxFtpConfig, String remoteFilePath, Consumer<List<FtpFile>> consumer);
+    void batchDelete(MicroFoxFtpConfig config, List<Path> remoteFilePath);
+
+    void ftpList(MicroFoxFtpConfig config, Path remoteFilePath, Consumer<FTPFile[]> consumer);
 
 
 }

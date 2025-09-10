@@ -1,5 +1,6 @@
 package ir.moke.microfox.ftp;
 
+import ir.moke.microfox.api.ftp.MicroFoxFtpConfig;
 import ir.moke.microfox.exception.MicrofoxException;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -9,131 +10,150 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 public class FtpClient {
     private static final Logger logger = LoggerFactory.getLogger(FtpClient.class);
     private final FTPClient ftpClient = new FTPClient();
 
-    public void connect(String host, int port) {
+    public void connect(MicroFoxFtpConfig config) {
         try {
-            ftpClient.connect(host, port);
+            ftpClient.connect(config.host(), config.port());
+            if (config.dataTransferPortRangeMin() != null && config.dataTransferPortRangeMax() != null) {
+                ftpClient.setActivePortRange(config.dataTransferPortRangeMin(), config.dataTransferPortRangeMax());
+                ftpClient.enterLocalActiveMode();
+            }
         } catch (IOException e) {
-            logger.error("Failed connect to ftp server {}", host, e);
             throw new MicrofoxException(e);
         }
     }
 
-    public void login(String username, String password) {
+    public void login(MicroFoxFtpConfig config) {
         try {
-            ftpClient.login(username, password);
+            ftpClient.login(config.username(), config.password());
         } catch (IOException e) {
-            logger.error("Login failed, username: {}", username, e);
             throw new MicrofoxException(e);
         }
     }
 
-    public void anonymous() {
+    public void ftpDownload(Path downloadFile, Path targetDir) {
         try {
-            ftpClient.login("anonymous", "");
+            if (Files.isRegularFile(targetDir))
+                throw new RuntimeException("%s is not directory".formatted(targetDir));
+            // Set binary transfer mode
+            ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+            ftpClient.changeWorkingDirectory(downloadFile.getParent().toString());
+            // Download a file from FTP server
+            try (OutputStream outputStream = new FileOutputStream(targetDir.resolve(downloadFile.getFileName()).toFile())) {
+                boolean done = ftpClient.retrieveFile(downloadFile.toString(), outputStream);
+                if (!done) {
+                    logger.warn("download failed for {}", downloadFile);
+                }
+            }
         } catch (IOException e) {
-            logger.error("Login failed, username: anonymous", e);
-            throw new MicrofoxException(e);
+            logger.error("ftp error", e);
+        } finally {
+            disconnect();
         }
     }
 
-    public boolean ftpDownload(String downloadFile, Path downloadDir) throws IOException {
+    public void ftpBatchDownload(List<Path> listFilePaths, Path targetDir) {
         try {
-            if (Files.isRegularFile(downloadDir)) throw new RuntimeException("%s is not directory".formatted(downloadDir));
+            if (Files.isRegularFile(targetDir))
+                throw new RuntimeException("%s is not directory".formatted(targetDir));
             // Set binary transfer mode
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 
             // Download a file from FTP server
-            try (OutputStream outputStream = new FileOutputStream(downloadDir.resolve(downloadFile).toFile())) {
-                return ftpClient.retrieveFile(downloadFile, outputStream);
-            }
-        } finally {
-            if (ftpClient.isConnected()) {
-                ftpClient.disconnect();
-            }
-        }
-    }
-
-    public void ftpBatchDownload(List<String> listFilePaths, Path downloadDir) throws IOException {
-        try {
-            if (Files.isRegularFile(downloadDir)) throw new RuntimeException("%s is not directory".formatted(downloadDir));
-            // Set binary transfer mode
-            ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-
-            // Download a file from FTP server
-            for (String downloadFile : listFilePaths) {
-                Path file = Path.of(downloadFile);
-                try (OutputStream outputStream = new FileOutputStream(downloadDir.resolve(file.getFileName()).toFile())) {
-                    ftpClient.retrieveFile(downloadFile, outputStream);
+            for (Path downloadFile : listFilePaths) {
+                File file = downloadFile.toFile();
+                ftpClient.changeWorkingDirectory(file.getParent());
+                boolean exists = exists(downloadFile);
+                if (exists) {
+                    try (OutputStream outputStream = new FileOutputStream(targetDir.resolve(downloadFile.getFileName()).toFile())) {
+                        boolean done = ftpClient.retrieveFile(downloadFile.toString(), outputStream);
+                        if (!done) {
+                            logger.warn("download failed for {}", downloadFile);
+                        }
+                    }
                 }
             }
+        } catch (IOException e) {
+            logger.error("ftp error", e);
         } finally {
-            if (ftpClient.isConnected()) {
-                ftpClient.disconnect();
-            }
+            disconnect();
         }
     }
 
-    public void ftpUpload(String remotePath, File file) throws IOException {
+    public void ftpUpload(Path remoteDir, Path file) {
         try {
-            if (file.isDirectory()) return;
+            if (file.toFile().isDirectory()) return;
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-            ftpClient.storeFile(remotePath, new FileInputStream(file));
-        } finally {
-            if (ftpClient.isConnected()) {
-                ftpClient.disconnect();
+
+            boolean done = ftpClient.storeFile(remoteDir.toString(), new FileInputStream(file.toFile()));
+            if (!done) {
+                logger.warn("Upload failed for {}", file);
             }
+        } catch (IOException e) {
+            logger.error("ftp error", e);
+        } finally {
+            disconnect();
         }
     }
 
-    public void ftpBatchUpload(String remotePath, List<File> files) throws IOException {
+    public void ftpBatchUpload(Path remoteDir, List<Path> files) {
         try {
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-            for (File file : files) {
-                if (!file.isDirectory()) {
-                    ftpClient.storeFile(remotePath, new FileInputStream(file));
+            for (Path file : files) {
+                if (!file.toFile().isDirectory()) {
+                    boolean done = ftpClient.storeFile(remoteDir.toString(), new FileInputStream(file.toFile()));
+                    if (!done) {
+                        logger.warn("Upload failed for {}", file);
+                    }
                 }
             }
+        } catch (IOException e) {
+            logger.error("ftp error", e);
         } finally {
-            if (ftpClient.isConnected()) {
-                ftpClient.disconnect();
-            }
+            disconnect();
         }
     }
 
-    public void delete(String remoteFilePath) throws IOException {
+    public void delete(Path remoteFilePath) {
         try {
-            ftpClient.deleteFile(remoteFilePath);
+            ftpClient.deleteFile(remoteFilePath.toString());
+        } catch (IOException e) {
+            logger.error("ftp error", e);
         } finally {
-            if (ftpClient.isConnected()) {
-                ftpClient.disconnect();
-            }
+            disconnect();
         }
     }
 
-    public FTPFile[] listFiles(String remotePath) throws IOException {
+    private void disconnect() {
         try {
-            return ftpClient.listFiles(remotePath);
-        } finally {
             if (ftpClient.isConnected()) {
                 ftpClient.disconnect();
             }
+        } catch (Exception e) {
+            logger.error("ftp error", e);
         }
     }
 
-    public FTPFile[] listDirectories(String remotePath) throws IOException {
+    private boolean exists(Path remoteFilePath) {
+        FTPFile[] ftpFiles = listFiles(remoteFilePath);
+        if (ftpFiles.length == 0) return false;
+        return Arrays.stream(ftpFiles).anyMatch(item -> item.getName().equals(remoteFilePath.getFileName().toString()));
+    }
+
+    public FTPFile[] listFiles(Path remotePath) {
         try {
-            return ftpClient.listDirectories(remotePath);
+            return ftpClient.listFiles(remotePath.toString());
+        } catch (IOException e) {
+            logger.error("ftp error", e);
         } finally {
-            if (ftpClient.isConnected()) {
-                ftpClient.disconnect();
-            }
+            disconnect();
         }
+        return new FTPFile[0];
     }
-
 }
