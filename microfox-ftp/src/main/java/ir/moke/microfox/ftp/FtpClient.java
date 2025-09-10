@@ -53,8 +53,6 @@ public class FtpClient {
             }
         } catch (IOException e) {
             logger.error("ftp error", e);
-        } finally {
-            disconnect();
         }
     }
 
@@ -81,8 +79,6 @@ public class FtpClient {
             }
         } catch (IOException e) {
             logger.error("ftp error", e);
-        } finally {
-            disconnect();
         }
     }
 
@@ -91,14 +87,12 @@ public class FtpClient {
             if (file.toFile().isDirectory()) return;
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 
-            boolean done = ftpClient.storeFile(remoteDir.toString(), new FileInputStream(file.toFile()));
+            boolean done = ftpClient.storeFile(remoteDir.resolve(file.getFileName()).toString(), new FileInputStream(file.toFile()));
             if (!done) {
                 logger.warn("Upload failed for {}", file);
             }
         } catch (IOException e) {
             logger.error("ftp error", e);
-        } finally {
-            disconnect();
         }
     }
 
@@ -107,7 +101,7 @@ public class FtpClient {
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
             for (Path file : files) {
                 if (!file.toFile().isDirectory()) {
-                    boolean done = ftpClient.storeFile(remoteDir.toString(), new FileInputStream(file.toFile()));
+                    boolean done = ftpClient.storeFile(remoteDir.resolve(file.getFileName()).toString(), new FileInputStream(file.toFile()));
                     if (!done) {
                         logger.warn("Upload failed for {}", file);
                     }
@@ -115,8 +109,6 @@ public class FtpClient {
             }
         } catch (IOException e) {
             logger.error("ftp error", e);
-        } finally {
-            disconnect();
         }
     }
 
@@ -125,12 +117,10 @@ public class FtpClient {
             ftpClient.deleteFile(remoteFilePath.toString());
         } catch (IOException e) {
             logger.error("ftp error", e);
-        } finally {
-            disconnect();
         }
     }
 
-    private void disconnect() {
+    public void disconnect() {
         try {
             if (ftpClient.isConnected()) {
                 ftpClient.disconnect();
@@ -151,8 +141,6 @@ public class FtpClient {
             return ftpClient.listFiles(remotePath.toString());
         } catch (IOException e) {
             logger.error("ftp error", e);
-        } finally {
-            disconnect();
         }
         return new FTPFile[0];
     }

@@ -12,9 +12,9 @@ public interface SftpProvider {
 
     void sftpBatchDownload(MicroFoxSftpConfig config, List<Path> remoteFilePath, Path localDownloadDir);
 
-    void sftpUpload(MicroFoxSftpConfig config, Path remoteFilePath, Path file);
+    void sftpUpload(MicroFoxSftpConfig config, Path remoteDirPath, Path file, SftpMode mode);
 
-    void sftpBatchUpload(MicroFoxSftpConfig config, Path remoteFilePath, List<Path> files);
+    void sftpBatchUpload(MicroFoxSftpConfig config, Path remoteDirPath, List<Path> files, SftpMode mode);
 
     void sftpDelete(MicroFoxSftpConfig config, Path remoteFilePath);
 

@@ -2,6 +2,7 @@ package ir.moke.microfox.ftp;
 
 import com.jcraft.jsch.*;
 import ir.moke.microfox.api.ftp.MicroFoxSftpConfig;
+import ir.moke.microfox.api.ftp.SftpMode;
 import ir.moke.microfox.exception.MicrofoxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,49 +51,41 @@ public class SftpClient {
     }
 
     public void sftpBatchDownload(List<Path> listFilePaths, Path localDir) {
-        try {
-            if (Files.isRegularFile(localDir))
-                throw new RuntimeException("%s is not directory".formatted(localDir));
+        if (Files.isRegularFile(localDir))
+            throw new RuntimeException("%s is not directory".formatted(localDir));
 
-            // Download a file from FTP server
-            for (Path downloadFile : listFilePaths) {
-                boolean exists = exists(downloadFile);
-                if (exists) {
-                    try (OutputStream outputStream = new FileOutputStream(localDir.resolve(downloadFile.getFileName()).toFile())) {
-                        channel.get(downloadFile.toString(), outputStream);
-                    } catch (Exception e) {
-                        logger.error("sftp error", e);
-                    }
+        // Download a file from FTP server
+        for (Path downloadFile : listFilePaths) {
+            boolean exists = exists(downloadFile);
+            if (exists) {
+                try (OutputStream outputStream = new FileOutputStream(localDir.resolve(downloadFile.getFileName()).toFile())) {
+                    channel.get(downloadFile.toString(), outputStream);
+                } catch (Exception e) {
+                    logger.error("sftp error", e);
                 }
             }
-        } finally {
-            disconnect();
         }
     }
 
-    public void ftpUpload(Path remoteDir, Path file) {
+    public void ftpUpload(Path remoteDir, Path file, SftpMode mode) {
         try {
             if (file.toFile().isDirectory()) return;
             channel.cd(remoteDir.toString());
-            channel.put(remoteDir.toString(), file.toString());
+            channel.put(file.toString(), remoteDir.resolve(file.getFileName()).toString(), mode.getValue());
         } catch (SftpException e) {
             logger.error("sftp error", e);
-        } finally {
-            disconnect();
         }
     }
 
-    public void ftpBatchUpload(Path remoteDir, List<Path> files) {
+    public void ftpBatchUpload(Path remoteDir, List<Path> files, SftpMode mode) {
         try {
             for (Path file : files) {
                 if (!file.toFile().isDirectory()) {
-                    channel.put(remoteDir.toString(), file.toString());
+                    channel.put(file.toString(), remoteDir.resolve(file.getFileName()).toString(), mode.getValue());
                 }
             }
         } catch (SftpException e) {
             logger.error("sftp error", e);
-        } finally {
-            disconnect();
         }
     }
 
@@ -101,13 +94,11 @@ public class SftpClient {
             channel.rm(remoteFilePath.toString());
         } catch (SftpException e) {
             logger.error("sftp error", e);
-        } finally {
-            disconnect();
         }
     }
 
-    private void disconnect() {
-        if (channel.isConnected()) channel.disconnect();
+    public void disconnect() {
+        if (channel != null && channel.isConnected()) channel.disconnect();
     }
 
     private boolean exists(Path remoteFilePath) {
@@ -123,8 +114,6 @@ public class SftpClient {
             return channel.ls(remotePath.toString());
         } catch (SftpException e) {
             logger.error("sftp error", e);
-        } finally {
-            disconnect();
         }
         return null;
     }

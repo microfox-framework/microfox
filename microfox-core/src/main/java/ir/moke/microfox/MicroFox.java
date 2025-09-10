@@ -6,10 +6,7 @@ import com.mongodb.client.MongoCollection;
 import ir.moke.kafir.http.Kafir;
 import ir.moke.microfox.api.elastic.ElasticProvider;
 import ir.moke.microfox.api.elastic.ElasticRepository;
-import ir.moke.microfox.api.ftp.FtpProvider;
-import ir.moke.microfox.api.ftp.MicroFoxFtpConfig;
-import ir.moke.microfox.api.ftp.MicroFoxSftpConfig;
-import ir.moke.microfox.api.ftp.SftpProvider;
+import ir.moke.microfox.api.ftp.*;
 import ir.moke.microfox.api.hc.HealthCheckProvider;
 import ir.moke.microfox.api.http.Filter;
 import ir.moke.microfox.api.http.HttpProvider;
@@ -161,14 +158,14 @@ public class MicroFox {
         sftpProvider.sftpBatchDownload(config, remoteFilePath, localDownloadDir);
     }
 
-    public static void sftpUpload(MicroFoxSftpConfig config, Path remoteFilePath, Path file) {
+    public static void sftpUpload(MicroFoxSftpConfig config, Path remoteDirPath, Path file, SftpMode mode) {
         if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
-        sftpProvider.sftpUpload(config, remoteFilePath, file);
+        sftpProvider.sftpUpload(config, remoteDirPath, file, mode);
     }
 
-    public static void sftpBatchUpload(MicroFoxSftpConfig config, Path remoteFilePath, List<Path> files) {
+    public static void sftpBatchUpload(MicroFoxSftpConfig config, Path remoteDirPath, List<Path> files, SftpMode mode) {
         if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
-        sftpProvider.sftpBatchUpload(config, remoteFilePath, files);
+        sftpProvider.sftpBatchUpload(config, remoteDirPath, files, mode);
     }
 
     public static void sftpDelete(MicroFoxSftpConfig config, Path remoteFilePath) {

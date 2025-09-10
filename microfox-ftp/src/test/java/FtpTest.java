@@ -11,8 +11,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 1) Install vsftpd : apt install vsftpd
- * 2) add new user: useradd -mc test -s /bin/bash test ; sudo passwd test
+ * 1) Install vsftpd :
+ *    apt install vsftpd
+ * 2) add new user:
+ *    useradd -mc test -s /bin/bash test
+ *    sudo passwd test
+ *    sudo usermod -aG ftp test
  * <p>
  * Configuration For Test (WARNING: ONLY FOR TEST) :
  * <code>
@@ -103,7 +107,7 @@ public class FtpTest {
     @Test
     @Order(1)
     public void checkDownloadFile() {
-        MicroFox.ftpDownload(config, FTP_CHROOT_DIR.resolve(SINGLE_FILE), HOME_PATH);
+        MicroFox.ftpDownload(config, SINGLE_FILE, HOME_PATH);
         Assertions.assertTrue(HOME_PATH.resolve(SINGLE_FILE).toFile().exists());
     }
 

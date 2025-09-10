@@ -16,6 +16,7 @@ public class FtpProviderImpl implements FtpProvider {
         ftpClient.connect(config);
         ftpClient.login(config);
         ftpClient.ftpDownload(remoteFilePath, localDownloadDir);
+        ftpClient.disconnect();
     }
 
     @Override
@@ -24,6 +25,7 @@ public class FtpProviderImpl implements FtpProvider {
         ftpClient.connect(config);
         ftpClient.login(config);
         ftpClient.ftpBatchDownload(remoteFilePath, localDownloadDir);
+        ftpClient.disconnect();
     }
 
     @Override
@@ -40,6 +42,7 @@ public class FtpProviderImpl implements FtpProvider {
         ftpClient.connect(config);
         ftpClient.login(config);
         ftpClient.ftpBatchUpload(remoteFilePath, files);
+        ftpClient.disconnect();
     }
 
     @Override
@@ -48,6 +51,7 @@ public class FtpProviderImpl implements FtpProvider {
         ftpClient.connect(config);
         ftpClient.login(config);
         ftpClient.delete(remoteFilePath);
+        ftpClient.disconnect();
     }
 
     @Override
@@ -58,6 +62,7 @@ public class FtpProviderImpl implements FtpProvider {
         if (remoteFilePath != null && !remoteFilePath.isEmpty()) {
             remoteFilePath.forEach(ftpClient::delete);
         }
+        ftpClient.disconnect();
     }
 
     @Override
@@ -67,5 +72,6 @@ public class FtpProviderImpl implements FtpProvider {
         ftpClient.login(config);
         FTPFile[] ftpFiles = ftpClient.listFiles(remoteFilePath);
         consumer.accept(ftpFiles);
+        ftpClient.disconnect();
     }
 }
