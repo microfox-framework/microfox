@@ -9,7 +9,7 @@ import static ir.moke.microfox.MicroFox.jpa;
 public class JpaTest {
     static {
         DB.initializeH2();
-        DB.initializePostgres();
+//        DB.initializePostgres();
     }
 
     public static void main(String[] args) {
