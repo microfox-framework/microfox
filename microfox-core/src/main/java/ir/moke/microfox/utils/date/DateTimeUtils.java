@@ -15,9 +15,11 @@ import java.util.regex.Pattern;
 public class DateTimeUtils {
     @SuppressWarnings("unchecked")
     public static <T extends Temporal> T fromString(String input, TimeZone timeZone, Locale locale, CalendarType type, DatePattern pattern, Class<T> clazz) {
-        if (input == null || timeZone == null || locale == null || type == null || pattern == null || clazz == null) {
+        if (input == null || locale == null || type == null || pattern == null || clazz == null) {
             throw new IllegalArgumentException("Input parameters must not be null");
         }
+
+        TimeZone tz = timeZone == null ? TimeZone.getTimeZone(ZoneId.systemDefault().getId()) : timeZone;
 
         try {
             ULocale uLocale = new ULocale("%s@calendar=%s".formatted(locale.toString(), type.getValue()));
@@ -34,11 +36,11 @@ public class DateTimeUtils {
                     if (!off.contains(":")) off = off.substring(0, 3) + ":" + off.substring(3);
                     sdf.setTimeZone(TimeZone.getTimeZone(ZoneOffset.of(off).getId()));
                 } else {
-                    sdf.setTimeZone(timeZone);
+                    sdf.setTimeZone(tz);
                 }
             }
 
-            ZoneId zid = ZoneId.of(timeZone.getID());
+            ZoneId zid = ZoneId.of(tz.getID());
 
             // Parse to java.util.Date, then convert to Instant
             Date parsedDate = sdf.parse(input);

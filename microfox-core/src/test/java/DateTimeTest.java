@@ -55,21 +55,25 @@ public class DateTimeTest {
 
         System.out.println("-------------------");
 
-        String timeString = "12:30:00.000+0330";
-        LocalTime output2 = DateTimeUtils.fromString(timeString, TimeZone.getTimeZone("America/Bahia"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_WITH_OFFSET_PATTERN, LocalTime.class);
+        String timeZoneString = "12:30:00.000+0330";
+        LocalTime output2 = DateTimeUtils.fromString(timeZoneString, TimeZone.getTimeZone("America/Bahia"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_WITH_OFFSET_PATTERN, LocalTime.class);
         System.out.println(output2);
 
-        LocalTime output3 = DateTimeUtils.fromString(timeString, TimeZone.getTimeZone("UTC"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_WITH_OFFSET_PATTERN, LocalTime.class);
+        LocalTime output3 = DateTimeUtils.fromString(timeZoneString, TimeZone.getTimeZone("UTC"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_WITH_OFFSET_PATTERN, LocalTime.class);
         System.out.println(output3);
 
-        LocalTime output4 = DateTimeUtils.fromString(timeString, TimeZone.getTimeZone("Asia/Tokyo"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_WITH_OFFSET_PATTERN, LocalTime.class);
+        LocalTime output4 = DateTimeUtils.fromString(timeZoneString, TimeZone.getTimeZone("Asia/Tokyo"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_WITH_OFFSET_PATTERN, LocalTime.class);
         System.out.println(output4);
+
+        String timeString = "12:30:00";
+        LocalTime output5 = DateTimeUtils.fromString(timeString, TimeZone.getTimeZone("Asia/Tokyo"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_PATTERN, LocalTime.class);
+        System.out.println(output5);
     }
 
     @Test
     public void checkTimeZone() {
         String fullDateTimeZoneString = "1404-04-25T12:30:00.000+0330";
-        ZonedDateTime zonedDateTime = DateTimeUtils.fromString(fullDateTimeZoneString, TimeZone.getTimeZone("UTC"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.ISO_8601, ZonedDateTime.class);
+        ZonedDateTime zonedDateTime = DateTimeUtils.fromString(fullDateTimeZoneString, null, Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.ISO_8601, ZonedDateTime.class);
         System.out.println(zonedDateTime);
     }
 }
