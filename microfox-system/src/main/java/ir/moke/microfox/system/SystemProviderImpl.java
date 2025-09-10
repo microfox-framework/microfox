@@ -19,7 +19,7 @@ public class SystemProviderImpl implements SystemProvider {
 
     @Override
     public void activate() {
-        ses.scheduleWithFixedDelay(this::run, 0, 30, TimeUnit.SECONDS);
+        ses.scheduleAtFixedRate(this::run, 0, 30, TimeUnit.SECONDS);
     }
 
     public synchronized void run() {
