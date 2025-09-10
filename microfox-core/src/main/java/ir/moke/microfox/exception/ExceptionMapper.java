@@ -1,7 +1,7 @@
 package ir.moke.microfox.exception;
 
-import ir.moke.microfox.api.http.ResponseObject;
+import ir.moke.microfox.api.http.ErrorObject;
 
 public interface ExceptionMapper<T extends Throwable> {
-    ResponseObject toResponse(T throwable);
+    ErrorObject toResponse(T throwable);
 }

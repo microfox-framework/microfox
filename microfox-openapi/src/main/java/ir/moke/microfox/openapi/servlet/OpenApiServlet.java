@@ -30,15 +30,15 @@ public class OpenApiServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         if (pathInfo.equalsIgnoreCase("/docs/rapidoc-min.js")) {
             resp.setContentType(ContentType.TEXT_JAVASCRIPT.getType());
-            resp.getWriter().write(rapidocJS());
+            resp.getOutputStream().write(rapidocJS().getBytes());
         } else if (pathInfo.endsWith("woff2")) {
             String[] split = pathInfo.split("/");
             String fontFile = split[split.length - 1];
             resp.setContentType(ContentType.FONT_WOFF2.getType());
-            resp.getWriter().write(fontWOFF2(fontFile));
+            resp.getOutputStream().write(fontWOFF2(fontFile).getBytes());
         } else if (pathInfo.equalsIgnoreCase("/docs/openapi.json")) {
             resp.setContentType(ContentType.APPLICATION_JSON.getType());
-            resp.getWriter().write(json);
+            resp.getOutputStream().write(json.getBytes());
         } else if (pathInfo.equalsIgnoreCase("/docs/microfox.png")) {
             resp.setContentType(ContentType.IMAGE_PNG.getType());
             byte[] bytes = logoPNG();
@@ -47,7 +47,7 @@ public class OpenApiServlet extends HttpServlet {
             }
         } else {
             resp.setContentType(ContentType.TEXT_HTML.getType());
-            resp.getWriter().write(indexHTML());
+            resp.getOutputStream().write(indexHTML().getBytes());
         }
     }
 

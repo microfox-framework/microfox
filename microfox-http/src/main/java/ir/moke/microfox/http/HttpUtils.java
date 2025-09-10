@@ -142,7 +142,7 @@ public class HttpUtils {
     public static void handleExceptionMapper(HttpServletResponse resp, Exception e) {
         ExceptionMapper<Throwable> mapper = ExceptionMapperHolder.get(e);
         if (mapper != null) {
-            ResponseObject ro = mapper.toResponse(e);
+            ErrorObject ro = mapper.toResponse(e);
             Optional.ofNullable(ro.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
             Optional.ofNullable(ro.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
             Optional.ofNullable(ro.getHeaders()).ifPresent(item -> fillExtraHeaders(resp, item));
@@ -165,9 +165,10 @@ public class HttpUtils {
         });
     }
 
-    private static void sendResponse(HttpServletResponse resp, byte[] bytes) {
-        try (ServletOutputStream os = resp.getOutputStream()) {
-            os.write(bytes);
+    public static void sendResponse(HttpServletResponse resp, byte[] bytes) {
+        try {
+            ServletOutputStream outputStream = resp.getOutputStream();
+            outputStream.write(bytes);
         } catch (IOException io) {
             logger.error("Microfox IO Error", io);
         }

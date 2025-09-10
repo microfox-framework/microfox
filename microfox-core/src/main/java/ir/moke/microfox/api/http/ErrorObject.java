@@ -11,7 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ResponseObject {
+public class ErrorObject {
     private final StatusCode statusCode;
     private final ContentType contentType;
     private final Map<String, Object> headers;
@@ -20,7 +20,7 @@ public class ResponseObject {
     private final String characterEncoding;
     private final List<Cookie> cookies;
 
-    private ResponseObject(Builder builder) {
+    private ErrorObject(Builder builder) {
         this.statusCode = builder.statusCode;
         this.contentType = builder.contentType;
         this.headers = builder.headers;
@@ -128,8 +128,8 @@ public class ResponseObject {
             return this;
         }
 
-        public ResponseObject build() {
-            return new ResponseObject(this);
+        public ErrorObject build() {
+            return new ErrorObject(this);
         }
     }
 }

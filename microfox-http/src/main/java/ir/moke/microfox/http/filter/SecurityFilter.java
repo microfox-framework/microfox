@@ -69,7 +69,7 @@ public class SecurityFilter implements Filter {
     private void sendError(HttpServletResponse resp, StatusCode code, String message) {
         try {
             resp.setStatus(code.getCode());
-            resp.getWriter().write(message);
+            resp.getOutputStream().write(message.getBytes());
         } catch (IOException e) {
             throw new MicrofoxException(e);
         }

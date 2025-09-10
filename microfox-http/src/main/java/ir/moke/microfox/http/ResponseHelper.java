@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
@@ -21,8 +20,8 @@ public class ResponseHelper {
 
     public static void body(String payload, HttpServletResponse response) {
         try {
-            PrintWriter writer = response.getWriter();
-            writer.write(payload);
+            ServletOutputStream outputStream = response.getOutputStream();
+            outputStream.write(payload.getBytes());
         } catch (IOException e) {
             throw new MicrofoxException(e);
         }
@@ -32,8 +31,8 @@ public class ResponseHelper {
         try {
             contentType(ContentType.APPLICATION_JSON, response);
             String json = JsonUtils.toJson(o);
-            PrintWriter writer = response.getWriter();
-            writer.write(json);
+            ServletOutputStream outputStream = response.getOutputStream();
+            outputStream.write(json.getBytes());
         } catch (IOException e) {
             throw new MicrofoxException(e);
         }
@@ -41,12 +40,12 @@ public class ResponseHelper {
 
     public static void sse(SseObject sseObject, HttpServletResponse response) {
         try {
-            PrintWriter writer = response.getWriter();
-            Optional.ofNullable(sseObject.retry()).ifPresent(item -> writer.write("retry: %s \n".formatted(sseObject.retry())));
-            Optional.ofNullable(sseObject.id()).ifPresent(item -> writer.write("id: %s \n".formatted(sseObject.id())));
-            Optional.ofNullable(sseObject.event()).ifPresent(item -> writer.write("event: %s \n".formatted(sseObject.event())));
-            Optional.ofNullable(sseObject.data()).ifPresent(item -> writer.write("data: %s \n\n".formatted(sseObject.data())));
-            writer.flush();
+            ServletOutputStream outputStream = response.getOutputStream();
+            Optional.ofNullable(sseObject.retry()).ifPresent(item -> HttpUtils.sendResponse(response, "retry: %s \n".formatted(sseObject.retry()).getBytes()));
+            Optional.ofNullable(sseObject.id()).ifPresent(item -> HttpUtils.sendResponse(response, "id: %s \n".formatted(sseObject.id()).getBytes()));
+            Optional.ofNullable(sseObject.event()).ifPresent(item -> HttpUtils.sendResponse(response, "event: %s \n".formatted(sseObject.event()).getBytes()));
+            Optional.ofNullable(sseObject.data()).ifPresent(item -> HttpUtils.sendResponse(response, "data: %s \n\n".formatted(sseObject.data()).getBytes()));
+            outputStream.flush();
         } catch (IOException e) {
             throw new MicrofoxException(e);
         }

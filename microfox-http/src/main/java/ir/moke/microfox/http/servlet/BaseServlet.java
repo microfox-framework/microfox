@@ -5,7 +5,6 @@ import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.sse.SseInfo;
 import ir.moke.microfox.api.http.sse.SseSubscriber;
-import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.http.HttpUtils;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.RouteInfo;
@@ -76,10 +75,9 @@ public class BaseServlet extends HttpServlet {
             Route route = routeInfo.route();
             route.handle(HttpUtils.getRequest(req), HttpUtils.getResponse(resp));
         } catch (Exception e) {
-            throw new MicrofoxException(e);
+            HttpUtils.handleExceptionMapper(resp, e);
         }
     }
-
 
     private static void handleSse(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType(ContentType.TEXT_EVENT_STREAM.getType());
