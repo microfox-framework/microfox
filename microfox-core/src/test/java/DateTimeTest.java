@@ -1,3 +1,4 @@
+import com.ibm.icu.util.TimeZone;
 import ir.moke.microfox.utils.date.CalendarType;
 import ir.moke.microfox.utils.date.DatePattern;
 import ir.moke.microfox.utils.date.DateTimeUtils;
@@ -12,7 +13,7 @@ public class DateTimeTest {
 
     @Test
     public void checkConvertZonedDateTime() {
-        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(2025, 7, 16, 12, 30, 0, 0, ZoneId.of("Asia/Tehran"));
         String enOutput = DateTimeUtils.toString(zonedDateTime, Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.ISO_8601);
         String faOutput = DateTimeUtils.toString(zonedDateTime, Locale.of("fa_IR"), CalendarType.PERSIAN, DatePattern.ISO_8601);
         String faOutputIslamic = DateTimeUtils.toString(zonedDateTime, Locale.of("fa_IR"), CalendarType.ISLAMIC, DatePattern.ISO_8601);
@@ -26,15 +27,15 @@ public class DateTimeTest {
     @Test
     public void checkStringToInstant() {
         // TimeZone : Asia/Tehran
-        String en = "1404-05-12T23:16:22.386Z";
-        String fa = "۱۴۰۴-۰۵-۱۲T۲۳:۱۶:۲۲.۳۸۶Z";
-        String faIslamic = "۱۴۴۷-۰۲-۱۰T۲۳:۱۶:۲۲.۳۸۶Z";
-        String arIslamic = "١٤٤٧-٠٢-١٠T٢٣:١٦:٢٢.٣٨٦Z";
+        String en = "1404-05-12T12:30:00.000Z";
+        String fa = "۱۴۰۴-۰۴-۲۵T۱۲:۳۰:۰۰.۰۰۰Z";
+        String faIslamic = "۱۴۴۷-۰۱-۲۱T۱۲:۳۰:۰۰.۰۰۰Z";
+        String arIslamic = "١٤٤٧-٠١-٢١T١٢:٣٠:٠٠.٠٠٠Z";
 
-        ZonedDateTime enOutput = DateTimeUtils.fromString(en, ZoneId.of("Asia/Tehran"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.ISO_8601, ZonedDateTime.class);
-        ZonedDateTime faOutput = DateTimeUtils.fromString(fa, ZoneId.of("Asia/Tehran"), Locale.of("fa_IR"), CalendarType.PERSIAN, DatePattern.ISO_8601, ZonedDateTime.class);
-        ZonedDateTime faIslamicOutput = DateTimeUtils.fromString(faIslamic, ZoneId.of("Asia/Tehran"), Locale.of("fa_IR"), CalendarType.ISLAMIC, DatePattern.ISO_8601, ZonedDateTime.class);
-        ZonedDateTime arIslamicOutput = DateTimeUtils.fromString(arIslamic, ZoneId.of("Asia/Tehran"), Locale.of("ar_SA"), CalendarType.ISLAMIC, DatePattern.ISO_8601, ZonedDateTime.class);
+        ZonedDateTime enOutput = DateTimeUtils.fromString(en, TimeZone.getTimeZone("Asia/Tehran"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.ISO_8601, ZonedDateTime.class);
+        ZonedDateTime faOutput = DateTimeUtils.fromString(fa, TimeZone.getTimeZone("Asia/Tehran"), Locale.of("fa_IR"), CalendarType.PERSIAN, DatePattern.ISO_8601, ZonedDateTime.class);
+        ZonedDateTime faIslamicOutput = DateTimeUtils.fromString(faIslamic, TimeZone.getTimeZone("Asia/Tehran"), Locale.of("fa_IR"), CalendarType.ISLAMIC, DatePattern.ISO_8601, ZonedDateTime.class);
+        ZonedDateTime arIslamicOutput = DateTimeUtils.fromString(arIslamic, TimeZone.getTimeZone("Asia/Tehran"), Locale.of("ar_SA"), CalendarType.ISLAMIC, DatePattern.ISO_8601, ZonedDateTime.class);
         System.out.println(enOutput);
         System.out.println(faOutput);
         System.out.println(faIslamicOutput);
@@ -48,12 +49,27 @@ public class DateTimeTest {
     @Test
     public void checkStringToLocalTime() {
         // TimeZone : Asia/Tehran
-        String fullDateTimeZoneString = "1404-05-12T23:16:22.386Z";
-        LocalTime output1 = DateTimeUtils.fromString(fullDateTimeZoneString, ZoneId.of("Asia/Tehran"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.ISO_8601, LocalTime.class);
+        String fullDateTimeZoneString = "1404-04-25T12:30:00.000+0330";
+        LocalTime output1 = DateTimeUtils.fromString(fullDateTimeZoneString, TimeZone.getTimeZone("UTC"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.ISO_8601, LocalTime.class);
         System.out.println(output1);
 
-        String timeString = "23:16:22";
-        LocalTime output2 = DateTimeUtils.fromString(timeString, ZoneId.of("Asia/Tehran"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_PATTERN, LocalTime.class);
+        System.out.println("-------------------");
+
+        String timeString = "12:30:00.000+0330";
+        LocalTime output2 = DateTimeUtils.fromString(timeString, TimeZone.getTimeZone("America/Bahia"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_WITH_OFFSET_PATTERN, LocalTime.class);
         System.out.println(output2);
+
+        LocalTime output3 = DateTimeUtils.fromString(timeString, TimeZone.getTimeZone("UTC"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_WITH_OFFSET_PATTERN, LocalTime.class);
+        System.out.println(output3);
+
+        LocalTime output4 = DateTimeUtils.fromString(timeString, TimeZone.getTimeZone("Asia/Tokyo"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.FULL_TIME_WITH_OFFSET_PATTERN, LocalTime.class);
+        System.out.println(output4);
+    }
+
+    @Test
+    public void checkTimeZone() {
+        String fullDateTimeZoneString = "1404-04-25T12:30:00.000+0330";
+        ZonedDateTime zonedDateTime = DateTimeUtils.fromString(fullDateTimeZoneString, TimeZone.getTimeZone("UTC"), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.ISO_8601, ZonedDateTime.class);
+        System.out.println(zonedDateTime);
     }
 }

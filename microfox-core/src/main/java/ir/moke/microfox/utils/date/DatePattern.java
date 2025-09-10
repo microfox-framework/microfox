@@ -15,6 +15,7 @@ public enum DatePattern {
     TIMESTAMP_DATE_TIME_PATTERN("yyyyMMddHHmmss"),              // 20101020103030
     TIME_PATTERN("HH:mm"),                                      // 10:30
     FULL_TIME_PATTERN("HH:mm:ss"),                              // 10:30:20
+    FULL_TIME_WITH_OFFSET_PATTERN("HH:mm:ss.SSSX"),                 // 12:30:00.000+0330
     MINIMIZED_TIME_PATTERN("HHmmss"),                           // 103045
     ISO_TRANSMISSION_DATE_PATTERN("MMddHHmmss"),                // 1020103030
     ISO_LOCAL_TRANSACTION_DATE_TIME_PATTERN("yyMMddHHmmss"),    // 101020103030
@@ -23,7 +24,7 @@ public enum DatePattern {
     ISO_SETTLEMENT_FULL_DATE_PATTERN("ddMMyyyy"),               // 20102017
     ISO_EXPIRY_DATE_PATTERN("yyMM"),                            // 1010
     DATE_TIME_SPACE_PATTERN("yyyyMMdd HHmmss"),                 // 20101020 103030
-    ISO_8601("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),                   // 2015-06-27T13:16:37.363Z
+    ISO_8601("yyyy-MM-dd'T'HH:mm:ss.SSSX"),                   // 2015-06-27T13:16:37.363Z
     FULL_DATE_TIME_BY_HYPHEN_PATTERN_WITH_T_SEPERATOR("yyyy-MM-dd'T'HH:mm:ss");    // 2010-10-20T10:30:30
 
     private final String pattern;
