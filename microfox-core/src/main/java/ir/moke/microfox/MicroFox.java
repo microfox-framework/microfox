@@ -66,10 +66,10 @@ public class MicroFox {
     static {
         LoggerManager.registerLog(new ConsoleLogInfo("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
         MicroFoxEnvironment.introduce();
+        Optional.ofNullable(systemProvider).ifPresent(SystemProvider::activate);
         Optional.ofNullable(healthCheckProvider).ifPresent(HealthCheckProvider::activate);
         Optional.ofNullable(openApiProvider).ifPresent(OpenApiProvider::registerOpenAPI);
         Optional.ofNullable(metricsProvider).ifPresent(MetricsProvider::registerMetrics);
-        Optional.ofNullable(systemProvider).ifPresent(SystemProvider::activate);
     }
 
     public static void logger(LogInfo log) {
