@@ -65,7 +65,7 @@ public class MicroFox {
 
     static {
         LoggerManager.registerLog(new ConsoleLogInfo("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
-        MicrofoxEnvironment.introduce();
+        MicroFoxEnvironment.introduce();
         Optional.ofNullable(healthCheckProvider).ifPresent(HealthCheckProvider::activate);
         Optional.ofNullable(openApiProvider).ifPresent(OpenApiProvider::registerOpenAPI);
         Optional.ofNullable(metricsProvider).ifPresent(MetricsProvider::registerMetrics);

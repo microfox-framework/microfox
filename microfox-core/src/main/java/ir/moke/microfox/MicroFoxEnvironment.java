@@ -13,8 +13,8 @@ import java.util.*;
 import static ir.moke.microfox.utils.StringUtils.normalizeKey;
 import static ir.moke.microfox.utils.TtyAsciiCodecs.*;
 
-public class MicrofoxEnvironment {
-    private static final Logger logger = LoggerFactory.getLogger(MicrofoxEnvironment.class);
+public class MicroFoxEnvironment {
+    private static final Logger logger = LoggerFactory.getLogger(MicroFoxEnvironment.class);
     private static final Map<Object, Object> sortedMap = new TreeMap<>(loadEnvironments());
 
     private static void printEnvironments() {
@@ -34,7 +34,7 @@ public class MicrofoxEnvironment {
     }
 
     private static void printLogo() {
-        try (InputStream inputStream = MicrofoxEnvironment.class.getClassLoader().getResourceAsStream("logo")) {
+        try (InputStream inputStream = MicroFoxEnvironment.class.getClassLoader().getResourceAsStream("logo")) {
             if (inputStream != null) {
                 System.out.println(new String(inputStream.readAllBytes()));
             }
@@ -69,7 +69,7 @@ public class MicrofoxEnvironment {
 
     private static Properties loadPropertiesFile() throws IOException {
         Properties properties = new Properties();
-        Enumeration<URL> resources = MicrofoxEnvironment.class.getClassLoader().getResources("application.properties");
+        Enumeration<URL> resources = MicroFoxEnvironment.class.getClassLoader().getResources("application.properties");
         List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
         for (URL url : urls) {
             StringUtils.readAllLines(url.openStream())

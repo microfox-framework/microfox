@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import ir.moke.microfox.MicrofoxEnvironment;
+import ir.moke.microfox.MicroFoxEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +26,7 @@ public class YamlUtils {
     public static Properties loadAndFlatten() {
         Properties props = new Properties();
         try {
-            Enumeration<URL> resources = MicrofoxEnvironment.class.getClassLoader().getResources("application.yaml");
+            Enumeration<URL> resources = MicroFoxEnvironment.class.getClassLoader().getResources("application.yaml");
             List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
             for (URL url : urls) {
                 try (InputStream is = url.openStream()) {

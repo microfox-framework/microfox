@@ -1,7 +1,7 @@
 package ir.moke.microfox.http;
 
 import ir.moke.jsysbox.file.JFile;
-import ir.moke.microfox.MicrofoxEnvironment;
+import ir.moke.microfox.MicroFoxEnvironment;
 import ir.moke.microfox.api.http.*;
 import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.ExceptionMapperHolder;
@@ -79,7 +79,7 @@ public class HttpUtils {
     }
 
     public static String concatContextPath(String path) {
-        return !MicrofoxEnvironment.getEnv("microfox.http.base.api").equals("/") ? MicrofoxEnvironment.getEnv("microfox.http.base.api") + path : path;
+        return !MicroFoxEnvironment.getEnv("microfox.http.base.api").equals("/") ? MicroFoxEnvironment.getEnv("microfox.http.base.api") + path : path;
     }
 
     public static String normalizePath(String path) {
@@ -90,7 +90,7 @@ public class HttpUtils {
     }
 
     public static void loadHtmlContent(Request req, Response resp) {
-        String pageDirectory = MicrofoxEnvironment.getEnv("microfox.http.html-directory");
+        String pageDirectory = MicroFoxEnvironment.getEnv("microfox.http.html-directory");
         if (pageDirectory == null || pageDirectory.isEmpty()) {
             logger.warn("page-directory value is null/empty");
             return;

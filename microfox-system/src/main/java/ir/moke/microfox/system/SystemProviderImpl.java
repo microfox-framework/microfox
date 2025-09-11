@@ -1,7 +1,7 @@
 package ir.moke.microfox.system;
 
 import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.MicrofoxEnvironment;
+import ir.moke.microfox.MicroFoxEnvironment;
 import ir.moke.microfox.api.system.SystemProvider;
 import ir.moke.microfox.utils.HttpClientConfig;
 
@@ -29,7 +29,7 @@ public class SystemProviderImpl implements SystemProvider {
 
     public static void send() {
         HttpClientConfig config = new HttpClientConfig.Builder()
-                .setBaseUri(MicrofoxEnvironment.getEnv("microfox.admin.base-url"))
+                .setBaseUri(MicroFoxEnvironment.getEnv("microfox.admin.base-url"))
                 .build();
         MicroFoxAdminAPI microFoxAdminAPI = MicroFox.httpClient(config, MicroFoxAdminAPI.class);
         microFoxAdminAPI.statistics(SYSTEM_DTO);

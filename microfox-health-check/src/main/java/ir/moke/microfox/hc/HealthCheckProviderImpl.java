@@ -2,7 +2,7 @@ package ir.moke.microfox.hc;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import ir.moke.microfox.MicrofoxEnvironment;
+import ir.moke.microfox.MicroFoxEnvironment;
 import ir.moke.microfox.api.hc.HealthCheckProvider;
 import ir.moke.microfox.exception.MicrofoxException;
 import org.slf4j.Logger;
@@ -14,10 +14,10 @@ import java.util.Map;
 
 public class HealthCheckProviderImpl implements HealthCheckProvider {
     private static final Logger logger = LoggerFactory.getLogger(HealthCheckProviderImpl.class);
-    private static final String host = MicrofoxEnvironment.getEnv("microfox.health.check.host");
-    private static final String port = MicrofoxEnvironment.getEnv("microfox.health.check.port");
-    private static final String path = MicrofoxEnvironment.getEnv("microfox.health.api.path");
-    private static final Boolean active = Boolean.parseBoolean(MicrofoxEnvironment.getEnv("microfox.health.check.active"));
+    private static final String host = MicroFoxEnvironment.getEnv("microfox.health.check.host");
+    private static final String port = MicroFoxEnvironment.getEnv("microfox.health.check.port");
+    private static final String path = MicroFoxEnvironment.getEnv("microfox.health.api.path");
+    private static final Boolean active = Boolean.parseBoolean(MicroFoxEnvironment.getEnv("microfox.health.check.active"));
     private static final HttpServer server;
 
     static {
@@ -53,7 +53,7 @@ public class HealthCheckProviderImpl implements HealthCheckProvider {
     @Override
     public void activate() {
         if (!active) return;
-        server.createContext(MicrofoxEnvironment.getEnv("microfox.health.api.path"), HealthCheckProviderImpl::healthCheckController);
+        server.createContext(MicroFoxEnvironment.getEnv("microfox.health.api.path"), HealthCheckProviderImpl::healthCheckController);
         server.start();
         logger.info("Health check HTTP server started at : http://{}:{}{}", host, port, path);
     }
