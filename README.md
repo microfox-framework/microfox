@@ -66,10 +66,6 @@ public class MicroFoxTest {
 ### [Wiki page for more information](https://github.com/microfox-framework/MicroFox/wiki)   
 
 ---
-### Example Project:
-
-https://github.com/microfox-framework/Microfox-Example
-
 <p align="center">
   <img src="assets/RapiDoc.png" alt="JOS" width="800"/>
 </p>
