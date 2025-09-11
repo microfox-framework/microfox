@@ -19,7 +19,10 @@ public class SystemProviderImpl implements SystemProvider {
 
     @Override
     public void activate() {
-        ses.scheduleAtFixedRate(this::run, 0, 30, TimeUnit.SECONDS);
+        boolean isActive = Boolean.parseBoolean(MicroFoxEnvironment.getEnv("microfox.system.active"));
+        if (isActive) {
+            ses.scheduleAtFixedRate(this::run, 0, 30, TimeUnit.SECONDS);
+        }
     }
 
     public synchronized void run() {
