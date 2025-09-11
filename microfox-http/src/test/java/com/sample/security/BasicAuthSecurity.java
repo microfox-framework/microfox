@@ -20,7 +20,7 @@ public class BasicAuthSecurity implements SecurityStrategy {
         *     return new UsernamePasswordCredential("user", "pass");
         * }
         * */
-//        throw new SampleException("ERROR");
+
         return new UsernamePasswordCredential("admin", "adminpass");
     }
 
