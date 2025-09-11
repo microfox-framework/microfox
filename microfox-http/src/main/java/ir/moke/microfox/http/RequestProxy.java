@@ -66,8 +66,11 @@ public class RequestProxy implements InvocationHandler {
             case "contentType" -> {
                 return RequestHelper.contentType(request);
             }
-            case "ip" -> {
-                return RequestHelper.ip(request);
+            case "remoteIp" -> {
+                return RequestHelper.remoteIp(request);
+            }
+            case "localIp" -> {
+                return RequestHelper.localIp(request);
             }
             case "url" -> {
                 return RequestHelper.url(request);

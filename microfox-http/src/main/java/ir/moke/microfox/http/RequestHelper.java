@@ -122,8 +122,12 @@ public class RequestHelper {
         return request.getContentType();
     }
 
-    public static String ip(HttpServletRequest request) {
+    public static String remoteIp(HttpServletRequest request) {
         return request.getRemoteAddr();
+    }
+
+    public static String localIp(HttpServletRequest request) {
+        return request.getLocalAddr();
     }
 
     public static String url(HttpServletRequest request) {

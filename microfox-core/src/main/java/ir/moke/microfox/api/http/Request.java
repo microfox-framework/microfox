@@ -38,7 +38,8 @@ public interface Request {
 
     String contentType();
 
-    String ip();
+    String remoteIp();
+    String localIp();
 
     String url();
 
