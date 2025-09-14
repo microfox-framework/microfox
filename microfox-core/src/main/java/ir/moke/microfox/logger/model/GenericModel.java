@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level;
 
 import java.util.Objects;
 
-public class GenericModel implements LogModel {
+public abstract class GenericModel implements LogModel {
     private final String appenderName;
     private final String packageName;
     private final Level level;
