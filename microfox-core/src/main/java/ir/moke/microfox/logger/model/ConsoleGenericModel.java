@@ -1,9 +1,10 @@
 package ir.moke.microfox.logger.model;
 
 import ch.qos.logback.classic.Level;
+import ir.moke.microfox.utils.LogUtils;
 
 public class ConsoleGenericModel extends GenericModel {
-    private String pattern;
+    private String pattern = LogUtils.DEFAULT_CONSOLE_PATTERN;
 
     public ConsoleGenericModel(String appenderName, String packageName, Level level) {
         super(appenderName, packageName, level);

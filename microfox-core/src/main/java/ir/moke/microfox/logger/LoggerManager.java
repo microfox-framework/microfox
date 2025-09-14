@@ -11,6 +11,7 @@ import ir.moke.microfox.logger.appender.FileAppender;
 import ir.moke.microfox.logger.appender.StreamAppender;
 import ir.moke.microfox.logger.appender.SyslogAppender;
 import ir.moke.microfox.logger.model.*;
+import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
@@ -32,7 +33,7 @@ public class LoggerManager {
             case FileGenericModel fileLog -> FileAppender.addFileLogger(fileLog);
             case StreamGenericModel streamLog -> StreamAppender.addOutputStreamLogger(streamLog);
             case ConsoleGenericModel consoleLog -> ConsoleAppender.addConsoleLogger(consoleLog);
-            default -> throw new UnsupportedOperationException("Log type not supported yet !");
+            default -> ConsoleAppender.addConsoleLogger(log.getAppenderName(), log.getPackageName(), Level.DEBUG, LogUtils.DEFAULT_CONSOLE_PATTERN);
         }
     }
 
