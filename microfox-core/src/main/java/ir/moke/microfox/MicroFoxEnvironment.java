@@ -74,6 +74,7 @@ public class MicroFoxEnvironment {
         for (URL url : urls) {
             StringUtils.readAllLines(url.openStream())
                     .filter(item -> !item.startsWith("#"))
+                    .filter(item -> !item.isEmpty())
                     .map(item -> item.split("=", 2))
                     .forEach(item -> properties.setProperty(StringUtils.normalizeKey(item[0].toLowerCase()), item[1]));
         }
