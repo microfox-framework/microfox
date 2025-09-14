@@ -31,8 +31,8 @@ import ir.moke.microfox.api.system.SystemProvider;
 import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.ExceptionMapperHolder;
 import ir.moke.microfox.logger.LoggerManager;
-import ir.moke.microfox.logger.model.ConsoleLogInfo;
-import ir.moke.microfox.logger.model.LogInfo;
+import ir.moke.microfox.logger.model.ConsoleLogModel;
+import ir.moke.microfox.logger.model.LogModel;
 import ir.moke.microfox.utils.HttpClientConfig;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
@@ -64,7 +64,7 @@ public class MicroFox {
     private static final MongoProvider mongoProvider = ServiceLoader.load(MongoProvider.class).findFirst().orElse(null);
 
     static {
-        LoggerManager.registerLog(new ConsoleLogInfo("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
+        LoggerManager.registerLog(new ConsoleLogModel("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
         MicroFoxEnvironment.introduce();
         Optional.ofNullable(systemProvider).ifPresent(SystemProvider::activate);
         Optional.ofNullable(healthCheckProvider).ifPresent(HealthCheckProvider::activate);
@@ -72,7 +72,7 @@ public class MicroFox {
         Optional.ofNullable(metricsProvider).ifPresent(MetricsProvider::registerMetrics);
     }
 
-    public static void logger(LogInfo log) {
+    public static void logger(LogModel log) {
         LoggerManager.registerLog(log);
     }
 

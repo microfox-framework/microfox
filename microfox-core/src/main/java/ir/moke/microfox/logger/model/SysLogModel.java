@@ -2,7 +2,7 @@ package ir.moke.microfox.logger.model;
 
 import ch.qos.logback.classic.Level;
 
-public class SysLogInfo extends LogInfo {
+public class SysLogModel extends LogModel {
     public enum Facility {
         USER,
         MAIL,
@@ -26,7 +26,7 @@ public class SysLogInfo extends LogInfo {
         LOCAL4,
         LOCAL5,
         LOCAL6,
-        LOCAL7
+        LOCAL7;
     }
 
     private final String host;
@@ -34,14 +34,14 @@ public class SysLogInfo extends LogInfo {
     private final Facility facility;
     private String pattern;
 
-    public SysLogInfo(String appenderName, String packageName, Level level, String host, int port, Facility facility) {
+    public SysLogModel(String appenderName, String packageName, Level level, String host, int port, Facility facility) {
         super(appenderName, packageName, level);
         this.facility = facility;
         this.port = port;
         this.host = host;
     }
 
-    public SysLogInfo(String name, String packageName, Level level, String host, int port, Facility facility, String pattern) {
+    public SysLogModel(String name, String packageName, Level level, String host, int port, Facility facility, String pattern) {
         super(name, packageName, level);
         this.host = host;
         this.port = port;

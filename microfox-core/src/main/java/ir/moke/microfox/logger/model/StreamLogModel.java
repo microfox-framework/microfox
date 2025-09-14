@@ -4,10 +4,10 @@ import ch.qos.logback.classic.Level;
 
 import java.io.OutputStream;
 
-public class StreamLogInfo extends LogInfo {
+public class StreamLogModel extends LogModel {
     private final OutputStream outputStream;
 
-    public StreamLogInfo(String appenderName, String packageName, Level level, OutputStream outputStream) {
+    public StreamLogModel(String appenderName, String packageName, Level level, OutputStream outputStream) {
         super(appenderName, packageName, level);
         this.outputStream = outputStream;
     }

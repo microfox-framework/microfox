@@ -2,7 +2,7 @@ package ir.moke.microfox.logger.model;
 
 import ch.qos.logback.classic.Level;
 
-public class FileLogInfo extends LogInfo {
+public class FileLogModel extends LogModel {
     private String pattern;
     private final String filePath;
     private final String fileNamePattern;
@@ -10,7 +10,7 @@ public class FileLogInfo extends LogInfo {
     private final int maxHistory;
     private final String totalSizeCap;
 
-    public FileLogInfo(String appenderName, String packageName, Level level, String filePath, String fileNamePattern, String maxFileSize, int maxHistory, String totalSizeCap) {
+    public FileLogModel(String appenderName, String packageName, Level level, String filePath, String fileNamePattern, String maxFileSize, int maxHistory, String totalSizeCap) {
         super(appenderName, packageName, level);
         this.filePath = filePath;
         this.fileNamePattern = fileNamePattern;
@@ -19,7 +19,7 @@ public class FileLogInfo extends LogInfo {
         this.totalSizeCap = totalSizeCap;
     }
 
-    public FileLogInfo(String name, String packageName, Level level, String pattern, String filePath, String fileNamePattern, String maxFileSize, int maxHistory, String totalSizeCap) {
+    public FileLogModel(String name, String packageName, Level level, String pattern, String filePath, String fileNamePattern, String maxFileSize, int maxHistory, String totalSizeCap) {
         super(name, packageName, level);
         this.pattern = pattern;
         this.filePath = filePath;

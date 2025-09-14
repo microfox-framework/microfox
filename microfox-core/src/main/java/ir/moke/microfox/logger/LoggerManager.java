@@ -26,12 +26,12 @@ public class LoggerManager {
         loggerContext.putObject(CoreConstants.PATTERN_RULE_REGISTRY, Map.of("highlighter", LogHighlighter.class.getCanonicalName()));
     }
 
-    public static void registerLog(LogInfo log) {
+    public static void registerLog(LogModel log) {
         switch (log) {
-            case SysLogInfo sysLog -> SyslogAppender.addSyslogLogger(sysLog);
-            case FileLogInfo fileLog -> FileAppender.addFileLogger(fileLog);
-            case StreamLogInfo streamLog -> StreamAppender.addOutputStreamLogger(streamLog);
-            case ConsoleLogInfo consoleLog -> ConsoleAppender.addConsoleLogger(consoleLog);
+            case SysLogModel sysLog -> SyslogAppender.addSyslogLogger(sysLog);
+            case FileLogModel fileLog -> FileAppender.addFileLogger(fileLog);
+            case StreamLogModel streamLog -> StreamAppender.addOutputStreamLogger(streamLog);
+            case ConsoleLogModel consoleLog -> ConsoleAppender.addConsoleLogger(consoleLog);
             default -> throw new UnsupportedOperationException("Log type not supported yet !");
         }
     }
