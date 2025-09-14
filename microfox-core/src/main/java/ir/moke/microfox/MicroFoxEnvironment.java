@@ -55,7 +55,7 @@ public class MicroFoxEnvironment {
             properties.putAll(loadPropertiesFile());
 
             // Load and flatten application.yaml (if exists)
-            properties.putAll(YamlUtils.loadAndFlatten());
+            properties.putAll(YamlUtils.loadAsProperties());
 
             // Merge environment variables
             properties.putAll(System.getenv());

@@ -23,10 +23,14 @@ public class YamlUtils {
         yamlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
-    public static Properties loadAndFlatten() {
+    public static Properties loadAsProperties() {
         Properties props = new Properties();
         try {
             Enumeration<URL> resources = MicroFoxEnvironment.class.getClassLoader().getResources("application.yaml");
+            if (!resources.hasMoreElements()) {
+                resources = MicroFoxEnvironment.class.getClassLoader().getResources("application.yml");
+            }
+
             List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
             for (URL url : urls) {
                 try (InputStream is = url.openStream()) {
