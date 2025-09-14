@@ -23,7 +23,7 @@ public class GlobalFilter implements Filter, TtyAsciiCodecs {
             chain.doFilter(request, response);
             LocalDateTime after = LocalDateTime.now();
             long duration = ChronoUnit.MILLIS.between(before, after);
-            logger.debug("Request {} processed in {} ms", uri, duration);
+            logger.trace("Request {} processed in {} ms", uri, duration);
         } catch (IOException | ServletException e) {
             throw new MicrofoxException(e);
         }
