@@ -6,14 +6,14 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
-import ir.moke.microfox.logger.model.ConsoleLogModel;
+import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
 
 public class ConsoleAppender {
     private static final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-    public static void addConsoleLogger(ConsoleLogModel log) {
+    public static void addConsoleLogger(ConsoleGenericModel log) {
         addConsoleLogger(
                 log.getAppenderName(),
                 log.getPackageName(),

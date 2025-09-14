@@ -2,14 +2,14 @@ package ir.moke.microfox.logger.model;
 
 import ch.qos.logback.classic.Level;
 
-public class ConsoleLogModel extends LogModel {
+public class ConsoleGenericModel extends GenericModel {
     private String pattern;
 
-    public ConsoleLogModel(String appenderName, String packageName, Level level) {
+    public ConsoleGenericModel(String appenderName, String packageName, Level level) {
         super(appenderName, packageName, level);
     }
 
-    public ConsoleLogModel(String name, String packageName, Level level, String pattern) {
+    public ConsoleGenericModel(String name, String packageName, Level level, String pattern) {
         super(name, packageName, level);
         this.pattern = pattern;
     }

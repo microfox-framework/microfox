@@ -28,10 +28,10 @@ public class LoggerManager {
 
     public static void registerLog(LogModel log) {
         switch (log) {
-            case SysLogModel sysLog -> SyslogAppender.addSyslogLogger(sysLog);
-            case FileLogModel fileLog -> FileAppender.addFileLogger(fileLog);
-            case StreamLogModel streamLog -> StreamAppender.addOutputStreamLogger(streamLog);
-            case ConsoleLogModel consoleLog -> ConsoleAppender.addConsoleLogger(consoleLog);
+            case SysGenericModel sysLog -> SyslogAppender.addSyslogLogger(sysLog);
+            case FileGenericModel fileLog -> FileAppender.addFileLogger(fileLog);
+            case StreamGenericModel streamLog -> StreamAppender.addOutputStreamLogger(streamLog);
+            case ConsoleGenericModel consoleLog -> ConsoleAppender.addConsoleLogger(consoleLog);
             default -> throw new UnsupportedOperationException("Log type not supported yet !");
         }
     }
