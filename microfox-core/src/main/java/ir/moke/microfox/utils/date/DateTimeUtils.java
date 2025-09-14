@@ -14,9 +14,9 @@ import java.util.regex.Pattern;
 
 public class DateTimeUtils {
     @SuppressWarnings("unchecked")
-    public static <T extends Temporal> T fromString(String input, TimeZone timeZone, Locale locale, CalendarType type, DatePattern pattern, Class<T> clazz) {
-        if (input == null || locale == null || type == null || pattern == null || clazz == null) {
-            throw new IllegalArgumentException("Input parameters must not be null");
+    public static <T extends Temporal> T fromString(String strDate, TimeZone timeZone, Locale locale, CalendarType type, DatePattern pattern, Class<T> clazz) {
+        if (strDate == null || locale == null || type == null || pattern == null || clazz == null) {
+            throw new IllegalArgumentException("Input parameters date|locale|type|pattern|clazz should not be null");
         }
 
         TimeZone tz = timeZone == null ? TimeZone.getTimeZone(ZoneId.systemDefault().getId()) : timeZone;
@@ -27,10 +27,10 @@ public class DateTimeUtils {
             SimpleDateFormat sdf = new SimpleDateFormat(pattern.toString(), uLocale);
             sdf.setCalendar(calendar);
 
-            if (input.endsWith("Z")) {
+            if (strDate.endsWith("Z")) {
                 sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             } else {
-                Matcher m = Pattern.compile("([+-]\\d{2}:?\\d{2})$").matcher(input);
+                Matcher m = Pattern.compile("([+-]\\d{2}:?\\d{2})$").matcher(strDate);
                 if (m.find()) {
                     String off = m.group(1);
                     if (!off.contains(":")) off = off.substring(0, 3) + ":" + off.substring(3);
@@ -43,7 +43,7 @@ public class DateTimeUtils {
             ZoneId zid = ZoneId.of(tz.getID());
 
             // Parse to java.util.Date, then convert to Instant
-            Date parsedDate = sdf.parse(input);
+            Date parsedDate = sdf.parse(strDate);
             Instant instant = parsedDate.toInstant();
 
             // Map Instant to requested Temporal type
@@ -64,7 +64,7 @@ public class DateTimeUtils {
             }
 
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse date string: " + input, e);
+            throw new IllegalArgumentException("Failed to parse date string: " + strDate, e);
         }
     }
 
