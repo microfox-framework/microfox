@@ -5,6 +5,7 @@ import repository.PersonRepository;
 import java.util.List;
 
 import static ir.moke.microfox.MicroFox.jpa;
+import static ir.moke.microfox.MicroFox.jpaTxRollback;
 
 public class JpaTest {
     static {
@@ -20,9 +21,10 @@ public class JpaTest {
         // Print all
         PersonRepository personRepository = jpa("h2", PersonRepository.class);
         List<Person> people = personRepository.find();
-        System.out.println(people.size());
+        System.out.println("Person size: " + people.size());
 
         Person person1 = people.getFirst();
+        Person person2 = people.get(1); //second person
         // Update
         person1.setName("Sina");
         person1.setFamily("Zoheir");
@@ -30,10 +32,15 @@ public class JpaTest {
 
         // Delete item
         jpa("h2", PersonRepository.class, pr -> pr.delete(person1));
-
+        jpa("h2", PersonRepository.class, pr -> deletePerson2(pr, person2));
         // Criteria Query
         people = personRepository.find(null, null, null, 0, 100);
         people.forEach(System.out::println);
+    }
+
+    private static void deletePerson2(PersonRepository pr, Person person1) {
+        pr.delete(person1);
+        jpaTxRollback("h2");
     }
 
     private static void saveItems(PersonRepository personRepository) {

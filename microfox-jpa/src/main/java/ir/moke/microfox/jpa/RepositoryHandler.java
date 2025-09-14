@@ -31,7 +31,7 @@ public class RepositoryHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
         String name = method.getName();
-        logger.debug("Called: {}, args: {}", name, Arrays.toString(args));
+        logger.trace("Called: {}, args: {}", name, Arrays.toString(args));
 
         if (method.isAnnotationPresent(NamedQuery.class)) {
             return invokeNamedQuery(em, method, args);

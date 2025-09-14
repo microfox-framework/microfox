@@ -10,4 +10,6 @@ public interface JpaProvider {
     void jpaPrintCreateSchemaSQL(String persistenceUnitName);
 
     void jpaPrintUpdateSchemaSQL(String persistenceUnitName);
+
+    void rollback(String persistenceUnitName);
 }

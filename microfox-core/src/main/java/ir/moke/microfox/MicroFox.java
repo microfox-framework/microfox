@@ -32,7 +32,6 @@ import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.ExceptionMapperHolder;
 import ir.moke.microfox.logger.LoggerManager;
 import ir.moke.microfox.logger.model.ConsoleGenericModel;
-import ir.moke.microfox.logger.model.GenericModel;
 import ir.moke.microfox.logger.model.LogModel;
 import ir.moke.microfox.utils.HttpClientConfig;
 import jakarta.jms.JMSContext;
@@ -207,6 +206,11 @@ public class MicroFox {
     public static <T> void jpa(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
         jpaProvider.jpa(identity, repositoryClass, TransactionPolicy.REQUIRED, consumer);
+    }
+
+    public static <T> void jpaTxRollback(String identity) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.rollback(identity);
     }
 
     public static void jpaPrintCreateSchemaSQL(String identity) {

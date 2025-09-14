@@ -84,4 +84,11 @@ public class JpaProviderImpl implements JpaProvider {
     public void jpaPrintUpdateSchemaSQL(String identity) {
         JpaQueryGenerator.updateSchema(identity);
     }
+
+    @Override
+    public void rollback(String persistenceUnitName) {
+        EntityManager em = JpaFactory.getEntityManager(persistenceUnitName);
+        EntityTransaction tx = em.getTransaction();
+        tx.rollback();
+    }
 }
