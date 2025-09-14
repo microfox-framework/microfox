@@ -31,7 +31,7 @@ public class ResponseProxy implements InvocationHandler {
             case "body" -> invokeBody(args);
             case "sse" -> ResponseHelper.sse((SseObject) args[0], response);
             case "contentType" -> ResponseHelper.contentType((ContentType) args[0], response);
-            case "status" -> ResponseHelper.status((Integer) args[0], response);
+            case "status" -> ResponseHelper.status(args[0], response);
             case "contentLength" -> ResponseHelper.contentLength((Integer) args[0], response);
             case "header" -> invokeHeader(args);
             case "cookie" -> ResponseHelper.cookie((Cookie) args[0], response);

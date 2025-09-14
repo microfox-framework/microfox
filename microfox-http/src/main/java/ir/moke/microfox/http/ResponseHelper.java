@@ -2,6 +2,7 @@ package ir.moke.microfox.http;
 
 import ir.moke.kafir.utils.JsonUtils;
 import ir.moke.microfox.api.http.ContentType;
+import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicrofoxException;
 import jakarta.servlet.ServletOutputStream;
@@ -55,8 +56,12 @@ public class ResponseHelper {
         response.setContentType(contentType.getType());
     }
 
-    public static void status(int status, HttpServletResponse response) {
-        response.setStatus(status);
+    public static void status(Object o, HttpServletResponse response) {
+        if (o instanceof StatusCode code) {
+            response.setStatus(code.getCode());
+        } else {
+            response.setStatus((Integer) o);
+        }
     }
 
     public static void contentLength(int length, HttpServletResponse response) {

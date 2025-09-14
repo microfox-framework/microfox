@@ -18,6 +18,7 @@ public interface Response {
     void contentType(ContentType contentType);
 
     void status(int status);
+    void status(StatusCode code);
 
     void contentLength(int length);
 
