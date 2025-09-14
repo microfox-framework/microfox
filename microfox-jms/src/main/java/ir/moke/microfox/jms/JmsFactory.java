@@ -18,15 +18,6 @@ public class JmsFactory {
     private static final Logger logger = LoggerFactory.getLogger(JmsFactory.class);
     private static final Map<String, JmsConnectionInfo> INFO_MAP = new ConcurrentHashMap<>();
 
-    public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory) {
-        JmsConnectionInfo connectionInfo = new JmsConnectionInfo();
-        connectionInfo.setConnectionFactory(connectionFactory);
-        if (INFO_MAP.containsKey(identity))
-            throw new MicrofoxException("JMS connection factory with identity %s already registered".formatted(identity));
-        INFO_MAP.put(identity, connectionInfo);
-        logger.info("Jms with identity {} registered", identity);
-    }
-
     public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory, int concurrency) {
         JmsConnectionInfo connectionInfo = new JmsConnectionInfo();
         connectionInfo.setConnectionFactory(connectionFactory);
@@ -35,6 +26,10 @@ public class JmsFactory {
             throw new MicrofoxException("JMS connection factory with identity %s already registered".formatted(identity));
         INFO_MAP.put(identity, connectionInfo);
         logger.info("Jms with identity {} registered", identity);
+    }
+
+    public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory) {
+        registerConnectionFactory(identity, connectionFactory, 1);
     }
 
     static ConnectionFactory getConnectionFactory(String identity) {
