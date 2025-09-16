@@ -31,6 +31,7 @@ public class YamlUtils {
                 resources = MicroFoxEnvironment.class.getClassLoader().getResources("application.yml");
             }
 
+            if (resources == null) return props;
             List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
             for (URL url : urls) {
                 try (InputStream is = url.openStream()) {
