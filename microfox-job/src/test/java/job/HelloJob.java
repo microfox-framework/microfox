@@ -1,3 +1,5 @@
+package job;
+
 public class HelloJob implements Runnable {
     @Override
     public void run() {

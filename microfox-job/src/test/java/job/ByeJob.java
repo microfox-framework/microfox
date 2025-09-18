@@ -1,3 +1,5 @@
+package job;
+
 public class ByeJob implements Runnable {
     @Override
     public void run() {
