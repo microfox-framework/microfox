@@ -22,10 +22,11 @@ public class JobProviderImpl implements JobProvider {
         }
     }
 
-    private void register(Runnable task, String cronExpression) {
+    private void register(Runnable task, String cronExpression, boolean disableConcurrentExecution) {
         try {
             JobDetail job = JobBuilder.newJob(DelegateJob.class)
                     .withIdentity("job-" + UUID.randomUUID())
+                    .usingJobData("disableConcurrentExecution", disableConcurrentExecution)
                     .usingJobData(new JobDataMap(Map.of("task", task)))
                     .build();
             CronTrigger trigger = TriggerBuilder.newTrigger()
@@ -57,8 +58,8 @@ public class JobProviderImpl implements JobProvider {
     }
 
     @Override
-    public void job(Runnable task, String cronExpression) {
-        register(task, cronExpression);
+    public void job(Runnable task, String cronExpression, boolean disableConcurrentExecution) {
+        register(task, cronExpression, disableConcurrentExecution);
     }
 
     @Override

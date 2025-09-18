@@ -108,9 +108,9 @@ public class MicroFox {
         httpProvider.ssePublisher(identity, supplier);
     }
 
-    public static void job(Runnable task, String cronExpression) {
+    public static void job(Runnable task, String cronExpression, boolean disableConcurrentExecution) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        jobProvider.job(task, cronExpression);
+        jobProvider.job(task, cronExpression, disableConcurrentExecution);
     }
 
     public static void job(Runnable task, ZonedDateTime zonedDateTime) {
