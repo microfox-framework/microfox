@@ -114,10 +114,6 @@ public class RepositoryHandler implements InvocationHandler {
         for (final Parameter parameter : params(method, args)) {
             final QueryParameter queryParameter = parameter.getAnnotation(QueryParameter.class);
             if (queryParameter != null) {
-                if (parameter.getValue() == null) {
-                    throw new MicrofoxException(queryParameter.value() + " is null");
-                }
-
                 query.setParameter(queryParameter.value(), parameter.getValue());
             }
 
@@ -148,9 +144,6 @@ public class RepositoryHandler implements InvocationHandler {
         for (final Parameter parameter : params(method, args)) {
             final QueryParameter queryParameter = parameter.getAnnotation(QueryParameter.class);
             if (queryParameter != null) {
-                if (parameter.getValue() == null) {
-                    throw new MicrofoxException(queryParameter.value() + " is null");
-                }
                 query.setParameter(queryParameter.value(), parameter.getValue());
             }
         }
