@@ -33,6 +33,13 @@ public class RepositoryHandler implements InvocationHandler {
         String name = method.getName();
         logger.trace("Called: {}, args: {}", name, Arrays.toString(args));
 
+        if (name.equals("toString") && method.getParameterCount() == 0)
+            return proxy.getClass().getName() + "@" + System.identityHashCode(proxy);
+        if (name.equals("hashCode") && method.getParameterCount() == 0)
+            return System.identityHashCode(proxy);
+        if (name.equals("equals") && method.getParameterCount() == 1)
+            return proxy == args[0];
+
         if (method.isAnnotationPresent(NamedQuery.class)) {
             return invokeNamedQuery(em, method, args);
         } else if (method.isAnnotationPresent(Query.class)) {
