@@ -7,6 +7,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import org.hibernate.TransactionException;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class JpaProviderImpl implements JpaProvider {
@@ -17,8 +18,14 @@ public class JpaProviderImpl implements JpaProvider {
 
     @Override
     public <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Consumer<T> consumer) {
+        jpa(identity, repositoryClass, policy, null, consumer);
+    }
+
+    @Override
+    public <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Integer txTimeout, Consumer<T> consumer) {
         EntityManager em = JpaFactory.getEntityManager(identity);
         EntityTransaction tx = em.getTransaction();
+        Optional.ofNullable(txTimeout).ifPresent(tx::setTimeout);
         try {
             switch (policy) {
                 case REQUIRED_NEW -> requiredNewTx(identity, repositoryClass, consumer);
@@ -28,7 +35,7 @@ public class JpaProviderImpl implements JpaProvider {
                 case NOT_SUPPORTED -> notSupportedTx(identity, repositoryClass, consumer);
             }
         } catch (Exception e) {
-            if (tx != null && tx.isActive()) tx.rollback();
+            if (tx.isActive()) tx.rollback();
             throw new MicrofoxException("Transaction failed", e);
         }
     }

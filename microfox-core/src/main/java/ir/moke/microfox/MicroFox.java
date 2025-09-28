@@ -203,9 +203,19 @@ public class MicroFox {
         jpaProvider.jpa(identity, repositoryClass, policy, consumer);
     }
 
+    public static <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, int txTimeout, Consumer<T> consumer) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.jpa(identity, repositoryClass, policy, txTimeout, consumer);
+    }
+
     public static <T> void jpa(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
         jpaProvider.jpa(identity, repositoryClass, TransactionPolicy.REQUIRED, consumer);
+    }
+
+    public static <T> void jpa(String identity, Class<T> repositoryClass, int txTimeout, Consumer<T> consumer) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.jpa(identity, repositoryClass, TransactionPolicy.REQUIRED, txTimeout, consumer);
     }
 
     public static <T> void jpaTxRollback(String identity) {

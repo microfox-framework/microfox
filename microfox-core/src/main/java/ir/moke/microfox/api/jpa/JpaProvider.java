@@ -7,6 +7,8 @@ public interface JpaProvider {
 
     <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Consumer<T> consumer);
 
+    <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Integer txTimeout, Consumer<T> consumer);
+
     void jpaPrintCreateSchemaSQL(String persistenceUnitName);
 
     void jpaPrintUpdateSchemaSQL(String persistenceUnitName);
