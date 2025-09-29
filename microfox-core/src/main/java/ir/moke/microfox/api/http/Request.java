@@ -68,6 +68,7 @@ public interface Request {
     Set<String> attributes();
 
     AsyncContext asyncContext();
+    AsyncContext startAsync();
 
     boolean isAsyncStarted();
 

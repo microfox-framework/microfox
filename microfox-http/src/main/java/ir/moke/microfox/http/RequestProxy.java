@@ -112,6 +112,9 @@ public class RequestProxy implements InvocationHandler {
             case "asyncContext" -> {
                 return RequestHelper.asyncContext(request);
             }
+            case "startAsync" -> {
+                return RequestHelper.startAsync(request);
+            }
             case "isAsyncStarted" -> {
                 return RequestHelper.isAsyncStarted(request);
             }

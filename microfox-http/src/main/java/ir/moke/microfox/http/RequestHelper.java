@@ -191,6 +191,9 @@ public class RequestHelper {
     public static AsyncContext asyncContext(HttpServletRequest request) {
         return request.getAsyncContext();
     }
+    public static AsyncContext startAsync(HttpServletRequest request) {
+        return request.startAsync();
+    }
 
     public static boolean isAsyncStarted(HttpServletRequest request) {
         return request.isAsyncStarted();
