@@ -1,6 +1,5 @@
 package ir.moke.microfox.api.http.sse;
 
-import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 
 import java.util.concurrent.Flow;
