@@ -27,9 +27,6 @@ public class YamlUtils {
         Properties props = new Properties();
         try {
             Enumeration<URL> resources = MicroFoxEnvironment.class.getClassLoader().getResources("application.yaml");
-            if (!resources.hasMoreElements()) {
-                resources = MicroFoxEnvironment.class.getClassLoader().getResources("application.yml");
-            }
 
             if (resources == null) return props;
             List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
