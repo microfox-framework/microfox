@@ -1,8 +1,7 @@
 package com.sample.security;
 
-import com.sample.exception.SampleException;
-import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.Request;
+import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.security.UsernamePasswordCredential;
 
