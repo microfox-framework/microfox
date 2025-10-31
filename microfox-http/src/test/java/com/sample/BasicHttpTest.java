@@ -4,7 +4,7 @@ import com.sample.exception.MyExceptionMapper;
 import com.sample.exception.SampleException;
 import com.sample.resource.EchoEndpoint;
 import com.sample.resource.EchoRoute;
-import com.sample.resource.SecureRoute;
+import com.sample.resource.ScopedSecureRoute;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Request;
@@ -20,7 +20,7 @@ public class BasicHttpTest {
     public static void main(String[] args) {
         MicroFox.registerExceptionMapper(new MyExceptionMapper());
         MicroFox.httpFilter("/api/*", BasicHttpTest::simpleFilter);
-        MicroFox.httpRouter("/api/secure", Method.GET, new SecureRoute());
+        MicroFox.httpRouter("/api/secure", Method.GET, new ScopedSecureRoute());
         MicroFox.httpRouter("/api/echo", Method.GET, new EchoRoute());
         MicroFox.websocket(EchoEndpoint.class);
     }

@@ -4,11 +4,12 @@ import com.sample.exception.SampleException;
 import com.sample.security.BasicAuthSecurity;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
+import ir.moke.microfox.api.http.SecuredRoute;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
 
 import java.util.List;
 
-public class SecureRoute implements ir.moke.microfox.api.http.SecuredRoute {
+public class ScopedSecureRoute implements SecuredRoute {
     @Override
     public SecurityStrategy securityStrategy() {
         return new BasicAuthSecurity();
