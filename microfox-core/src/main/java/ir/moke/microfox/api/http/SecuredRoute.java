@@ -6,5 +6,8 @@ import java.util.List;
 
 public interface SecuredRoute extends Route {
     SecurityStrategy securityStrategy();
-    List<String> authorities();
+
+    List<String> roles();
+
+    List<String> scopes();
 }

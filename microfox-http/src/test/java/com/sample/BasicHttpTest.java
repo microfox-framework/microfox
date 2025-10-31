@@ -1,10 +1,10 @@
 package com.sample;
 
 import com.sample.exception.MyExceptionMapper;
-import com.sample.exception.SampleException;
-import com.sample.resource.EchoEndpoint;
-import com.sample.resource.EchoRoute;
-import com.sample.resource.ScopedSecureRoute;
+import com.sample.resource.RouteCheckException;
+import com.sample.resource.RouteListUsers;
+import com.sample.resource.RouteLogin;
+import com.sample.resource.ws.EchoEndpoint;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Request;
@@ -20,15 +20,14 @@ public class BasicHttpTest {
     public static void main(String[] args) {
         MicroFox.registerExceptionMapper(new MyExceptionMapper());
         MicroFox.httpFilter("/api/*", BasicHttpTest::simpleFilter);
-        MicroFox.httpRouter("/api/secure", Method.GET, new ScopedSecureRoute());
-        MicroFox.httpRouter("/api/echo", Method.GET, new EchoRoute());
+        MicroFox.httpRouter("/api/login", Method.GET, new RouteLogin());
+        MicroFox.httpRouter("/api/users", Method.GET, new RouteListUsers());
+        MicroFox.httpRouter("/api/error", Method.GET, new RouteCheckException());
         MicroFox.websocket(EchoEndpoint.class);
     }
 
     private static boolean simpleFilter(Request req, Response resp) {
         logger.info("Receive message : {}", LocalTime.now());
-         resp.body("Filter Executed\n");
-        throw new SampleException("Filter Error !!!!");
-//        return true;
+        return true;
     }
 }

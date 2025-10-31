@@ -6,7 +6,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 public record JwtCredential(String username,
-                            List<String> authorities,
+                            List<String> roles,
+                            List<String> scopes,
                             ZonedDateTime loginAt,
                             ZonedDateTime expireAt) implements Credential {
     // or any other informations needed

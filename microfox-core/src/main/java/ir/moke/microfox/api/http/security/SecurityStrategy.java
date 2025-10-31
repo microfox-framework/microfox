@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface SecurityStrategy {
     Credential authenticate(Request request);
-    boolean authorize(Credential credential, List<String> requiredAuthorities);
+    boolean authorize(Credential credential, List<String> roles,List<String> scopes);
     boolean isRequired();  // some routes may not need auth
 }

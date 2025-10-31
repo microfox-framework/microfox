@@ -47,7 +47,7 @@ public class SecurityFilter implements Filter {
             return;
         }
 
-        if (!strategy.authorize(credential, secured.authorities())) {
+        if (!strategy.authorize(credential, secured.roles(), secured.scopes())) {
             sendError(resp, StatusCode.FORBIDDEN, "Forbidden");
             return;
         }
@@ -56,6 +56,8 @@ public class SecurityFilter implements Filter {
         SecurityContext.setCredential(credential);
 
         doChain(req, resp, chain);
+
+        SecurityContext.clear();
     }
 
     private void doChain(HttpServletRequest req, HttpServletResponse resp, FilterChain chain) {
