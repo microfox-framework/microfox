@@ -36,7 +36,7 @@ public class StreamAppender {
     }
 
     private static OutputStreamAppender<ILoggingEvent> getOutputStreamAppender(String name, OutputStream outputStream) {
-        Layout<ILoggingEvent> layout = LogUtils.getJsonPatternLayout();
+        Layout<ILoggingEvent> layout = LogUtils.getBasicPatternLayout(null);
         LayoutWrappingEncoder<ILoggingEvent> encoder = LogUtils.getEncoder(layout);
         OutputStreamAppender<ILoggingEvent> outputStreamAppender = new OutputStreamAppender<>();
         outputStreamAppender.setContext(loggerContext);
