@@ -1,6 +1,7 @@
 package ir.moke.microfox.mongodb;
 
 
+import com.mongodb.Block;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
@@ -49,7 +50,7 @@ public class MongoFactory {
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(connString)
                 .codecRegistry(pojoRegistry)
-                .applyToConnectionPoolSettings(item -> getBuilder(item, info))
+                .applyToConnectionPoolSettings(builder -> getBuilder(builder, info))
                 .build();
 
         MongoClient mongoClient = MongoClients.create(settings);
@@ -58,8 +59,8 @@ public class MongoFactory {
         logger.info("Mongo database successfully registered");
     }
 
-    private static ConnectionPoolSettings.Builder getBuilder(ConnectionPoolSettings.Builder builder, MongoConnectionInfo info) {
-        return builder
+    private static void getBuilder(ConnectionPoolSettings.Builder builder, MongoConnectionInfo info) {
+        builder
                 .maxSize(info.getPoolMax())
                 .minSize(info.getPoolMin())
                 .maxWaitTime(info.getPoolMaxWaitTime(), TimeUnit.SECONDS)
