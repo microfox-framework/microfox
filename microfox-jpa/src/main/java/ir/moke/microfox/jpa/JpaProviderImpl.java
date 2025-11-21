@@ -40,6 +40,13 @@ public class JpaProviderImpl implements JpaProvider {
         }
     }
 
+    /**
+     * restrict persist for parent transaction so create new {@link EntityManager} without manage tx .
+     * @param identity database identity
+     * @param repositoryClass repository class
+     * @param consumer consumer
+     * @param <T> return type
+     */
     private <T> void notSupportedTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
         try (EntityManager em = JpaFactory.createEntityManager(identity)) {
             consumer.accept(jpa(identity, repositoryClass));
