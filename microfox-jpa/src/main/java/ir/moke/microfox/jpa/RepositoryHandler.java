@@ -177,12 +177,17 @@ public class RepositoryHandler implements InvocationHandler {
 
     public static Object remove(final EntityManager em, final Method method, final Object[] args) {
         final Class<?> entityClass = method.getParameterTypes()[0];
-        final Object entity = args[0];
+        Object entity = args[0];
 
         if (entity == null) {
             throw new MicrofoxException(entityClass.getSimpleName() + " object is null");
         }
-        em.remove(em.merge(entity));
+
+        if (!em.contains(entity)) {
+            entity = em.merge(entity);
+        }
+
+        em.remove(entity);
         return null;
     }
 
