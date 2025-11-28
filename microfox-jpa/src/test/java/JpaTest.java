@@ -10,7 +10,6 @@ import static ir.moke.microfox.MicroFox.jpaTxRollback;
 public class JpaTest {
     static {
         DB.initializeH2();
-//        DB.initializePostgres();
     }
 
     public static void main(String[] args) {

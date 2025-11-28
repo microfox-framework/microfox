@@ -28,7 +28,7 @@ public class JpaProviderImpl implements JpaProvider {
         Optional.ofNullable(txTimeout).ifPresent(tx::setTimeout);
         try {
             switch (policy) {
-                case REQUIRED_NEW -> requiredNewTx(identity, repositoryClass, consumer);
+                case REQUIRED_NEW -> requiredNewTx(identity, repositoryClass, consumer, txTimeout);
                 case MANDATORY -> mandatoryTx(identity, repositoryClass, consumer, tx);
                 case NEVER -> neverTx(identity, repositoryClass, consumer, tx);
                 case REQUIRED -> requiredTx(identity, repositoryClass, consumer, tx);
@@ -37,6 +37,9 @@ public class JpaProviderImpl implements JpaProvider {
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
             throw new MicrofoxException("Transaction failed", e);
+        } finally {
+            em.clear();
+            JpaFactory.closeEntityManager(identity);
         }
     }
 
@@ -63,15 +66,16 @@ public class JpaProviderImpl implements JpaProvider {
         requiredTx(identity, repositoryClass, consumer, tx);
     }
 
-    private <T> void requiredNewTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
+    private <T> void requiredNewTx(String identity, Class<T> repositoryClass, Consumer<T> consumer, Integer txTimeout) {
         EntityManager em = JpaFactory.createEntityManager(identity);
         EntityTransaction tx = em.getTransaction();
+        Optional.ofNullable(txTimeout).ifPresent(tx::setTimeout);
         try {
             tx.begin();
             consumer.accept(jpa(identity, repositoryClass));
             tx.commit();
         } catch (Exception e) {
-            if (tx != null && tx.isActive()) tx.rollback();
+            if (tx.isActive()) tx.rollback();
             throw new TransactionException("Transaction failed", e);
         } finally {
             JpaFactory.closeEntityManager(identity);
@@ -79,8 +83,8 @@ public class JpaProviderImpl implements JpaProvider {
     }
 
     private <T> void requiredTx(String identity, Class<T> repositoryClass, Consumer<T> consumer, EntityTransaction tx) {
-        if (!tx.isActive()) tx.begin();
         try {
+            if (!tx.isActive()) tx.begin();
             consumer.accept(jpa(identity, repositoryClass));
             if (tx.isActive()) tx.commit();
         } catch (Exception e) {

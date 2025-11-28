@@ -108,6 +108,9 @@ public class JpaFactory {
         if (stack != null && !stack.isEmpty()) {
             EntityManager em = stack.pop();
             if (em.isOpen()) em.close();
+            if (stack.isEmpty()) {
+                contextMap.remove(identity);
+            }
         }
     }
 
