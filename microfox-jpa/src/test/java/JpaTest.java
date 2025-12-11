@@ -12,12 +12,12 @@ public class JpaTest {
         DB.initializeH2();
     }
 
-    public static void main(String[] args) {
+    static void main() {
 
         // Save single/batch
         jpa("h2", PersonRepository.class, TransactionPolicy.REQUIRED, JpaTest::saveItems);
 
-        // Print all
+        // Print size
         PersonRepository personRepository = jpa("h2", PersonRepository.class);
         List<Person> people = personRepository.find();
         System.out.println("Person size: " + people.size());
@@ -29,11 +29,14 @@ public class JpaTest {
         person1.setName("Sina");
         person1.setFamily("Zoheir");
         jpa("h2", PersonRepository.class, pr -> pr.update(person1));
+        System.out.println("Update person1: " + person1);
 
         // Delete item
+        System.out.println("Delete person1 id: " + person1.getId());
         jpa("h2", PersonRepository.class, pr -> pr.delete(person1));
 
         // Rollback TX
+        System.out.println("Delete person2 than rollback tx id: " + person2.getId());
         jpa("h2", PersonRepository.class, pr -> deletePerson2(pr, person2));
 
         // Criteria Query
@@ -43,7 +46,7 @@ public class JpaTest {
 
     private static void deletePerson2(PersonRepository pr, Person person1) {
         pr.delete(person1);
-        jpaTxRollback("h2");
+        jpaTxRollback();
     }
 
     private static void saveItems(PersonRepository personRepository) {

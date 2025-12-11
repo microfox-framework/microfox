@@ -9,9 +9,9 @@ public interface JpaProvider {
 
     <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Integer txTimeout, Consumer<T> consumer);
 
-    void jpaPrintCreateSchemaSQL(String persistenceUnitName);
+    void jpaPrintCreateSchemaSQL(String identity);
 
-    void jpaPrintUpdateSchemaSQL(String persistenceUnitName);
+    void jpaPrintUpdateSchemaSQL(String identity);
 
-    void rollback(String persistenceUnitName);
+    void rollback();
 }
