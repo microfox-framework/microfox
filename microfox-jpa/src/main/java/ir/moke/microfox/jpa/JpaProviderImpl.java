@@ -76,7 +76,7 @@ public class JpaProviderImpl implements JpaProvider {
     private <T> void requiredTx(String identity, Class<T> repositoryClass, Consumer<T> consumer, Integer txTimeout, boolean createNew) {
         EntityManagerFactory emf = JpaFactory.getEntityManagerFactory(identity);
         ScopedValue<EntityManager> sv = JpaFactory.getEntityManagerScopedValue();
-        EntityManager em = !createNew ? sv.orElse(emf.createEntityManager()) : emf.createEntityManager();
+        EntityManager em = createNew ? emf.createEntityManager() : sv.orElse(emf.createEntityManager());
         if (!em.isOpen() && !createNew) em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         if (txTimeout != null && txTimeout > 0 && !tx.isActive()) tx.setTimeout(txTimeout);
