@@ -1,16 +1,16 @@
 package ir.moke.microfox;
 
-import ir.moke.microfox.utils.StringUtils;
-import ir.moke.microfox.utils.YamlUtils;
+import ir.moke.utils.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
-import static ir.moke.microfox.utils.StringUtils.normalizeKey;
 import static ir.moke.microfox.utils.TtyAsciiCodecs.*;
 
 public class MicroFoxEnvironment {
@@ -55,7 +55,7 @@ public class MicroFoxEnvironment {
             properties.putAll(loadPropertiesFile());
 
             // Load and flatten application.yaml (if exists)
-            properties.putAll(YamlUtils.loadAsProperties());
+            properties.putAll(loadYamlResources());
 
             // Merge environment variables
             properties.putAll(System.getenv());
@@ -72,16 +72,41 @@ public class MicroFoxEnvironment {
         Enumeration<URL> resources = MicroFoxEnvironment.class.getClassLoader().getResources("application.properties");
         List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
         for (URL url : urls) {
-            StringUtils.readAllLines(url.openStream())
+            Files.readAllLines(Path.of(url.getFile())).stream()
                     .filter(item -> !item.startsWith("#"))
                     .filter(item -> !item.isEmpty())
                     .map(item -> item.split("=", 2))
-                    .forEach(item -> properties.setProperty(StringUtils.normalizeKey(item[0].toLowerCase()), item[1]));
+                    .forEach(item -> properties.setProperty(normalizeKey(item[0].toLowerCase()), item[1]));
         }
         return properties;
     }
 
     public static String getEnv(String key) {
         return (String) sortedMap.get(normalizeKey(key));
+    }
+
+    private static Properties loadYamlResources() {
+        Properties props = new Properties();
+        try {
+            Enumeration<URL> resources = MicroFoxEnvironment.class.getClassLoader().getResources("application.yaml");
+
+            if (resources == null) return props;
+            List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
+            for (URL url : urls) {
+                try (InputStream is = url.openStream()) {
+                    return YamlUtils.loadAsProperties(is);
+                }
+            }
+
+        } catch (IOException e) {
+            logger.error("Unknown error", e);
+            System.exit(0);
+        }
+        return props;
+    }
+
+    private static String normalizeKey(String key) {
+        // make dash/underscore/dot interchangeable → all to dot
+        return key.replace("-", ".").replace("_", ".");
     }
 }
