@@ -10,8 +10,13 @@ import java.util.Timer;
 
 public class SseHttpTest {
     private static final Logger logger = LoggerFactory.getLogger(SseHttpTest.class);
+    private static final Timer timer = new Timer(true);
 
-    public static void main(String[] args) {
+    static {
+        timer.scheduleAtFixedRate(new SseTask(), 2000, 3000);
+    }
+
+    static void main(String[] args) {
         /*
          * Install httpie package
          * run this command :
@@ -19,7 +24,6 @@ public class SseHttpTest {
          * */
         MicroFox.sseRegister("sse-test", "/api/sse");
         MicroFox.ssePublisher("sse-test", new SseObject("Hello"));
-        Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(new SseTask(), 2000, 3000);
+
     }
 }
