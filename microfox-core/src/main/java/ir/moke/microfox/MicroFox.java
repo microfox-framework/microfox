@@ -218,9 +218,9 @@ public class MicroFox {
         jpaProvider.jpa(identity, repositoryClass, TransactionPolicy.REQUIRED, txTimeout, consumer);
     }
 
-    public static <T> void jpaTxRollback() {
+    public static <T> void jpaTxRollback(String identity) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.rollback();
+        jpaProvider.rollback(identity);
     }
 
     public static void jpaPrintCreateSchemaSQL(String identity) {

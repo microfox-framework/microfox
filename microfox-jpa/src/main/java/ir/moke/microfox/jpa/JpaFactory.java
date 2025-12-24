@@ -27,7 +27,7 @@ public class JpaFactory {
     private static final Logger logger = LoggerFactory.getLogger(JpaFactory.class);
     private static final Map<String, EntityManagerFactory> CONNECTION_FACTORY_MAP = new ConcurrentHashMap<>();
     private static final Map<String, MetadataSources> METADATA_SOURCES_MAP = new ConcurrentHashMap<>();
-    private static final ScopedValue<EntityManager> ENTITY_MANAGER_SCOPED_VALUE = ScopedValue.newInstance();
+    private static final Map<String, ScopedValue<EntityManager>> SCOPED_VALUE_MAP = new ConcurrentHashMap<>();
     private static final Object validatorFactory;
 
     static {
@@ -77,8 +77,16 @@ public class JpaFactory {
         return CONNECTION_FACTORY_MAP.get(identity);
     }
 
-    public static ScopedValue<EntityManager> getEntityManagerScopedValue() {
-        return ENTITY_MANAGER_SCOPED_VALUE;
+    public static void putScopedValue(String identity, ScopedValue<EntityManager> sv) {
+        SCOPED_VALUE_MAP.put(identity, sv);
+    }
+
+    public static void removeScopedValue(String identity) {
+        SCOPED_VALUE_MAP.remove(identity);
+    }
+
+    public static ScopedValue<EntityManager> getEntityManagerScopedValue(String identity) {
+        return SCOPED_VALUE_MAP.computeIfAbsent(identity, _ -> ScopedValue.newInstance());
     }
 
     public static MetadataSources getMetadataSources(String identity) {
