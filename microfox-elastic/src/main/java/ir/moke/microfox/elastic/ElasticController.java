@@ -1,11 +1,11 @@
 package ir.moke.microfox.elastic;
 
-import ir.moke.kafir.utils.JsonUtils;
 import ir.moke.microfox.api.elastic.BulkOperation;
 import ir.moke.microfox.api.elastic.ElasticCriteria;
 import ir.moke.microfox.api.elastic.Index;
 import ir.moke.microfox.api.elastic.MappingBuilder;
 import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
