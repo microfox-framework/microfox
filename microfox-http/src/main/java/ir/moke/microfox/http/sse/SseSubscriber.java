@@ -1,15 +1,21 @@
-package ir.moke.microfox.api.http.sse;
+package ir.moke.microfox.http.sse;
 
 import ir.moke.microfox.api.http.Response;
+import ir.moke.microfox.api.http.sse.SseObject;
+import jakarta.servlet.AsyncContext;
 
 import java.util.concurrent.Flow;
 
 public class SseSubscriber implements Flow.Subscriber<SseObject> {
     private Flow.Subscription subscription;
     private final Response response;
+    private final AsyncContext asyncContext;
+    private final SseInfo sseInfo;
 
-    public SseSubscriber(Response response) {
+    public SseSubscriber(Response response, AsyncContext asyncContext, SseInfo sseInfo) {
         this.response = response;
+        this.asyncContext = asyncContext;
+        this.sseInfo = sseInfo;
     }
 
     @Override
@@ -20,17 +26,27 @@ public class SseSubscriber implements Flow.Subscriber<SseObject> {
 
     @Override
     public void onNext(SseObject sseObject) {
-        response.sse(sseObject);
-        subscription.request(1);
+        try {
+            response.sse(sseObject);
+            subscription.request(1);
+        } catch (Exception e) {
+            close();
+        }
     }
 
     @Override
     public void onError(Throwable throwable) {
-        subscription.cancel();
+        close();
     }
 
     @Override
     public void onComplete() {
+        close();
+    }
+
+    private void close() {
         subscription.cancel();
+        asyncContext.complete();
+        sseInfo.close();
     }
 }

@@ -3,14 +3,15 @@ package ir.moke.microfox.http;
 import ir.moke.microfox.api.http.Filter;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Route;
-import ir.moke.microfox.api.http.sse.SseInfo;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.http.sse.SseInfo;
 import jakarta.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.SubmissionPublisher;
@@ -20,15 +21,16 @@ import static ir.moke.microfox.utils.TtyAsciiCodecs.*;
 
 public class ResourceHolder {
     private static final Logger logger = LoggerFactory.getLogger(ResourceHolder.class);
-    private static final Set<RouteInfo> ROUTES = new HashSet<>();
+    private static final Set<RouteInfo> ROUTES = ConcurrentHashMap.newKeySet();
     private static final List<FilterInfo> FILTERS = new ArrayList<>();
-    private static final Set<SseInfo> SSE_LIST = new HashSet<>();
-    private static final Set<Class<?>> WEBSOCKET_LIST = new HashSet<>();
-    private static final ExecutorService es = Executors.newSingleThreadExecutor();
+    private static final Set<SseInfo> SSE_LIST = ConcurrentHashMap.newKeySet();
+    private static final Set<Class<?>> WEBSOCKET_LIST = ConcurrentHashMap.newKeySet();
+    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+    public static final ExecutorService SSE_EXECUTOR = Executors.newCachedThreadPool();
 
     public static void addRoute(Method method, String path, Route route) {
         if (!path.startsWith("/")) throw new MicrofoxException("route path should started with '/'");
-        if (!HttpContainer.isStarted()) es.execute(HttpContainer::start);
+        if (!HttpContainer.isStarted()) EXECUTOR.execute(HttpContainer::start);
         path = concatContextPath(path);
         logger.info("register route {}{} {}{}{}", BLUE, method, GREEN, path, RESET);
         ROUTES.add(new RouteInfo(method, path, route));
@@ -64,7 +66,7 @@ public class ResourceHolder {
 
     public static void registerSse(String identity, String path) {
         logger.info("register sse {}{}{}", GREEN, path, RESET);
-        if (!HttpContainer.isStarted()) es.execute(HttpContainer::start);
+        if (!HttpContainer.isStarted()) EXECUTOR.execute(HttpContainer::start);
         SSE_LIST.add(new SseInfo(identity, concatContextPath(path)));
     }
 
@@ -81,7 +83,16 @@ public class ResourceHolder {
                 .orElse(null);
     }
 
+    public static void removeSse(SseInfo sseInfo) {
+        SSE_LIST.remove(sseInfo);
+    }
+
     public boolean isSseRegistered(String path) {
         return SSE_LIST.stream().anyMatch(item -> item.getPath().equals(path));
+    }
+
+    public static void closeAllSse() {
+        SSE_LIST.forEach(sse -> sse.getPublisher().close());
+        SSE_LIST.clear();
     }
 }

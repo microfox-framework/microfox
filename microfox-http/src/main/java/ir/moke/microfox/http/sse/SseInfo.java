@@ -1,12 +1,17 @@
-package ir.moke.microfox.api.http.sse;
+package ir.moke.microfox.http.sse;
 
+import ir.moke.microfox.api.http.sse.SseObject;
+import ir.moke.microfox.http.ResourceHolder;
+
+import java.io.Closeable;
 import java.util.Objects;
+import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 
-public class SseInfo {
+public class SseInfo implements Closeable {
     private SubmissionPublisher<SseObject> publisher;
     private String identity;
-    private String path ;
+    private String path;
 
     public SseInfo() {
     }
@@ -14,7 +19,7 @@ public class SseInfo {
     public SseInfo(String identity, String path) {
         this.identity = identity;
         this.path = path;
-        this.publisher = new SubmissionPublisher<>();
+        this.publisher = new SubmissionPublisher<>(ResourceHolder.SSE_EXECUTOR, Flow.defaultBufferSize());
     }
 
     public SubmissionPublisher<SseObject> getPublisher() {
@@ -43,13 +48,20 @@ public class SseInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        SseInfo sseInfo = (SseInfo) o;
-        return Objects.equals(path, sseInfo.path);
+        if (this == o) return true;
+        if (!(o instanceof SseInfo other)) return false;
+        return Objects.equals(identity, other.identity)
+               && Objects.equals(path, other.path);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(path);
+        return Objects.hash(identity, path);
+    }
+
+    @Override
+    public void close() {
+        publisher.close();
+        ResourceHolder.removeSse(this);
     }
 }

@@ -35,6 +35,7 @@ public class HttpContainer {
             initializeWebsocketContainer();
 
             // Start the server
+            server.addEventListener(new ShutdownListener());
             server.start();
             logger.info("Http server started");
             server.join();

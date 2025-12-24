@@ -3,11 +3,11 @@ package ir.moke.microfox.http.servlet;
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Route;
-import ir.moke.microfox.api.http.sse.SseInfo;
-import ir.moke.microfox.api.http.sse.SseSubscriber;
+import ir.moke.microfox.http.sse.SseSubscriber;
 import ir.moke.microfox.http.HttpUtils;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.RouteInfo;
+import ir.moke.microfox.http.sse.SseInfo;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +26,7 @@ public class BaseServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         String accept = req.getHeader("Accept");
-        if (accept != null && accept.equalsIgnoreCase(ContentType.TEXT_EVENT_STREAM.getType())) {
+        if (accept != null && accept.contains(ContentType.TEXT_EVENT_STREAM.getType())) {
             handleSse(req, resp);
         } else {
             findMatchingRouteInfo(req.getRequestURI(), Method.GET)
@@ -85,18 +85,18 @@ public class BaseServlet extends HttpServlet {
         resp.setHeader("Cache-Control", "no-cache");
         resp.setHeader("Connection", "keep-alive");
 
-        final AsyncContext async = req.startAsync();
-        async.setTimeout(0);
+        final AsyncContext asyncContext = req.startAsync();
+        asyncContext.setTimeout(0);
 
         Optional<SseInfo> opt = ResourceHolder.getSsePublisher(req.getRequestURI());
         if (opt.isEmpty()) {
             notFound(resp);
+            asyncContext.complete();
             return;
         }
 
-        SseInfo info = opt.get();
-        SseSubscriber subscriber = new SseSubscriber(HttpUtils.getResponse(resp));
-        info.getPublisher().subscribe(subscriber);
+        SseSubscriber subscriber = new SseSubscriber(HttpUtils.getResponse(resp), asyncContext,opt.get());
+        opt.get().getPublisher().subscribe(subscriber);
     }
 
     private static void notFound(HttpServletResponse resp) {
