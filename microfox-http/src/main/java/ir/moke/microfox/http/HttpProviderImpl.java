@@ -33,9 +33,9 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
-    public void ssePublisher(String identity, Supplier<SseObject> supplier) {
+    public void ssePublisher(String identity, SseObject sseObject) {
         SubmissionPublisher<SseObject> submissionPublisher = ResourceHolder.getSseByIdentity(identity);
         if (submissionPublisher == null) throw new MicrofoxException("No SSE connection has been established yet.");
-        submissionPublisher.submit(supplier.get());
+        submissionPublisher.submit(sseObject);
     }
 }

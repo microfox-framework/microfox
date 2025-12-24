@@ -18,7 +18,7 @@ public class SseHttpTest {
          * http --stream http://localhost:8080/api/sse 'Accept: text/event-stream'
          * */
         MicroFox.sseRegister("sse-test", "/api/sse");
-        MicroFox.ssePublisher("sse-test", () -> new SseObject("Hello"));
+        MicroFox.ssePublisher("sse-test", new SseObject("Hello"));
         Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(new SseTask(), 2000, 3000);
     }
