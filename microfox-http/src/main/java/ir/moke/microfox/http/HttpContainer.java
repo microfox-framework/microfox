@@ -3,7 +3,6 @@ package ir.moke.microfox.http;
 import ir.moke.microfox.MicroFoxEnvironment;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.http.filter.BaseFilter;
-import ir.moke.microfox.http.filter.GlobalFilter;
 import ir.moke.microfox.http.filter.SecurityFilter;
 import ir.moke.microfox.http.servlet.BaseServlet;
 import jakarta.servlet.Filter;
@@ -95,7 +94,6 @@ public class HttpContainer {
         context.setContextPath(contextPath);
 
         /* Rest Apis */
-        context.addFilter(GlobalFilter.class, "/*", EnumSet.of(FORWARD, ASYNC, REQUEST, INCLUDE, ERROR));
         context.addFilter(BaseFilter.class, "/*", EnumSet.of(FORWARD, ASYNC, REQUEST, INCLUDE, ERROR));
         context.addFilter(SecurityFilter.class, "/*", EnumSet.of(FORWARD, ASYNC, REQUEST, INCLUDE, ERROR));
         context.addServlet(BaseServlet.class, "/*");

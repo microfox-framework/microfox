@@ -1,7 +1,7 @@
-package ir.moke.microfox.openapi.servlet;
+package ir.moke.microfox.metrics.servlet;
 
 import ir.moke.microfox.api.http.ContentType;
-import ir.moke.microfox.openapi.Metrics;
+import ir.moke.microfox.metrics.Metrics;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

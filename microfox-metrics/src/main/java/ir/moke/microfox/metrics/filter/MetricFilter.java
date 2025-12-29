@@ -1,7 +1,7 @@
-package ir.moke.microfox.openapi.filter;
+package ir.moke.microfox.metrics.filter;
 
 import io.micrometer.core.instrument.Timer;
-import ir.moke.microfox.openapi.Metrics;
+import ir.moke.microfox.metrics.Metrics;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
