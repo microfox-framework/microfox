@@ -2,6 +2,7 @@ package ir.moke.test;
 
 import ir.moke.microfox.MicroFox;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
 public class GroovyTest {
 
@@ -15,6 +16,6 @@ public class GroovyTest {
                 
                 sayHello(name)
                 """;
-        MicroFox.groovyEval(script, null);
+        Assertions.assertDoesNotThrow(() -> MicroFox.groovyEval(script, null));
     }
 }
