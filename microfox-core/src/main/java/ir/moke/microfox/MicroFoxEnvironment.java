@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static ir.moke.microfox.utils.TtyAsciiCodecs.*;
+import static ir.moke.utils.TtyAsciiCodecs.*;
 
 public class MicroFoxEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(MicroFoxEnvironment.class);

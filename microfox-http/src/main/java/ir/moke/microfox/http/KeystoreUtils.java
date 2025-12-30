@@ -19,8 +19,8 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static ir.moke.microfox.utils.TtyAsciiCodecs.GREEN;
-import static ir.moke.microfox.utils.TtyAsciiCodecs.RESET;
+import static ir.moke.utils.TtyAsciiCodecs.GREEN;
+import static ir.moke.utils.TtyAsciiCodecs.RESET;
 
 public class KeystoreUtils {
 
