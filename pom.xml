@@ -46,6 +46,7 @@
         <module>microfox-openapi</module>
         <module>microfox-system</module>
         <module>microfox-mongodb</module>
+        <module>microfox-groovy</module>
     </modules>
 
     <properties>
@@ -381,6 +382,14 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
+            <!-- Groovy -->
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>5.0.3</version>
+                <type>pom</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -441,6 +450,20 @@
                                 <outputDirectory>${project.build.directory}/lib</outputDirectory>
                                 <includeScope>runtime</includeScope>
                             </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.gmavenplus</groupId>
+                    <artifactId>gmavenplus-plugin</artifactId>
+                    <version>3.0.2</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>compile</goal>
+                                <goal>compileTests</goal>
+                            </goals>
                         </execution>
                     </executions>
                 </plugin>
