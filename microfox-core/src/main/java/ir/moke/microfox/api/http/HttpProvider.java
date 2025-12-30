@@ -13,5 +13,5 @@ public interface HttpProvider {
 
     void sseRegister(String identity, String path);
 
-    void ssePublisher(String identity, Supplier<SseObject> supplier);
+    void ssePublisher(String identity, SseObject sseObject);
 }

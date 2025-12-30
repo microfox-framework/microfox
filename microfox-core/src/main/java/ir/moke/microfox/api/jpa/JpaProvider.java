@@ -13,5 +13,5 @@ public interface JpaProvider {
 
     void jpaPrintUpdateSchemaSQL(String identity);
 
-    void rollback();
+    void rollback(String identity);
 }

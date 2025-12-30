@@ -45,7 +45,6 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Vector;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class MicroFox {
     private static final HttpProvider httpProvider = ServiceLoader.load(HttpProvider.class).findFirst().orElse(null);
@@ -103,9 +102,9 @@ public class MicroFox {
         httpProvider.sseRegister(identity, path);
     }
 
-    public static void ssePublisher(String identity, Supplier<SseObject> supplier) {
+    public static void ssePublisher(String identity, SseObject sseObject) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.ssePublisher(identity, supplier);
+        httpProvider.ssePublisher(identity, sseObject);
     }
 
     public static void job(Runnable task, String cronExpression, boolean disableConcurrentExecution) {
@@ -218,9 +217,9 @@ public class MicroFox {
         jpaProvider.jpa(identity, repositoryClass, TransactionPolicy.REQUIRED, txTimeout, consumer);
     }
 
-    public static <T> void jpaTxRollback() {
+    public static <T> void jpaTxRollback(String identity) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.rollback();
+        jpaProvider.rollback(identity);
     }
 
     public static void jpaPrintCreateSchemaSQL(String identity) {

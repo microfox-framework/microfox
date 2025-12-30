@@ -46,7 +46,7 @@ public class JpaTest {
 
     private static void deletePerson2(PersonRepository pr, Person person1) {
         pr.delete(person1);
-        jpaTxRollback();
+        jpaTxRollback("h2");
     }
 
     private static void saveItems(PersonRepository personRepository) {

@@ -1,9 +1,9 @@
-package ir.moke.microfox.openapi;
+package ir.moke.microfox.metrics;
 
 import ir.moke.microfox.api.metrics.MetricsProvider;
 import ir.moke.microfox.http.HttpContainer;
-import ir.moke.microfox.openapi.filter.MetricFilter;
-import ir.moke.microfox.openapi.servlet.MetricServlet;
+import ir.moke.microfox.metrics.filter.MetricFilter;
+import ir.moke.microfox.metrics.servlet.MetricServlet;
 import ir.moke.microfox.utils.TtyAsciiCodecs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
