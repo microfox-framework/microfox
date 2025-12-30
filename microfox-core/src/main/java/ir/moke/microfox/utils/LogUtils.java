@@ -5,12 +5,9 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.filter.ThresholdFilter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-//import ch.qos.logback.contrib.json.JsonFormatter;
-//import ch.qos.logback.contrib.json.classic.JsonLayout;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
-//import ir.moke.kafir.utils.JsonUtils;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;

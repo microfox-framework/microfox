@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.SubmissionPublisher;
 
 import static ir.moke.microfox.http.HttpUtils.concatContextPath;
-import static ir.moke.microfox.utils.TtyAsciiCodecs.*;
+import static ir.moke.utils.TtyAsciiCodecs.*;
 
 public class ResourceHolder {
     private static final Logger logger = LoggerFactory.getLogger(ResourceHolder.class);

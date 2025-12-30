@@ -1,9 +1,9 @@
 package ir.moke.test;
 
 import com.ibm.icu.util.TimeZone;
-import ir.moke.microfox.utils.date.CalendarType;
-import ir.moke.microfox.utils.date.DatePattern;
-import ir.moke.microfox.utils.date.DateTimeUtils;
+import ir.moke.utils.date.CalendarType;
+import ir.moke.utils.date.DatePattern;
+import ir.moke.utils.date.DateTimeUtils;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;

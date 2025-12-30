@@ -3,7 +3,7 @@ package ir.moke.microfox.openapi;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
 import ir.moke.microfox.http.HttpContainer;
 import ir.moke.microfox.openapi.servlet.OpenApiServlet;
-import ir.moke.microfox.utils.TtyAsciiCodecs;
+import ir.moke.utils.TtyAsciiCodecs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
