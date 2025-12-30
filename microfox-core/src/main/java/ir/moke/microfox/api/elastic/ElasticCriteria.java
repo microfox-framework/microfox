@@ -1,6 +1,6 @@
 package ir.moke.microfox.api.elastic;
 
-import ir.moke.kafir.utils.JsonUtils;
+import ir.moke.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

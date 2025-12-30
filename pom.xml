@@ -336,7 +336,7 @@
             <dependency>
                 <groupId>ir.moke</groupId>
                 <artifactId>jsysbox</artifactId>
-                <version>0.4.0</version>
+                <version>0.4.1</version>
                 <exclusions>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.core</groupId>
