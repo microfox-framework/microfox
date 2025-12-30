@@ -1,0 +1,40 @@
+#!/bin/bash
+
+clear
+echo "1) Update"
+echo "2) Revert"
+echo "3) Confirm"
+
+read -p "Choose item : " item
+
+function update() {
+  CURRENT_VERSION=$(grep "<version>" pom.xml | head -n1 | sed -e 's/<\/\?version>//g' | awk '{$1=$1}1')
+  read -p "Enter new version [${CURRENT_VERSION}] : " NEW_VERSION
+  mvn versions:set -DnewVersion=$NEW_VERSION versions:set-property -Dproperty=microfox.version -DnewVersion=$NEW_VERSION
+}
+
+function revert() {
+  mvn versions:revert
+}
+
+function commit() {
+  mvn versions:commit
+}
+
+case "$item" in
+1)
+  echo "Update version"
+  update
+  ;;
+2)
+  echo "Revert version"
+  revert
+  ;;
+3)
+  echo "Commit version"
+  commit
+  ;;
+*)
+  echo "Choose item [1|2|3]"
+  ;;
+esac
