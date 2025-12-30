@@ -8,7 +8,6 @@ import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicrofoxException;
 
 import java.util.concurrent.SubmissionPublisher;
-import java.util.function.Supplier;
 
 public class HttpProviderImpl implements HttpProvider {
 

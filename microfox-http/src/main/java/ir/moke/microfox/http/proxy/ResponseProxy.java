@@ -1,4 +1,4 @@
-package ir.moke.microfox.http;
+package ir.moke.microfox.http.proxy;
 
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.sse.SseObject;
@@ -46,9 +46,9 @@ public class ResponseProxy implements InvocationHandler {
 
     private void invokeRedirect(Object[] args) {
         if (args.length == 2) {
-            ResponseHelper.redirect((String) args[0], response);
+            ResponseHelper.redirect((String) args[0], (int) args[1], response);
         } else {
-            ResponseHelper.redirect((String) args[0], (int) args[0], response);
+            ResponseHelper.redirect((String) args[0], response);
         }
     }
 

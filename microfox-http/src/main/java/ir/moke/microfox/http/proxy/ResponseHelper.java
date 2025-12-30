@@ -1,9 +1,10 @@
-package ir.moke.microfox.http;
+package ir.moke.microfox.http.proxy;
 
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.http.HttpUtils;
 import ir.moke.utils.JsonUtils;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
@@ -101,11 +102,8 @@ public class ResponseHelper {
     }
 
     public static void redirect(String location, int httpStatusCode, HttpServletResponse response) {
-        response.setStatus(httpStatusCode);
-        response.setHeader("Location", location);
-        response.setHeader("Connection", "close");
         try {
-            response.sendError(httpStatusCode);
+            response.sendRedirect(location, httpStatusCode);
         } catch (IOException e) {
             throw new MicrofoxException(e);
         }

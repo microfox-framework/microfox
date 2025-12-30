@@ -5,6 +5,8 @@ import ir.moke.microfox.MicroFoxEnvironment;
 import ir.moke.microfox.api.http.*;
 import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.ExceptionMapperHolder;
+import ir.moke.microfox.http.proxy.RequestProxy;
+import ir.moke.microfox.http.proxy.ResponseProxy;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
