@@ -1,7 +1,7 @@
-package com.sample.resource;
+package ir.moke.test.resource;
 
-import com.sample.UserDTO;
-import com.sample.security.JwtSecurity;
+import ir.moke.test.UserDTO;
+import ir.moke.test.security.JwtSecurity;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.SecuredRoute;

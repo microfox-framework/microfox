@@ -1,6 +1,6 @@
-package com.sample;
+package ir.moke.test;
 
-import com.sample.sse.SseTask;
+import ir.moke.test.sse.SseTask;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.sse.SseObject;
 import org.slf4j.Logger;

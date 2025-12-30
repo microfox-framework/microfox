@@ -7,6 +7,7 @@ import ir.moke.kafir.http.Kafir;
 import ir.moke.microfox.api.elastic.ElasticProvider;
 import ir.moke.microfox.api.elastic.ElasticRepository;
 import ir.moke.microfox.api.ftp.*;
+import ir.moke.microfox.api.groovy.GroovyProvider;
 import ir.moke.microfox.api.hc.HealthCheckProvider;
 import ir.moke.microfox.api.http.Filter;
 import ir.moke.microfox.api.http.HttpProvider;
@@ -38,6 +39,7 @@ import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
 import org.apache.commons.net.ftp.FTPFile;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -61,6 +63,7 @@ public class MicroFox {
     private static final HealthCheckProvider healthCheckProvider = ServiceLoader.load(HealthCheckProvider.class).findFirst().orElse(null);
     private static final SystemProvider systemProvider = ServiceLoader.load(SystemProvider.class).findFirst().orElse(null);
     private static final MongoProvider mongoProvider = ServiceLoader.load(MongoProvider.class).findFirst().orElse(null);
+    private static final GroovyProvider groovyProvider = ServiceLoader.load(GroovyProvider.class).findFirst().orElse(null);
 
     static {
         LoggerManager.registerLog(new ConsoleGenericModel("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
@@ -278,5 +281,25 @@ public class MicroFox {
     public static <T> MongoCollection<T> mongo(String identity, Class<T> entityClass) {
         if (mongoProvider == null) throw new UnsupportedOperationException("MongoDB support not available");
         return mongoProvider.collection(identity, entityClass);
+    }
+
+    public static void groovyEval(String script, Consumer<Object> result) {
+        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
+        groovyProvider.eval(script, result);
+    }
+
+    public static void groovyEval(File file, Consumer<Object> result) {
+        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
+        groovyProvider.eval(file, result);
+    }
+
+    public static void groovyParse(String script, Consumer<Class<?>> classConsumer) {
+        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
+        groovyProvider.parse(script, classConsumer);
+    }
+
+    public static void groovyParse(File file, Consumer<Class<?>> classConsumer) {
+        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
+        groovyProvider.parse(file, classConsumer);
     }
 }

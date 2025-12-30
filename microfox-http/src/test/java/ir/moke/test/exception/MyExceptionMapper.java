@@ -1,4 +1,4 @@
-package com.sample.exception;
+package ir.moke.test.exception;
 
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.ErrorObject;

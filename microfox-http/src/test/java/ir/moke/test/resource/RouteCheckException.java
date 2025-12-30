@@ -1,6 +1,6 @@
-package com.sample.resource;
+package ir.moke.test.resource;
 
-import com.sample.exception.SampleException;
+import ir.moke.test.exception.SampleException;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.Route;

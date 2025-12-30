@@ -1,4 +1,4 @@
-package com.sample;
+package ir.moke.test;
 
 public record UserDTO(long id,String name) {
 }

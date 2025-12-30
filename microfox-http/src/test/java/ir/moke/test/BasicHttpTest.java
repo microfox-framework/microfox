@@ -1,11 +1,11 @@
-package com.sample;
+package ir.moke.test;
 
 import ch.qos.logback.classic.Level;
-import com.sample.exception.MyExceptionMapper;
-import com.sample.resource.RouteCheckException;
-import com.sample.resource.RouteListUsers;
-import com.sample.resource.RouteLogin;
-import com.sample.resource.ws.EchoEndpoint;
+import ir.moke.test.exception.MyExceptionMapper;
+import ir.moke.test.resource.RouteCheckException;
+import ir.moke.test.resource.RouteListUsers;
+import ir.moke.test.resource.RouteLogin;
+import ir.moke.test.resource.ws.EchoEndpoint;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.Chain;
 import ir.moke.microfox.api.http.Method;
@@ -14,8 +14,6 @@ import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.LocalTime;
 
 public class BasicHttpTest {
     private static final Logger logger = LoggerFactory.getLogger(BasicHttpTest.class);

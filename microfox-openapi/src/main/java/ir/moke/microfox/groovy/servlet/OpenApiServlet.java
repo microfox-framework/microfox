@@ -1,8 +1,8 @@
-package ir.moke.microfox.openapi.servlet;
+package ir.moke.microfox.groovy.servlet;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import ir.moke.microfox.api.http.ContentType;
-import ir.moke.microfox.openapi.OpenApiGenerator;
+import ir.moke.microfox.groovy.OpenApiGenerator;
 import ir.moke.utils.JsonUtils;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

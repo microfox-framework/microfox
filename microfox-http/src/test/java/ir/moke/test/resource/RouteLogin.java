@@ -1,7 +1,7 @@
-package com.sample.resource;
+package ir.moke.test.resource;
 
-import com.sample.security.BasicAuthSecurity;
-import com.sample.security.TokenProvider;
+import ir.moke.test.security.BasicAuthSecurity;
+import ir.moke.test.security.TokenProvider;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.SecuredRoute;

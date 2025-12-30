@@ -1,8 +1,8 @@
-package ir.moke.microfox.openapi;
+package ir.moke.microfox.groovy;
 
 import ir.moke.microfox.api.openapi.OpenApiProvider;
 import ir.moke.microfox.http.HttpContainer;
-import ir.moke.microfox.openapi.servlet.OpenApiServlet;
+import ir.moke.microfox.groovy.servlet.OpenApiServlet;
 import ir.moke.utils.TtyAsciiCodecs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

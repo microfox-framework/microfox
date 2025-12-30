@@ -1,4 +1,4 @@
-package com.sample.sse;
+package ir.moke.test.sse;
 
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.http.ResourceHolder;

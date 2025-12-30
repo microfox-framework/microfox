@@ -1,4 +1,4 @@
-package com.sample.security;
+package ir.moke.test.security;
 
 import ir.moke.microfox.api.http.security.Credential;
 
