@@ -32,6 +32,7 @@
     </scm>
 
     <modules>
+        <module>microfox-pom</module>
         <module>microfox-core</module>
         <module>microfox-elastic</module>
         <module>microfox-ftp</module>
@@ -62,6 +63,7 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Microfox -->
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-core</artifactId>
@@ -120,6 +122,11 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-system</artifactId>
+                <version>${microfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ir.moke.microfox</groupId>
+                <artifactId>microfox-groovy</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
 

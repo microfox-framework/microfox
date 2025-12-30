@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>ir.moke.microfox</groupId>
+        <artifactId>microfox-parent</artifactId>
+        <version>0.9.0</version>
+    </parent>
+
+    <artifactId>microfox-pom</artifactId>
+    <name>Microfox Framework :: POM</name>
+    <packaging>pom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-elastic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-ftp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-jms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-job</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-metrics</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-openapi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-system</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-groovy</artifactId>
+        </dependency>
+    </dependencies>
+</project>
