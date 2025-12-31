@@ -94,7 +94,7 @@ public class MicroFoxEnvironment {
             List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
             for (URL url : urls) {
                 try (InputStream is = url.openStream()) {
-                    return YamlUtils.loadAsProperties(is);
+                    props.putAll(YamlUtils.loadAsProperties(is));
                 }
             }
 
