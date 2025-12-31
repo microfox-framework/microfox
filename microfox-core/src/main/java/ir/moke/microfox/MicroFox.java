@@ -9,10 +9,7 @@ import ir.moke.microfox.api.elastic.ElasticRepository;
 import ir.moke.microfox.api.ftp.*;
 import ir.moke.microfox.api.groovy.GroovyProvider;
 import ir.moke.microfox.api.hc.HealthCheckProvider;
-import ir.moke.microfox.api.http.Filter;
-import ir.moke.microfox.api.http.HttpProvider;
-import ir.moke.microfox.api.http.Method;
-import ir.moke.microfox.api.http.Route;
+import ir.moke.microfox.api.http.*;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
@@ -93,6 +90,11 @@ public class MicroFox {
     public static void httpRouter(String path, Method method, Route route) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.http(path, method, route);
+    }
+
+    public static void httpRouter(RouteInfo routeInfo) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.http(routeInfo);
     }
 
     public static void websocket(Class<?> endpointClass) {

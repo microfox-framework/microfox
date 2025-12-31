@@ -1,9 +1,6 @@
 package ir.moke.microfox.http;
 
-import ir.moke.microfox.api.http.Filter;
-import ir.moke.microfox.api.http.HttpProvider;
-import ir.moke.microfox.api.http.Method;
-import ir.moke.microfox.api.http.Route;
+import ir.moke.microfox.api.http.*;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicrofoxException;
 
@@ -19,6 +16,11 @@ public class HttpProviderImpl implements HttpProvider {
     @Override
     public void http(String path, Method method, Route route) {
         ResourceHolder.addRoute(method, path, route);
+    }
+
+    @Override
+    public void http(RouteInfo routeInfo) {
+        ResourceHolder.addRoute(routeInfo.method(), routeInfo.path(), routeInfo.route());
     }
 
     @Override

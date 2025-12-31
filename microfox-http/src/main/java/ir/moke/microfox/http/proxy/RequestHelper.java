@@ -3,7 +3,7 @@ package ir.moke.microfox.http.proxy;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.http.HttpUtils;
-import ir.moke.microfox.http.RouteInfo;
+import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.http.validation.MicroFoxValidator;
 import ir.moke.utils.JsonUtils;
 import jakarta.servlet.AsyncContext;
