@@ -37,6 +37,10 @@ public class ResourceHolder {
         ROUTES.add(new RouteInfo(method, path, route));
     }
 
+    public static void removeRoute(Method method, String path) {
+        ROUTES.removeIf(item -> item.path().equals(path) && item.method().equals(method));
+    }
+
     public static Set<RouteInfo> listRoutes() {
         return ROUTES;
     }

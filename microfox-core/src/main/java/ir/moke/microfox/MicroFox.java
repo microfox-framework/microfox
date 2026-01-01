@@ -112,14 +112,54 @@ public class MicroFox {
         httpProvider.ssePublisher(identity, sseObject);
     }
 
-    public static void job(Runnable task, String cronExpression, boolean disableConcurrentExecution) {
+    public static void job(Runnable task, String name, String cronExpression, boolean disableConcurrentExecution) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        jobProvider.job(task, cronExpression, disableConcurrentExecution);
+        jobProvider.job(task, name, null, cronExpression, disableConcurrentExecution);
     }
 
-    public static void job(Runnable task, ZonedDateTime zonedDateTime) {
+    public static void job(Runnable task, String name, ZonedDateTime zonedDateTime) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        jobProvider.job(task, zonedDateTime);
+        jobProvider.job(task, name, null, zonedDateTime);
+    }
+
+    public static void job(Runnable task, String name, String group, String cronExpression, boolean disableConcurrentExecution) {
+        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
+        jobProvider.job(task, name, group, cronExpression, disableConcurrentExecution);
+    }
+
+    public static void job(Runnable task, String name, String group, ZonedDateTime zonedDateTime) {
+        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
+        jobProvider.job(task, name, group, zonedDateTime);
+    }
+
+    public static void jobPause(String name, String group) {
+        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
+        jobProvider.pauseJob(name, group);
+    }
+
+    public static void jobPause(String name) {
+        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
+        jobProvider.pauseJob(name, null);
+    }
+
+    public static void jobResume(String name, String group) {
+        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
+        jobProvider.resumeJob(name, group);
+    }
+
+    public static void jobResume(String name) {
+        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
+        jobProvider.resumeJob(name, null);
+    }
+
+    public static void jobResumeAll() {
+        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
+        jobProvider.resumeAllJob();
+    }
+
+    public static void jobPauseAll() {
+        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
+        jobProvider.pauseAllJob();
     }
 
     public static void ftpDownload(MicroFoxFtpConfig config, Path remoteFilePath, Path localDownloadDir) {
