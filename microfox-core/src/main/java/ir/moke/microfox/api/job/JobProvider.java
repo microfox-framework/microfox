@@ -1,6 +1,7 @@
 package ir.moke.microfox.api.job;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 public interface JobProvider {
     void job(Runnable task, String name, String group, String cronExpression, boolean disableConcurrentExecution);
@@ -14,4 +15,9 @@ public interface JobProvider {
     void resumeAllJob();
 
     void pauseAllJob();
+
+    void deleteJob(String name, String group);
+
+    List<JobInfo> listJobs();
+
 }
