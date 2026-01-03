@@ -22,7 +22,7 @@ public class DB {
                 .setPersistenceUnit("h2")
                 .setProvider(new HibernatePersistenceProvider())
                 .setHbm2ddl("update")
-                .setDialect(H2Dialect.class)
+                .setDialect(H2Dialect.class.getCanonicalName())
                 .setShowSql(true)
                 .setPackages(List.of("entity"))
                 .build();
@@ -43,7 +43,7 @@ public class DB {
                 .setPersistenceUnit("postgres")
                 .setProvider(new HibernatePersistenceProvider())
                 .setHbm2ddl("update")
-                .setDialect(PostgreSQLDialect.class)
+                .setDialect(PostgreSQLDialect.class.getCanonicalName())
                 .setShowSql(true)
                 .setPackages(List.of("entity"))
                 .build();

@@ -56,7 +56,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jetty.version>12.0.22</jetty.version>
         <micrometer.version>1.15.0</micrometer.version>
-        <hibernate.version>7.1.11.Final</hibernate.version>
+        <hibernate.version>7.2.0.Final</hibernate.version>
         <swagger.version>2.2.30</swagger.version>
         <jackson.version>2.19.0</jackson.version>
     </properties>
@@ -146,6 +146,11 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-community-dialects</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
             <dependency>

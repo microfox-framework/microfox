@@ -1,7 +1,6 @@
 package ir.moke.microfox.jpa;
 
 import jakarta.persistence.spi.PersistenceProvider;
-import org.hibernate.dialect.Dialect;
 
 import java.util.List;
 
@@ -9,7 +8,7 @@ public class JpaConfig {
     private final String identity;
     private final PersistenceProvider provider;
     private final List<String> packages;
-    private final Class<? extends Dialect> dialect;
+    private final String dialect;
     private final Boolean showSql;
     private final Boolean formatSQL;
     private final Boolean autoCommit;
@@ -38,7 +37,7 @@ public class JpaConfig {
         return packages;
     }
 
-    public Class<? extends Dialect> getDialect() {
+    public String getDialect() {
         return dialect;
     }
 
@@ -62,7 +61,7 @@ public class JpaConfig {
         private String persistenceUnit;
         private PersistenceProvider provider;
         private List<String> packages;
-        private Class<? extends Dialect> dialect;
+        private String dialect;
         private Boolean showSql;
         private Boolean formatSQL;
         private Boolean autoCommit;
@@ -83,7 +82,7 @@ public class JpaConfig {
             return this;
         }
 
-        public Builder setDialect(Class<? extends Dialect> dialect) {
+        public Builder setDialect(String dialect) {
             this.dialect = dialect;
             return this;
         }
