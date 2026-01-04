@@ -360,4 +360,9 @@ public class MicroFox {
         if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
         groovyProvider.parse(file, classConsumer);
     }
+
+    public static void groovyParse(File file, ClassLoader parentClassLoader, Consumer<Class<?>> classConsumer) {
+        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
+        groovyProvider.parse(file, parentClassLoader, classConsumer);
+    }
 }

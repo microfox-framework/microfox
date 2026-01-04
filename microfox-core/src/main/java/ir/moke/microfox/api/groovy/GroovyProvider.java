@@ -11,4 +11,7 @@ public interface GroovyProvider {
     void parse(File file, Consumer<Class<?>> classConsumer);
 
     void parse(String script, Consumer<Class<?>> classConsumer);
+
+    void parse(String script, ClassLoader parentClassLoader, Consumer<Class<?>> classConsumer);
+    void parse(File file, ClassLoader parentClassLoader, Consumer<Class<?>> classConsumer);
 }

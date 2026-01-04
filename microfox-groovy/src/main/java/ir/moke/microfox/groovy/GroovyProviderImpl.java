@@ -56,4 +56,26 @@ public class GroovyProviderImpl implements GroovyProvider {
             throw new MicrofoxException(e);
         }
     }
+
+    @Override
+    public void parse(String script, ClassLoader parentClassLoader, Consumer<Class<?>> classConsumer) {
+        try (GroovyClassLoader gcl = new GroovyClassLoader(parentClassLoader)) {
+            Objects.requireNonNull(script, "script should not be null");
+            Class<?> aClass = gcl.parseClass(script);
+            if (classConsumer != null) classConsumer.accept(aClass);
+        } catch (IOException e) {
+            throw new MicrofoxException(e);
+        }
+    }
+
+    @Override
+    public void parse(File file, ClassLoader parentClassLoader, Consumer<Class<?>> classConsumer) {
+        try (GroovyClassLoader gcl = new GroovyClassLoader()) {
+            Objects.requireNonNull(file, "file should not be null");
+            Class<?> aClass = gcl.parseClass(file);
+            if (classConsumer != null) classConsumer.accept(aClass);
+        } catch (IOException e) {
+            throw new MicrofoxException(e);
+        }
+    }
 }
