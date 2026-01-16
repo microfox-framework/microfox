@@ -1,6 +1,10 @@
 #!/bin/bash
 
 clear
+
+CURRENT_VERSION=$(grep "<version>" pom.xml | head -n1 | sed -e 's/<\/\?version>//g' | awk '{$1=$1}1')
+echo "Current Version : ${CURRENT_VERSION}"
+
 echo "1) Update"
 echo "2) Revert"
 echo "3) Confirm"
@@ -8,7 +12,6 @@ echo "3) Confirm"
 read -p "Choose item : " item
 
 function update() {
-  CURRENT_VERSION=$(grep "<version>" pom.xml | head -n1 | sed -e 's/<\/\?version>//g' | awk '{$1=$1}1')
   read -p "Enter new version [${CURRENT_VERSION}] : " NEW_VERSION
   mvn versions:set -DnewVersion=$NEW_VERSION versions:set-property -Dproperty=microfox.version -DnewVersion=$NEW_VERSION
 }
