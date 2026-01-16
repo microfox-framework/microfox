@@ -1,15 +1,15 @@
 package ir.moke.test.resource;
 
-import ir.moke.test.UserDTO;
-import ir.moke.test.security.JwtSecurity;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
-import ir.moke.microfox.api.http.SecuredRoute;
+import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
+import ir.moke.test.UserDTO;
+import ir.moke.test.security.JwtSecurity;
 
 import java.util.List;
 
-public class RouteListUsers implements SecuredRoute {
+public class RouteListUsers implements Route {
     @Override
     public SecurityStrategy securityStrategy() {
         return new JwtSecurity();

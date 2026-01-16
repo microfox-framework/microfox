@@ -2,7 +2,6 @@ package ir.moke.microfox.http.filter;
 
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Route;
-import ir.moke.microfox.api.http.SecuredRoute;
 import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
@@ -30,12 +29,12 @@ public class SecurityFilter implements Filter {
     }
 
     private void applySecurity(Route route, HttpServletRequest req, HttpServletResponse resp, FilterChain chain) {
-        if (!(route instanceof SecuredRoute secured)) {
+        if (route.securityStrategy()  == null) {
             doChain(req, resp, chain); // No security required
             return;
         }
 
-        SecurityStrategy strategy = secured.securityStrategy();
+        SecurityStrategy strategy = route.securityStrategy();
         if (!strategy.isRequired()) {
             doChain(req, resp, chain);
             return;
@@ -47,7 +46,7 @@ public class SecurityFilter implements Filter {
             return;
         }
 
-        if (!strategy.authorize(credential, secured.roles(), secured.scopes())) {
+        if (!strategy.authorize(credential, route.roles(), route.scopes())) {
             sendError(resp, StatusCode.FORBIDDEN, "Forbidden");
             return;
         }

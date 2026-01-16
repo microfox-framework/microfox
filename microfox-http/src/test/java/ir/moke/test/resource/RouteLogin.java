@@ -1,17 +1,17 @@
 package ir.moke.test.resource;
 
-import ir.moke.test.security.BasicAuthSecurity;
-import ir.moke.test.security.TokenProvider;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
-import ir.moke.microfox.api.http.SecuredRoute;
+import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.security.UsernamePasswordCredential;
 import ir.moke.microfox.http.SecurityContext;
+import ir.moke.test.security.BasicAuthSecurity;
+import ir.moke.test.security.TokenProvider;
 
 import java.util.List;
 
-public class RouteLogin implements SecuredRoute {
+public class RouteLogin implements Route {
     @Override
     public SecurityStrategy securityStrategy() {
         return new BasicAuthSecurity();
