@@ -36,6 +36,7 @@
         <module>microfox-core</module>
         <module>microfox-elastic</module>
         <module>microfox-ftp</module>
+        <module>microfox-groovy</module>
         <module>microfox-health-check</module>
         <module>microfox-http</module>
         <module>microfox-jms</module>
@@ -43,11 +44,10 @@
         <module>microfox-jpa</module>
         <module>microfox-kafka</module>
         <module>microfox-metrics</module>
+        <module>microfox-mongodb</module>
         <module>microfox-mybatis</module>
         <module>microfox-openapi</module>
         <module>microfox-system</module>
-        <module>microfox-mongodb</module>
-        <module>microfox-groovy</module>
     </modules>
 
     <properties>
@@ -77,6 +77,11 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-ftp</artifactId>
+                <version>${microfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ir.moke.microfox</groupId>
+                <artifactId>microfox-groovy</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
             <dependency>
@@ -122,11 +127,6 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-system</artifactId>
-                <version>${microfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ir.moke.microfox</groupId>
-                <artifactId>microfox-groovy</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
 
