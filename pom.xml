@@ -86,6 +86,11 @@
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
+                <artifactId>microfox-health-check</artifactId>
+                <version>${microfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-http</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
