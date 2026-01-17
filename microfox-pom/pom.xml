@@ -29,6 +29,14 @@
         </dependency>
         <dependency>
             <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-groovy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-health-check</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
             <artifactId>microfox-http</artifactId>
         </dependency>
         <dependency>
@@ -53,6 +61,11 @@
         </dependency>
         <dependency>
             <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-mongodb</artifactId>
+            <version>0.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
             <artifactId>microfox-mybatis</artifactId>
         </dependency>
         <dependency>
@@ -62,10 +75,6 @@
         <dependency>
             <groupId>ir.moke.microfox</groupId>
             <artifactId>microfox-system</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ir.moke.microfox</groupId>
-            <artifactId>microfox-groovy</artifactId>
         </dependency>
     </dependencies>
 </project>
