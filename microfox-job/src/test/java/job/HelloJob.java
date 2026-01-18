@@ -1,6 +1,8 @@
 package job;
 
-public class HelloJob implements Runnable {
+import ir.moke.microfox.api.job.Task;
+
+public class HelloJob implements Task {
     @Override
     public void run() {
         System.out.println("Hello Job executed");

@@ -16,6 +16,7 @@ import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsProvider;
 import ir.moke.microfox.api.job.JobInfo;
 import ir.moke.microfox.api.job.JobProvider;
+import ir.moke.microfox.api.job.Task;
 import ir.moke.microfox.api.jpa.JpaProvider;
 import ir.moke.microfox.api.jpa.TransactionPolicy;
 import ir.moke.microfox.api.kafka.KafkaConsumerController;
@@ -113,22 +114,22 @@ public class MicroFox {
         httpProvider.ssePublisher(identity, sseObject);
     }
 
-    public static void job(Runnable task, String name, String cronExpression, boolean disableConcurrentExecution) {
+    public static void job(Task task, String name, String cronExpression, boolean disableConcurrentExecution) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
         jobProvider.job(task, name, null, cronExpression, disableConcurrentExecution);
     }
 
-    public static void job(Runnable task, String name, ZonedDateTime zonedDateTime) {
+    public static void job(Task task, String name, ZonedDateTime zonedDateTime) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
         jobProvider.job(task, name, null, zonedDateTime);
     }
 
-    public static void job(Runnable task, String name, String group, String cronExpression, boolean disableConcurrentExecution) {
+    public static void job(Task task, String name, String group, String cronExpression, boolean disableConcurrentExecution) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
         jobProvider.job(task, name, group, cronExpression, disableConcurrentExecution);
     }
 
-    public static void job(Runnable task, String name, String group, ZonedDateTime zonedDateTime) {
+    public static void job(Task task, String name, String group, ZonedDateTime zonedDateTime) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
         jobProvider.job(task, name, group, zonedDateTime);
     }
