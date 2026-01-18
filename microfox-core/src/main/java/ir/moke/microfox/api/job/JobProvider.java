@@ -4,9 +4,9 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface JobProvider {
-    void job(Runnable task, String name, String group, String cronExpression, boolean disableConcurrentExecution);
+    void job(Task task, String name, String group, String cronExpression, boolean disableConcurrentExecution);
 
-    void job(Runnable task, String name, String group, ZonedDateTime zonedDateTime);
+    void job(Task task, String name, String group, ZonedDateTime zonedDateTime);
 
     void pauseJob(String name, String group);
 

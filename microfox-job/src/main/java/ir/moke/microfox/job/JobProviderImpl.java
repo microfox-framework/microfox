@@ -2,6 +2,7 @@ package ir.moke.microfox.job;
 
 import ir.moke.microfox.api.job.JobInfo;
 import ir.moke.microfox.api.job.JobProvider;
+import ir.moke.microfox.api.job.Task;
 import ir.moke.microfox.exception.MicrofoxException;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
@@ -28,7 +29,7 @@ public class JobProviderImpl implements JobProvider {
         }
     }
 
-    private void register(Runnable task, String name, String group, String cronExpression, boolean disableConcurrentExecution) {
+    private void register(Task task, String name, String group, String cronExpression, boolean disableConcurrentExecution) {
         try {
             JobKey jobKey = new JobKey(name, DEFAULT_JOB_NAME.apply(group));
             if (isJobExists(jobKey)) throw new MicrofoxException("The job with same name and group already exists");
@@ -48,7 +49,7 @@ public class JobProviderImpl implements JobProvider {
         }
     }
 
-    private void register(Runnable task, String name, String group, Date startAt) {
+    private void register(Task task, String name, String group, Date startAt) {
         try {
             JobKey jobKey = new JobKey(name, DEFAULT_JOB_NAME.apply(group));
             if (isJobExists(jobKey)) throw new MicrofoxException("The job with same name and group already exists");
@@ -68,12 +69,12 @@ public class JobProviderImpl implements JobProvider {
     }
 
     @Override
-    public void job(Runnable task, String name, String group, String cronExpression, boolean disableConcurrentExecution) {
+    public void job(Task task, String name, String group, String cronExpression, boolean disableConcurrentExecution) {
         register(task, name, group, cronExpression, disableConcurrentExecution);
     }
 
     @Override
-    public void job(Runnable task, String name, String group, ZonedDateTime zonedDateTime) {
+    public void job(Task task, String name, String group, ZonedDateTime zonedDateTime) {
         register(task, name, group, Date.from(zonedDateTime.toInstant()));
     }
 

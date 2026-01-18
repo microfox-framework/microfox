@@ -1,18 +1,19 @@
 package ir.moke.microfox.job;
 
+import ir.moke.microfox.api.job.Task;
 import org.quartz.JobKey;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TaskRegistry {
-    private static final Map<JobKey, Runnable> TASKS = new ConcurrentHashMap<>();
+class TaskRegistry {
+    private static final Map<JobKey, Task> TASKS = new ConcurrentHashMap<>();
 
-    public static void register(JobKey key, Runnable task) {
+    public static void register(JobKey key, Task task) {
         TASKS.put(key, task);
     }
 
-    public static Runnable get(JobKey key) {
+    public static Task get(JobKey key) {
         return TASKS.get(key);
     }
 
