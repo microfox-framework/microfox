@@ -1,7 +1,7 @@
 package ir.moke.microfox.http.filter;
 
 import ir.moke.microfox.api.http.Method;
-import ir.moke.microfox.api.http.Route;
+import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
@@ -24,39 +24,39 @@ public class SecurityFilter implements Filter {
         Method method = Method.valueOf(req.getMethod().toUpperCase());
 
         findMatchingRouteInfo(req.getRequestURI(), method)
-                .ifPresentOrElse(routeInfo -> applySecurity(routeInfo.route(), req, resp, chain),
+                .ifPresentOrElse(routeInfo -> applySecurity(routeInfo, req, resp, chain),
                         () -> doChain(req, resp, chain));
     }
 
-    private void applySecurity(Route route, HttpServletRequest req, HttpServletResponse resp, FilterChain chain) {
-        if (route.securityStrategy()  == null) {
-            doChain(req, resp, chain); // No security required
-            return;
+    private void applySecurity(RouteInfo routeInfo, HttpServletRequest req, HttpServletResponse resp, FilterChain chain) {
+        try {
+            if (routeInfo.strategy() == null) {
+                doChain(req, resp, chain); // No security required
+                return;
+            }
+
+            SecurityStrategy strategy = routeInfo.strategy();
+            if (!strategy.isRequired()) {
+                doChain(req, resp, chain);
+                return;
+            }
+
+            Credential credential = strategy.authenticate(HttpUtils.getRequest(req));
+            if (credential == null) {
+                sendError(resp, StatusCode.UNAUTHORIZED, "Unauthorized");
+                return;
+            }
+
+            if (!strategy.authorize(credential, routeInfo.roles(), routeInfo.scopes())) {
+                sendError(resp, StatusCode.FORBIDDEN, "Forbidden");
+                return;
+            }
+
+            // Store into SecurityContext for business layer
+            ScopedValue.where(SecurityContext.getScopedValue(), credential).run(() -> doChain(req, resp, chain));
+        } catch (Exception e) {
+            throw new MicrofoxException(e);
         }
-
-        SecurityStrategy strategy = route.securityStrategy();
-        if (!strategy.isRequired()) {
-            doChain(req, resp, chain);
-            return;
-        }
-
-        Credential credential = strategy.authenticate(HttpUtils.getRequest(req));
-        if (credential == null) {
-            sendError(resp, StatusCode.UNAUTHORIZED, "Unauthorized");
-            return;
-        }
-
-        if (!strategy.authorize(credential, route.roles(), route.scopes())) {
-            sendError(resp, StatusCode.FORBIDDEN, "Forbidden");
-            return;
-        }
-
-        // Store into SecurityContext for business layer
-        SecurityContext.setCredential(credential);
-
-        doChain(req, resp, chain);
-
-        SecurityContext.clear();
     }
 
     private void doChain(HttpServletRequest req, HttpServletResponse resp, FilterChain chain) {

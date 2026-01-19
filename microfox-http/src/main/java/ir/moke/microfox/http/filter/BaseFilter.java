@@ -5,11 +5,12 @@ import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.http.FilterInfo;
 import ir.moke.microfox.http.HttpUtils;
-import jakarta.servlet.*;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
 
 import static ir.moke.microfox.http.HttpUtils.findMatchingFilterInfo;
 
@@ -27,7 +28,7 @@ public class BaseFilter implements Filter {
         Request mic_req = HttpUtils.getRequest(req);
         Response mic_resp = HttpUtils.getResponse(resp);
         Chain mic_chain = (request1, response1) -> doChain(req, resp, filterChain);
-        item.filter().handle(mic_req, mic_resp,mic_chain);
+        item.filter().handle(mic_req, mic_resp, mic_chain);
     }
 
     private static void doChain(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {

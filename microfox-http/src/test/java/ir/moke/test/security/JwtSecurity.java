@@ -12,6 +12,8 @@ public class JwtSecurity implements SecurityStrategy {
     public Credential authenticate(Request request) {
         String token = request.header("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
+            String tokenHash = token.substring("Bearer ".length());
+            TokenProvider.verify(tokenHash);
             return new JwtCredential("john",
                     List.of("ADMIN"),
                     List.of("read:users"),

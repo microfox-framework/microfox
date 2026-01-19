@@ -10,6 +10,7 @@ import ir.moke.microfox.api.ftp.*;
 import ir.moke.microfox.api.groovy.GroovyProvider;
 import ir.moke.microfox.api.hc.HealthCheckProvider;
 import ir.moke.microfox.api.http.*;
+import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
@@ -93,6 +94,17 @@ public class MicroFox {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.http(path, method, route);
     }
+
+    public static void httpRouter(String path, Method method, Route route, SecurityStrategy strategy) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.http(path, method, route, strategy, List.of(), List.of());
+    }
+
+    public static void httpRouter(String path, Method method, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.http(path, method, route, strategy, roles, scopes);
+    }
+
 
     public static void httpRouter(RouteInfo routeInfo) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");

@@ -3,29 +3,13 @@ package ir.moke.test.resource;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.Route;
-import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.security.UsernamePasswordCredential;
 import ir.moke.microfox.http.SecurityContext;
-import ir.moke.test.security.BasicAuthSecurity;
 import ir.moke.test.security.TokenProvider;
 
 import java.util.List;
 
 public class RouteLogin implements Route {
-    @Override
-    public SecurityStrategy securityStrategy() {
-        return new BasicAuthSecurity();
-    }
-
-    @Override
-    public List<String> roles() {
-        return null;
-    }
-
-    @Override
-    public List<String> scopes() {
-        return null;
-    }
 
     @Override
     public void handle(Request request, Response response) {

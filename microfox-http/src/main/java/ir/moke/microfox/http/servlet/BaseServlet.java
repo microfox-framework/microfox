@@ -3,11 +3,11 @@ package ir.moke.microfox.http.servlet;
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Route;
-import ir.moke.microfox.http.sse.SseSubscriber;
+import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.http.HttpUtils;
 import ir.moke.microfox.http.ResourceHolder;
-import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.http.sse.SseInfo;
+import ir.moke.microfox.http.sse.SseSubscriber;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -95,7 +95,7 @@ public class BaseServlet extends HttpServlet {
             return;
         }
 
-        SseSubscriber subscriber = new SseSubscriber(HttpUtils.getResponse(resp), asyncContext,opt.get());
+        SseSubscriber subscriber = new SseSubscriber(HttpUtils.getResponse(resp), asyncContext, opt.get());
         opt.get().getPublisher().subscribe(subscriber);
     }
 

@@ -51,7 +51,7 @@ public class SseInfo implements Closeable {
         if (this == o) return true;
         if (!(o instanceof SseInfo other)) return false;
         return Objects.equals(identity, other.identity)
-               && Objects.equals(path, other.path);
+                && Objects.equals(path, other.path);
     }
 
     @Override

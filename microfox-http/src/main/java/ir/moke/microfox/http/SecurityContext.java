@@ -3,17 +3,13 @@ package ir.moke.microfox.http;
 import ir.moke.microfox.api.http.security.Credential;
 
 public class SecurityContext {
-    private static final ThreadLocal<Credential> CREDENTIAL_HOLDER = new ThreadLocal<>();
-
-    public static void setCredential(Credential credential) {
-        CREDENTIAL_HOLDER.set(credential);
-    }
+    private static final ScopedValue<Credential> SCOPED_VALUE = ScopedValue.newInstance();
 
     public static Credential getCredential() {
-        return CREDENTIAL_HOLDER.get();
+        return SCOPED_VALUE.get();
     }
 
-    public static void clear() {
-        CREDENTIAL_HOLDER.remove();
+    public static ScopedValue<Credential> getScopedValue() {
+        return SCOPED_VALUE;
     }
 }

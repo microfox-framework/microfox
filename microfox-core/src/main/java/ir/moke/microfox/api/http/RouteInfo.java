@@ -1,8 +1,19 @@
 package ir.moke.microfox.api.http;
 
+import ir.moke.microfox.api.http.security.SecurityStrategy;
+
+import java.util.List;
 import java.util.Objects;
 
-public record RouteInfo(Method method, String path, Route route) {
+public record RouteInfo(Method method,
+                        String path,
+                        Route route,
+                        SecurityStrategy strategy,
+                        List<String> roles,
+                        List<String> scopes) {
+    public RouteInfo(Method method, String path, Route route) {
+        this(method, path, route, null, List.of(), List.of());
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -4,6 +4,7 @@ import ir.moke.microfox.api.http.Filter;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.RouteInfo;
+import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.http.sse.SseInfo;
@@ -30,11 +31,15 @@ public class ResourceHolder {
     public static final ExecutorService SSE_EXECUTOR = Executors.newCachedThreadPool();
 
     public static void addRoute(Method method, String path, Route route) {
+        addRoute(method, path, route, null, List.of(), List.of());
+    }
+
+    public static void addRoute(Method method, String path, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
         if (!path.startsWith("/")) throw new MicrofoxException("route path should started with '/'");
         if (!HttpContainer.isStarted()) EXECUTOR.execute(HttpContainer::start);
         path = concatContextPath(path);
         logger.info("register route {}{} {}{}{}", BLUE, method, GREEN, path, RESET);
-        ROUTES.add(new RouteInfo(method, path, route));
+        ROUTES.add(new RouteInfo(method, path, route, strategy, roles, scopes));
     }
 
     public static void removeRoute(Method method, String path) {
