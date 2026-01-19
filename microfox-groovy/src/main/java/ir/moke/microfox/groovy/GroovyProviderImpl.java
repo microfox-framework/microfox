@@ -70,7 +70,7 @@ public class GroovyProviderImpl implements GroovyProvider {
 
     @Override
     public void parse(File file, ClassLoader parentClassLoader, Consumer<Class<?>> classConsumer) {
-        try (GroovyClassLoader gcl = new GroovyClassLoader()) {
+        try (GroovyClassLoader gcl = new GroovyClassLoader(parentClassLoader)) {
             Objects.requireNonNull(file, "file should not be null");
             Class<?> aClass = gcl.parseClass(file);
             if (classConsumer != null) classConsumer.accept(aClass);
