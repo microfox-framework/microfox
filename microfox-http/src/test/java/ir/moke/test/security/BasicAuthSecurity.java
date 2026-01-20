@@ -15,7 +15,7 @@ public class BasicAuthSecurity implements SecurityStrategy {
 
         String auth = request.header("Authorization");
         if (auth != null && auth.startsWith("Basic ")) {
-            byte[] bytes = Base64.getDecoder().decode(auth.substring(6, auth.length() - 1));
+            byte[] bytes = Base64.getDecoder().decode(auth.split("\\s+")[1]);
             String credential = new String(bytes);
             String username = credential.split(":")[0];
             String password = credential.split(":")[1];

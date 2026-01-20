@@ -1,5 +1,6 @@
 package ir.moke.test.security;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
@@ -13,7 +14,8 @@ public class JwtSecurity implements SecurityStrategy {
         String token = request.header("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
             String tokenHash = token.substring("Bearer ".length());
-            TokenProvider.verify(tokenHash);
+            DecodedJWT verify = TokenProvider.verify(tokenHash);
+            if (verify == null) return null;
             return new JwtCredential("john",
                     List.of("ADMIN"),
                     List.of("read:users"),

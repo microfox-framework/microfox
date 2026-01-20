@@ -1,10 +1,14 @@
 package ir.moke.microfox.http.filter;
 
+import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.api.http.ErrorObject;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
+import ir.moke.microfox.exception.ExceptionMapper;
+import ir.moke.microfox.exception.ExceptionMapperHolder;
 import ir.moke.microfox.exception.MicrofoxException;
 import ir.moke.microfox.http.HttpUtils;
 import ir.moke.microfox.http.SecurityContext;
@@ -17,6 +21,7 @@ import java.io.IOException;
 import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
 
 public class SecurityFilter implements Filter {
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
         HttpServletRequest req = (HttpServletRequest) request;
@@ -43,18 +48,19 @@ public class SecurityFilter implements Filter {
 
             Credential credential = strategy.authenticate(HttpUtils.getRequest(req));
             if (credential == null) {
-                sendError(resp, StatusCode.UNAUTHORIZED, "Unauthorized");
+                resp.setStatus(StatusCode.UNAUTHORIZED.getCode());
                 return;
             }
 
             if (!strategy.authorize(credential, routeInfo.roles(), routeInfo.scopes())) {
-                sendError(resp, StatusCode.FORBIDDEN, "Forbidden");
+                resp.setStatus(StatusCode.FORBIDDEN.getCode());
                 return;
             }
 
             // Store into SecurityContext for business layer
             ScopedValue.where(SecurityContext.getScopedValue(), credential).run(() -> doChain(req, resp, chain));
         } catch (Exception e) {
+            if (e instanceof MicrofoxException mfe) throw mfe;
             throw new MicrofoxException(e);
         }
     }
@@ -63,15 +69,6 @@ public class SecurityFilter implements Filter {
         try {
             chain.doFilter(req, resp);
         } catch (IOException | ServletException e) {
-            throw new MicrofoxException(e);
-        }
-    }
-
-    private void sendError(HttpServletResponse resp, StatusCode code, String message) {
-        try {
-            resp.setStatus(code.getCode());
-            resp.getOutputStream().write(message.getBytes());
-        } catch (IOException e) {
             throw new MicrofoxException(e);
         }
     }

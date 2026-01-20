@@ -23,14 +23,18 @@ public class TokenProvider {
                 .withClaim("username", username)
                 .withClaim("roles", roles)
                 .withClaim("scopes", scopes)
-                .withExpiresAt(Instant.now().plus(1, ChronoUnit.HOURS))
+                .withExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES))
                 .sign(algorithm);
     }
 
     public static DecodedJWT verify(String token) {
-        JWTVerifier verifier = JWT.require(algorithm)
-                .withIssuer(issuer)
-                .build();
-        return verifier.verify(token);
+        try {
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withIssuer(issuer)
+                    .build();
+            return verifier.verify(token);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
