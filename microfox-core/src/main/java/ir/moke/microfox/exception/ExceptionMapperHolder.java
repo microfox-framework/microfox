@@ -13,6 +13,8 @@ public class ExceptionMapperHolder {
 
     public static <T extends Throwable> void add(ExceptionMapper<T> exceptionMapper) {
         Type type = exceptionMapper.getType();
+
+        // ignore infrastructure mappers
         if (!MAPPERS.containsKey(type)) MAPPERS.put(type, exceptionMapper);
     }
 

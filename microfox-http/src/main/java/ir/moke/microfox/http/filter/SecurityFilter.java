@@ -1,13 +1,11 @@
 package ir.moke.microfox.http.filter;
 
 import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.api.http.ErrorObject;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
-import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.HttpUtils;
 import ir.moke.microfox.http.SecurityContext;
@@ -22,13 +20,7 @@ import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
 public class SecurityFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        ExceptionMapper<MicroFoxException> mapper = new ExceptionMapper<>() {
-            @Override
-            public ErrorObject toResponse(MicroFoxException throwable) {
-                return new ErrorObject.Builder().setStatusCode(throwable.getStatusCode()).build();
-            }
-        };
-        MicroFox.registerExceptionMapper(mapper);
+        MicroFox.registerExceptionMapper(new MicroFoxExceptionMapper());
     }
 
     @Override

@@ -6,8 +6,6 @@ import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.MicroFoxException;
 
-import java.nio.charset.StandardCharsets;
-
 public class MicroFoxExceptionMapper extends ExceptionMapper<MicroFoxException> {
     @Override
     public ErrorObject toResponse(MicroFoxException throwable) {
