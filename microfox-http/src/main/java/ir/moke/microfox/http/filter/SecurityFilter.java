@@ -8,8 +8,7 @@ import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.exception.ExceptionMapper;
-import ir.moke.microfox.exception.ExceptionMapperHolder;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.HttpUtils;
 import ir.moke.microfox.http.SecurityContext;
 import jakarta.servlet.*;
@@ -21,6 +20,16 @@ import java.io.IOException;
 import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
 
 public class SecurityFilter implements Filter {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        ExceptionMapper<MicroFoxException> mapper = new ExceptionMapper<>() {
+            @Override
+            public ErrorObject toResponse(MicroFoxException throwable) {
+                return new ErrorObject.Builder().setStatusCode(throwable.getStatusCode()).build();
+            }
+        };
+        MicroFox.registerExceptionMapper(mapper);
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
@@ -48,20 +57,18 @@ public class SecurityFilter implements Filter {
 
             Credential credential = strategy.authenticate(HttpUtils.getRequest(req));
             if (credential == null) {
-                resp.setStatus(StatusCode.UNAUTHORIZED.getCode());
-                return;
+                throw new MicroFoxException(StatusCode.UNAUTHORIZED);
             }
 
             if (!strategy.authorize(credential, routeInfo.roles(), routeInfo.scopes())) {
-                resp.setStatus(StatusCode.FORBIDDEN.getCode());
-                return;
+                throw new MicroFoxException(StatusCode.FORBIDDEN);
             }
 
             // Store into SecurityContext for business layer
             ScopedValue.where(SecurityContext.getScopedValue(), credential).run(() -> doChain(req, resp, chain));
         } catch (Exception e) {
-            if (e instanceof MicrofoxException mfe) throw mfe;
-            throw new MicrofoxException(e);
+            if (e instanceof MicroFoxException mfe) throw mfe;
+            throw new MicroFoxException(e);
         }
     }
 
@@ -69,7 +76,7 @@ public class SecurityFilter implements Filter {
         try {
             chain.doFilter(req, resp);
         } catch (IOException | ServletException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(StatusCode.INTERNAL_SERVER_ERROR);
         }
     }
 }

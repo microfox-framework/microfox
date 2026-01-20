@@ -1,7 +1,7 @@
 package ir.moke.microfox.kafka;
 
 import ir.moke.microfox.api.kafka.KafkaConsumerController;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import java.lang.reflect.Proxy;
@@ -17,7 +17,7 @@ public class KafkaConsumerFactory {
 
     public static void register(String identity, Properties properties) {
         if (CONFIGS.containsKey(identity))
-            throw new MicrofoxException("Consumer %s already registered".formatted(identity));
+            throw new MicroFoxException("Consumer %s already registered".formatted(identity));
         CONFIGS.put(identity, properties);
     }
 
@@ -25,7 +25,7 @@ public class KafkaConsumerFactory {
     public static <K, V> KafkaConsumer<K, V> get(String identity) {
         Properties props = CONFIGS.get(identity);
         if (props == null) {
-            throw new MicrofoxException("No Kafka producer for identity: " + identity);
+            throw new MicroFoxException("No Kafka producer for identity: " + identity);
         }
         return (KafkaConsumer<K, V>) CONSUMERS.computeIfAbsent(identity, id -> new KafkaConsumer<>(props));
     }

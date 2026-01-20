@@ -1,4 +1,4 @@
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
@@ -12,7 +12,7 @@ public class CustomMessageListener implements MessageListener {
                 System.out.println(tx.getText());
             }
         } catch (JMSException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 }

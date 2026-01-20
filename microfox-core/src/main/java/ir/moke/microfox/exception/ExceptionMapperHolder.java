@@ -3,7 +3,6 @@ package ir.moke.microfox.exception;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,19 +12,8 @@ public class ExceptionMapperHolder {
     private static final Map<Type, ExceptionMapper<? extends Throwable>> MAPPERS = new ConcurrentHashMap<>();
 
     public static <T extends Throwable> void add(ExceptionMapper<T> exceptionMapper) {
-        for (Type type : exceptionMapper.getClass().getGenericInterfaces()) {
-            if (type instanceof ParameterizedType parameterizedType) {
-                Type rawType = parameterizedType.getRawType();
-                if (rawType instanceof Class<?> rawClass && ExceptionMapper.class.isAssignableFrom(rawClass)) {
-                    Type actualType = parameterizedType.getActualTypeArguments()[0];
-                    if (actualType instanceof Class<?> exceptionType) {
-                        logger.info("Register exception Type: {}", exceptionType.getName());
-                        // You can safely cast and store the mapper
-                        MAPPERS.put(actualType, exceptionMapper);
-                    }
-                }
-            }
-        }
+        Type type = exceptionMapper.getType();
+        if (!MAPPERS.containsKey(type)) MAPPERS.put(type, exceptionMapper);
     }
 
     @SuppressWarnings("unchecked")

@@ -1,14 +1,13 @@
 package ir.moke.microfox.mongodb;
 
 
-import com.mongodb.Block;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.connection.ConnectionPoolSettings;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.jsr310.Jsr310CodecProvider;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -70,7 +69,7 @@ public class MongoFactory {
     public static MongoClient getMongoClient(String identity) {
         MongoClient mongoClient = MONGO_CLIENTS.get(identity);
         if (mongoClient == null) {
-            throw new MicrofoxException("No MongoClient registered with identity: " + identity);
+            throw new MicroFoxException("No MongoClient registered with identity: " + identity);
         }
 
         return mongoClient;
@@ -79,7 +78,7 @@ public class MongoFactory {
     public static MongoDatabase getMongoDatabase(String identity) {
         MongoConnectionInfo info = MONGO_CONNECTION_INFOS.get(identity);
         if (info == null || info.getDatabaseName() == null || info.getDatabaseName().isEmpty()) {
-            throw new MicrofoxException("Database name not registered with identity: " + identity);
+            throw new MicroFoxException("Database name not registered with identity: " + identity);
         }
 
         MongoClient mongoClient = getMongoClient(identity);

@@ -1,6 +1,6 @@
 package ir.moke.microfox.jpa;
 
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.jpa.annotation.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -64,7 +64,7 @@ public class RepositoryHandler implements InvocationHandler {
         final Object entity = args[0];
 
         if (entity == null) {
-            throw new MicrofoxException(entityClass.getSimpleName() + " object is null");
+            throw new MicroFoxException(entityClass.getSimpleName() + " object is null");
         }
         em.persist(entity);
         if (isVoid(method.getReturnType())) {
@@ -79,7 +79,7 @@ public class RepositoryHandler implements InvocationHandler {
         final Object primaryKey = args[0];
 
         if (primaryKey == null) {
-            throw new MicrofoxException("Invalid id");
+            throw new MicroFoxException("Invalid id");
         }
         return em.find(entityClass, primaryKey);
     }
@@ -169,7 +169,7 @@ public class RepositoryHandler implements InvocationHandler {
         final Object entity = args[0];
 
         if (entity == null) {
-            throw new MicrofoxException(entityClass.getSimpleName() + " object is null");
+            throw new MicroFoxException(entityClass.getSimpleName() + " object is null");
         }
 
         return em.merge(entity);
@@ -180,7 +180,7 @@ public class RepositoryHandler implements InvocationHandler {
         Object entity = args[0];
 
         if (entity == null) {
-            throw new MicrofoxException(entityClass.getSimpleName() + " object is null");
+            throw new MicroFoxException(entityClass.getSimpleName() + " object is null");
         }
 
         if (!em.contains(entity)) {

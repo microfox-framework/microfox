@@ -2,7 +2,7 @@ package ir.moke.microfox.jms;
 
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
@@ -23,7 +23,7 @@ public class JmsFactory {
         connectionInfo.setConnectionFactory(connectionFactory);
         connectionInfo.setConcurrency(concurrency);
         if (INFO_MAP.containsKey(identity))
-            throw new MicrofoxException("JMS connection factory with identity %s already registered".formatted(identity));
+            throw new MicroFoxException("JMS connection factory with identity %s already registered".formatted(identity));
         INFO_MAP.put(identity, connectionInfo);
         logger.info("Jms with identity {} registered", identity);
     }

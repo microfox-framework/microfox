@@ -1,7 +1,7 @@
 package ir.moke.microfox.mybatis;
 
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class MyBatisProviderImpl implements MyBatisProvider {
             sqlSession.commit();
         } catch (Exception e) {
             sqlSession.rollback();
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         } finally {
             sqlSession.close();
         }
@@ -42,7 +42,7 @@ public class MyBatisProviderImpl implements MyBatisProvider {
             sqlSession.commit();
         } catch (Exception e) {
             sqlSession.rollback();
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         } finally {
             sqlSession.close();
         }

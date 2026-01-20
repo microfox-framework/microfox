@@ -1,7 +1,7 @@
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.jms.JmsFactory;
 import jakarta.jms.JMSProducer;
 import jakarta.jms.Queue;
@@ -48,7 +48,7 @@ public class RabbitMQTest {
                 TextMessage textMessage = context.createTextMessage(LocalDateTime.now() + " Hello consumer");
                 producer.send(destination, textMessage);
             } catch (Exception e) {
-                throw new MicrofoxException(e);
+                throw new MicroFoxException(e);
             }
         });
     }
@@ -63,7 +63,7 @@ public class RabbitMQTest {
             connectionFactory.setVirtualHost(VIRTUAL_HOST);
             JmsFactory.registerConnectionFactory(IDENTITY, connectionFactory);
         } catch (Exception e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 }

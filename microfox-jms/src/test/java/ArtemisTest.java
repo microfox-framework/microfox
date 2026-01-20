@@ -1,6 +1,6 @@
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.jms.JmsFactory;
 import ir.moke.utils.date.CalendarType;
 import ir.moke.utils.date.DatePattern;
@@ -49,7 +49,7 @@ public class ArtemisTest {
                 TextMessage textMessage = context.createTextMessage(currentDateTime + " Hello consumer");
                 producer.send(destination, textMessage);
             } catch (Exception e) {
-                throw new MicrofoxException(e);
+                throw new MicroFoxException(e);
             }
         });
     }

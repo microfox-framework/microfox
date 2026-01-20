@@ -4,7 +4,7 @@ import ir.moke.microfox.api.elastic.BulkOperation;
 import ir.moke.microfox.api.elastic.ElasticCriteria;
 import ir.moke.microfox.api.elastic.Index;
 import ir.moke.microfox.api.elastic.MappingBuilder;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class ElasticController {
     public static <T> void createIndex(String identity, String index, Class<T> clazz) {
         boolean annotationPresent = clazz.isAnnotationPresent(Index.class);
         if (!annotationPresent)
-            throw new MicrofoxException("Class " + clazz.getName() + " must be annotated with @Index");
+            throw new MicroFoxException("Class " + clazz.getName() + " must be annotated with @Index");
 
         Map<String, Object> map = MappingBuilder
                 .forEntity(clazz)
@@ -54,7 +54,7 @@ public class ElasticController {
     public static <T> void updateMapping(String identity, String index, Class<T> clazz) {
         boolean annotationPresent = clazz.isAnnotationPresent(Index.class);
         if (!annotationPresent)
-            throw new MicrofoxException("Class " + clazz.getName() + " must be annotated with @Index");
+            throw new MicroFoxException("Class " + clazz.getName() + " must be annotated with @Index");
 
         Map<String, Object> map = MappingBuilder
                 .forEntity(clazz)
@@ -146,7 +146,7 @@ public class ElasticController {
     private static void checkResponse(HttpResponse<String> response) {
         int statusCode = response.statusCode();
         if (statusCode < 200 || statusCode > 300) {
-            throw new MicrofoxException("Elastic operation failed, %s".formatted(response.body()));
+            throw new MicroFoxException("Elastic operation failed, %s".formatted(response.body()));
         }
     }
 }

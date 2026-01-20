@@ -1,6 +1,6 @@
 package ir.moke.microfox.elastic;
 
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -36,7 +36,7 @@ public class ElasticHttpClient {
         try (HttpClient client = create(config)) {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -56,7 +56,7 @@ public class ElasticHttpClient {
             System.out.println(response.body());
             return response;
         } catch (Exception e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -72,7 +72,7 @@ public class ElasticHttpClient {
         try (HttpClient client = create(config)) {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -88,7 +88,7 @@ public class ElasticHttpClient {
         try (HttpClient client = create(config)) {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -123,7 +123,7 @@ public class ElasticHttpClient {
                     .connectTimeout(duration != null ? duration : Duration.ofSeconds(60))
                     .build();
         } catch (Exception e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 }

@@ -1,6 +1,6 @@
 package ir.moke.microfox.kafka;
 
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Headers;
@@ -94,7 +94,7 @@ public class KafkaProducerHandler implements InvocationHandler {
         Map<String, byte[]> map = (Map<String, byte[]>) args[5];
 
         if (value == null) {
-            throw new MicrofoxException("values is null");
+            throw new MicroFoxException("values is null");
         }
 
         Headers headers = new RecordHeaders();
@@ -117,10 +117,10 @@ public class KafkaProducerHandler implements InvocationHandler {
         Map<String, byte[]> map = (Map<String, byte[]>) args[5];
 
         if (values == null || values.isEmpty()) {
-            throw new MicrofoxException("values is empty");
+            throw new MicroFoxException("values is empty");
         }
         if (keys != null && keys.size() != values.size()) {
-            throw new MicrofoxException("key and value size is not same");
+            throw new MicroFoxException("key and value size is not same");
         }
 
         Headers headers = new RecordHeaders();

@@ -2,7 +2,7 @@ package ir.moke.microfox.kafka;
 
 import ir.moke.microfox.api.kafka.KafkaStreamController;
 import ir.moke.microfox.api.kafka.KafkaStreamState;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.Topology;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class KafkaStreamFactory {
 
     public static void register(String identity, Topology topology, Properties props) {
         if (TOPOLOGY_MAP.containsKey(identity)) {
-            throw new MicrofoxException("Stream %s already registered".formatted(identity));
+            throw new MicroFoxException("Stream %s already registered".formatted(identity));
         }
         TOPOLOGY_MAP.put(identity, topology);
         PROP_MAP.put(identity, props);
@@ -36,7 +36,7 @@ public class KafkaStreamFactory {
     static KafkaStreams buildStreams(String identity) {
         Topology topology = TOPOLOGY_MAP.get(identity);
         Properties props = PROP_MAP.get(identity);
-        if (topology == null || props == null) throw new MicrofoxException("No topology/props for: " + identity);
+        if (topology == null || props == null) throw new MicroFoxException("No topology/props for: " + identity);
 
         KafkaStreams streams = new KafkaStreams(topology, props);
 
@@ -60,7 +60,7 @@ public class KafkaStreamFactory {
 
     public static KafkaStreams get(String identity) {
         KafkaStreams streams = STREAMS_MAP.get(identity);
-        if (streams == null) throw new MicrofoxException("No KafkaStreams for identity: " + identity);
+        if (streams == null) throw new MicroFoxException("No KafkaStreams for identity: " + identity);
         return streams;
     }
 

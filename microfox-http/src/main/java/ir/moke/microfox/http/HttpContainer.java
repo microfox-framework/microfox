@@ -1,7 +1,7 @@
 package ir.moke.microfox.http;
 
 import ir.moke.microfox.MicroFoxEnvironment;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.filter.BaseFilter;
 import ir.moke.microfox.http.filter.SecurityFilter;
 import ir.moke.microfox.http.servlet.BaseServlet;
@@ -39,7 +39,7 @@ public class HttpContainer {
             logger.info("Http server started");
             server.join();
         } catch (Exception e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -50,7 +50,7 @@ public class HttpContainer {
                         try {
                             serverContainer.addEndpoint(item);
                         } catch (DeploymentException e) {
-                            throw new MicrofoxException(e);
+                            throw new MicroFoxException(e);
                         }
                     });
         });

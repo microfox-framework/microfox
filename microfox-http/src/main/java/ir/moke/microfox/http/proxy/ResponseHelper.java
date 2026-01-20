@@ -3,7 +3,7 @@ package ir.moke.microfox.http.proxy;
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.sse.SseObject;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.HttpUtils;
 import ir.moke.utils.JsonUtils;
 import jakarta.servlet.ServletOutputStream;
@@ -25,7 +25,7 @@ public class ResponseHelper {
             ServletOutputStream outputStream = response.getOutputStream();
             outputStream.write(payload.getBytes());
         } catch (IOException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -36,7 +36,7 @@ public class ResponseHelper {
             ServletOutputStream outputStream = response.getOutputStream();
             outputStream.write(json.getBytes());
         } catch (IOException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -49,7 +49,7 @@ public class ResponseHelper {
             Optional.ofNullable(sseObject.data()).ifPresent(item -> HttpUtils.sendResponse(response, "data: %s \n\n".formatted(sseObject.data()).getBytes()));
             outputStream.flush();
         } catch (IOException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -97,7 +97,7 @@ public class ResponseHelper {
         try {
             response.sendRedirect(location);
         } catch (IOException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -105,7 +105,7 @@ public class ResponseHelper {
         try {
             response.sendRedirect(location, httpStatusCode);
         } catch (IOException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -113,7 +113,7 @@ public class ResponseHelper {
         try {
             response.flushBuffer();
         } catch (IOException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -121,7 +121,7 @@ public class ResponseHelper {
         try {
             return response.getOutputStream();
         } catch (IOException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 }

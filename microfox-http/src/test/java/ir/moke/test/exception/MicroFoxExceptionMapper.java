@@ -4,17 +4,18 @@ import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.ErrorObject;
 import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.exception.ExceptionMapper;
+import ir.moke.microfox.exception.MicroFoxException;
 
 import java.nio.charset.StandardCharsets;
 
-public class MyExceptionMapper extends ExceptionMapper<SampleException> {
+public class MicroFoxExceptionMapper extends ExceptionMapper<MicroFoxException> {
     @Override
-    public ErrorObject toResponse(SampleException throwable) {
-        String message = throwable.getMessage();
+    public ErrorObject toResponse(MicroFoxException throwable) {
         return new ErrorObject.Builder()
+                .setStatusCode(throwable.getStatusCode())
                 .setContentType(ContentType.APPLICATION_JSON)
                 .setStatusCode(StatusCode.BAD_GATEWAY)
-                .setBody(message.getBytes(StandardCharsets.UTF_8))
+                .setBody("Message : " + throwable.getStatusCode())
                 .build();
 
     }

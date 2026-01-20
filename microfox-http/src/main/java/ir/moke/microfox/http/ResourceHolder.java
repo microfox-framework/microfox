@@ -6,7 +6,7 @@ import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.sse.SseObject;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.sse.SseInfo;
 import jakarta.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class ResourceHolder {
     }
 
     public static void addRoute(Method method, String path, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
-        if (!path.startsWith("/")) throw new MicrofoxException("route path should started with '/'");
+        if (!path.startsWith("/")) throw new MicroFoxException("route path should started with '/'");
         if (!HttpContainer.isStarted()) EXECUTOR.execute(HttpContainer::start);
         path = concatContextPath(path);
         logger.info("register route {}{} {}{}{}", BLUE, method, GREEN, path, RESET);
@@ -51,7 +51,7 @@ public class ResourceHolder {
     }
 
     public static void addFilter(String path, Filter... filters) {
-        if (!path.startsWith("/")) throw new MicrofoxException("filter path should started with '/'");
+        if (!path.startsWith("/")) throw new MicroFoxException("filter path should started with '/'");
         path = concatContextPath(path);
         logger.info("register filter {}{}{}", GREEN, path, RESET);
         for (Filter filter : filters) {
@@ -61,7 +61,7 @@ public class ResourceHolder {
 
     public static void addWebsocket(Class<?> wsClass) {
         if (!wsClass.isAnnotationPresent(ServerEndpoint.class))
-            throw new MicrofoxException("Websocket endpoint should annotated by ServerEndpoint.class");
+            throw new MicroFoxException("Websocket endpoint should annotated by ServerEndpoint.class");
         logger.info("register websocket {}{}{}", GREEN, wsClass.getName(), RESET);
         WEBSOCKET_LIST.add(wsClass);
     }

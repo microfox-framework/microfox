@@ -3,7 +3,7 @@ package ir.moke.microfox.jms;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsProvider;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import jakarta.jms.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
 public class JmsProviderImpl implements JmsProvider {
@@ -26,7 +25,7 @@ public class JmsProviderImpl implements JmsProvider {
         try (JMSContext context = connectionFactory.createContext()) {
             consumer.accept(context);
         } catch (Exception e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 

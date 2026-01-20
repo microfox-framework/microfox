@@ -3,7 +3,7 @@ package ir.moke.microfox.ftp;
 import com.jcraft.jsch.*;
 import ir.moke.microfox.api.ftp.MicroFoxSftpConfig;
 import ir.moke.microfox.api.ftp.SftpMode;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class SftpClient {
             this.channel = (ChannelSftp) jschSession.openChannel("sftp");
             channel.connect();
         } catch (JSchException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 

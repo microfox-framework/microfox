@@ -4,7 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import ir.moke.microfox.MicroFoxEnvironment;
 import ir.moke.microfox.api.hc.HealthCheckProvider;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +24,7 @@ public class HealthCheckProviderImpl implements HealthCheckProvider {
         try {
             server = HttpServer.create(new InetSocketAddress(host, Integer.parseInt(port)), 0);
         } catch (IOException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 

@@ -1,7 +1,7 @@
 package ir.moke.microfox.ftp;
 
 import ir.moke.microfox.api.ftp.MicroFoxFtpConfig;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class FtpClient {
                 ftpClient.enterLocalActiveMode();
             }
         } catch (IOException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -33,7 +33,7 @@ public class FtpClient {
         try {
             ftpClient.login(config.username(), config.password());
         } catch (IOException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 

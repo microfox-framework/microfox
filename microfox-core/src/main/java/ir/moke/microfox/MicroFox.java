@@ -77,12 +77,9 @@ public class MicroFox {
     public static void logger(LogModel log) {
         LoggerManager.registerLog(log);
     }
-
-    @SafeVarargs
-    public static <T extends Throwable> void registerExceptionMapper(ExceptionMapper<T>... mappers) {
-        for (ExceptionMapper<T> mapper : mappers) {
-            ExceptionMapperHolder.add(mapper);
-        }
+    
+    public static <T extends Throwable> void registerExceptionMapper(ExceptionMapper<T> mapper) {
+        ExceptionMapperHolder.add(mapper);
     }
 
     public static void httpFilter(String path, Filter... filters) {

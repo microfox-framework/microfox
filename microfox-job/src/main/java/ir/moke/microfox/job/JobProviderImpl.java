@@ -3,7 +3,7 @@ package ir.moke.microfox.job;
 import ir.moke.microfox.api.job.JobInfo;
 import ir.moke.microfox.api.job.JobProvider;
 import ir.moke.microfox.api.job.Task;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -32,7 +32,7 @@ public class JobProviderImpl implements JobProvider {
     private void register(Task task, String name, String group, String cronExpression, boolean disableConcurrentExecution) {
         try {
             JobKey jobKey = new JobKey(name, DEFAULT_JOB_NAME.apply(group));
-            if (isJobExists(jobKey)) throw new MicrofoxException("The job with same name and group already exists");
+            if (isJobExists(jobKey)) throw new MicroFoxException("The job with same name and group already exists");
             TaskRegistry.register(jobKey, task);
             JobDetail job = JobBuilder.newJob(DelegateJob.class)
                     .withIdentity(jobKey)
@@ -52,7 +52,7 @@ public class JobProviderImpl implements JobProvider {
     private void register(Task task, String name, String group, Date startAt) {
         try {
             JobKey jobKey = new JobKey(name, DEFAULT_JOB_NAME.apply(group));
-            if (isJobExists(jobKey)) throw new MicrofoxException("The job with same name and group already exists");
+            if (isJobExists(jobKey)) throw new MicroFoxException("The job with same name and group already exists");
             TaskRegistry.register(jobKey, task);
             JobDetail job = JobBuilder.newJob(DelegateJob.class)
                     .withIdentity(jobKey)
@@ -83,7 +83,7 @@ public class JobProviderImpl implements JobProvider {
         try {
             scheduler.pauseJob(new JobKey(name, DEFAULT_JOB_NAME.apply(group)));
         } catch (SchedulerException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -92,7 +92,7 @@ public class JobProviderImpl implements JobProvider {
         try {
             scheduler.resumeJob(new JobKey(name, DEFAULT_JOB_NAME.apply(group)));
         } catch (SchedulerException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -111,7 +111,7 @@ public class JobProviderImpl implements JobProvider {
         try {
             scheduler.pauseAll();
         } catch (SchedulerException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -123,7 +123,7 @@ public class JobProviderImpl implements JobProvider {
             TaskRegistry.remove(jobKey);
 
         } catch (SchedulerException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 
@@ -155,7 +155,7 @@ public class JobProviderImpl implements JobProvider {
                 jobInfos.add(jobInfo);
             }
         } catch (SchedulerException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
         return jobInfos;
     }
@@ -164,7 +164,7 @@ public class JobProviderImpl implements JobProvider {
         try {
             return scheduler.checkExists(jobKey);
         } catch (SchedulerException e) {
-            throw new MicrofoxException(e);
+            throw new MicroFoxException(e);
         }
     }
 }

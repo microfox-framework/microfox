@@ -1,7 +1,7 @@
 package ir.moke.microfox.kafka;
 
 import ir.moke.microfox.api.kafka.KafkaProducerController;
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
 import java.lang.reflect.Proxy;
@@ -18,7 +18,7 @@ public class KafkaProducerFactory {
 
     public static <K, V> void register(String identity, Properties properties, boolean transactional) {
         if (CONFIGS.putIfAbsent(identity, properties) != null) {
-            throw new MicrofoxException("Producer %s already registered".formatted(identity));
+            throw new MicroFoxException("Producer %s already registered".formatted(identity));
         }
         if (transactional) {
             properties.putIfAbsent(TRANSACTIONAL_ID_CONFIG, "tx-" + identity);
@@ -29,7 +29,7 @@ public class KafkaProducerFactory {
     public static <K, V> KafkaProducer<K, V> get(String identity) {
         Properties props = CONFIGS.get(identity);
         if (props == null) {
-            throw new MicrofoxException("No Kafka producer for identity: " + identity);
+            throw new MicroFoxException("No Kafka producer for identity: " + identity);
         }
         return (KafkaProducer<K, V>) PRODUCERS.computeIfAbsent(identity, id -> {
             KafkaProducer<?, ?> p = new KafkaProducer<>(props);

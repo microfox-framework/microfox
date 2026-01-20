@@ -1,6 +1,6 @@
 package ir.moke.microfox.jpa;
 
-import ir.moke.microfox.exception.MicrofoxException;
+import ir.moke.microfox.exception.MicroFoxException;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaUpdate;
@@ -14,7 +14,7 @@ public class JpaQueryGenerator {
     public static void updateSchema(String persistenceUnitName) {
         MetadataSources metadata = getMetadataSources(persistenceUnitName);
         if (metadata == null)
-            throw new MicrofoxException("Persistence with name %s does not exists".formatted(persistenceUnitName));
+            throw new MicroFoxException("Persistence with name %s does not exists".formatted(persistenceUnitName));
         SchemaUpdate schemaUpdate = new SchemaUpdate();
         schemaUpdate.setHaltOnError(true);
         schemaUpdate.setFormat(false);
@@ -25,7 +25,7 @@ public class JpaQueryGenerator {
     public static void createSchema(String persistenceUnitName) {
         MetadataSources metadata = getMetadataSources(persistenceUnitName);
         if (metadata == null)
-            throw new MicrofoxException("Persistence with name %s does not exists".formatted(persistenceUnitName));
+            throw new MicroFoxException("Persistence with name %s does not exists".formatted(persistenceUnitName));
         SchemaExport schemaExport = new SchemaExport();
         schemaExport.setHaltOnError(true);
         schemaExport.setFormat(false);
