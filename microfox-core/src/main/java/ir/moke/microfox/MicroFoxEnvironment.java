@@ -1,5 +1,6 @@
 package ir.moke.microfox;
 
+import ir.moke.utils.FileUtils;
 import ir.moke.utils.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -35,14 +35,20 @@ public class MicroFoxEnvironment {
     }
 
     private static void printLogo() {
-        try (InputStream inputStream = MicroFoxEnvironment.class.getClassLoader().getResourceAsStream("logo")) {
-            if (inputStream != null) {
-                byte[] bytes = inputStream.readAllBytes();
-                System.out.write(bytes);
-                System.out.flush();
+        try {
+            Enumeration<URL> resources = MicroFoxEnvironment.class.getClassLoader().getResources("logo");
+            List<URL> urls = Collections.list(resources); // to get application logo
+            if (!urls.isEmpty()) {
+                byte[] bytes = FileUtils.readFileAsBytes(Path.of(urls.getFirst().getFile()));
+                if (bytes != null) {
+                    System.out.write(bytes);
+                    System.out.flush();
+                } else {
+                    logger.info("{}{}{}", BACKGROUND_RED, "EMPTY LOGO", RESET);
+                }
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            logger.error("Unknown error", e);
         }
     }
 
