@@ -18,12 +18,5 @@
             <groupId>ir.moke.microfox</groupId>
             <artifactId>microfox-core</artifactId>
         </dependency>
-
-        <!-- Unit Test -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>
