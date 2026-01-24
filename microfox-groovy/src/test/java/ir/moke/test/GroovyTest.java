@@ -1,8 +1,8 @@
 package ir.moke.test;
 
 import ir.moke.microfox.MicroFox;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class GroovyTest {
 
