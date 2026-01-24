@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -36,7 +37,8 @@ public class MicroFoxEnvironment {
     private static void printLogo() {
         try (InputStream inputStream = MicroFoxEnvironment.class.getClassLoader().getResourceAsStream("logo")) {
             if (inputStream != null) {
-                System.out.println(new String(inputStream.readAllBytes()));
+                String logo = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+                System.out.println(logo);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
