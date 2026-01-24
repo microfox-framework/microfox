@@ -37,8 +37,9 @@ public class MicroFoxEnvironment {
     private static void printLogo() {
         try (InputStream inputStream = MicroFoxEnvironment.class.getClassLoader().getResourceAsStream("logo")) {
             if (inputStream != null) {
-                String logo = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-                System.out.println(logo);
+                byte[] bytes = inputStream.readAllBytes();
+                System.out.write(bytes);
+                System.out.flush();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
