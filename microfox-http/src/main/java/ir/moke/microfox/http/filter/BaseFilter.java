@@ -11,23 +11,31 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.function.Consumer;
 
 import static ir.moke.microfox.http.HttpUtils.findMatchingFilterInfo;
 
 public class BaseFilter implements Filter {
+    private static final Logger logger = LoggerFactory.getLogger(BaseFilter.class);
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
-        findMatchingFilterInfo(req.getRequestURI())
-                .ifPresentOrElse(item -> applyFilter(item, req, resp, chain), () -> doChain(req, resp, chain));
+        Consumer<FilterInfo> filterInfoConsumer = item -> applyFilter(item, req, resp, chain);
+        Runnable chainRunner = () -> doChain(req, resp, chain);
+
+        findMatchingFilterInfo(req.getRequestURI()).ifPresentOrElse(filterInfoConsumer, chainRunner);
     }
 
     private static void applyFilter(FilterInfo item, HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) {
         Request mic_req = HttpUtils.getRequest(req);
         Response mic_resp = HttpUtils.getResponse(resp);
-        Chain mic_chain = (request1, response1) -> doChain(req, resp, filterChain);
+        Chain mic_chain = (_, _) -> doChain(req, resp, filterChain);
         item.filter().handle(mic_req, mic_resp, mic_chain);
     }
 

@@ -17,6 +17,16 @@ public class MicroFoxException extends RuntimeException {
         super(cause);
     }
 
+    public MicroFoxException(StatusCode statusCode, Throwable e) {
+        super(e);
+        this.statusCode = statusCode;
+    }
+
+    public MicroFoxException(StatusCode statusCode, String message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+
     public MicroFoxException(StatusCode statusCode) {
         this.statusCode = statusCode;
     }
