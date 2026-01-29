@@ -16,7 +16,6 @@ import static ir.moke.utils.TtyAsciiCodecs.*;
 public class MicroFoxEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(MicroFoxEnvironment.class);
     private static final Map<Object, Object> sortedMap = new TreeMap<>(loadEnvironments());
-    private static InputStream logoStream;
 
     private static void printEnvironments() {
         Set<Object> keys = sortedMap.keySet();
@@ -34,26 +33,24 @@ public class MicroFoxEnvironment {
         }
     }
 
-    static void registerLogo(InputStream inputStream) {
-        logoStream = inputStream;
-    }
-
-    static void printLogo() {
+    private static void printLogo() {
         try {
-            if (logoStream != null) {
-                byte[] bytes = logoStream.readAllBytes();
-                System.out.write(bytes);
-                System.out.flush();
+            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("logo");
+            List<URL> list = Collections.list(urls);
+            URL url;
+            if (list.size() > 1) {
+                url = list.stream().filter(item -> !item.getPath().contains("microfox")).findFirst().orElse(null);
             } else {
-                InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("logo");
-                if (inputStream != null) {
+                url = list.getFirst();
+            }
+            if (url != null) {
+                try (InputStream inputStream = url.openStream()) {
                     byte[] bytes = inputStream.readAllBytes();
                     System.out.write(bytes);
                     System.out.flush();
-                    inputStream.close();
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             logger.error("Unknown error", e);
         }
     }

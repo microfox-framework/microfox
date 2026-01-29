@@ -40,7 +40,6 @@ import jakarta.jms.MessageListener;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.File;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -73,10 +72,6 @@ public class MicroFox {
         Optional.ofNullable(healthCheckProvider).ifPresent(HealthCheckProvider::activate);
         Optional.ofNullable(openApiProvider).ifPresent(OpenApiProvider::registerOpenAPI);
         Optional.ofNullable(metricsProvider).ifPresent(MetricsProvider::registerMetrics);
-    }
-
-    public static void registerLogo(InputStream inputStream) {
-        MicroFoxEnvironment.registerLogo(inputStream);
     }
 
     public static void logger(LogModel log) {
