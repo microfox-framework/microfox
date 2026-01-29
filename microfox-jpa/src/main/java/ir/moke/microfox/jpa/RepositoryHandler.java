@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -141,7 +142,7 @@ public class RepositoryHandler implements InvocationHandler {
         }
 
         try {
-            return (isList(method)) ? query.getResultList() : query.getSingleResult();
+            return (isList(method)) ? controlSelectReturnList(method, query.getResultList()) : query.getSingleResult();
         } catch (final NoResultException e) {
             return null;
         }
@@ -287,5 +288,16 @@ public class RepositoryHandler implements InvocationHandler {
         Class<?>[] types = method.getParameterTypes();
 
         return IntStream.range(0, method.getParameterCount()).mapToObj(i -> new Parameter(annotations[i], types[i], values[i])).collect(Collectors.toList());
+    }
+
+    private static Collection<?> controlSelectReturnList(Method method, List<?> list) {
+        Class<?> returnType = method.getReturnType();
+        if (Set.class.isAssignableFrom(returnType)) {
+            return new LinkedHashSet<>(list);
+        } else if (Queue.class.isAssignableFrom(returnType)) {
+            return new ArrayDeque<>(list);
+        }
+
+        return list;
     }
 }
