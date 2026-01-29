@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -248,7 +247,7 @@ public class RepositoryHandler implements InvocationHandler {
         if (maxResults != null) typedQuery.setMaxResults(maxResults);
 
         try {
-            return isList(method) ? typedQuery.getResultList() : typedQuery.getSingleResult();
+            return isList(method) ? controlSelectReturnList(method, typedQuery.getResultList()) : typedQuery.getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
