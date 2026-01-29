@@ -12,7 +12,7 @@ public class MicroFoxExceptionMapper extends ExceptionMapper<MicroFoxException> 
         StatusCode statusCode = exception.getStatusCode();
         return new ErrorObject.Builder()
                 .setStatusCode(statusCode)
-                .setBody(exception.getMessage())
+                .setBody(exception.getMessage() != null ? exception.getMessage() : "")
                 .setContentType(ContentType.APPLICATION_JSON)
                 .build();
     }
