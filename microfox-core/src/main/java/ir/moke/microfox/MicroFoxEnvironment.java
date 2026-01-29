@@ -16,6 +16,7 @@ import static ir.moke.utils.TtyAsciiCodecs.*;
 public class MicroFoxEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(MicroFoxEnvironment.class);
     private static final Map<Object, Object> sortedMap = new TreeMap<>(loadEnvironments());
+    private static InputStream logoStream;
 
     private static void printEnvironments() {
         Set<Object> keys = sortedMap.keySet();
@@ -33,12 +34,24 @@ public class MicroFoxEnvironment {
         }
     }
 
-    private static void printLogo() {
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("logo")) {
-            if (inputStream != null) {
-                byte[] bytes = inputStream.readAllBytes();
+    static void registerLogo(InputStream inputStream) {
+        logoStream = inputStream;
+    }
+
+    static void printLogo() {
+        try {
+            if (logoStream != null) {
+                byte[] bytes = logoStream.readAllBytes();
                 System.out.write(bytes);
                 System.out.flush();
+            } else {
+                InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("logo");
+                if (inputStream != null) {
+                    byte[] bytes = inputStream.readAllBytes();
+                    System.out.write(bytes);
+                    System.out.flush();
+                    inputStream.close();
+                }
             }
         } catch (Exception e) {
             logger.error("Unknown error", e);
