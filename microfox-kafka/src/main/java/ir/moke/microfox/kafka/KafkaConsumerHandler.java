@@ -83,6 +83,7 @@ public class KafkaConsumerHandler implements InvocationHandler {
     }
 
     private static <K, V> void consume(KafkaConsumer<K, V> consumer, KafkaListener<K, V> listener) {
+        logger.trace("Kafka activate consumer");
         ConsumerRecords<K, V> records = consumer.poll(Duration.ofMillis(Long.parseLong(MicroFoxEnvironment.getEnv("microfox.kafka.pool.timeout"))));
         for (ConsumerRecord<K, V> record : records) {
             try {

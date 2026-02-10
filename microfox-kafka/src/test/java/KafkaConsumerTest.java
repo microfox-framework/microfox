@@ -1,5 +1,8 @@
+import ch.qos.logback.classic.Level;
+import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.kafka.KafkaConsumerController;
 import ir.moke.microfox.kafka.KafkaConsumerFactory;
+import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
@@ -14,6 +17,7 @@ public class KafkaConsumerTest {
     private static final int PORT = 9092;
 
     static {
+        MicroFox.logger(new ConsoleGenericModel("Kafka","ir.moke.microfox.kafka", Level.TRACE));
         initializeConsumer();
     }
 
@@ -26,7 +30,7 @@ public class KafkaConsumerTest {
         KafkaConsumerFactory.register(IDENTITY, properties);
     }
 
-    public static void main(String... str) {
+    static void main() {
         kafkaConsumer(IDENTITY, KafkaConsumerTest::listen);
     }
 

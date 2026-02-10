@@ -3,7 +3,6 @@ import ir.moke.microfox.kafka.KafkaProducerFactory;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.time.Duration;
 import java.util.Properties;
 
 import static ir.moke.microfox.MicroFox.kafkaProducer;
@@ -25,12 +24,12 @@ public class KafkaProducerTest {
         KafkaProducerFactory.register(IDENTITY, properties, false);
     }
 
-    public static void main(String... str) {
+    static void main() {
         kafkaProducer(IDENTITY, KafkaProducerTest::send);
     }
 
     private static void send(KafkaProducerController<String, String> kafkaProducerController) {
-        kafkaProducerController.send("input-topic", "Hello mahdi");
+        kafkaProducerController.send("sample", "Hello mahdi");
         kafkaProducerController.close();
     }
 }

@@ -1,4 +1,4 @@
 microfox:
   kafka:
-    pool-timeout: 2000
+    pool-timeout: 60000
     idle-interval: 3000
