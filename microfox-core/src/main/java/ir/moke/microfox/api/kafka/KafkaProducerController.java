@@ -40,5 +40,4 @@ public interface KafkaProducerController<K, V> {
     void close(Duration duration);
 
     void close();
-    void shutdown();
 }

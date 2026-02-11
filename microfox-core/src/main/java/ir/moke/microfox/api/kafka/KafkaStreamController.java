@@ -25,6 +25,4 @@ public interface KafkaStreamController {
     void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler handler);
 
     void setUncaughtExceptionHandler(StreamsUncaughtExceptionHandler handler);
-
-    void shutdown();
 }

@@ -36,45 +36,46 @@ public class KafkaStreamHandler implements InvocationHandler {
         KafkaStreams streams = KafkaStreamFactory.get(identity);
 
         switch (name) {
-            case "start" -> {
-                streams.start();
-            }
-            case "close" -> {
-                if (args != null && args.length == 1 && args[0] instanceof Duration) {
-                    streams.close((Duration) args[0]);
-                } else {
-                    streams.close();
-                }
-            }
+            case "start" -> streams.start();
+            case "close" -> close(args, streams);
             case "cleanUp" -> streams.cleanUp();
             case "state" -> {
                 return KafkaStreamState.valueOf(streams.state().name());
             }
             case "restart" -> restart();
-            case "addStateListener" -> {
-                BiConsumer<KafkaStreamState, KafkaStreamState> listener = (BiConsumer<KafkaStreamState, KafkaStreamState>) args[0];
-                KafkaStreamFactory.addStateListener(identity, listener);
-            }
-            case "removeStateListener" -> {
-                BiConsumer<KafkaStreamState, KafkaStreamState> listener = (BiConsumer<KafkaStreamState, KafkaStreamState>) args[0];
-                KafkaStreamFactory.removeStateListener(identity, listener);
-            }
-            case "setUncaughtExceptionHandler" -> {
-                if (args[0] instanceof StreamsUncaughtExceptionHandler streamsHandler) {
-                    streams.setUncaughtExceptionHandler(streamsHandler);
-                } else if (args[0] instanceof Thread.UncaughtExceptionHandler threadHandler) {
-                    Thread.setDefaultUncaughtExceptionHandler(threadHandler);
-                }
-            }
-            case "shutdown" -> shutdownHook();
-            default -> {
-                // if default method on interface
-                if (method.isDefault()) {
-                    return InvocationHandler.invokeDefault(proxy, method, args);
-                }
-            }
+            case "addStateListener" -> addStateListener(args);
+            case "removeStateListener" -> removeStateListener(args);
+            case "setUncaughtExceptionHandler" -> setUncaughtExceptionHandler(args, streams);
         }
         return null;
+    }
+
+    private static void setUncaughtExceptionHandler(Object[] args, KafkaStreams streams) {
+        if (args[0] instanceof StreamsUncaughtExceptionHandler streamsHandler) {
+            streams.setUncaughtExceptionHandler(streamsHandler);
+        } else if (args[0] instanceof Thread.UncaughtExceptionHandler threadHandler) {
+            Thread.setDefaultUncaughtExceptionHandler(threadHandler);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void removeStateListener(Object[] args) {
+        BiConsumer<KafkaStreamState, KafkaStreamState> listener = (BiConsumer<KafkaStreamState, KafkaStreamState>) args[0];
+        KafkaStreamFactory.removeStateListener(identity, listener);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addStateListener(Object[] args) {
+        BiConsumer<KafkaStreamState, KafkaStreamState> listener = (BiConsumer<KafkaStreamState, KafkaStreamState>) args[0];
+        KafkaStreamFactory.addStateListener(identity, listener);
+    }
+
+    private static void close(Object[] args, KafkaStreams streams) {
+        if (args != null && args.length == 1 && args[0] instanceof Duration) {
+            streams.close((Duration) args[0]);
+        } else {
+            streams.close();
+        }
     }
 
     private void restart() {
@@ -87,13 +88,9 @@ public class KafkaStreamHandler implements InvocationHandler {
             log.warn("Exception while closing old streams", e);
         }
         // build a fresh instance
-        KafkaStreams fresh = KafkaStreamFactory.buildStreams(identity);
-        KafkaStreamFactory.replaceStreams(identity, fresh);
-        fresh.start();
-    }
-
-    private void shutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(KafkaStreamFactory::closeAll, "kafka-streams-shutdown"));
+        KafkaStreams streams = KafkaStreamFactory.buildStreams(identity);
+        KafkaStreamFactory.replaceStreams(identity, streams);
+        streams.start();
     }
 }
 

@@ -54,7 +54,7 @@ public class KafkaConsumerHandler implements InvocationHandler {
     }
 
     private void invokeShutdown() {
-        Runtime.getRuntime().addShutdownHook(new Thread(KafkaStreamFactory::closeAll, "kafka-consumer-shutdown"));
+        ses.shutdown();
     }
 
     private <K, V> void invokeClose() {

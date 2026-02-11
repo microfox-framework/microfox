@@ -23,6 +23,10 @@ public class KafkaStreamFactory {
     private static final Map<String, KafkaStreams> STREAMS_MAP = new ConcurrentHashMap<>();
     private static final Map<String, CopyOnWriteArrayList<BiConsumer<KafkaStreamState, KafkaStreamState>>> LISTENERS = new ConcurrentHashMap<>();
 
+    static {
+        shutdownHook();
+    }
+
     public static void register(String identity, Topology topology, Properties props) {
         if (TOPOLOGY_MAP.containsKey(identity)) {
             throw new MicroFoxException("Stream %s already registered".formatted(identity));
@@ -102,5 +106,9 @@ public class KafkaStreamFactory {
                 new Class<?>[]{KafkaStreamController.class},
                 new KafkaStreamHandler(identity)
         );
+    }
+
+    public static void shutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(KafkaStreamFactory::closeAll, "kafka-consumer-shutdown"));
     }
 }

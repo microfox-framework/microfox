@@ -44,19 +44,14 @@ public class KafkaProducerHandler implements InvocationHandler {
         switch (method.getName()) {
             case "send" -> invokeSend(args);
             case "batchSend" -> invokeBatchSend(args);
-            case "close" -> invokeClose(args);
             case "txBegin" -> invokeTxBegin();
             case "txCommit" -> invokeTxCommit();
             case "txAbort" -> invokeTxAbort();
             case "flush" -> invokeTxFlush();
-            case "shutdown" -> invokeShutdown(args);
+            case "close" -> invokeClose(args);
         }
 
         return null;
-    }
-
-    private void invokeShutdown(Object[] args) {
-        Runtime.getRuntime().addShutdownHook(new Thread(KafkaProducerFactory::closeAll, "kafka-producers-shutdown"));
     }
 
     private <K, V> void invokeTxFlush() {
