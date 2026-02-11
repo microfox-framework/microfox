@@ -1,6 +1,6 @@
 package ir.moke.microfox.api.http;
 
-import ir.moke.utils.JsonUtils;
+import ir.moke.utils.json.JsonUtils;
 import jakarta.servlet.http.Cookie;
 
 import java.nio.charset.StandardCharsets;

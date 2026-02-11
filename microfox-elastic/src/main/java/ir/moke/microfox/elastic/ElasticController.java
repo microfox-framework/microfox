@@ -5,7 +5,7 @@ import ir.moke.microfox.api.elastic.ElasticCriteria;
 import ir.moke.microfox.api.elastic.Index;
 import ir.moke.microfox.api.elastic.MappingBuilder;
 import ir.moke.microfox.exception.MicroFoxException;
-import ir.moke.utils.JsonUtils;
+import ir.moke.utils.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -26,7 +26,7 @@ import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.api.http.RouteInfo;
-import ir.moke.utils.JsonUtils;
+import ir.moke.utils.json.JsonUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;

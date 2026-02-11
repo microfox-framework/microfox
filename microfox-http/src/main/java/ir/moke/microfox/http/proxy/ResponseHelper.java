@@ -5,7 +5,7 @@ import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.HttpUtils;
-import ir.moke.utils.JsonUtils;
+import ir.moke.utils.json.JsonUtils;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
