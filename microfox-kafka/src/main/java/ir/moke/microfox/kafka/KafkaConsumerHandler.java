@@ -45,12 +45,24 @@ public class KafkaConsumerHandler implements InvocationHandler {
 
         switch (name) {
             case "listen" -> invokeListen(args);
+            case "commitAsync" -> commitAsync();
+            case "commitSync" -> commitSync();
             case "pause" -> invokePause();
             case "resume" -> invokeResume();
             case "close" -> invokeClose();
             case "shutdown" -> invokeShutdown();
         }
         return null;
+    }
+
+    private <K, V> void commitSync() {
+        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(identity);
+        consumer.commitSync();
+    }
+
+    private <K, V> void commitAsync() {
+        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(identity);
+        consumer.commitAsync();
     }
 
     private void invokeShutdown() {
