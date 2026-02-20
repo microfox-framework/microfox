@@ -3,6 +3,10 @@ package ir.moke.microfox.api.jpa;
 import java.util.function.Consumer;
 
 public interface JpaProvider {
+    void jpa(String identity, Runnable runnable);
+
+    void jpa(String identity, Integer txTimeout, Runnable runnable);
+
     <T> T jpa(String identity, Class<T> repositoryClass);
 
     <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Consumer<T> consumer);

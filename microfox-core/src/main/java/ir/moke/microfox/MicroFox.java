@@ -263,6 +263,16 @@ public class MicroFox {
         myBatisProvider.mybatisBatch(identity, mapper, consumer);
     }
 
+    public static void jpa(String identity, int txTimeout, Runnable runnable) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.jpa(identity, txTimeout, runnable);
+    }
+
+    public static void jpa(String identity, Runnable runnable) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.jpa(identity, runnable);
+    }
+
     public static <T> T jpa(String identity, Class<T> repositoryClass) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
         return jpaProvider.jpa(identity, repositoryClass);

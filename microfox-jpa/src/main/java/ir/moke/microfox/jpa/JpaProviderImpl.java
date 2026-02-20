@@ -12,6 +12,16 @@ import java.util.function.Consumer;
 
 public class JpaProviderImpl implements JpaProvider {
     @Override
+    public void jpa(String identity, Integer txTimeout, Runnable runnable) {
+        requiredTx(identity, null, _ -> runnable.run(), txTimeout, true);
+    }
+
+    @Override
+    public void jpa(String identity, Runnable runnable) {
+        jpa(identity, null, runnable);
+    }
+
+    @Override
     public <T> T jpa(String identity, Class<T> repositoryClass) {
         EntityManagerFactory emf = JpaFactory.getEntityManagerFactory(identity);
         return JpaFactory.create(repositoryClass, emf.createEntityManager());
@@ -41,10 +51,11 @@ public class JpaProviderImpl implements JpaProvider {
 
     /**
      * restrict persist for parent transaction so create new {@link EntityManager} without manage tx .
-     * @param identity database identity
+     *
+     * @param identity        database identity
      * @param repositoryClass repository class
-     * @param consumer consumer
-     * @param <T> return type
+     * @param consumer        consumer
+     * @param <T>             return type
      */
     private <T> void notSupportedTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
         consumer.accept(jpa(identity, repositoryClass));
@@ -88,7 +99,11 @@ public class JpaProviderImpl implements JpaProvider {
                     tx.begin();
                     txOwner.set(true);
                 }
-                consumer.accept(jpa(sv.get(), repositoryClass));
+                if (repositoryClass != null) {
+                    consumer.accept(jpa(sv.get(), repositoryClass));
+                } else {
+                    consumer.accept(null);
+                }
                 if (txOwner.get() && tx.isActive()) tx.commit();
             } catch (Throwable t) {
                 if (txOwner.get() && tx.isActive()) tx.rollback();
