@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 public class JpaProviderImpl implements JpaProvider {
-    private static final ScopedValue<EntityManager> sv = ScopedValue.newInstance();
+
     @Override
     public void jpa(String identity, Integer txTimeout, Runnable runnable) {
         requiredTx(identity, null, _ -> runnable.run(), txTimeout);
