@@ -111,11 +111,11 @@ public class JpaProviderImpl implements JpaProvider {
 
         EntityTransaction tx = em.getTransaction();
         boolean isActive = tx.isActive();
-        if (txTimeout != null && txTimeout > 0 && !isActive) tx.setTimeout(txTimeout);
 
         JpaFactory.putScopedValue(identity, sv);
         ScopedValue.where(sv, em).run(() -> {
             try {
+                if (txTimeout != null && txTimeout > 0 && !isActive) tx.setTimeout(txTimeout);
                 if (isOwner && !isActive) tx.begin();
 
                 if (repositoryClass != null) {
