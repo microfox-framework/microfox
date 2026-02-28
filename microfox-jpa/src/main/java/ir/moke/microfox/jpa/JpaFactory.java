@@ -94,8 +94,8 @@ public class JpaFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T create(Class<T> repositoryInterface, EntityManager em) {
-        return (T) Proxy.newProxyInstance(repositoryInterface.getClassLoader(), new Class<?>[]{repositoryInterface}, new RepositoryHandler(em));
+    public static <T> T create(Class<T> repositoryInterface, String identity) {
+        return (T) Proxy.newProxyInstance(repositoryInterface.getClassLoader(), new Class<?>[]{repositoryInterface}, new RepositoryHandler(identity));
     }
 
     private static Object getMicroFoxValidationFactory() {

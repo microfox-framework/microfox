@@ -1,4 +1,4 @@
-package entity;
+package ir.microfox.jpa.test.entity;
 
 import ir.moke.utils.json.JsonUtils;
 import jakarta.persistence.*;

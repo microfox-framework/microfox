@@ -1,6 +1,6 @@
-package repository;
+package ir.microfox.jpa.test.repository;
 
-import entity.Person;
+import ir.microfox.jpa.test.entity.Person;
 import ir.moke.microfox.jpa.CriteriaProvider;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;

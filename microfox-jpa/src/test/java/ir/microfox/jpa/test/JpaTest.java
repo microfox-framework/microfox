@@ -1,6 +1,8 @@
-import entity.Person;
+package ir.microfox.jpa.test;
+
+import ir.microfox.jpa.test.entity.Person;
 import ir.moke.microfox.api.jpa.TransactionPolicy;
-import repository.PersonRepository;
+import ir.microfox.jpa.test.repository.PersonRepository;
 
 import java.util.List;
 

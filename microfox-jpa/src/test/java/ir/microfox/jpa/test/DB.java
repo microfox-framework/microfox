@@ -1,3 +1,5 @@
+package ir.microfox.jpa.test;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import ir.moke.microfox.jpa.JpaConfig;
@@ -24,7 +26,7 @@ public class DB {
                 .setHbm2ddl("update")
                 .setDialect(H2Dialect.class.getCanonicalName())
                 .setShowSql(true)
-                .setPackages(List.of("entity"))
+                .setPackages(List.of("ir.microfox.jpa.test.entity"))
                 .build();
 
         JpaFactory.register(hikariDataSource, databaseConfig);

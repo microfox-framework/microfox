@@ -7,13 +7,13 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class JpaProviderImpl implements JpaProvider {
+    private static final ScopedValue<EntityManager> sv = ScopedValue.newInstance();
     @Override
     public void jpa(String identity, Integer txTimeout, Runnable runnable) {
-        requiredTx(identity, null, _ -> runnable.run(), txTimeout, true);
+        requiredTx(identity, null, _ -> runnable.run(), txTimeout);
     }
 
     @Override
@@ -23,12 +23,7 @@ public class JpaProviderImpl implements JpaProvider {
 
     @Override
     public <T> T jpa(String identity, Class<T> repositoryClass) {
-        EntityManagerFactory emf = JpaFactory.getEntityManagerFactory(identity);
-        return JpaFactory.create(repositoryClass, emf.createEntityManager());
-    }
-
-    private <T> T jpa(EntityManager em, Class<T> repositoryClass) {
-        return JpaFactory.create(repositoryClass, em);
+        return JpaFactory.create(repositoryClass, identity);
     }
 
     @Override
@@ -41,7 +36,7 @@ public class JpaProviderImpl implements JpaProvider {
         Objects.requireNonNull(consumer, "Consumer must not be null");
         Objects.requireNonNull(policy, "Transaction policy must not be null");
         switch (policy) {
-            case REQUIRED -> requiredTx(identity, repositoryClass, consumer, txTimeout, false);
+            case REQUIRED -> requiredTx(identity, repositoryClass, consumer, txTimeout);
             case REQUIRED_NEW -> requiredNewTx(identity, repositoryClass, consumer, txTimeout);
             case MANDATORY -> mandatoryTx(identity, repositoryClass, consumer);
             case NEVER -> neverTx(identity, repositoryClass, consumer);
@@ -64,53 +59,79 @@ public class JpaProviderImpl implements JpaProvider {
     private <T> void neverTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
         ScopedValue<EntityManager> sv = JpaFactory.getEntityManagerScopedValue(identity);
         EntityManager em = sv.get();
-        if (em == null || em.isOpen() && em.getTransaction().isActive()) {
+        if (em != null && em.isOpen() && em.getTransaction().isActive()) {
             throw new IllegalStateException("Transaction exists but NEVER required");
         }
-        consumer.accept(jpa(em, repositoryClass));
+        consumer.accept(jpa(identity, repositoryClass));
     }
 
     private <T> void mandatoryTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
         ScopedValue<EntityManager> sv = JpaFactory.getEntityManagerScopedValue(identity);
         EntityManager em = sv.get();
         if (em != null && em.isOpen() && em.getTransaction().isActive()) {
-            consumer.accept(jpa(em, repositoryClass));
+            consumer.accept(jpa(identity, repositoryClass));
         } else {
             throw new IllegalStateException("Transaction is not currently active.");
         }
     }
 
     private <T> void requiredNewTx(String identity, Class<T> repositoryClass, Consumer<T> consumer, Integer txTimeout) {
-        requiredTx(identity, repositoryClass, consumer, txTimeout, true);
-    }
-
-    private <T> void requiredTx(String identity, Class<T> repositoryClass, Consumer<T> consumer, Integer txTimeout, boolean createNew) {
         EntityManagerFactory emf = JpaFactory.getEntityManagerFactory(identity);
         ScopedValue<EntityManager> sv = JpaFactory.getEntityManagerScopedValue(identity);
-        EntityManager em = createNew ? emf.createEntityManager() : sv.orElse(emf.createEntityManager());
-        if (!em.isOpen() && !createNew) em = emf.createEntityManager();
+
+        EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
-        if (txTimeout != null && txTimeout > 0 && !tx.isActive()) tx.setTimeout(txTimeout);
-        AtomicBoolean txOwner = new AtomicBoolean(false);
+
         JpaFactory.putScopedValue(identity, sv);
         ScopedValue.where(sv, em).run(() -> {
             try {
-                if (!tx.isActive()) {
-                    tx.begin();
-                    txOwner.set(true);
-                }
+                if (txTimeout != null && txTimeout > 0) tx.setTimeout(txTimeout);
+                tx.begin();
                 if (repositoryClass != null) {
-                    consumer.accept(jpa(sv.get(), repositoryClass));
+                    consumer.accept(jpa(identity, repositoryClass));
                 } else {
                     consumer.accept(null);
                 }
-                if (txOwner.get() && tx.isActive()) tx.commit();
-            } catch (Throwable t) {
-                if (txOwner.get() && tx.isActive()) tx.rollback();
-                throw t;
+                tx.commit();
+            } catch (Exception e) {
+                if (tx.isActive()) tx.rollback();
+                throw e;
             } finally {
-                if (txOwner.get() && sv.get().isOpen()) sv.get().close();
+                if (sv.get().isOpen()) sv.get().close();
                 JpaFactory.removeScopedValue(identity);
+            }
+        });
+    }
+
+    private <T> void requiredTx(String identity, Class<T> repositoryClass, Consumer<T> consumer, Integer txTimeout) {
+        EntityManagerFactory emf = JpaFactory.getEntityManagerFactory(identity);
+        ScopedValue<EntityManager> sv = JpaFactory.getEntityManagerScopedValue(identity);
+        boolean isOwner = !sv.isBound();
+        EntityManager em = isOwner ? emf.createEntityManager() : sv.get();
+
+        EntityTransaction tx = em.getTransaction();
+        boolean isActive = tx.isActive();
+        if (txTimeout != null && txTimeout > 0 && !isActive) tx.setTimeout(txTimeout);
+
+        JpaFactory.putScopedValue(identity, sv);
+        ScopedValue.where(sv, em).run(() -> {
+            try {
+                if (isOwner && !isActive) tx.begin();
+
+                if (repositoryClass != null) {
+                    consumer.accept(jpa(identity, repositoryClass));
+                } else {
+                    consumer.accept(null);
+                }
+                if (isOwner && tx.isActive()) tx.commit();
+            } catch (Exception e) {
+                if (isOwner && tx.isActive()) tx.rollback();
+                throw e;
+            } finally {
+                if (isOwner) {
+                    if (sv.get() != null && sv.get().isOpen()) sv.get().close();
+                    JpaFactory.removeScopedValue(identity);
+                }
             }
         });
     }

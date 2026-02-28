@@ -22,10 +22,10 @@ import java.util.stream.IntStream;
 
 public class RepositoryHandler implements InvocationHandler {
     private static final Logger logger = LoggerFactory.getLogger(RepositoryHandler.class);
-    private final EntityManager em;
+    private final String identity;
 
-    public RepositoryHandler(EntityManager em) {
-        this.em = em;
+    public RepositoryHandler(String identity) {
+        this.identity = identity;
     }
 
     @Override
@@ -40,6 +40,7 @@ public class RepositoryHandler implements InvocationHandler {
         if (name.equals("equals") && method.getParameterCount() == 1)
             return proxy == args[0];
 
+        EntityManager em = JpaFactory.getEntityManagerScopedValue(identity).get();
         if (method.isAnnotationPresent(NamedQuery.class)) {
             return invokeNamedQuery(em, method, args);
         } else if (method.isAnnotationPresent(Query.class)) {
