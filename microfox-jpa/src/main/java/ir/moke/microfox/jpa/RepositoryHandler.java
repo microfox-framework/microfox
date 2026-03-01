@@ -40,8 +40,8 @@ public class RepositoryHandler implements InvocationHandler {
         if (name.equals("equals") && method.getParameterCount() == 1)
             return proxy == args[0];
 
-        ScopedValue<EntityManager> sv = JpaFactory.getEntityManagerScopedValue(identity);
-        EntityManager em = sv.isBound() ? sv.get() : JpaFactory.getEntityManagerFactory(identity).createEntityManager();
+        ScopedValue<Map<String, EntityManager>> sv = JpaFactory.getScopedValue();
+        EntityManager em = sv.isBound() ? JpaFactory.getEntityManager(identity) : JpaFactory.getEntityManagerFactory(identity).createEntityManager();
         if (method.isAnnotationPresent(NamedQuery.class)) {
             return invokeNamedQuery(em, method, args);
         } else if (method.isAnnotationPresent(Query.class)) {

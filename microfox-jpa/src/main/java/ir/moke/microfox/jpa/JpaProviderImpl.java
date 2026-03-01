@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -57,8 +58,7 @@ public class JpaProviderImpl implements JpaProvider {
     }
 
     private <T> void neverTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
-        ScopedValue<EntityManager> sv = JpaFactory.getEntityManagerScopedValue(identity);
-        EntityManager em = sv.get();
+        EntityManager em = JpaFactory.getEntityManager(identity);
         if (em != null && em.isOpen() && em.getTransaction().isActive()) {
             throw new IllegalStateException("Transaction exists but NEVER required");
         }
@@ -66,8 +66,7 @@ public class JpaProviderImpl implements JpaProvider {
     }
 
     private <T> void mandatoryTx(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
-        ScopedValue<EntityManager> sv = JpaFactory.getEntityManagerScopedValue(identity);
-        EntityManager em = sv.get();
+        EntityManager em = JpaFactory.getEntityManager(identity);
         if (em != null && em.isOpen() && em.getTransaction().isActive()) {
             consumer.accept(jpa(identity, repositoryClass));
         } else {
@@ -77,13 +76,12 @@ public class JpaProviderImpl implements JpaProvider {
 
     private <T> void requiredNewTx(String identity, Class<T> repositoryClass, Consumer<T> consumer, Integer txTimeout) {
         EntityManagerFactory emf = JpaFactory.getEntityManagerFactory(identity);
-        ScopedValue<EntityManager> sv = JpaFactory.getEntityManagerScopedValue(identity);
+        ScopedValue<Map<String, EntityManager>> sv = JpaFactory.getScopedValue();
 
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
 
-        JpaFactory.putScopedValue(identity, sv);
-        ScopedValue.where(sv, em).run(() -> {
+        ScopedValue.where(sv, Map.of(identity, em)).run(() -> {
             try {
                 if (txTimeout != null && txTimeout > 0) tx.setTimeout(txTimeout);
                 tx.begin();
@@ -97,23 +95,21 @@ public class JpaProviderImpl implements JpaProvider {
                 if (tx.isActive()) tx.rollback();
                 throw e;
             } finally {
-                if (sv.get().isOpen()) sv.get().close();
-                JpaFactory.removeScopedValue(identity);
+                if (em.isOpen()) em.close();
             }
         });
     }
 
     private <T> void requiredTx(String identity, Class<T> repositoryClass, Consumer<T> consumer, Integer txTimeout) {
         EntityManagerFactory emf = JpaFactory.getEntityManagerFactory(identity);
-        ScopedValue<EntityManager> sv = JpaFactory.getEntityManagerScopedValue(identity);
+        ScopedValue<Map<String, EntityManager>> sv = JpaFactory.getScopedValue();
         boolean isOwner = !sv.isBound();
-        EntityManager em = isOwner ? emf.createEntityManager() : sv.get();
+        EntityManager em = isOwner ? emf.createEntityManager() : JpaFactory.getEntityManager(identity);
 
         EntityTransaction tx = em.getTransaction();
         boolean isActive = tx.isActive();
 
-        JpaFactory.putScopedValue(identity, sv);
-        ScopedValue.where(sv, em).run(() -> {
+        ScopedValue.where(sv, Map.of(identity, em)).run(() -> {
             try {
                 if (txTimeout != null && txTimeout > 0 && !isActive) tx.setTimeout(txTimeout);
                 if (isOwner && !isActive) tx.begin();
@@ -128,10 +124,7 @@ public class JpaProviderImpl implements JpaProvider {
                 if (isOwner && tx.isActive()) tx.rollback();
                 throw e;
             } finally {
-                if (isOwner) {
-                    if (sv.get() != null && sv.get().isOpen()) sv.get().close();
-                    JpaFactory.removeScopedValue(identity);
-                }
+                if (isOwner && em.isOpen()) em.close();
             }
         });
     }
@@ -148,8 +141,7 @@ public class JpaProviderImpl implements JpaProvider {
 
     @Override
     public void rollback(String identity) {
-        ScopedValue<EntityManager> sv = JpaFactory.getEntityManagerScopedValue(identity);
-        EntityManager em = sv.get();
+        EntityManager em = JpaFactory.getEntityManager(identity);
         if (em != null && em.getTransaction().isActive()) {
             em.getTransaction().rollback();
         }
