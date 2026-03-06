@@ -4,12 +4,13 @@ import ir.moke.utils.json.JsonUtils;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "person")
+@Table(name = "persons")
 public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String name;
     private String family;
 

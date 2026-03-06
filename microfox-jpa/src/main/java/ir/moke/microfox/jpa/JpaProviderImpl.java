@@ -13,23 +13,13 @@ import java.util.function.Consumer;
 public class JpaProviderImpl implements JpaProvider {
 
     @Override
-    public void jpa(String identity, Integer txTimeout, Runnable runnable) {
-        requiredTx(identity, null, _ -> runnable.run(), txTimeout);
-    }
-
-    @Override
-    public void jpa(String identity, Runnable runnable) {
-        jpa(identity, null, runnable);
+    public void jpa(String identity, TransactionPolicy policy, Integer txTimeout, Runnable runnable) {
+        jpa(identity, null, policy, txTimeout, _ -> runnable.run());
     }
 
     @Override
     public <T> T jpa(String identity, Class<T> repositoryClass) {
         return JpaFactory.create(repositoryClass, identity);
-    }
-
-    @Override
-    public <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Consumer<T> consumer) {
-        jpa(identity, repositoryClass, policy, null, consumer);
     }
 
     @Override

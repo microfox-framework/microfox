@@ -265,12 +265,17 @@ public class MicroFox {
 
     public static void jpa(String identity, int txTimeout, Runnable runnable) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpa(identity, txTimeout, runnable);
+        jpaProvider.jpa(identity, TransactionPolicy.REQUIRED, txTimeout, runnable);
     }
 
     public static void jpa(String identity, Runnable runnable) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpa(identity, runnable);
+        jpaProvider.jpa(identity, TransactionPolicy.REQUIRED, null, runnable);
+    }
+
+    public static void jpa(String identity, TransactionPolicy policy, Runnable runnable) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.jpa(identity, policy, null, runnable);
     }
 
     public static <T> T jpa(String identity, Class<T> repositoryClass) {
@@ -280,7 +285,7 @@ public class MicroFox {
 
     public static <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Consumer<T> consumer) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpa(identity, repositoryClass, policy, consumer);
+        jpaProvider.jpa(identity, repositoryClass, policy, null, consumer);
     }
 
     public static <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, int txTimeout, Consumer<T> consumer) {
@@ -290,7 +295,7 @@ public class MicroFox {
 
     public static <T> void jpa(String identity, Class<T> repositoryClass, Consumer<T> consumer) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpa(identity, repositoryClass, TransactionPolicy.REQUIRED, consumer);
+        jpaProvider.jpa(identity, repositoryClass, TransactionPolicy.REQUIRED, null, consumer);
     }
 
     public static <T> void jpa(String identity, Class<T> repositoryClass, int txTimeout, Consumer<T> consumer) {
@@ -344,16 +349,7 @@ public class MicroFox {
     }
 
     public static <T> T httpClient(HttpClientConfig config, Class<T> clazz) {
-        return new Kafir.KafirBuilder()
-                .setBaseUri(config.getBaseUri())
-                .setAuthenticator(config.getAuthenticator())
-                .setInterceptor(config.getInterceptor())
-                .setHeaders(config.getHeaders())
-                .setConnectionTimeout(config.getConnectionTimeout())
-                .setExecutorService(config.getExecutorService())
-                .setVersion(config.getVersion())
-                .setSslContext(config.getSslContext())
-                .build(clazz);
+        return new Kafir.KafirBuilder().setBaseUri(config.getBaseUri()).setAuthenticator(config.getAuthenticator()).setInterceptor(config.getInterceptor()).setHeaders(config.getHeaders()).setConnectionTimeout(config.getConnectionTimeout()).setExecutorService(config.getExecutorService()).setVersion(config.getVersion()).setSslContext(config.getSslContext()).build(clazz);
     }
 
     public static <T> MongoCollection<T> mongo(String identity, Class<T> entityClass) {
