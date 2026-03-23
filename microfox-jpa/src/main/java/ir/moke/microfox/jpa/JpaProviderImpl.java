@@ -97,12 +97,11 @@ public class JpaProviderImpl implements JpaProvider {
         EntityManager em = isOwner ? emf.createEntityManager() : JpaFactory.getEntityManager(identity);
 
         EntityTransaction tx = em.getTransaction();
-        boolean isActive = tx.isActive();
 
         ScopedValue.where(sv, Map.of(identity, em)).run(() -> {
             try {
-                if (txTimeout != null && txTimeout > 0 && !isActive) tx.setTimeout(txTimeout);
-                if (isOwner && !isActive) tx.begin();
+                if (txTimeout != null && txTimeout > 0 && !tx.isActive()) tx.setTimeout(txTimeout);
+                if (isOwner && !tx.isActive()) tx.begin();
 
                 if (repositoryClass != null) {
                     consumer.accept(jpa(identity, repositoryClass));
