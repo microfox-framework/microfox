@@ -29,13 +29,13 @@ public class ArtemisTest {
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "adminpass";
     private static final String QUEUE_NAME = "test";
-    private static final int CONNECTION_TTL = 5000;
+    private static final int CONNECTION_TTL = 60000;
 
     static {
         registerArtemisConnectionFactory();
     }
 
-    public static void main(String... str) {
+    static void main() {
         jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
         sendTestMessage();
     }
@@ -45,7 +45,7 @@ public class ArtemisTest {
             try {
                 Queue destination = context.createQueue(QUEUE_NAME);
                 JMSProducer producer = context.createProducer();
-                String currentDateTime = DateTimeUtils.toString(ZonedDateTime.now(), Locale.ENGLISH, CalendarType.GREGORIAN, DatePattern.DATE_TIME_PATTERN);
+                String currentDateTime = DateTimeUtils.toString(ZonedDateTime.now(), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.DATE_TIME_PATTERN);
                 TextMessage textMessage = context.createTextMessage(currentDateTime + " Hello consumer");
                 producer.send(destination, textMessage);
             } catch (Exception e) {
@@ -60,6 +60,6 @@ public class ArtemisTest {
         connectionFactory.setUser(USERNAME);
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setConnectionTTL(CONNECTION_TTL);
-        JmsFactory.registerConnectionFactory(IDENTITY, connectionFactory, 10);
+        JmsFactory.register(IDENTITY, connectionFactory, 2);
     }
 }

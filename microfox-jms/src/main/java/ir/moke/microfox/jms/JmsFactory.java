@@ -12,13 +12,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 
 public class JmsFactory {
     private static final Logger logger = LoggerFactory.getLogger(JmsFactory.class);
     private static final Map<String, JmsConnectionInfo> INFO_MAP = new ConcurrentHashMap<>();
 
-    public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory, int concurrency) {
+    public static void register(String identity, ConnectionFactory connectionFactory, int concurrency) {
         JmsConnectionInfo connectionInfo = new JmsConnectionInfo();
         connectionInfo.setConnectionFactory(connectionFactory);
         connectionInfo.setConcurrency(concurrency);
@@ -28,8 +27,8 @@ public class JmsFactory {
         logger.info("Jms with identity {} registered", identity);
     }
 
-    public static void registerConnectionFactory(String identity, ConnectionFactory connectionFactory) {
-        registerConnectionFactory(identity, connectionFactory, 1);
+    public static void register(String identity, ConnectionFactory connectionFactory) {
+        register(identity, connectionFactory, 1);
     }
 
     static ConnectionFactory getConnectionFactory(String identity) {
@@ -40,15 +39,14 @@ public class JmsFactory {
         return connectionInfo.getConnectionFactory();
     }
 
-    static void registerContext(String identity,
-                                ConnectionFactory connectionFactory,
-                                JMSContext context,
-                                JMSConsumer consumer,
-                                String destinationName,
-                                AckMode ackMode,
-                                DestinationType type,
-                                MessageListener listener,
-                                CountDownLatch latch) {
+    static void completeConnectionInfo(String identity,
+                                       ConnectionFactory connectionFactory,
+                                       JMSContext context,
+                                       JMSConsumer consumer,
+                                       String destinationName,
+                                       AckMode ackMode,
+                                       DestinationType type,
+                                       MessageListener listener) {
         JmsConnectionInfo info = INFO_MAP.get(identity);
         info.setConnectionFactory(connectionFactory);
         info.setContext(context);
@@ -57,17 +55,15 @@ public class JmsFactory {
         info.setMode(ackMode);
         info.setType(type);
         info.setListener(listener);
-        info.setLatch(latch);
     }
 
-    static JmsConnectionInfo closeContext(String identity) {
+    static JmsConnectionInfo close(String identity) {
         JmsConnectionInfo inf = INFO_MAP.get(identity);
         if (inf == null) return null;
 
         inf.setConnected(false);
         if (inf.getConsumer() != null) inf.getConsumer().close();
         if (inf.getContext() != null) inf.getContext().close();
-        if (inf.getLatch() != null) inf.getLatch().countDown();
 
         logger.info("Jms context with identity {} closed", identity);
         return inf;

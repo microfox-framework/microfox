@@ -3,19 +3,22 @@ import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.jms.JmsFactory;
+import ir.moke.utils.date.CalendarType;
+import ir.moke.utils.date.DatePattern;
+import ir.moke.utils.date.DateTimeUtils;
 import jakarta.jms.JMSProducer;
 import jakarta.jms.Queue;
 import jakarta.jms.TextMessage;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Locale;
 
 import static ir.moke.microfox.MicroFox.jmsListener;
 import static ir.moke.microfox.MicroFox.jmsProducer;
 
 /**
- * Run artemis container with this command :
+ * Run rabbitmq container with this command :
  * <p>
  * podman run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:latest
  * </p>
@@ -29,13 +32,12 @@ public class RabbitMQTest {
     private static final String VIRTUAL_HOST = "/";
     private static final String QUEUE_NAME = "test";
 
-    @BeforeAll
-    public static void init() {
+    static {
         registerRabbitMQConnectionFactory();
     }
 
-    @Test
-    public void checkConsumer() {
+
+    static void main() {
         jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
         sendTestMessage();
     }
@@ -45,7 +47,8 @@ public class RabbitMQTest {
             try {
                 Queue destination = context.createQueue(QUEUE_NAME);
                 JMSProducer producer = context.createProducer();
-                TextMessage textMessage = context.createTextMessage(LocalDateTime.now() + " Hello consumer");
+                String currentDateTime = DateTimeUtils.toString(ZonedDateTime.now(), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.DATE_TIME_PATTERN);
+                TextMessage textMessage = context.createTextMessage(currentDateTime + " Hello consumer");
                 producer.send(destination, textMessage);
             } catch (Exception e) {
                 throw new MicroFoxException(e);
@@ -61,7 +64,7 @@ public class RabbitMQTest {
             connectionFactory.setUsername(USERNAME);
             connectionFactory.setPassword(PASSWORD);
             connectionFactory.setVirtualHost(VIRTUAL_HOST);
-            JmsFactory.registerConnectionFactory(IDENTITY, connectionFactory);
+            JmsFactory.register(IDENTITY, connectionFactory);
         } catch (Exception e) {
             throw new MicroFoxException(e);
         }

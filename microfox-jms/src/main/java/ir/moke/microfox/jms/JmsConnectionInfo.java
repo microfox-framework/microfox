@@ -7,8 +7,6 @@ import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
 
-import java.util.concurrent.CountDownLatch;
-
 public class JmsConnectionInfo {
     private ConnectionFactory connectionFactory;
     private JMSConsumer consumer;
@@ -19,7 +17,6 @@ public class JmsConnectionInfo {
     private boolean connected;
     private int concurrency;
     private MessageListener listener;
-    private CountDownLatch latch;
 
     public JmsConnectionInfo() {
         this.connected = false;
@@ -105,13 +102,5 @@ public class JmsConnectionInfo {
 
     public void setListener(MessageListener listener) {
         this.listener = listener;
-    }
-
-    public CountDownLatch getLatch() {
-        return latch;
-    }
-
-    public void setLatch(CountDownLatch latch) {
-        this.latch = latch;
     }
 }

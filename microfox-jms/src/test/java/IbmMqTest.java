@@ -17,7 +17,7 @@ import static ir.moke.microfox.MicroFox.jmsListener;
 import static ir.moke.microfox.MicroFox.jmsProducer;
 
 /**
- * Run artemis container with this command :
+ * Run ibmmq container with this command :
  * <p>
  * podman run -d --name ibm-mq -e LICENSE=accept -e MQ_QMGR_NAME=QM1 -e MQ_APP_USER=app -e MQ_APP_PASSWORD=adminpass -e MQ_ADMIN_USER=admin -e MQ_ADMIN_PASSWORD=adminpass -p 1414:1414 -p 9443:9443 icr.io/ibm-messaging/mq:latest
  * </p>
@@ -73,7 +73,7 @@ public class IbmMqTest {
             connectionFactory.setStringProperty(WMQConstants.USERID, USERNAME);
             connectionFactory.setStringProperty(WMQConstants.PASSWORD, PASSWORD);
             connectionFactory.setStringProperty(WMQConstants.TIME_TO_LIVE, CONNECTION_TTL);
-            JmsFactory.registerConnectionFactory(IDENTITY, connectionFactory);
+            JmsFactory.register(IDENTITY, connectionFactory);
         } catch (Exception e) {
             throw new MicroFoxException(e);
         }

@@ -8,7 +8,6 @@ import jakarta.jms.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -50,20 +49,17 @@ public class JmsProviderImpl implements JmsProvider {
             context.setExceptionListener(new JmsExceptionHandler(identity));
             logger.info("JMS topic successfully registered {}", identity);
 
-            // Block the thread, but do it properly
-            CountDownLatch latch = new CountDownLatch(1);
-            JmsFactory.registerContext(identity, connectionFactory, context, consumer, destinationName, acknowledgeMode, type, listener, latch);
-            latch.await(); // block forever
+            JmsFactory.completeConnectionInfo(identity, connectionFactory, context, consumer, destinationName, acknowledgeMode, type, listener);
         } catch (Exception e) {
             logger.error("JMS identity:{} destination:{} {}", destinationName, identity, e.getMessage());
-            JmsFactory.closeContext(identity);
+            JmsFactory.close(identity);
         }
     }
 
     private static void shutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.warn("Jms Shutdown hook triggered");
-            JmsFactory.getInfoMap().keySet().forEach(JmsFactory::closeContext);
+            JmsFactory.getInfoMap().keySet().forEach(JmsFactory::close);
         }, "jms-shutdown-hook"));
     }
 }

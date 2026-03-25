@@ -22,7 +22,7 @@ public class JmsExceptionHandler implements ExceptionListener {
     @Override
     public void onException(JMSException exception) {
         logger.debug("Jms identity:{} Exception:{}", identity, exception.getErrorCode());
-        JmsConnectionInfo info = JmsFactory.closeContext(identity);
+        JmsConnectionInfo info = JmsFactory.close(identity);
 
         if (info != null) {
             // Retry after (n) seconds
