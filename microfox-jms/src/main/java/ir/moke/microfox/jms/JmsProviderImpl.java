@@ -33,10 +33,9 @@ public class JmsProviderImpl implements JmsProvider {
         ConnectionFactory connectionFactory = connectionInfo.getConnectionFactory();
         int concurrency = connectionInfo.getConcurrency();
 
-        try (ExecutorService es = Executors.newFixedThreadPool(concurrency, r -> new Thread(r,"jms-thread"))) {
-            for (int i = 0; i < concurrency; i++) {
-                es.execute(() -> consumeMessage(identity, destinationName, acknowledgeMode, type, listener, connectionFactory));
-            }
+        ExecutorService es = Executors.newFixedThreadPool(concurrency, r -> new Thread(r, "jms-thread"));
+        for (int i = 0; i < concurrency; i++) {
+            es.execute(() -> consumeMessage(identity, destinationName, acknowledgeMode, type, listener, connectionFactory));
         }
     }
 
@@ -48,6 +47,7 @@ public class JmsProviderImpl implements JmsProvider {
             consumer.setMessageListener(listener);
             context.setExceptionListener(new JmsExceptionHandler(identity));
             logger.info("JMS topic successfully registered {}", identity);
+            context.start();
 
             JmsFactory.completeConnectionInfo(identity, connectionFactory, context, consumer, destinationName, acknowledgeMode, type, listener);
         } catch (Exception e) {

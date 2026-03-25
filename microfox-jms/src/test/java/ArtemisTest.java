@@ -29,7 +29,7 @@ public class ArtemisTest {
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "adminpass";
     private static final String QUEUE_NAME = "test";
-    private static final int CONNECTION_TTL = 60000;
+    private static final int CONNECTION_TTL = 5000; // 5 seconds
 
     static {
         registerArtemisConnectionFactory();
