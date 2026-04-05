@@ -19,7 +19,7 @@
             <artifactId>microfox-core</artifactId>
         </dependency>
 
-        <!-- Web Server (Tomcat) -->
+        <!-- Web Server (Jetty) -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
