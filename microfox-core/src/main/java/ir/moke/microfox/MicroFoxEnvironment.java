@@ -1,5 +1,8 @@
 package ir.moke.microfox;
 
+import ch.qos.logback.classic.Level;
+import ir.moke.microfox.logger.LoggerManager;
+import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import ir.moke.utils.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +19,12 @@ import static ir.moke.utils.TtyAsciiCodecs.*;
 public class MicroFoxEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(MicroFoxEnvironment.class);
     private static final Map<Object, Object> sortedMap = new TreeMap<>(loadEnvironments());
+
+    static {
+        boolean activateDefaultConsoleLog = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX.CONSOLE_LOG")).orElse("true"));
+        if (activateDefaultConsoleLog)
+            LoggerManager.registerLog(new ConsoleGenericModel("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
+    }
 
     private static void printEnvironments() {
         Set<Object> keys = sortedMap.keySet();
@@ -34,6 +43,8 @@ public class MicroFoxEnvironment {
     }
 
     private static void printLogo() {
+        boolean doPrint = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX.PRINT_LOGO")).orElse("true"));
+        if (!doPrint) return;
         try {
             Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("logo");
             List<URL> list = Collections.list(urls);

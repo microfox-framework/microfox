@@ -1,6 +1,5 @@
 package ir.moke.microfox;
 
-import ch.qos.logback.classic.Level;
 import com.jcraft.jsch.ChannelSftp;
 import com.mongodb.client.MongoCollection;
 import ir.moke.kafir.http.Kafir;
@@ -32,7 +31,6 @@ import ir.moke.microfox.api.system.SystemProvider;
 import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.ExceptionMapperHolder;
 import ir.moke.microfox.logger.LoggerManager;
-import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import ir.moke.microfox.logger.model.LogModel;
 import ir.moke.microfox.utils.HttpClientConfig;
 import jakarta.jms.JMSContext;
@@ -66,7 +64,6 @@ public class MicroFox {
     private static final GroovyProvider groovyProvider = ServiceLoader.load(GroovyProvider.class).findFirst().orElse(null);
 
     static {
-        LoggerManager.registerLog(new ConsoleGenericModel("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
         MicroFoxEnvironment.introduce();
         Optional.ofNullable(systemProvider).ifPresent(SystemProvider::activate);
         Optional.ofNullable(healthCheckProvider).ifPresent(HealthCheckProvider::activate);

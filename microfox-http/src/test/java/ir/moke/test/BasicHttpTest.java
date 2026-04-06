@@ -24,7 +24,7 @@ public class BasicHttpTest {
     private static final Logger logger = LoggerFactory.getLogger(BasicHttpTest.class);
 
     static {
-        MicroFox.logger(new ConsoleGenericModel("test", "com.sample", Level.TRACE));
+        MicroFox.logger(new ConsoleGenericModel("test", "ir.moke.test", Level.TRACE));
     }
 
     static void main(String[] args) {

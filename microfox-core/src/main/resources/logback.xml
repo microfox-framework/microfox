@@ -14,7 +14,9 @@
     <logger name="org.eclipse" level="OFF"/>
     <logger name="org.quartz" level="OFF"/>
 
+<!--
     <root level="ALL">
         <appender-ref ref="CONSOLE"/>
     </root>
+-->
 </configuration>
