@@ -22,8 +22,9 @@ public class MicroFoxEnvironment {
 
     static {
         boolean activateDefaultConsoleLog = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_CONSOLE_LOG")).orElse("true"));
-        if (activateDefaultConsoleLog)
+        if (activateDefaultConsoleLog) {
             LoggerManager.registerLog(new ConsoleGenericModel("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
+        }
     }
 
     private static void printEnvironments() {
@@ -44,25 +45,26 @@ public class MicroFoxEnvironment {
 
     private static void printLogo() {
         boolean doPrint = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_LOGO")).orElse("true"));
-        if (!doPrint) return;
-        try {
-            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("logo");
-            List<URL> list = Collections.list(urls);
-            URL url;
-            if (list.size() > 1) {
-                url = list.stream().filter(item -> !item.getPath().contains("microfox")).findFirst().orElse(null);
-            } else {
-                url = list.getFirst();
-            }
-            if (url != null) {
-                try (InputStream inputStream = url.openStream()) {
-                    byte[] bytes = inputStream.readAllBytes();
-                    System.out.write(bytes);
-                    System.out.flush();
+        if (doPrint) {
+            try {
+                Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("logo");
+                List<URL> list = Collections.list(urls);
+                URL url;
+                if (list.size() > 1) {
+                    url = list.stream().filter(item -> !item.getPath().contains("microfox")).findFirst().orElse(null);
+                } else {
+                    url = list.getFirst();
                 }
+                if (url != null) {
+                    try (InputStream inputStream = url.openStream()) {
+                        byte[] bytes = inputStream.readAllBytes();
+                        System.out.write(bytes);
+                        System.out.flush();
+                    }
+                }
+            } catch (IOException e) {
+                logger.error("Unknown error", e);
             }
-        } catch (IOException e) {
-            logger.error("Unknown error", e);
         }
     }
 
