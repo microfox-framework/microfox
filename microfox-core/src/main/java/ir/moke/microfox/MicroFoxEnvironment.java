@@ -21,7 +21,7 @@ public class MicroFoxEnvironment {
     private static final Map<Object, Object> sortedMap = new TreeMap<>(loadEnvironments());
 
     static {
-        boolean activateDefaultConsoleLog = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX.CONSOLE_LOG")).orElse("true"));
+        boolean activateDefaultConsoleLog = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_CONSOLE_LOG")).orElse("true"));
         if (activateDefaultConsoleLog)
             LoggerManager.registerLog(new ConsoleGenericModel("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
     }
@@ -43,7 +43,7 @@ public class MicroFoxEnvironment {
     }
 
     private static void printLogo() {
-        boolean doPrint = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX.PRINT_LOGO")).orElse("true"));
+        boolean doPrint = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_LOGO")).orElse("true"));
         if (!doPrint) return;
         try {
             Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("logo");
