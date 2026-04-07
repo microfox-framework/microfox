@@ -19,9 +19,10 @@ import static ir.moke.utils.TtyAsciiCodecs.*;
 public class MicroFoxEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(MicroFoxEnvironment.class);
     private static final Map<Object, Object> sortedMap = new TreeMap<>(loadEnvironments());
+    private static final boolean doPrint = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_LOGO")).orElse("true"));
+    private static final boolean activateDefaultConsoleLog = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_CONSOLE_LOG")).orElse("true"));
 
     static {
-        boolean activateDefaultConsoleLog = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_CONSOLE_LOG")).orElse("true"));
         if (activateDefaultConsoleLog) {
             LoggerManager.registerLog(new ConsoleGenericModel("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
         }
@@ -44,10 +45,9 @@ public class MicroFoxEnvironment {
     }
 
     private static void printLogo() {
-        boolean doPrint = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_LOGO")).orElse("true"));
         if (doPrint) {
             try {
-                Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("logo");
+                Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("microfox.logo");
                 List<URL> list = Collections.list(urls);
                 URL url;
                 if (list.size() > 1) {
