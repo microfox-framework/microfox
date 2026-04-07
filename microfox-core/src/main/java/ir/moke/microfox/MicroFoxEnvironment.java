@@ -47,7 +47,7 @@ public class MicroFoxEnvironment {
     private static void printLogo() {
         if (doPrint) {
             try {
-                Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("microfox.logo");
+                Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("logo");
                 List<URL> list = Collections.list(urls);
                 URL url;
                 if (list.size() > 1) {
