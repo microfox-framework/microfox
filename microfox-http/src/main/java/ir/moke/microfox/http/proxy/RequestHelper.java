@@ -83,9 +83,9 @@ public class RequestHelper {
     public static String pathParam(String key, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
-        RouteInfo optionalRouteInfo = HttpUtils.findMatchingRouteInfo(requestURI, Method.valueOf(method.toUpperCase())).get();
-
-        Map<String, String> map = HttpUtils.extractPathParams(optionalRouteInfo.path(), requestURI);
+        RouteInfo routeInfo = HttpUtils.findMatchingRouteInfo(requestURI, Method.valueOf(method.toUpperCase()));
+        if (routeInfo == null) return null;
+        Map<String, String> map = HttpUtils.extractPathParams(routeInfo.path(), requestURI);
         return map.get(key);
 
     }

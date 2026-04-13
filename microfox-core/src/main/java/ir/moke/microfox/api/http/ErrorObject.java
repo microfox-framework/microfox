@@ -68,17 +68,20 @@ public class ErrorObject {
         private byte[] body;
 
         public Builder setBody(byte[] body) {
+            if (body == null || body.length == 0) return this;
             this.body = body;
             return this;
         }
 
         public Builder setBody(Object o) {
+            if (o == null) return this;
             body = JsonUtils.toJson(o).getBytes(StandardCharsets.UTF_8);
             if (contentType == null) setContentType(ContentType.APPLICATION_JSON);
             return this;
         }
 
         public Builder setBody(String str) {
+            if (str == null) return this;
             body = str.getBytes(StandardCharsets.UTF_8);
             return this;
         }

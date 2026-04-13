@@ -1,6 +1,5 @@
 package ir.moke.microfox.http.filter;
 
-import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.http.StatusCode;
@@ -16,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
 
@@ -24,19 +22,17 @@ public class SecurityFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(SecurityFilter.class);
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        MicroFox.registerExceptionMapper(new MicroFoxExceptionMapper());
-    }
-
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
         Method method = Method.valueOf(req.getMethod().toUpperCase());
 
-        Consumer<RouteInfo> routeInfoConsumer = routeInfo -> applySecurity(routeInfo, req, resp, chain);
-        Runnable chainRunner = () -> doChain(req, resp, chain);
-        findMatchingRouteInfo(req.getRequestURI(), method).ifPresentOrElse(routeInfoConsumer, chainRunner);
+        RouteInfo routeInfo = findMatchingRouteInfo(req.getRequestURI(), method);
+        if (routeInfo != null) {
+            applySecurity(routeInfo, req, resp, chain);
+        } else {
+            doChain(req, resp, chain);
+        }
     }
 
     private void applySecurity(RouteInfo routeInfo, HttpServletRequest req, HttpServletResponse resp, FilterChain chain) {

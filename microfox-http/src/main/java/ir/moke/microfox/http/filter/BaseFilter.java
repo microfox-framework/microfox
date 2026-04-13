@@ -32,11 +32,11 @@ public class BaseFilter implements Filter {
         findMatchingFilterInfo(req.getRequestURI()).ifPresentOrElse(filterInfoConsumer, chainRunner);
     }
 
-    private static void applyFilter(FilterInfo item, HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) {
-        Request mic_req = HttpUtils.getRequest(req);
-        Response mic_resp = HttpUtils.getResponse(resp);
-        Chain mic_chain = (_, _) -> doChain(req, resp, filterChain);
-        item.filter().handle(mic_req, mic_resp, mic_chain);
+    private static void applyFilter(FilterInfo item, HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+        Request req = HttpUtils.getRequest(request);
+        Response resp = HttpUtils.getResponse(response);
+        Chain chain = (_, _) -> doChain(request, response, filterChain);
+        item.filter().handle(req, resp, chain);
     }
 
     private static void doChain(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {

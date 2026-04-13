@@ -31,15 +31,15 @@ public class HttpUtils {
         return Pattern.compile("^" + regex + "$");
     }
 
-    public static Optional<RouteInfo> findMatchingRouteInfo(String reqPath, Method method) {
+    public static RouteInfo findMatchingRouteInfo(String reqPath, Method method) {
         for (RouteInfo routeInfo : ResourceHolder.listRoutes()) {
             String path = routeInfo.path();
             Pattern regex = compilePattern(path);
             if (regex.matcher(normalizePath(reqPath)).matches() && method.equals(routeInfo.method())) {
-                return Optional.of(routeInfo);
+                return routeInfo;
             }
         }
-        return Optional.empty();
+        return null;
     }
 
     public static Optional<FilterInfo> findMatchingFilterInfo(String reqPath) {
@@ -141,21 +141,21 @@ public class HttpUtils {
         return (Response) Proxy.newProxyInstance(Response.class.getClassLoader(), new Class<?>[]{Response.class}, new ResponseProxy(response));
     }
 
-    public static void handleExceptionMapper(HttpServletResponse resp, Exception e) {
-        ExceptionMapper<Throwable> mapper = ExceptionMapperHolder.get(e);
-        if (mapper != null) {
-            ErrorObject ro = mapper.toResponse(e);
-            Optional.ofNullable(ro.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
-            Optional.ofNullable(ro.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
-            Optional.ofNullable(ro.getHeaders()).ifPresent(item -> fillExtraHeaders(resp, item));
-            Optional.ofNullable(ro.getLocale()).ifPresent(resp::setLocale);
-            Optional.ofNullable(ro.getCharacterEncoding()).ifPresent(resp::setCharacterEncoding);
-            Optional.ofNullable(ro.getCookies()).ifPresent(item -> item.forEach(resp::addCookie));
-            Optional.ofNullable(ro.getBody()).ifPresent(item -> sendResponse(resp, item));
+    public static void handleExceptionMapper(HttpServletResponse resp, Throwable t) {
+        ExceptionMapper exceptionMapper = ExceptionMapperHolder.get(t.getClass());
+        ErrorObject errorObject = exceptionMapper.handle(t);
+        if (errorObject != null) {
+            Optional.ofNullable(errorObject.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
+            Optional.ofNullable(errorObject.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
+            Optional.ofNullable(errorObject.getHeaders()).ifPresent(item -> fillExtraHeaders(resp, item));
+            Optional.ofNullable(errorObject.getLocale()).ifPresent(resp::setLocale);
+            Optional.ofNullable(errorObject.getCharacterEncoding()).ifPresent(resp::setCharacterEncoding);
+            Optional.ofNullable(errorObject.getCookies()).ifPresent(item -> item.forEach(resp::addCookie));
+            Optional.ofNullable(errorObject.getBody()).ifPresent(item -> sendResponse(resp, item));
         } else {
-            logger.error("Microfox Unknown Error", e);
+            logger.error("Microfox Unknown Error", t);
             resp.setStatus(StatusCode.INTERNAL_SERVER_ERROR.getCode());
-            sendResponse(resp, e.getMessage().getBytes(StandardCharsets.UTF_8));
+            sendResponse(resp, t.getMessage().getBytes(StandardCharsets.UTF_8));
         }
     }
 

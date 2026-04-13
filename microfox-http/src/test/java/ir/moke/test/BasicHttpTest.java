@@ -6,9 +6,10 @@ import ir.moke.microfox.api.http.Chain;
 import ir.moke.microfox.api.http.Method;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
+import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.logger.model.ConsoleGenericModel;
-import ir.moke.test.exception.MicroFoxExceptionMapper;
-import ir.moke.test.exception.MyExceptionMapper;
+import ir.moke.test.exception.ExceptionController;
+import ir.moke.test.exception.SampleException;
 import ir.moke.test.resource.RouteCheckException;
 import ir.moke.test.resource.RouteListUsers;
 import ir.moke.test.resource.RouteLogin;
@@ -28,8 +29,8 @@ public class BasicHttpTest {
     }
 
     static void main(String[] args) {
-        MicroFox.registerExceptionMapper(new MyExceptionMapper());
-        MicroFox.registerExceptionMapper(new MicroFoxExceptionMapper());
+        MicroFox.exceptionMapper(SampleException.class, ExceptionController::handleSampleException);
+        MicroFox.exceptionMapper(MicroFoxException.class, ExceptionController::handleMicrofoxException);
 
         MicroFox.httpFilter("/api/*", BasicHttpTest::simpleFilter);
         MicroFox.httpRouter("/api/login", Method.GET, new RouteLogin(), new BasicAuthSecurity());
