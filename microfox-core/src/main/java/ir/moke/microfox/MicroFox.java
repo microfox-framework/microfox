@@ -99,6 +99,10 @@ public class MicroFox {
         httpProvider.http(path, httpMethod, route, strategy, roles, scopes);
     }
 
+    public static void removeHttpRoute(String path, HttpMethod method) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.remove(path, method);
+    }
 
     public static void httpRouter(RouteInfo routeInfo) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");

@@ -14,6 +14,8 @@ public interface HttpProvider {
 
     void http(RouteInfo routeInfo);
 
+    void remove(String path, HttpMethod method);
+
     void websocket(Class<?> endpointClass);
 
     void sseRegister(String identity, String path);

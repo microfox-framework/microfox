@@ -42,7 +42,7 @@ public class ResourceHolder {
         ROUTES.add(new RouteInfo(httpMethod, path, route, strategy, roles, scopes));
     }
 
-    public static void removeRoute(HttpMethod httpMethod, String path) {
+    public static void removeRoute(String path, HttpMethod httpMethod) {
         ROUTES.removeIf(item -> item.path().equals(path) && item.httpMethod().equals(httpMethod));
     }
 

@@ -31,6 +31,11 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
+    public void remove(String path, HttpMethod method) {
+        ResourceHolder.removeRoute(path, method);
+    }
+
+    @Override
     public void websocket(Class<?> endpointClass) {
         ResourceHolder.addWebsocket(endpointClass);
     }
