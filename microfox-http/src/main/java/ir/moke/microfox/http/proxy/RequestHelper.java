@@ -1,6 +1,6 @@
 package ir.moke.microfox.http.proxy;
 
-import ir.moke.microfox.api.http.Method;
+import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.HttpUtils;
@@ -83,7 +83,7 @@ public class RequestHelper {
     public static String pathParam(String key, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
-        RouteInfo routeInfo = HttpUtils.findMatchingRouteInfo(requestURI, Method.valueOf(method.toUpperCase()));
+        RouteInfo routeInfo = HttpUtils.findMatchingRouteInfo(requestURI, HttpMethod.valueOf(method.toUpperCase()));
         if (routeInfo == null) return null;
         Map<String, String> map = HttpUtils.extractPathParams(routeInfo.path(), requestURI);
         return map.get(key);
@@ -206,8 +206,8 @@ public class RequestHelper {
         return request.isAsyncSupported();
     }
 
-    public static Method getMethod(HttpServletRequest request) {
-        return Method.valueOf(request.getMethod().toUpperCase());
+    public static HttpMethod getMethod(HttpServletRequest request) {
+        return HttpMethod.valueOf(request.getMethod().toUpperCase());
     }
 
     public static ServletInputStream inputStream(HttpServletRequest request) {

@@ -1,7 +1,7 @@
 package ir.moke.microfox.http.servlet;
 
 import ir.moke.microfox.api.http.ContentType;
-import ir.moke.microfox.api.http.Method;
+import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.http.HttpUtils;
@@ -27,12 +27,12 @@ public class BaseServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        Method method = Method.valueOf(req.getMethod().toUpperCase());
+        HttpMethod httpMethod = HttpMethod.valueOf(req.getMethod().toUpperCase());
         String accept = req.getHeader("Accept");
         if (accept != null && accept.contains(ContentType.TEXT_EVENT_STREAM.getType())) {
             handleSse(req, resp);
         } else {
-            RouteInfo routeInfo = findMatchingRouteInfo(req.getRequestURI(), method);
+            RouteInfo routeInfo = findMatchingRouteInfo(req.getRequestURI(), httpMethod);
             if (routeInfo != null) {
                 handle(req, resp, routeInfo);
             } else {

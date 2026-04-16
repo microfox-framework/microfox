@@ -1,7 +1,7 @@
 package ir.moke.microfox.http;
 
 import ir.moke.microfox.api.http.Filter;
-import ir.moke.microfox.api.http.Method;
+import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
@@ -30,20 +30,20 @@ public class ResourceHolder {
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
     public static final ExecutorService SSE_EXECUTOR = Executors.newCachedThreadPool();
 
-    public static void addRoute(Method method, String path, Route route) {
-        addRoute(method, path, route, null, List.of(), List.of());
+    public static void addRoute(HttpMethod httpMethod, String path, Route route) {
+        addRoute(httpMethod, path, route, null, List.of(), List.of());
     }
 
-    public static void addRoute(Method method, String path, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
+    public static void addRoute(HttpMethod httpMethod, String path, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
         if (!path.startsWith("/")) throw new MicroFoxException("route path should started with '/'");
         if (!HttpContainer.isStarted()) EXECUTOR.execute(HttpContainer::start);
         path = concatContextPath(path);
-        logger.info("register route {}{} {}{}{}", BLUE, method, GREEN, path, RESET);
-        ROUTES.add(new RouteInfo(method, path, route, strategy, roles, scopes));
+        logger.info("register route {}{} {}{}{}", BLUE, httpMethod, GREEN, path, RESET);
+        ROUTES.add(new RouteInfo(httpMethod, path, route, strategy, roles, scopes));
     }
 
-    public static void removeRoute(Method method, String path) {
-        ROUTES.removeIf(item -> item.path().equals(path) && item.method().equals(method));
+    public static void removeRoute(HttpMethod httpMethod, String path) {
+        ROUTES.removeIf(item -> item.path().equals(path) && item.httpMethod().equals(httpMethod));
     }
 
     public static Set<RouteInfo> listRoutes() {

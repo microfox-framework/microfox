@@ -3,7 +3,7 @@ package ir.moke.test;
 import ch.qos.logback.classic.Level;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.Chain;
-import ir.moke.microfox.api.http.Method;
+import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.exception.MicroFoxException;
@@ -33,9 +33,9 @@ public class BasicHttpTest {
         MicroFox.exceptionMapper(MicroFoxException.class, ExceptionController::handleMicrofoxException);
 
         MicroFox.httpFilter("/api/*", BasicHttpTest::simpleFilter);
-        MicroFox.httpRouter("/api/login", Method.GET, new RouteLogin(), new BasicAuthSecurity());
-        MicroFox.httpRouter("/api/users", Method.GET, new RouteListUsers(), new JwtSecurity(), List.of("ADMIN", "MEMBER"), List.of("read:users"));
-        MicroFox.httpRouter("/api/error", Method.GET, new RouteCheckException());
+        MicroFox.httpRouter("/api/login", HttpMethod.GET, new RouteLogin(), new BasicAuthSecurity());
+        MicroFox.httpRouter("/api/users", HttpMethod.GET, new RouteListUsers(), new JwtSecurity(), List.of("ADMIN", "MEMBER"), List.of("read:users"));
+        MicroFox.httpRouter("/api/error", HttpMethod.GET, new RouteCheckException());
         MicroFox.websocket(EchoEndpoint.class);
     }
 

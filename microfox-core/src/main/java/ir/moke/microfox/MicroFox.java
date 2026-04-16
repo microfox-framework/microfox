@@ -84,19 +84,19 @@ public class MicroFox {
         httpProvider.filter(path, filters);
     }
 
-    public static void httpRouter(String path, Method method, Route route) {
+    public static void httpRouter(String path, HttpMethod httpMethod, Route route) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.http(path, method, route);
+        httpProvider.http(path, httpMethod, route);
     }
 
-    public static void httpRouter(String path, Method method, Route route, SecurityStrategy strategy) {
+    public static void httpRouter(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.http(path, method, route, strategy, List.of(), List.of());
+        httpProvider.http(path, httpMethod, route, strategy, List.of(), List.of());
     }
 
-    public static void httpRouter(String path, Method method, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
+    public static void httpRouter(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.http(path, method, route, strategy, roles, scopes);
+        httpProvider.http(path, httpMethod, route, strategy, roles, scopes);
     }
 
 

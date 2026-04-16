@@ -1,6 +1,6 @@
 package ir.moke.microfox.http.filter;
 
-import ir.moke.microfox.api.http.Method;
+import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.security.Credential;
@@ -25,9 +25,9 @@ public class SecurityFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
-        Method method = Method.valueOf(req.getMethod().toUpperCase());
+        HttpMethod httpMethod = HttpMethod.valueOf(req.getMethod().toUpperCase());
 
-        RouteInfo routeInfo = findMatchingRouteInfo(req.getRequestURI(), method);
+        RouteInfo routeInfo = findMatchingRouteInfo(req.getRequestURI(), httpMethod);
         if (routeInfo != null) {
             applySecurity(routeInfo, req, resp, chain);
         } else {

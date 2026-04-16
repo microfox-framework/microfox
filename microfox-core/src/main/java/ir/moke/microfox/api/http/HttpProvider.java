@@ -8,9 +8,9 @@ import java.util.List;
 public interface HttpProvider {
     void filter(String path, Filter... filters);
 
-    void http(String path, Method method, Route route);
+    void http(String path, HttpMethod httpMethod, Route route);
 
-    void http(String path, Method method, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes);
+    void http(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes);
 
     void http(RouteInfo routeInfo);
 

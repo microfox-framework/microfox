@@ -74,7 +74,7 @@ public interface Request {
 
     boolean isAsyncSupported();
 
-    Method getMethod();
+    HttpMethod getMethod();
 
     ServletInputStream inputStream();
 }

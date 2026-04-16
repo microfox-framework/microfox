@@ -31,11 +31,11 @@ public class HttpUtils {
         return Pattern.compile("^" + regex + "$");
     }
 
-    public static RouteInfo findMatchingRouteInfo(String reqPath, Method method) {
+    public static RouteInfo findMatchingRouteInfo(String reqPath, HttpMethod httpMethod) {
         for (RouteInfo routeInfo : ResourceHolder.listRoutes()) {
             String path = routeInfo.path();
             Pattern regex = compilePattern(path);
-            if (regex.matcher(normalizePath(reqPath)).matches() && method.equals(routeInfo.method())) {
+            if (regex.matcher(normalizePath(reqPath)).matches() && httpMethod.equals(routeInfo.httpMethod())) {
                 return routeInfo;
             }
         }

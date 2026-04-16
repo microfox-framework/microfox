@@ -50,7 +50,7 @@ public class OpenApiGenerator {
 
             Operation op = extractSwaggerAnnotation(routeInfo.route());
 
-            switch (routeInfo.method()) {
+            switch (routeInfo.httpMethod()) {
                 case GET -> item.get(op);
                 case POST -> item.post(op);
                 case PUT -> item.put(op);
