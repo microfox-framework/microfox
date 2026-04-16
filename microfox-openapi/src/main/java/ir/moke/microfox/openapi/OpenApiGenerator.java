@@ -1,4 +1,4 @@
-package ir.moke.microfox.groovy;
+package ir.moke.microfox.openapi;
 
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.converter.ResolvedSchema;
