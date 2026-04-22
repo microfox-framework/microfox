@@ -12,22 +12,22 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class KafkaConsumerFactory {
-    private static final Map<String, Properties> CONFIGS = new HashMap<>();
+    private static final Map<String, Map<String,Object>> CONFIGS = new HashMap<>();
     private static final Map<String, KafkaConsumer<?, ?>> CONSUMERS = new ConcurrentHashMap<>();
 
-    public static void register(String identity, Properties properties) {
+    public static void register(String identity, Map<String,Object> configs) {
         if (CONFIGS.containsKey(identity))
             throw new MicroFoxException("Consumer %s already registered".formatted(identity));
-        CONFIGS.put(identity, properties);
+        CONFIGS.put(identity, configs);
     }
 
     @SuppressWarnings("unchecked")
     public static <K, V> KafkaConsumer<K, V> get(String identity) {
-        Properties props = CONFIGS.get(identity);
-        if (props == null) {
+        Map<String, Object> configs = CONFIGS.get(identity);
+        if (configs == null) {
             throw new MicroFoxException("No Kafka producer for identity: " + identity);
         }
-        return (KafkaConsumer<K, V>) CONSUMERS.computeIfAbsent(identity, id -> new KafkaConsumer<>(props));
+        return (KafkaConsumer<K, V>) CONSUMERS.computeIfAbsent(identity, id -> new KafkaConsumer<>(configs));
     }
 
     public static void close(String identity, Duration timeout) {

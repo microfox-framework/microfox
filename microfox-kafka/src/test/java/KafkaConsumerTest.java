@@ -6,8 +6,9 @@ import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 import static ir.moke.microfox.MicroFox.kafkaConsumer;
 
@@ -22,12 +23,12 @@ public class KafkaConsumerTest {
     }
 
     private static void initializeConsumer() {
-        Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "%s:%s".formatted(HOST, PORT));
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "G1");
-        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        KafkaConsumerFactory.register(IDENTITY, properties);
+        Map<String, Object> configs = new HashMap<>();
+        configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "%s:%s".formatted(HOST, PORT));
+        configs.put(ConsumerConfig.GROUP_ID_CONFIG, "G1");
+        configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        KafkaConsumerFactory.register(IDENTITY, configs);
     }
 
     static void main() {
