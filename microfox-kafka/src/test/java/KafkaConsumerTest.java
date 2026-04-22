@@ -17,7 +17,7 @@ public class KafkaConsumerTest {
     private static final int PORT = 9092;
 
     static {
-        MicroFox.logger(new ConsoleGenericModel("Kafka","ir.moke.microfox.kafka", Level.TRACE));
+        MicroFox.logger(new ConsoleGenericModel("Kafka", "ir.moke.microfox.kafka", Level.TRACE));
         initializeConsumer();
     }
 
