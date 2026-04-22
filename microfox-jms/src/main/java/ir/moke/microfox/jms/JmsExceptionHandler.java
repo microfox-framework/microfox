@@ -21,16 +21,8 @@ public class JmsExceptionHandler implements ExceptionListener {
         JmsConnectionInfo info = JmsFactory.close(identity);
 
         if (info != null) {
-//            try {
             provider.consumeMessage(identity, info.getDestination(), info.getMode(), info.getType(), info.getListener(), info.getConnectionFactory());
             logger.info("Reconnected JMS consumer: {}", identity);
-//            } catch (Exception ex) {
-//                logger.error("Failed to reconnect JMS consumer for {}: {}", identity, ex.getMessage());
-//                JmsFactory.close(info.getIdentity());
-
-            // try to reconnect
-//                provider.consumeMessage(identity, info.getDestination(), info.getMode(), info.getType(), info.getListener(), info.getConnectionFactory());
-//            }
         }
     }
 }

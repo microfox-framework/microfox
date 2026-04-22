@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class JmsFactory {
     private static final Logger logger = LoggerFactory.getLogger(JmsFactory.class);
@@ -93,15 +92,5 @@ public class JmsFactory {
 
     static Map<String, JmsConnectionInfo> getInfoMap() {
         return INFO_MAP;
-    }
-
-    private static final Map<String, ScheduledExecutorService> ES_MAP = new ConcurrentHashMap<>();
-
-    public static void set(String identity, ScheduledExecutorService es) {
-        ES_MAP.put(identity, es);
-    }
-
-    public static ScheduledExecutorService get(String identity) {
-        return ES_MAP.get(identity);
     }
 }

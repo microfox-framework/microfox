@@ -12,8 +12,7 @@ import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import java.time.ZonedDateTime;
 import java.util.Locale;
 
-import static ir.moke.microfox.MicroFox.jmsListener;
-import static ir.moke.microfox.MicroFox.jmsProducer;
+import static ir.moke.microfox.MicroFox.*;
 
 /**
  * Run artemis container with this command :
@@ -36,11 +35,16 @@ public class ArtemisTest {
 
     static void main() {
         jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
+        int count = 0;
         for (; ; ) {
             sendTestMessage();
+            count++;
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ignore) {
+            }
+            if (count == 10) {
+                jmsStop(IDENTITY);
             }
         }
     }

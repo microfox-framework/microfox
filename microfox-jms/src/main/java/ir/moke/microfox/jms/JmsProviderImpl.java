@@ -9,7 +9,6 @@ import jakarta.jms.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.IllegalStateException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -25,7 +24,8 @@ public class JmsProviderImpl implements JmsProvider {
     public void produce(String identity, Consumer<JMSContext> consumer) {
         JmsConnectionInfo connectionInfo = JmsFactory.getConnectionInfo(identity);
         if (connectionInfo == null) {
-            throw new IllegalStateException("No connection factory found for identity: " + identity);
+            logger.warn("No connection factory found for identity: {}, [Service Stopped/Not Exists]", identity);
+            return;
         }
         try {
             ConnectionFactory connectionFactory = connectionInfo.getConnectionFactory();
@@ -57,6 +57,7 @@ public class JmsProviderImpl implements JmsProvider {
     @Override
     public void stop(String identity) {
         JmsFactory.close(identity);
+        JmsFactory.getInfoMap().remove(identity);
     }
 
     void consumeMessage(String identity,
