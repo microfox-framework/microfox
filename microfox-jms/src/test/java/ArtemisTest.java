@@ -1,6 +1,5 @@
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
-import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.jms.JmsFactory;
 import ir.moke.utils.date.CalendarType;
 import ir.moke.utils.date.DatePattern;
@@ -37,20 +36,23 @@ public class ArtemisTest {
 
     static void main() {
         jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
-        sendTestMessage();
+        for (; ; ) {
+            sendTestMessage();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignore) {
+            }
+        }
     }
 
     public static void sendTestMessage() {
         jmsProducer(IDENTITY, context -> {
-            try {
-                Queue destination = context.createQueue(QUEUE_NAME);
-                JMSProducer producer = context.createProducer();
-                String currentDateTime = DateTimeUtils.toString(ZonedDateTime.now(), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.DATE_TIME_PATTERN);
-                TextMessage textMessage = context.createTextMessage(currentDateTime + " Hello consumer");
-                producer.send(destination, textMessage);
-            } catch (Exception e) {
-                throw new MicroFoxException(e);
-            }
+            Queue destination = context.createQueue(QUEUE_NAME);
+            JMSProducer producer = context.createProducer();
+            String currentDateTime = DateTimeUtils.toString(ZonedDateTime.now(), Locale.ENGLISH, CalendarType.PERSIAN, DatePattern.DATE_TIME_PATTERN);
+            TextMessage textMessage = context.createTextMessage(currentDateTime + " Hello consumer");
+            producer.send(destination, textMessage);
+            System.out.println("Message Successfully Send");
         });
     }
 
@@ -60,6 +62,6 @@ public class ArtemisTest {
         connectionFactory.setUser(USERNAME);
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setConnectionTTL(CONNECTION_TTL);
-        JmsFactory.register(IDENTITY, connectionFactory, 2);
+        JmsFactory.register(IDENTITY, connectionFactory, 3);
     }
 }

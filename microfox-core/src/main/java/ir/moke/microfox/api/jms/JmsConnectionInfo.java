@@ -1,13 +1,15 @@
-package ir.moke.microfox.jms;
+package ir.moke.microfox.api.jms;
 
-import ir.moke.microfox.api.jms.AckMode;
-import ir.moke.microfox.api.jms.DestinationType;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
 
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+
 public class JmsConnectionInfo {
+    private String identity;
     private ConnectionFactory connectionFactory;
     private JMSConsumer consumer;
     private JMSContext context;
@@ -17,6 +19,7 @@ public class JmsConnectionInfo {
     private boolean connected;
     private int concurrency;
     private MessageListener listener;
+    private ExecutorService executorService;
 
     public JmsConnectionInfo() {
         this.connected = false;
@@ -30,6 +33,14 @@ public class JmsConnectionInfo {
         this.mode = mode;
         this.type = type;
         this.listener = listener;
+    }
+
+    public String getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
     }
 
     public ConnectionFactory getConnectionFactory() {
@@ -102,5 +113,25 @@ public class JmsConnectionInfo {
 
     public void setListener(MessageListener listener) {
         this.listener = listener;
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        JmsConnectionInfo that = (JmsConnectionInfo) o;
+        return Objects.equals(identity, that.identity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(identity);
     }
 }

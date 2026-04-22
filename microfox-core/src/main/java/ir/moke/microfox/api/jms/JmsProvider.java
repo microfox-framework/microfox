@@ -10,4 +10,6 @@ public interface JmsProvider {
     void produce(String identity, Consumer<JMSContext> consumer);
 
     void consume(String identity, String queueName, AckMode acknowledgeMode, DestinationType type, MessageListener listener);
+
+    void stop(String identity);
 }

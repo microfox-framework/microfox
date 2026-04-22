@@ -2,6 +2,7 @@ package ir.moke.microfox.jms;
 
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
+import ir.moke.microfox.api.jms.JmsConnectionInfo;
 import ir.moke.microfox.exception.MicroFoxException;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSConsumer;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class JmsFactory {
     private static final Logger logger = LoggerFactory.getLogger(JmsFactory.class);
@@ -31,14 +33,6 @@ public class JmsFactory {
         register(identity, connectionFactory, 1);
     }
 
-    static ConnectionFactory getConnectionFactory(String identity) {
-        JmsConnectionInfo connectionInfo = INFO_MAP.get(identity);
-        if (connectionInfo.getConnectionFactory() == null) {
-            throw new IllegalStateException("No connection factory found for identity: " + identity);
-        }
-        return connectionInfo.getConnectionFactory();
-    }
-
     static void completeConnectionInfo(String identity,
                                        ConnectionFactory connectionFactory,
                                        JMSContext context,
@@ -48,6 +42,7 @@ public class JmsFactory {
                                        DestinationType type,
                                        MessageListener listener) {
         JmsConnectionInfo info = INFO_MAP.get(identity);
+        info.setIdentity(identity);
         info.setConnectionFactory(connectionFactory);
         info.setContext(context);
         info.setConsumer(consumer);
@@ -55,29 +50,58 @@ public class JmsFactory {
         info.setMode(ackMode);
         info.setType(type);
         info.setListener(listener);
+        info.setConnected(true);
     }
 
     static JmsConnectionInfo close(String identity) {
-        JmsConnectionInfo inf = INFO_MAP.get(identity);
-        if (inf == null) return null;
+        JmsConnectionInfo info = INFO_MAP.get(identity);
+        if (info == null) return null;
 
-        inf.setConnected(false);
-        if (inf.getConsumer() != null) inf.getConsumer().close();
-        if (inf.getContext() != null) inf.getContext().close();
+        info.setConnected(false);
 
-        logger.info("Jms context with identity {} closed", identity);
-        return inf;
+        try {
+            if (info.getConsumer() != null) info.getConsumer().close();
+        } catch (Exception ignored) {
+        }
+
+        try {
+            if (info.getContext() != null) info.getContext().close();
+        } catch (Exception ignored) {
+        }
+
+        try {
+            if (info.getExecutorService() != null) info.getExecutorService().close();
+        } catch (Exception ignored) {
+        }
+
+        info.setContext(null);
+        info.setConsumer(null);
+        info.setExecutorService(null);
+
+        logger.info("JMS {} context closed", identity);
+        return info;
     }
+
 
     public static boolean isConnected(String identity) {
         return INFO_MAP.getOrDefault(identity, new JmsConnectionInfo()).isConnected();
     }
 
-    static JmsConnectionInfo getConnectionInfo(String identity) {
+    public static JmsConnectionInfo getConnectionInfo(String identity) {
         return INFO_MAP.get(identity);
     }
 
     static Map<String, JmsConnectionInfo> getInfoMap() {
         return INFO_MAP;
+    }
+
+    private static final Map<String, ScheduledExecutorService> ES_MAP = new ConcurrentHashMap<>();
+
+    public static void set(String identity, ScheduledExecutorService es) {
+        ES_MAP.put(identity, es);
+    }
+
+    public static ScheduledExecutorService get(String identity) {
+        return ES_MAP.get(identity);
     }
 }

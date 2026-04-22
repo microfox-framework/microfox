@@ -21,7 +21,7 @@ public class SystemProviderImpl implements SystemProvider {
     public void activate() {
         boolean isActive = Boolean.parseBoolean(MicroFoxEnvironment.getEnv("microfox.system.active"));
         if (isActive) {
-            ses.scheduleAtFixedRate(this::run, 0, 30, TimeUnit.SECONDS);
+            ses.scheduleWithFixedDelay(this::run, 0, 30, TimeUnit.SECONDS);
         }
     }
 

@@ -329,6 +329,11 @@ public class MicroFox {
         jmsProvider.produce(identity, consumer);
     }
 
+    public static void jmsStop(String identity) {
+        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
+        jmsProvider.stop(identity);
+    }
+
     public static <K, V> void kafkaProducer(String identity, Consumer<KafkaProducerController<K, V>> consumer) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
         kafkaProvider.produce(identity, consumer);
