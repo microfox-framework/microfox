@@ -145,23 +145,27 @@ public class HttpUtils {
         ExceptionMapper exceptionMapper = ExceptionMapperHolder.get(t.getClass());
         if (exceptionMapper == null) {
             logger.error("Mapper not registered for exception {}", t.getClass());
-            logger.error("Controller Exception", t);
-            return;
-        }
-        ErrorObject errorObject = exceptionMapper.handle(t);
-        if (errorObject != null) {
-            Optional.ofNullable(errorObject.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
-            Optional.ofNullable(errorObject.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
-            Optional.ofNullable(errorObject.getHeaders()).ifPresent(item -> fillExtraHeaders(resp, item));
-            Optional.ofNullable(errorObject.getLocale()).ifPresent(resp::setLocale);
-            Optional.ofNullable(errorObject.getCharacterEncoding()).ifPresent(resp::setCharacterEncoding);
-            Optional.ofNullable(errorObject.getCookies()).ifPresent(item -> item.forEach(resp::addCookie));
-            Optional.ofNullable(errorObject.getBody()).ifPresent(item -> sendResponse(resp, item));
+            internalServerError(resp, t);
         } else {
-            logger.error("Microfox Unknown Error", t);
-            resp.setStatus(StatusCode.INTERNAL_SERVER_ERROR.getCode());
-            sendResponse(resp, t.getMessage().getBytes(StandardCharsets.UTF_8));
+            ErrorObject errorObject = exceptionMapper.handle(t);
+            if (errorObject != null) {
+                Optional.ofNullable(errorObject.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
+                Optional.ofNullable(errorObject.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
+                Optional.ofNullable(errorObject.getHeaders()).ifPresent(item -> fillExtraHeaders(resp, item));
+                Optional.ofNullable(errorObject.getLocale()).ifPresent(resp::setLocale);
+                Optional.ofNullable(errorObject.getCharacterEncoding()).ifPresent(resp::setCharacterEncoding);
+                Optional.ofNullable(errorObject.getCookies()).ifPresent(item -> item.forEach(resp::addCookie));
+                Optional.ofNullable(errorObject.getBody()).ifPresent(item -> sendResponse(resp, item));
+            } else {
+                internalServerError(resp, t);
+            }
         }
+    }
+
+    private static void internalServerError(HttpServletResponse resp, Throwable t) {
+        logger.error("Microfox Unknown Error", t);
+        resp.setStatus(StatusCode.INTERNAL_SERVER_ERROR.getCode());
+        sendResponse(resp, t.getMessage().getBytes(StandardCharsets.UTF_8));
     }
 
     private static void fillExtraHeaders(HttpServletResponse resp, Map<String, Object> headers) {
