@@ -29,6 +29,11 @@ public class JpaFactory {
     }
 
     public static void register(String identity, List<String> scanPackages, Map<String, Object> settings) {
+        if (CONNECTION_FACTORY_MAP.containsKey(identity)) {
+            CONNECTION_FACTORY_MAP.remove(identity).close();
+            METADATA_SOURCES_MAP.remove(identity);
+        }
+
         PersistenceConfiguration configuration = new PersistenceConfiguration(identity);
         Optional.ofNullable(validatorFactory).ifPresent(item -> settings.put(AvailableSettings.JAKARTA_VALIDATION_FACTORY, item));
         settings.forEach(configuration::property);
