@@ -1,8 +1,14 @@
 package ir.moke.microfox.api.jpa;
 
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public interface JpaProvider {
+    void register(String identity, List<String> scanPackages, Map<String, Object> settings);
+
+    void unregister(String identity);
+
     void jpa(String identity, TransactionPolicy policy, Integer txTimeout, Runnable runnable);
 
     <T> T jpa(String identity, Class<T> repositoryClass);

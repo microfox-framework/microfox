@@ -1,6 +1,7 @@
 package ir.moke.microfox.jpa;
 
 
+import ir.moke.microfox.exception.MicroFoxException;
 import jakarta.persistence.*;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -28,11 +29,9 @@ public class JpaFactory {
     private JpaFactory() {
     }
 
-    public static void register(String identity, List<String> scanPackages, Map<String, Object> settings) {
-        if (CONNECTION_FACTORY_MAP.containsKey(identity)) {
-            CONNECTION_FACTORY_MAP.remove(identity).close();
-            METADATA_SOURCES_MAP.remove(identity);
-        }
+    static void register(String identity, List<String> scanPackages, Map<String, Object> settings) {
+        if (CONNECTION_FACTORY_MAP.containsKey(identity))
+            throw new MicroFoxException("Jpa with identity %s already exists".formatted(identity));
 
         PersistenceConfiguration configuration = new PersistenceConfiguration(identity);
         Optional.ofNullable(validatorFactory).ifPresent(item -> settings.put(AvailableSettings.JAKARTA_VALIDATION_FACTORY, item));
@@ -44,6 +43,13 @@ public class JpaFactory {
 
         // extract MetaSource
         getMetaSource(identity, entities, settings);
+    }
+
+    static void unregister(String identity) {
+        if (CONNECTION_FACTORY_MAP.containsKey(identity)) {
+            CONNECTION_FACTORY_MAP.remove(identity).close();
+            METADATA_SOURCES_MAP.remove(identity);
+        }
     }
 
     private static void getMetaSource(String identity, Set<Class<?>> entities, Map<String, Object> settings) {
@@ -66,24 +72,24 @@ public class JpaFactory {
         return result;
     }
 
-    public static EntityManagerFactory getEntityManagerFactory(String identity) {
+    static EntityManagerFactory getEntityManagerFactory(String identity) {
         return CONNECTION_FACTORY_MAP.get(identity);
     }
 
-    public static ScopedValue<Map<String, EntityManager>> getScopedValue() {
+    static ScopedValue<Map<String, EntityManager>> getScopedValue() {
         return SCOPED_VALUE;
     }
 
-    public static EntityManager getEntityManager(String identity) {
+    static EntityManager getEntityManager(String identity) {
         return SCOPED_VALUE.get().get(identity);
     }
 
-    public static MetadataSources getMetadataSources(String identity) {
+    static MetadataSources getMetadataSources(String identity) {
         return METADATA_SOURCES_MAP.get(identity);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T create(Class<T> repositoryInterface, String identity) {
+    static <T> T create(Class<T> repositoryInterface, String identity) {
         return (T) Proxy.newProxyInstance(repositoryInterface.getClassLoader(), new Class<?>[]{repositoryInterface}, new RepositoryHandler(identity));
     }
 

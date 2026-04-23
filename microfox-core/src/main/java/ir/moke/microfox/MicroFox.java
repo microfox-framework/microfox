@@ -40,10 +40,7 @@ import org.apache.commons.net.ftp.FTPFile;
 import java.io.File;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.ServiceLoader;
-import java.util.Vector;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class MicroFox {
@@ -262,6 +259,16 @@ public class MicroFox {
     public static <T> void mybatisBatch(String identity, Class<T> mapper, Consumer<T> consumer) {
         if (myBatisProvider == null) throw new UnsupportedOperationException("MyBatis support not available");
         myBatisProvider.mybatisBatch(identity, mapper, consumer);
+    }
+
+    public static void jpaRegister(String identity, List<String> scanPackages, Map<String, Object> settings) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.register(identity, scanPackages, settings);
+    }
+
+    public static void jpaUnregister(String identity) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.unregister(identity);
     }
 
     public static void jpa(String identity, int txTimeout, Runnable runnable) {

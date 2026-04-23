@@ -6,11 +6,22 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 public class JpaProviderImpl implements JpaProvider {
+
+    @Override
+    public void register(String identity, List<String> scanPackages, Map<String, Object> settings) {
+        JpaFactory.register(identity, scanPackages, settings);
+    }
+
+    @Override
+    public void unregister(String identity) {
+        JpaFactory.unregister(identity);
+    }
 
     @Override
     public void jpa(String identity, TransactionPolicy policy, Integer txTimeout, Runnable runnable) {
