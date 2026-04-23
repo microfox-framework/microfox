@@ -1,6 +1,7 @@
 package ir.microfox.jpa.test;
 
 import ir.microfox.jpa.test.entity.Person;
+import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.jpa.TransactionPolicy;
 import ir.microfox.jpa.test.repository.PersonRepository;
 
@@ -11,14 +12,18 @@ import static ir.moke.microfox.MicroFox.jpaTxRollback;
 
 public class JpaTest {
     static {
-        DB.initializeH2();
+//        DB.initializeH2();
+        DB.initializePostgres();
     }
 
     static void main() {
 
         // Save single/batch
-        jpa("h2", PersonRepository.class, TransactionPolicy.REQUIRED, JpaTest::saveItems);
+//        jpa("postgres", PersonRepository.class, TransactionPolicy.REQUIRED, JpaTest::saveItems);
 
+        MicroFox.jpaPrintCreateSchemaSQL("postgres");
+
+        System.exit(0);
         // Print size
         PersonRepository personRepository = jpa("h2", PersonRepository.class);
         List<Person> people = personRepository.find();
@@ -44,6 +49,8 @@ public class JpaTest {
         // Criteria Query
         people = personRepository.find(null, null, null, 0, 100);
         people.forEach(System.out::println);
+
+        while (true);
     }
 
     private static void deletePerson2(PersonRepository pr, Person person1) {

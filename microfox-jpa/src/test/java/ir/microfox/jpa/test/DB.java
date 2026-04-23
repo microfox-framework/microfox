@@ -1,55 +1,44 @@
 package ir.microfox.jpa.test;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import ir.moke.microfox.jpa.JpaConfig;
+import com.zaxxer.hikari.hibernate.HikariConnectionProvider;
 import ir.moke.microfox.jpa.JpaFactory;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
-import org.hibernate.jpa.HibernatePersistenceProvider;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DB {
 
     public static void initializeH2() {
-        HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setDriverClassName(org.h2.Driver.class.getCanonicalName());
-        hikariConfig.setJdbcUrl("jdbc:h2:mem:testdb;MODE=Oracle;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false");
-        hikariConfig.setUsername("sa");
-        hikariConfig.setPassword("sa");
-        HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(AvailableSettings.JAKARTA_JDBC_URL, "jdbc:h2:mem:testdb;MODE=Oracle;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false");
+        properties.put(AvailableSettings.JAKARTA_JDBC_DRIVER, org.h2.Driver.class.getCanonicalName());
+        properties.put(AvailableSettings.JAKARTA_JDBC_USER, "sa");
+        properties.put(AvailableSettings.JAKARTA_JDBC_PASSWORD, "sa");
+        properties.put(AvailableSettings.HBM2DDL_AUTO, "update");
+        properties.put(AvailableSettings.DIALECT, H2Dialect.class.getCanonicalName());
+        properties.put(AvailableSettings.SHOW_SQL, "true");
 
-        JpaConfig databaseConfig = new JpaConfig.Builder()
-                .setPersistenceUnit("h2")
-                .setProvider(new HibernatePersistenceProvider())
-                .setHbm2ddl("update")
-                .setDialect(H2Dialect.class.getCanonicalName())
-                .setShowSql(true)
-                .setPackages(List.of("ir.microfox.jpa.test.entity"))
-                .build();
-
-        JpaFactory.register(hikariDataSource, databaseConfig);
+        JpaFactory.register("h2", List.of("ir.microfox.jpa.test.entity"), properties);
     }
 
 
     public static void initializePostgres() {
-        HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setDriverClassName(org.postgresql.Driver.class.getCanonicalName());
-        hikariConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/admin");
-        hikariConfig.setUsername("admin");
-        hikariConfig.setPassword("adminpass");
-        HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(AvailableSettings.JAKARTA_JDBC_URL, "jdbc:postgresql://localhost:5432/admin");
+        properties.put(AvailableSettings.JAKARTA_JDBC_DRIVER, org.postgresql.Driver.class.getCanonicalName());
+        properties.put(AvailableSettings.JAKARTA_JDBC_USER, "admin");
+        properties.put(AvailableSettings.JAKARTA_JDBC_PASSWORD, "adminpass");
+        properties.put(AvailableSettings.HBM2DDL_AUTO, "update");
+        properties.put(AvailableSettings.DIALECT, PostgreSQLDialect.class.getCanonicalName());
+        properties.put(AvailableSettings.SHOW_SQL, "true");
+        properties.put(AvailableSettings.CONNECTION_PROVIDER, HikariConnectionProvider.class.getCanonicalName());
+        properties.put(AvailableSettings.HIKARI_MAX_SIZE, "100");
+        properties.put(AvailableSettings.HIKARI_MIN_IDLE_SIZE, "50");
 
-        JpaConfig databaseConfig = new JpaConfig.Builder()
-                .setPersistenceUnit("postgres")
-                .setProvider(new HibernatePersistenceProvider())
-                .setHbm2ddl("update")
-                .setDialect(PostgreSQLDialect.class.getCanonicalName())
-                .setShowSql(true)
-                .setPackages(List.of("entity"))
-                .build();
-
-        JpaFactory.register(hikariDataSource, databaseConfig);
+        JpaFactory.register("postgres", List.of("ir.microfox.jpa.test.entity"), properties);
     }
 }

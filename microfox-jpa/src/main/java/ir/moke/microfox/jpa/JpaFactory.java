@@ -1,26 +1,17 @@
 package ir.moke.microfox.jpa;
 
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.Metadata;
+import jakarta.persistence.*;
 import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.AvailableSettings;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class JpaFactory {
@@ -37,47 +28,44 @@ public class JpaFactory {
     private JpaFactory() {
     }
 
-    public static void register(HikariConfig hikariConfig, JpaConfig jpaConfig) {
-        MetadataSources metadataSources = getMetadataSources(hikariConfig, jpaConfig);
-        Metadata metadata = metadataSources.buildMetadata();
-        SessionFactory sessionFactory = metadata.buildSessionFactory();
-        EntityManagerFactory emf = sessionFactory.unwrap(EntityManagerFactory.class);
-        CONNECTION_FACTORY_MAP.put(jpaConfig.getIdentity(), emf);
+    public static void register(String identity, List<String> scanPackages, Map<String, Object> settings) {
+        PersistenceConfiguration configuration = new PersistenceConfiguration(identity);
+        Optional.ofNullable(validatorFactory).ifPresent(item -> settings.put(AvailableSettings.JAKARTA_VALIDATION_FACTORY, item));
+        settings.forEach(configuration::property);
+        Set<Class<?>> entities = scanPackages(scanPackages);
+        entities.forEach(configuration::managedClass);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(configuration);
+        CONNECTION_FACTORY_MAP.put(identity, emf);
+
+        // extract MetaSource
+        getMetaSource(identity, entities, settings);
     }
 
-    private static MetadataSources getMetadataSources(HikariConfig hikariConfig, JpaConfig jpaConfig) {
-        HikariDataSource dataSource = new HikariDataSource(hikariConfig);
-        StandardServiceRegistryBuilder standardServiceRegistryBuilder = new StandardServiceRegistryBuilder();
-        Optional.ofNullable(jpaConfig.getDialect()).ifPresent(item -> standardServiceRegistryBuilder.applySetting("hibernate.dialect", jpaConfig.getDialect()));
-        Optional.ofNullable(jpaConfig.getHbm2ddl()).ifPresent(item -> standardServiceRegistryBuilder.applySetting("hibernate.hbm2ddl.auto", jpaConfig.getHbm2ddl()));
-        Optional.ofNullable(jpaConfig.getShowSql()).ifPresent(item -> standardServiceRegistryBuilder.applySetting("hibernate.show_sql", jpaConfig.getShowSql()));
-        Optional.ofNullable(jpaConfig.getFormatSQL()).ifPresent(item -> standardServiceRegistryBuilder.applySetting("hibernate.format_sql", jpaConfig.getFormatSQL()));
-        Optional.ofNullable(validatorFactory).ifPresent(item -> standardServiceRegistryBuilder.applySetting("jakarta.persistence.validation.factory", item));
-        standardServiceRegistryBuilder.applySetting("hibernate.connection.datasource", dataSource);
+    private static void getMetaSource(String identity, Set<Class<?>> entities, Map<String, Object> settings) {
+        StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
+        registryBuilder.applySettings(settings);
+        MetadataSources sources = new MetadataSources(registryBuilder.build());
+        sources.addAnnotatedClasses(entities.toArray(Class[]::new));
+        METADATA_SOURCES_MAP.put(identity, sources);
+    }
 
-        StandardServiceRegistry serviceRegistry = standardServiceRegistryBuilder.build();
-        MetadataSources metadataSources = new MetadataSources(serviceRegistry);
-        List<String> packages = jpaConfig.getPackages();
-        if (packages != null) {
+    private static Set<Class<?>> scanPackages(List<String> packages) {
+        Set<Class<?>> result = new HashSet<>();
+        if (packages != null && !packages.isEmpty()) {
             for (String p : packages) {
-                Set<Class<?>> classes = scanEntities(p);
-                metadataSources.addAnnotatedClasses(classes.toArray(Class[]::new));
+                Reflections reflections = new Reflections(p);
+                Set<Class<?>> entityClasses = reflections.getTypesAnnotatedWith(Entity.class);
+                result.addAll(entityClasses);
             }
         }
-        METADATA_SOURCES_MAP.put(jpaConfig.getIdentity(), metadataSources);
-        return metadataSources;
-    }
-
-    private static Set<Class<?>> scanEntities(String basePackage) {
-        Reflections reflections = new Reflections(basePackage);
-        return reflections.getTypesAnnotatedWith(Entity.class);
+        return result;
     }
 
     public static EntityManagerFactory getEntityManagerFactory(String identity) {
         return CONNECTION_FACTORY_MAP.get(identity);
     }
 
-    public static ScopedValue<Map<String,EntityManager>> getScopedValue() {
+    public static ScopedValue<Map<String, EntityManager>> getScopedValue() {
         return SCOPED_VALUE;
     }
 
