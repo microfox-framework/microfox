@@ -143,6 +143,11 @@ public class HttpUtils {
 
     public static void handleExceptionMapper(HttpServletResponse resp, Throwable t) {
         ExceptionMapper exceptionMapper = ExceptionMapperHolder.get(t.getClass());
+        if (exceptionMapper == null) {
+            logger.error("Mapper not registered for exception {}", t.getClass());
+            logger.error("Controller Exception", t);
+            return;
+        }
         ErrorObject errorObject = exceptionMapper.handle(t);
         if (errorObject != null) {
             Optional.ofNullable(errorObject.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));

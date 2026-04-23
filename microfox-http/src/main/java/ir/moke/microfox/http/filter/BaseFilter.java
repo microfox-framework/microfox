@@ -42,7 +42,7 @@ public class BaseFilter implements Filter {
     private static void doChain(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
         try {
             chain.doFilter(request, response);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             HttpUtils.handleExceptionMapper(response, e);
         }
     }
