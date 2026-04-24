@@ -39,6 +39,7 @@ public interface Request {
     String contentType();
 
     String remoteIp();
+
     String localIp();
 
     String url();
@@ -68,6 +69,7 @@ public interface Request {
     Set<String> attributes();
 
     AsyncContext asyncContext();
+
     AsyncContext startAsync();
 
     boolean isAsyncStarted();
