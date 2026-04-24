@@ -31,9 +31,9 @@ public interface PersonRepository {
     void delete(Person person);
 
     @Criteria(provider = PersonCriteriaProvider.class, ignoreNullValues = true)
-    List<Person> find(Long id,
-                      String name,
-                      String family,
-                      int offset,
-                      int maxResult);
+    List<Person> find(@QueryParameter("id") Long id,
+                      @QueryParameter("name") String name,
+                      @QueryParameter("family") String family,
+                      @Offset int offset,
+                      @MaxResults int maxResult);
 }
