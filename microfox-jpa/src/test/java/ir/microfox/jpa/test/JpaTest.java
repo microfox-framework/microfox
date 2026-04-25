@@ -1,9 +1,8 @@
 package ir.microfox.jpa.test;
 
 import ir.microfox.jpa.test.entity.Person;
-import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.api.jpa.TransactionPolicy;
 import ir.microfox.jpa.test.repository.PersonRepository;
+import ir.moke.microfox.api.jpa.TransactionPolicy;
 
 import java.util.List;
 
@@ -12,18 +11,15 @@ import static ir.moke.microfox.MicroFox.jpaTxRollback;
 
 public class JpaTest {
     static {
-//        DB.initializeH2();
-        DB.initializePostgres();
+        DB.initializeH2();
+//        DB.initializePostgres();
     }
 
     static void main() {
 
         // Save single/batch
-//        jpa("postgres", PersonRepository.class, TransactionPolicy.REQUIRED, JpaTest::saveItems);
+        jpa("h2", PersonRepository.class, TransactionPolicy.REQUIRED, JpaTest::saveItems);
 
-        MicroFox.jpaPrintCreateSchemaSQL("postgres");
-
-        System.exit(0);
         // Print size
         PersonRepository personRepository = jpa("h2", PersonRepository.class);
         List<Person> people = personRepository.find();
@@ -47,10 +43,14 @@ public class JpaTest {
         jpa("h2", PersonRepository.class, pr -> deletePerson2(pr, person2));
 
         // Criteria Query
+        Long count = personRepository.count(null, null, null);
+        System.out.println("Count : " + count);
+
+        boolean exists = personRepository.exists(null, null, null);
+        System.out.println("Exists : " + exists);
+
         people = personRepository.find(null, null, null, 0, 100);
         people.forEach(System.out::println);
-
-        while (true);
     }
 
     private static void deletePerson2(PersonRepository pr, Person person1) {

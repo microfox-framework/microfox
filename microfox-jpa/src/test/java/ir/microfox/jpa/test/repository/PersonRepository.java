@@ -36,4 +36,14 @@ public interface PersonRepository {
                       @QueryParameter("family") String family,
                       @Offset int offset,
                       @MaxResults int maxResult);
+
+    @Criteria(provider = PersonCriteriaProvider.class, ignoreNullValues = true)
+    Long count(@QueryParameter("id") Long id,
+               @QueryParameter("name") String name,
+               @QueryParameter("family") String family);
+
+    @Criteria(provider = PersonCriteriaProvider.class, ignoreNullValues = true)
+    boolean exists(@QueryParameter("id") Long id,
+                   @QueryParameter("name") String name,
+                   @QueryParameter("family") String family);
 }

@@ -194,13 +194,9 @@ public class RepositoryHandler implements InvocationHandler {
     }
 
     private static <T> Object invokeCriteria(EntityManager em, Method method, Object[] args) {
-        Class<T> entityClass = getEntityClassFromReturnType(method);
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<T> query = cb.createQuery(entityClass);
-        Root<T> root = query.from(entityClass);
         Criteria criteriaAnn = method.getAnnotation(Criteria.class);
+        Class<? extends CriteriaProvider<?>> provider = criteriaAnn.provider();
 
-        Predicate predicate = null;
         Integer offset = null;
         Integer maxResults = null;
 
@@ -228,48 +224,72 @@ public class RepositoryHandler implements InvocationHandler {
             }
         }
 
-        // Handle @Criteria
-        if (criteriaAnn != null) {
+        // Criteria ...
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        Class<T> entityClass = resolveProviderEntity(provider);
+        TypedQuery<?> typedQuery;
+
+
+        if (isBooleanReturnType(method)) {
+            return getCount(em, cb, entityClass, criteriaAnn, queryParams) > 0;
+        } else if (isNumberReturnType(method)) {
+            return getCount(em, cb, entityClass, criteriaAnn, queryParams);
+        } else {
+            CriteriaQuery<T> query = cb.createQuery(entityClass);
+            Root<T> root = query.from(entityClass);
+            Predicate predicate = buildPredicate(criteriaAnn, cb, root, queryParams);
+
+            if (predicate != null) {
+                query.where(predicate);
+            }
+            query.select(root);
+            typedQuery = em.createQuery(query);
+
+            if (offset != null) typedQuery.setFirstResult(offset);
+            if (maxResults != null) typedQuery.setMaxResults(maxResults);
+
             try {
-                Class<? extends CriteriaProvider<?>> providerClass = criteriaAnn.provider();
-                CriteriaProvider<?> provider = providerClass.getDeclaredConstructor().newInstance();
-                predicate = invokeTypedProvider(cb, root, provider, queryParams);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to invoke CriteriaProvider", e);
+                return isList(method) ? controlSelectReturnList(method, typedQuery.getResultList()) : typedQuery.getSingleResult();
+            } catch (NoResultException e) {
+                return null;
             }
         }
+    }
 
-        if (predicate != null) {
-            query.where(predicate);
-        }
-        query.select(root);
+    private static <T> Long getCount(EntityManager em, CriteriaBuilder cb, Class<T> entityClass, Criteria criteriaAnn, Map<String, Object> queryParams) {
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<?> root = query.from(entityClass);
+        Predicate predicate = buildPredicate(criteriaAnn, cb, root, queryParams);
+        if (predicate != null) query.where(predicate);
+        query.select(cb.count(root));
+        return em.createQuery(query).getSingleResult();
+    }
 
-        TypedQuery<?> typedQuery = em.createQuery(query);
-        if (offset != null) typedQuery.setFirstResult(offset);
-        if (maxResults != null) typedQuery.setMaxResults(maxResults);
+    private static boolean isNumberReturnType(Method method) {
+        Class<?> returnType = method.getReturnType();
+        return Long.class.isAssignableFrom(returnType) || returnType == long.class;
+    }
 
+    private static boolean isBooleanReturnType(Method method) {
+        Class<?> returnType = method.getReturnType();
+        return Boolean.class.isAssignableFrom(returnType) || returnType == boolean.class;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Predicate buildPredicate(Criteria criteriaAnn, CriteriaBuilder cb, Root<T> root, Map<String, Object> queryParams) {
         try {
-            return isList(method) ? controlSelectReturnList(method, typedQuery.getResultList()) : typedQuery.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
+            Class<? extends CriteriaProvider<?>> providerClass = criteriaAnn.provider();
+            CriteriaProvider<T> provider = (CriteriaProvider<T>) providerClass.getDeclaredConstructor().newInstance();
+            return provider.execute(cb, root, queryParams);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to invoke CriteriaProvider", e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> Predicate invokeTypedProvider(CriteriaBuilder cb, Root<?> rawRoot, CriteriaProvider<?> provider, Map<String, Object> queryParams) {
-        Root<T> typedRoot = (Root<T>) rawRoot;
-        CriteriaProvider<T> typedProvider = (CriteriaProvider<T>) provider;
-        return typedProvider.execute(cb, typedRoot, queryParams);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> Class<T> getEntityClassFromReturnType(Method method) {
-        if (Collection.class.isAssignableFrom(method.getReturnType())) {
-            ParameterizedType pt = (ParameterizedType) method.getGenericReturnType();
-            return (Class<T>) pt.getActualTypeArguments()[0];
-        } else {
-            return (Class<T>) method.getReturnType();
-        }
+    private static <T> Class<T> resolveProviderEntity(Class<?> providerClass) {
+        ParameterizedType pt = (ParameterizedType) providerClass.getGenericInterfaces()[0];
+        return (Class<T>) pt.getActualTypeArguments()[0];
     }
 
     private static boolean isList(final Method method) {
