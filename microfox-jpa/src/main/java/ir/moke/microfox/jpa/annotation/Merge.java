@@ -8,4 +8,8 @@ import java.lang.annotation.Target;
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Merge {
+    /**
+     * @return flush on merge
+     */
+    boolean flush() default false;
 }

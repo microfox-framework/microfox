@@ -62,6 +62,7 @@ public class RepositoryHandler implements InvocationHandler {
     }
 
     public static Object persist(final EntityManager em, final Method method, final Object[] args) {
+        boolean doFlush = method.getDeclaredAnnotation(Persist.class).flush();
         final Class<?> entityClass = method.getParameterTypes()[0];
         final Object entity = args[0];
 
@@ -69,6 +70,7 @@ public class RepositoryHandler implements InvocationHandler {
             throw new MicroFoxException(entityClass.getSimpleName() + " object is null");
         }
         em.persist(entity);
+        if (doFlush) em.flush();
         if (isVoid(method.getReturnType())) {
             return null;
         } else {
@@ -167,6 +169,7 @@ public class RepositoryHandler implements InvocationHandler {
     }
 
     public static Object merge(final EntityManager em, final Method method, final Object[] args) {
+        boolean doFlush = method.getDeclaredAnnotation(Merge.class).flush();
         final Class<?> entityClass = method.getParameterTypes()[0];
         final Object entity = args[0];
 
@@ -174,10 +177,13 @@ public class RepositoryHandler implements InvocationHandler {
             throw new MicroFoxException(entityClass.getSimpleName() + " object is null");
         }
 
-        return em.merge(entity);
+        Object o = em.merge(entity);
+        if (doFlush) em.flush();
+        return o;
     }
 
     public static Object remove(final EntityManager em, final Method method, final Object[] args) {
+        boolean doFlush = method.getDeclaredAnnotation(Remove.class).flush();
         final Class<?> entityClass = method.getParameterTypes()[0];
         Object entity = args[0];
 
@@ -190,6 +196,7 @@ public class RepositoryHandler implements InvocationHandler {
         }
 
         em.remove(entity);
+        if (doFlush) em.flush();
         return null;
     }
 

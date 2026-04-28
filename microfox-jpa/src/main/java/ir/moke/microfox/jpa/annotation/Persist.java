@@ -8,4 +8,8 @@ import java.lang.annotation.Target;
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Persist {
+    /**
+     * @return flush on persist
+     */
+    boolean flush() default false;
 }
