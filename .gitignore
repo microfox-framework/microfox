@@ -39,4 +39,4 @@ nbactions.xml
 nb-configuration.xml
 *.log
 tomcat*
-*jdk*
+microfox-jdk/
