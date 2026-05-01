@@ -9,13 +9,19 @@ import jakarta.persistence.EntityTransaction;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class JpaProviderImpl implements JpaProvider {
 
     @Override
-    public void register(String identity, List<String> scanPackages, Map<String, Object> settings) {
-        JpaFactory.register(identity, scanPackages, settings);
+    public void registerWithEntities(String identity, Set<Class<?>> entities, Map<String, Object> settings) {
+        JpaFactory.registerWithEntities(identity, entities, settings);
+    }
+
+    @Override
+    public void registerWithPackages(String identity, Set<String> scanPackages, Map<String, Object> settings) {
+        JpaFactory.registerWithPackage(identity, scanPackages, settings);
     }
 
     @Override

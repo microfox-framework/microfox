@@ -265,9 +265,14 @@ public class MicroFox {
         myBatisProvider.mybatisBatch(identity, mapper, consumer);
     }
 
-    public static void jpaRegister(String identity, List<String> scanPackages, Map<String, Object> settings) {
+    public static void jpaRegisterWithEntities(String identity, Set<Class<?>> entities, Map<String, Object> settings) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.register(identity, scanPackages, settings);
+        jpaProvider.registerWithEntities(identity, entities, settings);
+    }
+
+    public static void jpaRegisterWithPackage(String identity, Set<String> scanPackages, Map<String, Object> settings) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.registerWithPackages(identity, scanPackages, settings);
     }
 
     public static void jpaUnregister(String identity) {

@@ -7,8 +7,8 @@ import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DB {
 
@@ -22,7 +22,7 @@ public class DB {
         properties.put(AvailableSettings.DIALECT, H2Dialect.class.getCanonicalName());
         properties.put(AvailableSettings.SHOW_SQL, "true");
 
-        MicroFox.jpaRegister("h2", List.of("ir.microfox.jpa.test.entity"), properties);
+        MicroFox.jpaRegisterWithPackage("h2", Set.of("ir.microfox.jpa.test.entity"), properties);
     }
 
 
@@ -39,6 +39,6 @@ public class DB {
         properties.put(AvailableSettings.HIKARI_MAX_SIZE, "100");
         properties.put(AvailableSettings.HIKARI_MIN_IDLE_SIZE, "50");
 
-        MicroFox.jpaRegister("postgres", List.of("ir.microfox.jpa.test.entity"), properties);
+        MicroFox.jpaRegisterWithPackage("postgres", Set.of("ir.microfox.jpa.test.entity"), properties);
     }
 }

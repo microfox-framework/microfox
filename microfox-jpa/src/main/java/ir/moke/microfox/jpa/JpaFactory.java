@@ -29,7 +29,22 @@ public class JpaFactory {
     private JpaFactory() {
     }
 
-    static void register(String identity, List<String> scanPackages, Map<String, Object> settings) {
+    static void registerWithEntities(String identity, Set<Class<?>> entities, Map<String, Object> settings) {
+        if (CONNECTION_FACTORY_MAP.containsKey(identity))
+            throw new MicroFoxException("Jpa with identity %s already exists".formatted(identity));
+
+        PersistenceConfiguration configuration = new PersistenceConfiguration(identity);
+        Optional.ofNullable(validatorFactory).ifPresent(item -> settings.put(AvailableSettings.JAKARTA_VALIDATION_FACTORY, item));
+        settings.forEach(configuration::property);
+        entities.forEach(configuration::managedClass);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(configuration);
+        CONNECTION_FACTORY_MAP.put(identity, emf);
+
+        // extract MetaSource
+        getMetaSource(identity, entities, settings);
+    }
+
+    static void registerWithPackage(String identity, Set<String> scanPackages, Map<String, Object> settings) {
         if (CONNECTION_FACTORY_MAP.containsKey(identity))
             throw new MicroFoxException("Jpa with identity %s already exists".formatted(identity));
 
@@ -60,7 +75,7 @@ public class JpaFactory {
         METADATA_SOURCES_MAP.put(identity, sources);
     }
 
-    private static Set<Class<?>> scanPackages(List<String> packages) {
+    private static Set<Class<?>> scanPackages(Set<String> packages) {
         Set<Class<?>> result = new HashSet<>();
         if (packages != null && !packages.isEmpty()) {
             for (String p : packages) {
