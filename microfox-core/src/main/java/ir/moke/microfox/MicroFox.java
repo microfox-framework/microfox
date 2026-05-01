@@ -72,8 +72,12 @@ public class MicroFox {
         LoggerManager.registerLog(log);
     }
 
-    public static <T extends Throwable> void exceptionMapper(Class<T> t, ExceptionMapper mapper) {
+    public static <T extends Throwable> void registerExceptionMapper(Class<T> t, ExceptionMapper mapper) {
         ExceptionMapperHolder.add(t, mapper);
+    }
+
+    public static <T extends Throwable> void unregisterExceptionMapper(Class<T> t) {
+        ExceptionMapperHolder.remove(t);
     }
 
     public static void httpFilter(String path, Filter... filters) {

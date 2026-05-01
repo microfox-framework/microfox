@@ -14,6 +14,10 @@ public class ExceptionMapperHolder {
         MAPPERS.put(t, mapper);
     }
 
+    public static <T extends Throwable> void remove(Class<T> t) {
+        MAPPERS.remove(t);
+    }
+
     public static <T extends Throwable> ExceptionMapper get(Class<T> t) {
         return MAPPERS.get(t);
     }

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+rm -rf lib/
+mvn clean compile package install -DskipTests
+
+rm lib/*.pom
