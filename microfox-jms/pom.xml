@@ -28,7 +28,6 @@
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>com.ibm.mq.jakarta.client</artifactId>
-            <version>9.4.3.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
