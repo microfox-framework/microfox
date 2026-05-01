@@ -93,6 +93,7 @@
                         <configuration>
                             <outputDirectory>${project.parent.basedir}/lib</outputDirectory>
                             <includeScope>runtime</includeScope>
+                            <copyPom>false</copyPom>
                         </configuration>
                     </execution>
                 </executions>
