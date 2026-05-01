@@ -44,6 +44,7 @@ public class ResourceHolder {
 
     public static void removeRoute(String path, HttpMethod httpMethod) {
         ROUTES.removeIf(item -> item.path().equals(path) && item.httpMethod().equals(httpMethod));
+        logger.info("remove route {}{} {}{}{}", BACKGROUND_RED, httpMethod, BACKGROUND_RED, path, RESET);
     }
 
     public static Set<RouteInfo> listRoutes() {
