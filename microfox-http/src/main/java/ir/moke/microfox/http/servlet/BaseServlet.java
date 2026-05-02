@@ -9,14 +9,12 @@ import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.sse.SseInfo;
 import ir.moke.microfox.http.sse.SseSubscriber;
 import jakarta.servlet.AsyncContext;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
@@ -26,7 +24,7 @@ public class BaseServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(BaseServlet.class);
 
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+    protected void service(HttpServletRequest req, HttpServletResponse resp) {
         HttpMethod httpMethod = HttpMethod.valueOf(req.getMethod().toUpperCase());
         String accept = req.getHeader("Accept");
         if (accept != null && accept.contains(ContentType.TEXT_EVENT_STREAM.getType())) {
@@ -34,14 +32,18 @@ public class BaseServlet extends HttpServlet {
         } else {
             RouteInfo routeInfo = findMatchingRouteInfo(req.getRequestURI(), httpMethod);
             if (routeInfo != null) {
-                handle(req, resp, routeInfo);
+                try {
+                    handle(req, resp, routeInfo);
+                } catch (Throwable e) {
+                    HttpUtils.handleExceptionMapper(resp, e);
+                }
             } else {
                 notFound(resp);
             }
         }
     }
 
-    private static void handle(HttpServletRequest req, HttpServletResponse resp, RouteInfo routeInfo) throws IOException, ServletException {
+    private static void handle(HttpServletRequest req, HttpServletResponse resp, RouteInfo routeInfo) throws Throwable {
         Route route = routeInfo.route();
         route.handle(HttpUtils.getRequest(req), HttpUtils.getResponse(resp));
     }
