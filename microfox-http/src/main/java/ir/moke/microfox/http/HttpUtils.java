@@ -147,17 +147,21 @@ public class HttpUtils {
             logger.error("Mapper not registered for exception {}", t.getClass());
             internalServerError(resp, t);
         } else {
-            ErrorObject errorObject = exceptionMapper.handle(t);
-            if (errorObject != null) {
-                Optional.ofNullable(errorObject.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
-                Optional.ofNullable(errorObject.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
-                Optional.ofNullable(errorObject.getHeaders()).ifPresent(item -> fillExtraHeaders(resp, item));
-                Optional.ofNullable(errorObject.getLocale()).ifPresent(resp::setLocale);
-                Optional.ofNullable(errorObject.getCharacterEncoding()).ifPresent(resp::setCharacterEncoding);
-                Optional.ofNullable(errorObject.getCookies()).ifPresent(item -> item.forEach(resp::addCookie));
-                Optional.ofNullable(errorObject.getBody()).ifPresent(item -> sendResponse(resp, item));
-            } else {
-                internalServerError(resp, t);
+            try {
+                ErrorObject errorObject = exceptionMapper.handle(t);
+                if (errorObject != null) {
+                    Optional.ofNullable(errorObject.getStatusCode()).ifPresent(item -> resp.setStatus(item.getCode()));
+                    Optional.ofNullable(errorObject.getContentType()).ifPresent(item -> resp.setContentType(item.getType()));
+                    Optional.ofNullable(errorObject.getHeaders()).ifPresent(item -> fillExtraHeaders(resp, item));
+                    Optional.ofNullable(errorObject.getLocale()).ifPresent(resp::setLocale);
+                    Optional.ofNullable(errorObject.getCharacterEncoding()).ifPresent(resp::setCharacterEncoding);
+                    Optional.ofNullable(errorObject.getCookies()).ifPresent(item -> item.forEach(resp::addCookie));
+                    Optional.ofNullable(errorObject.getBody()).ifPresent(item -> sendResponse(resp, item));
+                } else {
+                    internalServerError(resp, t);
+                }
+            } catch (Throwable e) {
+                internalServerError(resp, e);
             }
         }
     }
