@@ -161,7 +161,7 @@ public class HttpUtils {
                     internalServerError(resp, t);
                 }
             } catch (Throwable e) {
-                internalServerError(resp, e);
+                handleExceptionMapper(resp, e);
             }
         }
     }
