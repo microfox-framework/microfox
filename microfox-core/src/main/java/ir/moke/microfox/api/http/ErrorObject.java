@@ -1,5 +1,6 @@
 package ir.moke.microfox.api.http;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import ir.moke.utils.json.JsonUtils;
 import jakarta.servlet.http.Cookie;
 
@@ -73,7 +74,7 @@ public class ErrorObject {
             return this;
         }
 
-        public Builder setBody(Object o) {
+        public Builder setBody(Object o) throws JsonProcessingException {
             if (o == null) return this;
             body = JsonUtils.toJson(o).getBytes(StandardCharsets.UTF_8);
             if (contentType == null) setContentType(ContentType.APPLICATION_JSON);

@@ -1,5 +1,6 @@
 package ir.moke.microfox.openapi.servlet;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.models.OpenAPI;
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.openapi.OpenApiGenerator;
@@ -20,7 +21,11 @@ public class OpenApiServlet extends HttpServlet {
     @Override
     public void init() {
         OpenAPI openAPI = OpenApiGenerator.generate();
-        json = JsonUtils.toJson(openAPI);
+        try {
+            json = JsonUtils.toJson(openAPI);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         logger.info("Initialize OpenAPI");
     }
 

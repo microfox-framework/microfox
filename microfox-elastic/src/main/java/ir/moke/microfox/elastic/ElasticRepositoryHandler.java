@@ -1,5 +1,6 @@
 package ir.moke.microfox.elastic;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import ir.moke.microfox.api.elastic.BulkOperation;
 import ir.moke.microfox.api.elastic.ElasticCriteria;
 import ir.moke.microfox.api.elastic.Index;
@@ -25,9 +26,17 @@ public class ElasticRepositoryHandler<T> implements InvocationHandler {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object invoke(Object proxy, Method method, Object[] args) {
+    public Object invoke(Object proxy, Method method, Object[] args) throws JsonProcessingException {
         String name = method.getName();
         logger.trace("Called: {}, args: {}", name, Arrays.toString(args));
+
+        if (name.equals("toString") && method.getParameterCount() == 0)
+            return proxy.getClass().getName() + "@" + System.identityHashCode(proxy);
+        if (name.equals("hashCode") && method.getParameterCount() == 0)
+            return System.identityHashCode(proxy);
+        if (name.equals("equals") && method.getParameterCount() == 1)
+            return proxy == args[0];
+
         validateIndex(index);
         switch (name) {
             case "indexCreate" -> ElasticController.createIndex(identity, index, clazz);

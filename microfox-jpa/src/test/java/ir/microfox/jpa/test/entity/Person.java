@@ -1,5 +1,6 @@
 package ir.microfox.jpa.test.entity;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import ir.moke.utils.json.JsonUtils;
 import jakarta.persistence.*;
 
@@ -48,6 +49,10 @@ public class Person {
 
     @Override
     public String toString() {
-        return JsonUtils.toJson(this);
+        try {
+            return JsonUtils.toJson(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

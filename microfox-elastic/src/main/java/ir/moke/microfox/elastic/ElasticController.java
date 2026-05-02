@@ -1,5 +1,6 @@
 package ir.moke.microfox.elastic;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import ir.moke.microfox.api.elastic.BulkOperation;
 import ir.moke.microfox.api.elastic.ElasticCriteria;
 import ir.moke.microfox.api.elastic.Index;
@@ -17,7 +18,7 @@ import java.util.Map;
 public class ElasticController {
     private static final Logger logger = LoggerFactory.getLogger(ElasticController.class);
 
-    public static <T> void createIndex(String identity, String index, Class<T> clazz) {
+    public static <T> void createIndex(String identity, String index, Class<T> clazz) throws JsonProcessingException {
         boolean annotationPresent = clazz.isAnnotationPresent(Index.class);
         if (!annotationPresent)
             throw new MicroFoxException("Class " + clazz.getName() + " must be annotated with @Index");
@@ -38,7 +39,7 @@ public class ElasticController {
         logger.trace("Deleted index {}: [{}]", index, response.body());
     }
 
-    public static void reindex(String identity, String srcIndex, String dstIndex) {
+    public static void reindex(String identity, String srcIndex, String dstIndex) throws JsonProcessingException {
         String json = JsonUtils.toJson(Map.of("source", Map.of("index", srcIndex), "dest", Map.of("index", dstIndex)));
         var response = ElasticHttpClient.post(identity, "/_reindex", json);
         logger.trace("Reindex [{}]", response.body());
@@ -51,7 +52,7 @@ public class ElasticController {
         checkResponse(response);
     }
 
-    public static <T> void updateMapping(String identity, String index, Class<T> clazz) {
+    public static <T> void updateMapping(String identity, String index, Class<T> clazz) throws JsonProcessingException {
         boolean annotationPresent = clazz.isAnnotationPresent(Index.class);
         if (!annotationPresent)
             throw new MicroFoxException("Class " + clazz.getName() + " must be annotated with @Index");
@@ -67,14 +68,14 @@ public class ElasticController {
         checkResponse(response);
     }
 
-    public static <T> void save(String identity, String index, String id, T document) {
+    public static <T> void save(String identity, String index, String id, T document) throws JsonProcessingException {
         String json = JsonUtils.toJson(document);
         HttpResponse<String> response = ElasticHttpClient.put(identity, "/" + index + "/_doc/" + id, json);
         logger.trace("save index:{} document:[{}] response:[{}]", index, json, response.body());
         checkResponse(response);
     }
 
-    public static <T> T get(String identity, String index, String id, Class<T> clazz) {
+    public static <T> T get(String identity, String index, String id, Class<T> clazz) throws JsonProcessingException {
         var response = ElasticHttpClient.get(identity, "/" + index + "/_doc/" + id);
         logger.trace("get index:{} id:{} response:[{}]", index, id, response.body());
         checkResponse(response);
@@ -88,13 +89,13 @@ public class ElasticController {
         checkResponse(response);
     }
 
-    public static void deleteByQuery(String identity, String index, ElasticCriteria criteria) {
+    public static void deleteByQuery(String identity, String index, ElasticCriteria criteria) throws JsonProcessingException {
         HttpResponse<String> response = ElasticHttpClient.post(identity, "/" + index + "/_delete_by_query", criteria.toJson());
         logger.trace("deleteByQuery index:{} response:[{}]", index, response.body());
         checkResponse(response);
     }
 
-    public static <T> List<T> search(String identity, String index, ElasticCriteria criteria, Class<T> clazz) {
+    public static <T> List<T> search(String identity, String index, ElasticCriteria criteria, Class<T> clazz) throws JsonProcessingException {
         var response = ElasticHttpClient.post(identity, "/" + index + "/_search", criteria.toJson());
         logger.trace("search index:{} response:[{}]", index, response.body());
         checkResponse(response);
@@ -108,7 +109,7 @@ public class ElasticController {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> void update(String identity, String index, String id, T document) {
+    public static <T> void update(String identity, String index, String id, T document) throws JsonProcessingException {
         Map<String, Object> docMap = JsonUtils.convert(document, Map.class);
         String json = JsonUtils.toJson(Map.of("doc", docMap));
         var response = ElasticHttpClient.post(identity, "/" + index + "/_update/" + id, json);
@@ -116,7 +117,7 @@ public class ElasticController {
         checkResponse(response);
     }
 
-    public static <T> void bulk(String identity, String index, List<BulkOperation<T>> operations) {
+    public static <T> void bulk(String identity, String index, List<BulkOperation<T>> operations) throws JsonProcessingException {
         List<String> actions = new ArrayList<>();
 
         for (BulkOperation<T> op : operations) {
