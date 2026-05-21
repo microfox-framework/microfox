@@ -80,6 +80,26 @@ public class MicroFox {
         ExceptionMapperHolder.remove(t);
     }
 
+    public static void cors(Map<CORSHeader, String> valueMap) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.filter("/*", (request, response, chain) -> {
+            valueMap.forEach((k, v) -> response.header(k.getValue(), v));
+            chain.doFilter(request, response);
+        });
+    }
+
+    public static void corsAccessAll() {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.filter("/*", (request, response, chain) -> {
+            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_ORIGIN.getValue(), "*");
+            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_HEADERS.getValue(), "POST,GET,PUT,DELETE,OPTIONS");
+            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_HEADERS.getValue(), "Content-Type, Authorization");
+            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_CREDENTIALS.getValue(), "true");
+            response.header(CORSHeader.ACCESS_CONTROL_MAX_AGE.getValue(), "86400");
+            chain.doFilter(request, response);
+        });
+    }
+
     public static void httpFilter(String path, Filter... filters) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.filter(path, filters);
