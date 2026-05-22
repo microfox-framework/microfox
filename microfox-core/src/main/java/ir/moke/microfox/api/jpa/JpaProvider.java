@@ -1,5 +1,7 @@
 package ir.moke.microfox.api.jpa;
 
+import jakarta.persistence.EntityManager;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -11,15 +13,13 @@ public interface JpaProvider {
 
     void unregister(String identity);
 
-    void jpa(String identity, TransactionPolicy policy, Integer txTimeout, Runnable runnable);
-
-    <T> T jpa(String identity, Class<T> repositoryClass);
-
-    <T> void jpa(String identity, Class<T> repositoryClass, TransactionPolicy policy, Integer txTimeout, Consumer<T> consumer);
-
     void jpaPrintCreateSchemaSQL(String identity);
 
     void jpaPrintUpdateSchemaSQL(String identity);
 
     void rollback(String identity);
+
+    void jpa(String identity, TransactionPolicy policy, Consumer<EntityManager> consumer);
+
+    void jpa(String identity, TransactionPolicy policy, Runnable consumer);
 }

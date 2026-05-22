@@ -1,8 +1,8 @@
 package ir.microfox.jpa.test;
 
 import ir.microfox.jpa.test.entity.Person;
-import ir.microfox.jpa.test.repository.PersonRepository;
 import ir.moke.microfox.api.jpa.TransactionPolicy;
+import ir.moke.microfox.jpa.OptionalRepository;
 
 import static ir.moke.microfox.MicroFox.jpa;
 
@@ -16,7 +16,7 @@ public class MultipleOperationTest {
         Person person = new Person("Mahdi", "Sheikh Hosseini");
 
         // Save single
-        jpa("h2", PersonRepository.class, TransactionPolicy.REQUIRED, repo -> repo.save(person));
+        jpa("h2", TransactionPolicy.REQUIRED, em -> em.persist(person));
 
         System.out.println("Person ID : " + person.getId());
 
@@ -25,11 +25,11 @@ public class MultipleOperationTest {
         person.setFamily("Zoheir");
 
         // Update and save new item
-        jpa("h2", PersonRepository.class, pr -> {
-            pr.update(person);
-            pr.save(new Person("zzz", "zzz"));
+        jpa("h2", em -> {
+            em.merge(person);
+            em.persist(new Person("zzz", "zzz"));
         });
 
-        System.out.println(jpa("h2", PersonRepository.class).find());
+        System.out.println(OptionalRepository.of("h2", Person.class).select());
     }
 }

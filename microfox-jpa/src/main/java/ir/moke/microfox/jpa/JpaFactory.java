@@ -11,8 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class JpaFactory {
@@ -101,11 +103,6 @@ public class JpaFactory {
 
     static MetadataSources getMetadataSources(String identity) {
         return METADATA_SOURCES_MAP.get(identity);
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T> T create(Class<T> repositoryInterface, String identity) {
-        return (T) Proxy.newProxyInstance(repositoryInterface.getClassLoader(), new Class<?>[]{repositoryInterface}, new RepositoryHandler(identity));
     }
 
     private static Object getMicroFoxValidationFactory() {

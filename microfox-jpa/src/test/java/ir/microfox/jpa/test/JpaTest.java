@@ -1,8 +1,8 @@
 package ir.microfox.jpa.test;
 
 import ir.microfox.jpa.test.entity.Person;
-import ir.microfox.jpa.test.repository.PersonRepository;
 import ir.moke.microfox.api.jpa.TransactionPolicy;
+import ir.moke.microfox.jpa.OptionalRepository;
 
 import java.util.List;
 
@@ -10,6 +10,8 @@ import static ir.moke.microfox.MicroFox.jpa;
 import static ir.moke.microfox.MicroFox.jpaTxRollback;
 
 public class JpaTest {
+    private static final OptionalRepository<Person> personRepository = OptionalRepository.of("h2", Person.class);
+
     static {
         DB.initializeH2();
 //        DB.initializePostgres();
@@ -18,11 +20,10 @@ public class JpaTest {
     static void main() {
 
         // Save single/batch
-        jpa("h2", PersonRepository.class, TransactionPolicy.REQUIRED, JpaTest::saveItems);
+        jpa("h2", TransactionPolicy.REQUIRED, JpaTest::saveItems);
 
         // Print size
-        PersonRepository personRepository = jpa("h2", PersonRepository.class);
-        List<Person> people = personRepository.find();
+        List<Person> people = personRepository.select();
         System.out.println("Person size: " + people.size());
 
         Person person1 = people.getFirst();
@@ -31,34 +32,31 @@ public class JpaTest {
         // Update
         person1.setName("Sina");
         person1.setFamily("Zoheir");
-        jpa("h2", PersonRepository.class, pr -> pr.update(person1));
+        personRepository.update(person1);
         System.out.println("Update person1: " + person1);
 
         // Delete item
         System.out.println("Delete person1 id: " + person1.getId());
-        jpa("h2", PersonRepository.class, pr -> pr.delete(person1));
+        personRepository.remove(person1);
 
         // Rollback TX
         System.out.println("Delete person2 than rollback tx id: " + person2.getId());
-        jpa("h2", PersonRepository.class, pr -> deletePerson2(pr, person2));
+        jpa("h2", () -> deletePerson2(person2));
 
         // Criteria Query
-        Long count = personRepository.count(null, null, null);
+        Long count = personRepository.count();
         System.out.println("Count : " + count);
 
-        boolean exists = personRepository.exists(null, null, null);
-        System.out.println("Exists : " + exists);
-
-        people = personRepository.find(null, null, null, 0, 100);
+        people = personRepository.select();
         people.forEach(System.out::println);
     }
 
-    private static void deletePerson2(PersonRepository pr, Person person1) {
-        pr.delete(person1);
+    private static void deletePerson2(Person person1) {
+        personRepository.remove(person1);
         jpaTxRollback("h2");
     }
 
-    private static void saveItems(PersonRepository personRepository) {
+    private static void saveItems() {
         Person person1 = new Person("Mahdi", "Sheikh Hosseini");
         Person person2 = new Person("Javad", "Alikhani");
         Person person3 = new Person("Ali", "Mohammadi");
@@ -66,7 +64,7 @@ public class JpaTest {
 
         personRepository.save(person1);
         personRepository.save(person2);
-        jpa("h2", PersonRepository.class, TransactionPolicy.REQUIRED_NEW, repo -> repo.save(person3));
-        jpa("h2", PersonRepository.class, TransactionPolicy.NOT_SUPPORTED, repo -> repo.save(person4));
+        jpa("h2", TransactionPolicy.REQUIRED_NEW, repo -> repo.persist(person3));
+        jpa("h2", TransactionPolicy.NOT_SUPPORTED, repo -> repo.persist(person4));
     }
 }

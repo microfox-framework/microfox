@@ -1,17 +1,17 @@
 package ir.microfox.jpa.test;
 
 import ir.microfox.jpa.test.entity.Person;
-import ir.microfox.jpa.test.repository.PersonRepository;
+import ir.moke.microfox.jpa.OptionalRepository;
 
 import static ir.moke.microfox.MicroFox.jpa;
 
 public class UniqueTest {
     static {
-//        DB.initializeH2();
-        DB.initializePostgres();
+        DB.initializeH2();
+//        DB.initializePostgres();
     }
 
-    private static final PersonRepository repo = jpa("h2", PersonRepository.class);
+    private static final OptionalRepository<Person> repo = OptionalRepository.of("h2", Person.class);
 
     static void main() {
         jpa("h2", UniqueTest::save);

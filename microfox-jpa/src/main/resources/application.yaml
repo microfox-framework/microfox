@@ -1,0 +1,4 @@
+# milliseconds
+microfox:
+  jpa:
+    transaction-timeout: 36000
