@@ -30,6 +30,6 @@ public class MultipleOperationTest {
             em.persist(new Person("zzz", "zzz"));
         });
 
-        System.out.println(OptionalRepository.of("h2", Person.class).select());
+        System.out.println(OptionalRepository.of("h2", Person.class).find());
     }
 }

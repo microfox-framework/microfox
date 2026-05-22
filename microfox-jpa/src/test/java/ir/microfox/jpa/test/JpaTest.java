@@ -23,7 +23,7 @@ public class JpaTest {
         jpa("h2", TransactionPolicy.REQUIRED, JpaTest::saveItems);
 
         // Print size
-        List<Person> people = personRepository.select();
+        List<Person> people = personRepository.find();
         System.out.println("Person size: " + people.size());
 
         Person person1 = people.getFirst();
@@ -47,7 +47,7 @@ public class JpaTest {
         Long count = personRepository.count();
         System.out.println("Count : " + count);
 
-        people = personRepository.select();
+        people = personRepository.find();
         people.forEach(System.out::println);
     }
 

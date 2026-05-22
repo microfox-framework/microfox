@@ -32,19 +32,19 @@ public class OptionalRepository<T> {
         Crud.delete(identity, primaryKey, entityClass);
     }
 
-    public T selectByPrimaryKey(Object primaryKey) {
+    public T findByPrimaryKey(Object primaryKey) {
         return Crud.select(identity, primaryKey, entityClass);
     }
 
-    public List<T> select(String hql, Map<String, String> parameters, Integer offset, Integer size) {
+    public List<T> find(String hql, Map<String, String> parameters, Integer offset, Integer size) {
         return Crud.select(identity, hql, parameters, entityClass, offset, size);
     }
 
-    public List<T> select(String hql, Map<String, String> parameters) {
+    public List<T> find(String hql, Map<String, String> parameters) {
         return Crud.select(identity, hql, parameters, entityClass);
     }
 
-    public List<T> select() {
+    public List<T> find() {
         String entityName = entityClass.getSimpleName();
         return Crud.select(identity, "from %s".formatted(entityName), null, entityClass, null, null);
     }
@@ -54,11 +54,11 @@ public class OptionalRepository<T> {
         return Crud.count(identity, "select count(1) from %s".formatted(entityName), null);
     }
 
-    public boolean exists(String hql, Map<String, String> parameters) {
-        return Crud.count(identity, hql, parameters) > 0;
-    }
-
     public Long count(String hql, Map<String, String> parameters) {
         return Crud.count(identity, hql, parameters);
+    }
+
+    public boolean exists(String hql, Map<String, String> parameters) {
+        return Crud.count(identity, hql, parameters) > 0;
     }
 }
