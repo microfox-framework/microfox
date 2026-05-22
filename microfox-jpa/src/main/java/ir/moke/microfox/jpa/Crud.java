@@ -22,7 +22,7 @@ public class Crud extends Jpa {
         persistence(identity, TransactionPolicy.REQUIRED, em -> em.merge(t));
     }
 
-    public static <T> List<T> select(String identity, String hql, Map<String, String> parameters, Class<T> entityClass, Integer offset, Integer size) {
+    public static <T> List<T> select(String identity, String hql, Map<String, Object> parameters, Class<T> entityClass, Integer offset, Integer size) {
         Objects.requireNonNull(identity, "JPA hql could not be null");
         Objects.requireNonNull(entityClass, "JPA entity class could not be null");
 
@@ -38,7 +38,7 @@ public class Crud extends Jpa {
         return result;
     }
 
-    public static <T> Long count(String identity, String hql, Map<String, String> parameters) {
+    public static <T> Long count(String identity, String hql, Map<String, Object> parameters) {
         Objects.requireNonNull(identity, "JPA hql could not be null");
 
         AtomicLong countRef = new AtomicLong();
@@ -52,7 +52,7 @@ public class Crud extends Jpa {
         return countRef.get();
     }
 
-    public static <T> List<T> select(String identity, String hql, Map<String, String> parameters, Class<T> entityClass) {
+    public static <T> List<T> select(String identity, String hql, Map<String, Object> parameters, Class<T> entityClass) {
         Objects.requireNonNull(identity, "JPA hql could not be null");
         Objects.requireNonNull(entityClass, "JPA entity class could not be null");
 

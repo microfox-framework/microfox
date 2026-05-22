@@ -36,11 +36,11 @@ public class OptionalRepository<T> {
         return Crud.select(identity, primaryKey, entityClass);
     }
 
-    public List<T> find(String hql, Map<String, String> parameters, Integer offset, Integer size) {
+    public List<T> find(String hql, Map<String, Object> parameters, Integer offset, Integer size) {
         return Crud.select(identity, hql, parameters, entityClass, offset, size);
     }
 
-    public List<T> find(String hql, Map<String, String> parameters) {
+    public List<T> find(String hql, Map<String, Object> parameters) {
         return Crud.select(identity, hql, parameters, entityClass);
     }
 
@@ -54,11 +54,11 @@ public class OptionalRepository<T> {
         return Crud.count(identity, "select count(1) from %s".formatted(entityName), null);
     }
 
-    public Long count(String hql, Map<String, String> parameters) {
+    public Long count(String hql, Map<String, Object> parameters) {
         return Crud.count(identity, hql, parameters);
     }
 
-    public boolean exists(String hql, Map<String, String> parameters) {
+    public boolean exists(String hql, Map<String, Object> parameters) {
         return Crud.count(identity, hql, parameters) > 0;
     }
 }
