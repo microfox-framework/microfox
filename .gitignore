@@ -40,3 +40,4 @@ nb-configuration.xml
 *.log
 tomcat*
 microfox-jdk/
+**/*/lib/
