@@ -22,7 +22,7 @@ import static ir.moke.microfox.MicroFox.jmsProducer;
  * podman run -d --name ibm-mq -e LICENSE=accept -e MQ_QMGR_NAME=QM1 -e MQ_APP_USER=app -e MQ_APP_PASSWORD=adminpass -e MQ_ADMIN_USER=admin -e MQ_ADMIN_PASSWORD=adminpass -p 1414:1414 -p 9443:9443 icr.io/ibm-messaging/mq:latest
  * </p>
  */
-public class IbmMqTest {
+public class IbmMQTest {
     private static final String IDENTITY = "ibm-mq";
     private static final String APPLICATION_NAME = "microfox-ibm-mq";
     private static final String CHANNEL_NAME = "DEV.ADMIN.SVRCONN";

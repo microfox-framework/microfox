@@ -45,6 +45,11 @@
             <artifactId>rabbitmq-jms</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-client</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
