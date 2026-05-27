@@ -26,9 +26,10 @@ public class KafkaConsumerTest {
         Map<String, Object> configs = new HashMap<>();
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "%s:%s".formatted(HOST, PORT));
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, "G1");
+        configs.put(ConsumerConfig.CLIENT_ID_CONFIG, "consumer-client");
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        KafkaConsumerFactory.register(IDENTITY, configs);
+        KafkaConsumerFactory.register(configs);
     }
 
     static void main() {

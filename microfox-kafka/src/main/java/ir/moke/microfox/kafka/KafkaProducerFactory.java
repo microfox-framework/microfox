@@ -7,40 +7,44 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 
 import java.lang.reflect.Proxy;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.apache.kafka.clients.producer.ProducerConfig.TRANSACTIONAL_ID_CONFIG;
 
 public class KafkaProducerFactory {
     private static final Map<String, KafkaProducer<?, ?>> PRODUCERS = new HashMap<>();
-    private static final List<Properties> CONFIGS = new ArrayList<>();
+    private static final List<Map<String, Object>> CONFIGS = new ArrayList<>();
 
-    public static <K, V> void register(Properties properties) {
-        String clientID = properties.getProperty(ProducerConfig.CLIENT_ID_CONFIG);
-        boolean alreadyExists = isAlreadyExists(clientID);
+    public static <K, V> void register(Map<String, Object> configs) {
+        Object clientID = configs.get(ProducerConfig.CLIENT_ID_CONFIG);
+        if (clientID == null) throw new MicroFoxException("CLIENT_ID_CONFIG could not be null");
+        boolean alreadyExists = isAlreadyExists(String.valueOf(clientID));
         if (alreadyExists) {
             throw new MicroFoxException("Producer %s already registered".formatted(clientID));
         }
-        CONFIGS.add(properties);
+        CONFIGS.add(configs);
     }
 
     @SuppressWarnings("unchecked")
     public static <K, V> KafkaProducer<K, V> get(String clientId) {
-        Properties props = getProperties(clientId);
+        Map<String, Object> configs = getProperties(clientId);
 
         return (KafkaProducer<K, V>) PRODUCERS.computeIfAbsent(clientId, e -> {
-            KafkaProducer<K, V> p = new KafkaProducer<>(props);
-            if (props.containsKey(TRANSACTIONAL_ID_CONFIG)) p.initTransactions();
+            KafkaProducer<K, V> p = new KafkaProducer<>(configs);
+            if (configs.containsKey(TRANSACTIONAL_ID_CONFIG)) p.initTransactions();
             return p;
         });
     }
 
     public static <K, V> void close(String clientId, Duration timeout) {
-        Properties properties = getProperties(clientId);
+        Map<String, Object> configs = getProperties(clientId);
         KafkaProducer<K, V> producer = get(clientId);
         if (timeout != null) producer.close(timeout);
         else producer.close();
-        CONFIGS.remove(properties);
+        CONFIGS.remove(configs);
     }
 
     @SuppressWarnings("unchecked")
@@ -54,18 +58,15 @@ public class KafkaProducerFactory {
 
     private static boolean isAlreadyExists(String clientID) {
         return CONFIGS.stream()
-                .map(item -> item.getProperty(ProducerConfig.CLIENT_ID_CONFIG))
+                .map(item -> item.get(ProducerConfig.CLIENT_ID_CONFIG))
+                .map(String::valueOf)
                 .anyMatch(item -> item.equalsIgnoreCase(clientID));
     }
 
-    private static Properties getProperties(String clientId) {
-        Properties props = CONFIGS.stream()
-                .filter(item -> item.getProperty(ProducerConfig.CLIENT_ID_CONFIG).equals(clientId))
+    private static Map<String, Object> getProperties(String clientId) {
+        return CONFIGS.stream()
+                .filter(item -> item.get(ProducerConfig.CLIENT_ID_CONFIG).equals(clientId))
                 .findFirst()
-                .orElse(null);
-        if (props == null) {
-            throw new MicroFoxException("No Kafka producer for clientId: " + clientId);
-        }
-        return props;
+                .orElseThrow(() -> new MicroFoxException("No kafka producer for clientId: " + clientId));
     }
 }
