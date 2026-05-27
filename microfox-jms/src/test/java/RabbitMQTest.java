@@ -10,7 +10,6 @@ import jakarta.jms.JMSProducer;
 import jakarta.jms.Queue;
 import jakarta.jms.TextMessage;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Locale;
 
@@ -59,11 +58,13 @@ public class RabbitMQTest {
     public static void registerRabbitMQConnectionFactory() {
         try {
             RMQConnectionFactory connectionFactory = new RMQConnectionFactory();
-            connectionFactory.setHost(HOST);
-            connectionFactory.setPort(PORT);
-            connectionFactory.setUsername(USERNAME);
-            connectionFactory.setPassword(PASSWORD);
-            connectionFactory.setVirtualHost(VIRTUAL_HOST);
+            connectionFactory.setAmqpConnectionFactoryPostProcessor(factory -> {
+                factory.setHost(HOST);
+                factory.setPort(PORT);
+                factory.setUsername(USERNAME);
+                factory.setPassword(PASSWORD);
+                factory.setVirtualHost(VIRTUAL_HOST);
+            });
             JmsFactory.register(IDENTITY, connectionFactory);
         } catch (Exception e) {
             throw new MicroFoxException(e);
