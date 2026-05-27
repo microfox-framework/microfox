@@ -14,10 +14,10 @@ import java.util.function.BiConsumer;
 
 public class KafkaStreamHandler implements InvocationHandler {
     private static final Logger logger = LoggerFactory.getLogger(KafkaStreamHandler.class);
-    private final String identity;
+    private final String clientId;
 
-    public KafkaStreamHandler(String identity) {
-        this.identity = identity;
+    public KafkaStreamHandler(String clientId) {
+        this.clientId = clientId;
     }
 
     @SuppressWarnings("unchecked")
@@ -33,7 +33,7 @@ public class KafkaStreamHandler implements InvocationHandler {
         if (name.equals("equals") && method.getParameterCount() == 1)
             return proxy == args[0];
 
-        KafkaStreams streams = KafkaStreamFactory.get(identity);
+        KafkaStreams streams = KafkaStreamFactory.get(clientId);
 
         switch (name) {
             case "start" -> streams.start();
@@ -61,13 +61,13 @@ public class KafkaStreamHandler implements InvocationHandler {
     @SuppressWarnings("unchecked")
     private void removeStateListener(Object[] args) {
         BiConsumer<KafkaStreamState, KafkaStreamState> listener = (BiConsumer<KafkaStreamState, KafkaStreamState>) args[0];
-        KafkaStreamFactory.removeStateListener(identity, listener);
+        KafkaStreamFactory.removeStateListener(clientId, listener);
     }
 
     @SuppressWarnings("unchecked")
     private void addStateListener(Object[] args) {
         BiConsumer<KafkaStreamState, KafkaStreamState> listener = (BiConsumer<KafkaStreamState, KafkaStreamState>) args[0];
-        KafkaStreamFactory.addStateListener(identity, listener);
+        KafkaStreamFactory.addStateListener(clientId, listener);
     }
 
     private static void close(Object[] args, KafkaStreams streams) {
@@ -80,16 +80,16 @@ public class KafkaStreamHandler implements InvocationHandler {
 
     private void restart() {
         Logger log = LoggerFactory.getLogger(KafkaStreamHandler.class);
-        log.info("Restarting KafkaStreams for identity: {}", identity);
-        KafkaStreams old = KafkaStreamFactory.get(identity);
+        log.info("Restarting KafkaStreams for clientId: {}", clientId);
+        KafkaStreams old = KafkaStreamFactory.get(clientId);
         try {
             old.close();
         } catch (Exception e) {
             log.warn("Exception while closing old streams", e);
         }
         // build a fresh instance
-        KafkaStreams streams = KafkaStreamFactory.buildStreams(identity);
-        KafkaStreamFactory.replaceStreams(identity, streams);
+        KafkaStreams streams = KafkaStreamFactory.buildStreams(clientId);
+        KafkaStreamFactory.replaceStreams(clientId, streams);
         streams.start();
     }
 }

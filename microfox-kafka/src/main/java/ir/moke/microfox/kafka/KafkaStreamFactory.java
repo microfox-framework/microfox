@@ -3,12 +3,14 @@ package ir.moke.microfox.kafka;
 import ir.moke.microfox.api.kafka.KafkaStreamController;
 import ir.moke.microfox.api.kafka.KafkaStreamState;
 import ir.moke.microfox.exception.MicroFoxException;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.Topology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -19,7 +21,7 @@ import java.util.function.BiConsumer;
 public class KafkaStreamFactory {
     private static final Logger logger = LoggerFactory.getLogger(KafkaStreamFactory.class);
     private static final Map<String, Topology> TOPOLOGY_MAP = new ConcurrentHashMap<>();
-    private static final Map<String, Properties> PROP_MAP = new ConcurrentHashMap<>();
+    private static final List<Map<String, Object>> CONFIGS = new ArrayList<>();
     private static final Map<String, KafkaStreams> STREAMS_MAP = new ConcurrentHashMap<>();
     private static final Map<String, CopyOnWriteArrayList<BiConsumer<KafkaStreamState, KafkaStreamState>>> LISTENERS = new ConcurrentHashMap<>();
 
@@ -27,26 +29,27 @@ public class KafkaStreamFactory {
         shutdownHook();
     }
 
-    public static void register(String identity, Topology topology, Properties props) {
-        if (TOPOLOGY_MAP.containsKey(identity)) {
-            throw new MicroFoxException("Stream %s already registered".formatted(identity));
+    public static void register(String clientId, Topology topology, Map<String, Object> configs) {
+        if (TOPOLOGY_MAP.containsKey(clientId)) {
+            throw new MicroFoxException("Stream %s already registered".formatted(clientId));
         }
-        TOPOLOGY_MAP.put(identity, topology);
-        PROP_MAP.put(identity, props);
-        LISTENERS.put(identity, new CopyOnWriteArrayList<>());
-        STREAMS_MAP.put(identity, buildStreams(identity));
+        TOPOLOGY_MAP.put(clientId, topology);
+        CONFIGS.add(configs);
+        LISTENERS.put(clientId, new CopyOnWriteArrayList<>());
+        STREAMS_MAP.put(clientId, buildStreams(clientId));
     }
 
-    static KafkaStreams buildStreams(String identity) {
-        Topology topology = TOPOLOGY_MAP.get(identity);
-        Properties props = PROP_MAP.get(identity);
-        if (topology == null || props == null) throw new MicroFoxException("No topology/props for: " + identity);
+    static KafkaStreams buildStreams(String clientId) {
+        Topology topology = TOPOLOGY_MAP.get(clientId);
+        Map<String, Object> configs = getProperties(clientId);
 
-        KafkaStreams streams = new KafkaStreams(topology, props);
+        Properties properties = new Properties();
+        properties.putAll(configs);
+        KafkaStreams streams = new KafkaStreams(topology, properties);
 
         // register internal state listener that delegates to registered listeners
         streams.setStateListener((newState, oldState) -> {
-            List<BiConsumer<KafkaStreamState, KafkaStreamState>> l = LISTENERS.get(identity);
+            List<BiConsumer<KafkaStreamState, KafkaStreamState>> l = LISTENERS.get(clientId);
             if (l != null) {
                 for (BiConsumer<KafkaStreamState, KafkaStreamState> c : l) {
                     try {
@@ -62,34 +65,30 @@ public class KafkaStreamFactory {
         return streams;
     }
 
-    public static KafkaStreams get(String identity) {
-        KafkaStreams streams = STREAMS_MAP.get(identity);
-        if (streams == null) throw new MicroFoxException("No KafkaStreams for identity: " + identity);
+    public static KafkaStreams get(String clientId) {
+        KafkaStreams streams = STREAMS_MAP.get(clientId);
+        if (streams == null) throw new MicroFoxException("No KafkaStreams for clientId: " + clientId);
         return streams;
     }
 
-    static void replaceStreams(String identity, KafkaStreams streams) {
-        STREAMS_MAP.put(identity, streams);
+    static void replaceStreams(String clientId, KafkaStreams streams) {
+        STREAMS_MAP.put(clientId, streams);
     }
 
-    public static void addStateListener(String identity, BiConsumer<KafkaStreamState, KafkaStreamState> listener) {
-        LISTENERS.get(identity).add(listener);
+    public static void addStateListener(String clientId, BiConsumer<KafkaStreamState, KafkaStreamState> listener) {
+        LISTENERS.get(clientId).add(listener);
     }
 
-    public static void removeStateListener(String identity, BiConsumer<KafkaStreamState, KafkaStreamState> listener) {
-        LISTENERS.get(identity).remove(listener);
+    public static void removeStateListener(String clientId, BiConsumer<KafkaStreamState, KafkaStreamState> listener) {
+        LISTENERS.get(clientId).remove(listener);
     }
 
-    public static Topology getTopology(String identity) {
-        return TOPOLOGY_MAP.get(identity);
+    public static Topology getTopology(String clientId) {
+        return TOPOLOGY_MAP.get(clientId);
     }
 
-    public static Properties getProps(String identity) {
-        return PROP_MAP.get(identity);
-    }
-
-    public static void close(String identity) {
-        KafkaStreams kafkaStreams = STREAMS_MAP.remove(identity);
+    public static void close(String clientId) {
+        KafkaStreams kafkaStreams = STREAMS_MAP.remove(clientId);
         if (kafkaStreams != null) {
             kafkaStreams.close();
             kafkaStreams.cleanUp();
@@ -100,15 +99,29 @@ public class KafkaStreamFactory {
         STREAMS_MAP.keySet().forEach(KafkaStreamFactory::close);
     }
 
-    public static KafkaStreamController createProxyInstance(String identity) {
+    public static KafkaStreamController createProxyInstance(String clientId) {
         return (KafkaStreamController) Proxy.newProxyInstance(
                 KafkaStreamController.class.getClassLoader(),
                 new Class<?>[]{KafkaStreamController.class},
-                new KafkaStreamHandler(identity)
+                new KafkaStreamHandler(clientId)
         );
     }
 
     public static void shutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(KafkaStreamFactory::closeAll, "kafka-consumer-shutdown"));
+    }
+
+    private static boolean isAlreadyExists(String clientID) {
+        return CONFIGS.stream()
+                .map(item -> item.get(ProducerConfig.CLIENT_ID_CONFIG))
+                .map(String::valueOf)
+                .anyMatch(item -> item.equalsIgnoreCase(clientID));
+    }
+
+    private static Map<String, Object> getProperties(String clientId) {
+        return CONFIGS.stream()
+                .filter(item -> item.get(ProducerConfig.CLIENT_ID_CONFIG).equals(clientId))
+                .findFirst()
+                .orElseThrow(() -> new MicroFoxException("No topology/props for: " + clientId));
     }
 }

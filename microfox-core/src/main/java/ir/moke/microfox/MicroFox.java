@@ -351,19 +351,19 @@ public class MicroFox {
         jmsProvider.stop(identity);
     }
 
-    public static <K, V> void kafkaProducer(String identity, Consumer<KafkaProducerController<K, V>> consumer) {
+    public static <K, V> void kafkaProducer(String clientId, Consumer<KafkaProducerController<K, V>> consumer) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
-        kafkaProvider.produce(identity, consumer);
+        kafkaProvider.produce(clientId, consumer);
     }
 
-    public static <K, V> void kafkaConsumer(String identity, Consumer<KafkaConsumerController<K, V>> consumer) {
+    public static <K, V> void kafkaConsumer(String clientId, Consumer<KafkaConsumerController<K, V>> consumer) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
-        kafkaProvider.consumer(identity, consumer);
+        kafkaProvider.consumer(clientId, consumer);
     }
 
-    public static <K, V> void kafkaStream(String identity, Consumer<KafkaStreamController> consumer) {
+    public static <K, V> void kafkaStream(String clientId, Consumer<KafkaStreamController> consumer) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
-        kafkaProvider.stream(identity, consumer);
+        kafkaProvider.stream(clientId, consumer);
     }
 
     public static <T> ElasticRepository<T> elastic(String identity, Class<T> entityClass) {
