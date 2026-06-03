@@ -31,14 +31,6 @@
         <url>https://github.com/microfox-framework</url>
     </scm>
 
-    <repositories>
-        <repository>
-            <id>confluent</id>
-            <name>Confluent</name>
-            <url>https://packages.confluent.io/maven/</url>
-        </repository>
-    </repositories>
-
     <modules>
         <module>microfox-pom</module>
         <module>microfox-core</module>
