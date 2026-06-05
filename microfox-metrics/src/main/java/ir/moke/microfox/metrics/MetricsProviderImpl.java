@@ -14,7 +14,7 @@ public class MetricsProviderImpl implements MetricsProvider, TtyAsciiCodecs {
     @Override
     public void registerMetrics() {
         /* Metrics */
-        logger.info("{}{}{}", BACKGROUND_BLUE, "Metrics Activated", RESET);
+        logger.info("{}{}{}{}", "Metrics Activated", BACKGROUND_BLUE, "/metrics", RESET);
         HttpContainer.addFilter(MetricFilter.class, "/*");
         HttpContainer.addServlet(MetricServlet.class, "/metrics");
     }
