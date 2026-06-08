@@ -1,14 +1,15 @@
 package ir.moke.microfox.metrics.filter;
 
-import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
+import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.metrics.Metrics;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MetricFilter implements Filter {
     @Override
@@ -19,25 +20,26 @@ public class MetricFilter implements Filter {
         String path = req.getRequestURI();
         String metricBase = method + "_" + path.replace("/", "_");
 
-        Timer.Sample sample = Timer.start(Metrics.getRegistry());
         String exceptionName = "None";
+        Timer.Sample sample = Timer.start(Metrics.registry());
         try {
             filterChain.doFilter(req, resp);
         } catch (Exception e) {
             exceptionName = e.getClass().getSimpleName();
+            throw e;
         } finally {
             int status = resp.getStatus();
             String outcome = getOutcomeFromStatus(status);
-            List<Tag> tags = List.of(
-                    Tag.of("method", method),
-                    Tag.of("uri", normalizeUri(path)),
-                    Tag.of("status", String.valueOf(status)),
-                    Tag.of("exception", exceptionName),
-                    Tag.of("outcome", outcome)
-            );
 
-            sample.stop(Metrics.timer(metricBase + "_latency", tags));
-            Metrics.counter(metricBase + "_count", tags).increment();
+            Map<String, String> tags = new HashMap<>();
+            tags.put("method", method);
+            tags.put("uri", normalizeUri(path));
+            tags.put("status", String.valueOf(status));
+            tags.put("outcome", outcome);
+            tags.put("exception", exceptionName);
+
+            sample.stop(Metrics.timer(metricBase, tags));
+            MicroFox.metricCounter(metricBase + "_count", tags);
         }
     }
 

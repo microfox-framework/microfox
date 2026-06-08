@@ -17,11 +17,11 @@ public class MetricServlet extends HttpServlet {
         ContentType contentType = Optional.ofNullable(ContentType.fromValue(accept)).orElse(ContentType.TEXT_PLAIN);
         if (contentType.equals(ContentType.TEXT_PLAIN)) {
             resp.setContentType(ContentType.TEXT_PLAIN.getType());
-            String scrape = Metrics.getRegistry().scrape();
+            String scrape = Metrics.registry().scrape();
             resp.getOutputStream().write(scrape.getBytes());
         } else if (contentType.equals(ContentType.APPLICATION_OPENMETRICS_TEXT)) {
             resp.setContentType(ContentType.APPLICATION_OPENMETRICS_TEXT.getType());
-            String scrape = Metrics.getRegistry().scrape(ContentType.APPLICATION_OPENMETRICS_TEXT.getType());
+            String scrape = Metrics.registry().scrape(ContentType.APPLICATION_OPENMETRICS_TEXT.getType());
             resp.getOutputStream().write(scrape.getBytes());
         }
     }

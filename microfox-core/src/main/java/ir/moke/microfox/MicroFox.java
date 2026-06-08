@@ -66,7 +66,6 @@ public class MicroFox {
         Optional.ofNullable(systemProvider).ifPresent(SystemProvider::activate);
         Optional.ofNullable(healthCheckProvider).ifPresent(HealthCheckProvider::activate);
         Optional.ofNullable(openApiProvider).ifPresent(OpenApiProvider::registerOpenAPI);
-        Optional.ofNullable(metricsProvider).ifPresent(MetricsProvider::registerMetrics);
     }
 
     public static void logger(LogModel log) {
@@ -408,5 +407,25 @@ public class MicroFox {
     public static void groovyParse(File file, ClassLoader parentClassLoader, Consumer<Class<?>> classConsumer) {
         if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
         groovyProvider.parse(file, parentClassLoader, classConsumer);
+    }
+
+    public static void metricGauge(String name, double value) {
+        if (metricsProvider == null) throw new UnsupportedOperationException("Metrics support not available");
+        metricsProvider.gauge(name, value);
+    }
+
+    public static void metricGauge(String name, Map<String, String> tags, double value) {
+        if (metricsProvider == null) throw new UnsupportedOperationException("Metrics support not available");
+        metricsProvider.gauge(name, tags, value);
+    }
+
+    public static void metricTimer(String name, Map<String, String> tags, Runnable runnable) {
+        if (metricsProvider == null) throw new UnsupportedOperationException("Metrics support not available");
+        metricsProvider.timer(name, tags, runnable);
+    }
+
+    public static void metricCounter(String name, Map<String, String> tags) {
+        if (metricsProvider == null) throw new UnsupportedOperationException("Metrics support not available");
+        metricsProvider.counter(name, tags);
     }
 }
