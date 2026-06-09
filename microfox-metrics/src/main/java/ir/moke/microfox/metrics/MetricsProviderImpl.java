@@ -1,10 +1,9 @@
 package ir.moke.microfox.metrics;
 
 import io.micrometer.core.instrument.Timer;
+import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.metrics.MetricsProvider;
-import ir.moke.microfox.http.HttpContainer;
-import ir.moke.microfox.metrics.filter.MetricFilter;
-import ir.moke.microfox.metrics.servlet.MetricServlet;
 import ir.moke.utils.TtyAsciiCodecs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +16,8 @@ public class MetricsProviderImpl implements MetricsProvider, TtyAsciiCodecs {
     static {
         /* Metrics */
         logger.info("{}{}{}{}", "Metrics Activated", BACKGROUND_BLUE, "/metrics", RESET);
-        HttpContainer.addFilter(MetricFilter.class, "/*");
-        HttpContainer.addServlet(MetricServlet.class, "/metrics");
+        MicroFox.httpFilter("/*", MetricHttp::handleFilter);
+        MicroFox.httpRouter("/metrics", HttpMethod.GET, MetricHttp::handleRouter);
     }
 
     @Override

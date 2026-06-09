@@ -65,6 +65,10 @@ public class ResponseHelper {
         }
     }
 
+    public static int status(HttpServletResponse response) {
+        return response.getStatus();
+    }
+
     public static void contentLength(int length, HttpServletResponse response) {
         response.setContentLength(length);
     }

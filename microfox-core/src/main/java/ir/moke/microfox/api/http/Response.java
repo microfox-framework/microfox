@@ -4,7 +4,6 @@ import ir.moke.microfox.api.http.sse.SseObject;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 
-import java.io.OutputStream;
 import java.time.Instant;
 import java.util.Date;
 
@@ -18,7 +17,10 @@ public interface Response {
     void contentType(ContentType contentType);
 
     void status(int status);
+
     void status(StatusCode code);
+
+    int status();
 
     void contentLength(int length);
 
@@ -40,5 +42,5 @@ public interface Response {
 
     void flushBuffer();
 
-    ServletOutputStream outputStream() ;
+    ServletOutputStream outputStream();
 }
