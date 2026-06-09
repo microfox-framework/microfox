@@ -16,11 +16,11 @@ public class MetricHttp {
         if (contentType.equals(ContentType.TEXT_PLAIN)) {
             response.contentType(ContentType.TEXT_PLAIN);
             String scrape = Metrics.registry().scrape();
-            response.body(scrape.getBytes());
+            response.body(scrape);
         } else if (contentType.equals(ContentType.APPLICATION_OPENMETRICS_TEXT)) {
             response.contentType(ContentType.APPLICATION_OPENMETRICS_TEXT);
             String scrape = Metrics.registry().scrape(ContentType.APPLICATION_OPENMETRICS_TEXT.getType());
-            response.body(scrape.getBytes());
+            response.body(scrape);
         }
     }
 
