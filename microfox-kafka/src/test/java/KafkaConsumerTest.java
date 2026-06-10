@@ -24,12 +24,12 @@ public class KafkaConsumerTest {
 
     private static void initializeConsumer() {
         Map<String, Object> configs = new HashMap<>();
-        configs.put(ConsumerConfig.CLIENT_ID_CONFIG, IDENTITY);
+        configs.put(ConsumerConfig.CLIENT_ID_CONFIG, "sample-cid");
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "%s:%s".formatted(HOST, PORT));
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, "G1");
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        KafkaConsumerFactory.register(configs);
+        KafkaConsumerFactory.register(IDENTITY, configs);
     }
 
     static void main() {

@@ -19,11 +19,11 @@ public class KafkaProducerTest {
 
     private static void initializeProducer() {
         Map<String, Object> configs = new HashMap<>();
-        configs.put(ProducerConfig.CLIENT_ID_CONFIG, IDENTITY);
+        configs.put(ProducerConfig.CLIENT_ID_CONFIG, "sample-cid");
         configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "%s:%s".formatted(HOST, PORT));
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        KafkaProducerFactory.register(configs);
+        KafkaProducerFactory.register(IDENTITY, configs);
     }
 
     static void main() {

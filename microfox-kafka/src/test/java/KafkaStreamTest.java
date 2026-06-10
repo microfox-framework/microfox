@@ -27,7 +27,7 @@ public class KafkaStreamTest {
         Topology topology = builder.build();
 
         Map<String, Object> configs = new HashMap<>();
-        configs.put(StreamsConfig.CLIENT_ID_CONFIG, IDENTITY);
+        configs.put(StreamsConfig.CLIENT_ID_CONFIG, "sample-cid");
         configs.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-app-advanced");
         configs.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "%s:%s".formatted(HOST, PORT));
         configs.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());

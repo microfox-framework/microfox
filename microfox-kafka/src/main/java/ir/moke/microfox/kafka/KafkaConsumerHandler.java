@@ -24,11 +24,11 @@ import java.util.concurrent.TimeUnit;
 public class KafkaConsumerHandler implements InvocationHandler {
     private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerHandler.class);
     private static final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
-    private final String clientId;
+    private final String identity;
     private ScheduledFuture<?> task;
 
-    public KafkaConsumerHandler(String clientId) {
-        this.clientId = clientId;
+    public KafkaConsumerHandler(String identity) {
+        this.identity = identity;
     }
 
     @Override
@@ -56,12 +56,12 @@ public class KafkaConsumerHandler implements InvocationHandler {
     }
 
     private <K, V> void commitSync() {
-        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(clientId);
+        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(identity);
         consumer.commitSync();
     }
 
     private <K, V> void commitAsync() {
-        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(clientId);
+        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(identity);
         consumer.commitAsync();
     }
 
@@ -71,23 +71,23 @@ public class KafkaConsumerHandler implements InvocationHandler {
 
     private <K, V> void invokeClose() {
         if (task != null) task.cancel(true);
-        KafkaConsumerFactory.close(clientId, null);
+        KafkaConsumerFactory.close(identity, null);
         if (!ses.isShutdown()) ses.shutdown();
     }
 
     private <K, V> void invokeResume() {
-        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(clientId);
+        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(identity);
         consumer.resume(consumer.paused());
     }
 
     private <K, V> void invokePause() {
-        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(clientId);
+        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(identity);
         consumer.pause(consumer.assignment());
     }
 
     @SuppressWarnings("unchecked")
     private <K, V> void invokeListen(Object[] args) {
-        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(clientId);
+        KafkaConsumer<K, V> consumer = KafkaConsumerFactory.get(identity);
         Collection<String> topics = (Collection<String>) args[0];
         KafkaListener<K, V> listener = (KafkaListener<K, V>) args[1];
         consumer.subscribe(topics);

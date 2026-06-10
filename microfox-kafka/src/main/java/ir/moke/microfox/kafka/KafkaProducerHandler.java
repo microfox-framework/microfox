@@ -19,10 +19,10 @@ import java.util.Map;
 public class KafkaProducerHandler implements InvocationHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaProducerHandler.class);
-    private final String clientId;
+    private final String identity;
 
-    public KafkaProducerHandler(String clientId) {
-        this.clientId = clientId;
+    public KafkaProducerHandler(String identity) {
+        this.identity = identity;
     }
 
     @Override
@@ -55,28 +55,28 @@ public class KafkaProducerHandler implements InvocationHandler {
     }
 
     private <K, V> void invokeTxFlush() {
-        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(clientId);
+        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
         kafkaProducer.flush();
     }
 
     private <K, V> void invokeTxAbort() {
-        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(clientId);
+        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
         kafkaProducer.abortTransaction();
     }
 
     private <K, V> void invokeTxCommit() {
-        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(clientId);
+        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
         kafkaProducer.commitTransaction();
     }
 
     private <K, V> void invokeTxBegin() {
-        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(clientId);
+        KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity);
         kafkaProducer.beginTransaction();
     }
 
     private <K, V> void invokeClose(Object[] args) {
         Duration timeout = (args != null && args.length == 1 && args[0] instanceof Duration) ? (Duration) args[0] : null;
-        KafkaProducerFactory.close(clientId, timeout);
+        KafkaProducerFactory.close(identity, timeout);
     }
 
     @SuppressWarnings("unchecked")
@@ -95,7 +95,7 @@ public class KafkaProducerHandler implements InvocationHandler {
         Headers headers = new RecordHeaders();
         if (map != null) map.keySet().forEach(item -> headers.add(new RecordHeader(item, map.get(item))));
 
-        try (KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(clientId)) {
+        try (KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity)) {
             ProducerRecord<K, V> record = new ProducerRecord<>(topic, partition, timestamp, key, value, headers);
             kafkaProducer.send(record);
             kafkaProducer.flush();
@@ -121,7 +121,7 @@ public class KafkaProducerHandler implements InvocationHandler {
         Headers headers = new RecordHeaders();
         if (map != null) map.keySet().forEach(item -> headers.add(new RecordHeader(item, map.get(item))));
 
-        try (KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(clientId)) {
+        try (KafkaProducer<K, V> kafkaProducer = KafkaProducerFactory.get(identity)) {
             for (int i = 0; i < values.size(); i++) {
                 V value = values.get(i);
                 K key = keys != null ? keys.get(i) : null;

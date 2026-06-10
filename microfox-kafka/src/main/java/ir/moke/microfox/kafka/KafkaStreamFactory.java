@@ -3,14 +3,13 @@ package ir.moke.microfox.kafka;
 import ir.moke.microfox.api.kafka.KafkaStreamController;
 import ir.moke.microfox.api.kafka.KafkaStreamState;
 import ir.moke.microfox.exception.MicroFoxException;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.Topology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -20,8 +19,8 @@ import java.util.function.BiConsumer;
 
 public class KafkaStreamFactory {
     private static final Logger logger = LoggerFactory.getLogger(KafkaStreamFactory.class);
-    private static final Map<String, Topology> TOPOLOGY_MAP = new ConcurrentHashMap<>();
-    private static final List<Map<String, Object>> CONFIGS = new ArrayList<>();
+    private static final Map<String, Topology> TOPOLOGY_MAP = new HashMap<>();
+    private static final Map<String, Map<String, Object>> CONFIGS = new HashMap<>();
     private static final Map<String, KafkaStreams> STREAMS_MAP = new ConcurrentHashMap<>();
     private static final Map<String, CopyOnWriteArrayList<BiConsumer<KafkaStreamState, KafkaStreamState>>> LISTENERS = new ConcurrentHashMap<>();
 
@@ -29,19 +28,25 @@ public class KafkaStreamFactory {
         shutdownHook();
     }
 
-    public static void register(String clientId, Topology topology, Map<String, Object> configs) {
-        if (TOPOLOGY_MAP.containsKey(clientId)) {
-            throw new MicroFoxException("Stream %s already registered".formatted(clientId));
-        }
-        TOPOLOGY_MAP.put(clientId, topology);
-        CONFIGS.add(configs);
-        LISTENERS.put(clientId, new CopyOnWriteArrayList<>());
-        STREAMS_MAP.put(clientId, buildStreams(clientId));
+    public static void register(String identity, Topology topology, Map<String, Object> configs) {
+        if (identity == null)
+            throw new MicroFoxException("identity could not be null");
+        if (topology == null)
+            throw new MicroFoxException("topology could not be null");
+        if (configs == null)
+            throw new MicroFoxException("config map could not be null");
+        if (isAlreadyExists(identity))
+            throw new MicroFoxException("Stream %s already registered".formatted(identity));
+
+        TOPOLOGY_MAP.put(identity, topology);
+        CONFIGS.put(identity, configs);
+        LISTENERS.put(identity, new CopyOnWriteArrayList<>());
+        STREAMS_MAP.put(identity, buildStreams(identity));
     }
 
-    static KafkaStreams buildStreams(String clientId) {
-        Topology topology = TOPOLOGY_MAP.get(clientId);
-        Map<String, Object> configs = getProperties(clientId);
+    static KafkaStreams buildStreams(String identity) {
+        Topology topology = TOPOLOGY_MAP.get(identity);
+        Map<String, Object> configs = getConfig(identity);
 
         Properties properties = new Properties();
         properties.putAll(configs);
@@ -49,7 +54,7 @@ public class KafkaStreamFactory {
 
         // register internal state listener that delegates to registered listeners
         streams.setStateListener((newState, oldState) -> {
-            List<BiConsumer<KafkaStreamState, KafkaStreamState>> l = LISTENERS.get(clientId);
+            List<BiConsumer<KafkaStreamState, KafkaStreamState>> l = LISTENERS.get(identity);
             if (l != null) {
                 for (BiConsumer<KafkaStreamState, KafkaStreamState> c : l) {
                     try {
@@ -111,17 +116,13 @@ public class KafkaStreamFactory {
         Runtime.getRuntime().addShutdownHook(new Thread(KafkaStreamFactory::closeAll, "kafka-consumer-shutdown"));
     }
 
-    private static boolean isAlreadyExists(String clientID) {
-        return CONFIGS.stream()
-                .map(item -> item.get(ProducerConfig.CLIENT_ID_CONFIG))
-                .map(String::valueOf)
-                .anyMatch(item -> item.equalsIgnoreCase(clientID));
+    private static boolean isAlreadyExists(String identity) {
+        return CONFIGS.containsKey(identity);
     }
 
-    private static Map<String, Object> getProperties(String clientId) {
-        return CONFIGS.stream()
-                .filter(item -> item.get(ProducerConfig.CLIENT_ID_CONFIG).equals(clientId))
-                .findFirst()
-                .orElseThrow(() -> new MicroFoxException("No topology/props for: " + clientId));
+    private static Map<String, Object> getConfig(String clientId) {
+        Map<String, Object> config = CONFIGS.get(clientId);
+        if (config == null) throw new MicroFoxException("No topology/props for: " + clientId);
+        return config;
     }
 }
