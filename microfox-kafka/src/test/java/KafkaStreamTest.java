@@ -28,8 +28,8 @@ public class KafkaStreamTest {
 
         Map<String, Object> configs = new HashMap<>();
         configs.put(StreamsConfig.CLIENT_ID_CONFIG, IDENTITY);
-        configs.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "%s:%s".formatted(HOST, PORT));
         configs.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-app-advanced");
+        configs.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "%s:%s".formatted(HOST, PORT));
         configs.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         configs.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
