@@ -6,7 +6,7 @@ import ir.moke.microfox.api.http.sse.SseObject;
 import java.util.List;
 
 public interface HttpProvider {
-    void filter(String path, Filter... filters);
+    void filter(String path, int order, Filter... filters);
 
     void http(String path, HttpMethod httpMethod, Route route);
 

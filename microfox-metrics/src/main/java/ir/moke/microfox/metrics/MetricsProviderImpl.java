@@ -16,7 +16,7 @@ public class MetricsProviderImpl implements MetricsProvider, TtyAsciiCodecs {
     static {
         /* Metrics */
         logger.info("{}{}{}{}", "Metrics Activated", BACKGROUND_BLUE, "/metrics", RESET);
-        MicroFox.httpFilter("/*", MetricHttp::handleFilter);
+        MicroFox.httpFilter("/*", -999, MetricHttp::handleFilter);
         MicroFox.httpRouter("/metrics", HttpMethod.GET, MetricHttp::handleRouter);
     }
 

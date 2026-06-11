@@ -50,6 +50,7 @@ public class HttpUtils {
                 list.add(filterInfo);
             }
         }
+        list.sort(Comparator.comparingInt(FilterInfo::order));
         return list;
     }
 

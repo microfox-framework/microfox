@@ -11,8 +11,8 @@ import java.util.concurrent.SubmissionPublisher;
 public class HttpProviderImpl implements HttpProvider {
 
     @Override
-    public void filter(String path, Filter... filters) {
-        ResourceHolder.addFilter(path, filters);
+    public void filter(String path, int order, Filter... filters) {
+        ResourceHolder.addFilter(path, order, filters);
     }
 
     @Override
