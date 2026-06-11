@@ -27,8 +27,8 @@ public class BaseFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
 
         List<FilterInfo> list = findMatchingFilterInfo(req.getRequestURI());
-        if (list.isEmpty()) doChain(req, resp, chain);
-        else list.forEach(item -> applyFilter(item, req, resp, chain));
+        list.forEach(item -> applyFilter(item, req, resp, chain));
+        doChain(req, resp, chain);
     }
 
     private static void applyFilter(FilterInfo filterInfo, HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
