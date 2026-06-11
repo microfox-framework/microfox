@@ -92,8 +92,8 @@ public class MicroFox {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.filter("/*", (request, response, chain) -> {
             response.header(CORSHeader.ACCESS_CONTROL_ALLOW_ORIGIN.getValue(), "*");
-            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_HEADERS.getValue(), "POST,GET,PUT,DELETE,OPTIONS");
-            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_HEADERS.getValue(), "Content-Type, Authorization");
+            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_METHODS.getValue(), "POST,GET,PUT,DELETE,OPTIONS");
+            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_HEADERS.getValue(), "Accept, Content-Type, Authorization,accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers");
             response.header(CORSHeader.ACCESS_CONTROL_ALLOW_CREDENTIALS.getValue(), "true");
             response.header(CORSHeader.ACCESS_CONTROL_MAX_AGE.getValue(), "86400");
             chain.doFilter(request, response);
