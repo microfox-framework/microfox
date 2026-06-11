@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.Consumer;
+import java.util.List;
 
 import static ir.moke.microfox.http.HttpUtils.findMatchingFilterInfo;
 
@@ -26,17 +26,16 @@ public class BaseFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
-        Consumer<FilterInfo> filterInfoConsumer = item -> applyFilter(item, req, resp, chain);
-        Runnable chainRunner = () -> doChain(req, resp, chain);
-
-        findMatchingFilterInfo(req.getRequestURI()).ifPresentOrElse(filterInfoConsumer, chainRunner);
+        List<FilterInfo> list = findMatchingFilterInfo(req.getRequestURI());
+        if (list.isEmpty()) doChain(req, resp, chain);
+        else list.forEach(item -> applyFilter(item, req, resp, chain));
     }
 
-    private static void applyFilter(FilterInfo item, HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+    private static void applyFilter(FilterInfo filterInfo, HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         Request req = HttpUtils.getRequest(request);
         Response resp = HttpUtils.getResponse(response);
         Chain chain = (_, _) -> doChain(request, response, filterChain);
-        item.filter().handle(req, resp, chain);
+        filterInfo.filter().handle(req, resp, chain);
     }
 
     private static void doChain(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {

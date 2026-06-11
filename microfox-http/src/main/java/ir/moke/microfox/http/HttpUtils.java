@@ -18,9 +18,7 @@ import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class HttpUtils {
@@ -42,16 +40,17 @@ public class HttpUtils {
         return null;
     }
 
-    public static Optional<FilterInfo> findMatchingFilterInfo(String reqPath) {
+    public static List<FilterInfo> findMatchingFilterInfo(String reqPath) {
+        List<FilterInfo> list = new ArrayList<>();
         for (FilterInfo filterInfo : ResourceHolder.listFilters()) {
             String path = filterInfo.path();
             if (path.endsWith("*") && reqPath.startsWith(path.substring(0, path.length() - 1))) {
-                return Optional.of(filterInfo);
+                list.add(filterInfo);
             } else if (path.equals(reqPath)) {
-                return Optional.of(filterInfo);
+                list.add(filterInfo);
             }
         }
-        return Optional.empty();
+        return list;
     }
 
     public static Map<String, String> extractPathParams(String pattern, String requestPath) {
