@@ -27,14 +27,20 @@ public class BaseFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
 
         List<FilterInfo> list = findMatchingFilterInfo(req.getRequestURI());
-        list.forEach(item -> applyFilter(item, req, resp, chain));
-        doChain(req, resp, chain);
+        applyFilter(0, list, req, resp, chain);
     }
 
-    private static void applyFilter(FilterInfo filterInfo, HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+    private static void applyFilter(int index, List<FilterInfo> filterList, HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+        if (index >= filterList.size()) {
+            doChain(request, response, filterChain);
+            return;
+        }
+
+        FilterInfo filterInfo = filterList.get(index);
+
         Request req = HttpUtils.getRequest(request);
         Response resp = HttpUtils.getResponse(response);
-        Chain chain = (_, _) -> doChain(request, response, filterChain);
+        Chain chain = (_, _) -> applyFilter(index + 1, filterList, request, response, filterChain);
         filterInfo.filter().handle(req, resp, chain);
     }
 
