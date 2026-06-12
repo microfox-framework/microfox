@@ -442,8 +442,8 @@ public class MicroFox {
         redisProvider.unregister(identity);
     }
 
-    public static <T> T redis(String identity, Class<T> connectionTypeClass) {
+    public static Object redis(String identity) {
         if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
-        return redisProvider.unwrap(identity, connectionTypeClass);
+        return redisProvider.unwrap(identity);
     }
 }

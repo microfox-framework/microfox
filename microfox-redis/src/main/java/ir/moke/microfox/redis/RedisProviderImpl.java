@@ -15,8 +15,7 @@ public class RedisProviderImpl implements RedisProvider {
 
     }
 
-    @Override
-    public <T> T unwrap(String identity, Class<T> connectionClassType) {
-        return RedisFactory.buildRedisConnection(identity, connectionClassType);
+    public Object unwrap(String identity) {
+        return RedisFactory.getClient(identity);
     }
 }
