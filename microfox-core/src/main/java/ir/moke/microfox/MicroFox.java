@@ -27,6 +27,8 @@ import ir.moke.microfox.api.metrics.MetricsProvider;
 import ir.moke.microfox.api.mongodb.MongoProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
+import ir.moke.microfox.api.redis.RedisConfig;
+import ir.moke.microfox.api.redis.RedisProvider;
 import ir.moke.microfox.api.system.SystemProvider;
 import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.ExceptionMapperHolder;
@@ -60,6 +62,7 @@ public class MicroFox {
     private static final SystemProvider systemProvider = ServiceLoader.load(SystemProvider.class).findFirst().orElse(null);
     private static final MongoProvider mongoProvider = ServiceLoader.load(MongoProvider.class).findFirst().orElse(null);
     private static final GroovyProvider groovyProvider = ServiceLoader.load(GroovyProvider.class).findFirst().orElse(null);
+    private static final RedisProvider redisProvider = ServiceLoader.load(RedisProvider.class).findFirst().orElse(null);
 
     static {
         MicroFoxEnvironment.introduce();
@@ -427,5 +430,20 @@ public class MicroFox {
     public static void metricCounter(String name, Map<String, String> tags) {
         if (metricsProvider == null) throw new UnsupportedOperationException("Metrics support not available");
         metricsProvider.counter(name, tags);
+    }
+
+    public static void redisRegister(String identity, RedisConfig config) {
+        if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
+        redisProvider.register(identity, config);
+    }
+
+    public static void redisUnregister(String identity) {
+        if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
+        redisProvider.unregister(identity);
+    }
+
+    public static <T> T redis(String identity, Class<T> connectionTypeClass) {
+        if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
+        return redisProvider.unwrap(identity, connectionTypeClass);
     }
 }

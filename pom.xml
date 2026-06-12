@@ -47,6 +47,7 @@
         <module>microfox-mongodb</module>
         <module>microfox-mybatis</module>
         <module>microfox-openapi</module>
+        <module>microfox-redis</module>
         <module>microfox-system</module>
     </modules>
 
@@ -371,7 +372,7 @@
                 <version>77.1</version>
             </dependency>
 
-            <!-- JSysBox -->
+            <!-- Jsysbox -->
             <dependency>
                 <groupId>ir.moke</groupId>
                 <artifactId>jsysbox</artifactId>
@@ -431,6 +432,13 @@
                         <artifactId>jackson-core</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <!-- Redis -->
+            <dependency>
+                <groupId>io.lettuce</groupId>
+                <artifactId>lettuce-core</artifactId>
+                <version>7.6.0.RELEASE</version>
             </dependency>
 
             <!-- Groovy -->
