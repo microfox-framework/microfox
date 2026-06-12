@@ -21,10 +21,6 @@ public class RedisConfig {
     private Boolean lifo;
     private Duration maxWait;
 
-    // cache
-    private Integer maximumCacheSize;
-
-
     public RedisConfig(String host, Integer port) {
         this.host = host;
         this.port = port;
@@ -145,13 +141,5 @@ public class RedisConfig {
 
     public void setMaxWait(Duration maxWait) {
         this.maxWait = maxWait;
-    }
-
-    public Integer getMaximumCacheSize() {
-        return maximumCacheSize;
-    }
-
-    public void setMaximumCacheSize(Integer maximumCacheSize) {
-        this.maximumCacheSize = maximumCacheSize;
     }
 }
