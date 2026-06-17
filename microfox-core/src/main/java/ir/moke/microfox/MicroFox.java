@@ -80,7 +80,7 @@ public class MicroFox {
         ExceptionMapperHolder.add(t, mapper);
     }
 
-    public static <T extends Throwable> void unregisterExceptionMapper(Class<T> t) {
+    public static <T extends Throwable> void exceptionMapperUnregister(Class<T> t) {
         ExceptionMapperHolder.remove(t);
     }
 
