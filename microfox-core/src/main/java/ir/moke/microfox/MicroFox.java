@@ -35,6 +35,7 @@ import ir.moke.microfox.exception.ExceptionMapperHolder;
 import ir.moke.microfox.logger.LoggerManager;
 import ir.moke.microfox.logger.model.LogModel;
 import ir.moke.microfox.utils.HttpClientConfig;
+import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
 import jakarta.persistence.EntityManager;
@@ -75,7 +76,7 @@ public class MicroFox {
         LoggerManager.registerLog(log);
     }
 
-    public static <T extends Throwable> void registerExceptionMapper(Class<T> t, ExceptionMapper mapper) {
+    public static <T extends Throwable> void exceptionMapperRegister(Class<T> t, ExceptionMapper mapper) {
         ExceptionMapperHolder.add(t, mapper);
     }
 
@@ -336,6 +337,16 @@ public class MicroFox {
     public static void jpaPrintUpdateSchemaSQL(String identity) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
         jpaProvider.jpaPrintUpdateSchemaSQL(identity);
+    }
+
+    public static void jmsRegister(String identity, ConnectionFactory connectionFactory) {
+        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
+        jmsProvider.register(identity, connectionFactory);
+    }
+
+    public static void jmsRegister(String identity, ConnectionFactory connectionFactory,int concurrency) {
+        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
+        jmsProvider.register(identity, connectionFactory,concurrency);
     }
 
     public static void jmsListener(String identity, DestinationType type, String destination, AckMode acknowledgeMode, MessageListener listener) {

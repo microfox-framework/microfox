@@ -1,6 +1,7 @@
 import com.ibm.msg.client.jakarta.jms.JmsConnectionFactory;
 import com.ibm.msg.client.jakarta.jms.JmsFactoryFactory;
 import com.ibm.msg.client.jakarta.wmq.WMQConstants;
+import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.exception.MicroFoxException;
@@ -73,7 +74,7 @@ public class IbmMQTest {
             connectionFactory.setStringProperty(WMQConstants.USERID, USERNAME);
             connectionFactory.setStringProperty(WMQConstants.PASSWORD, PASSWORD);
             connectionFactory.setStringProperty(WMQConstants.TIME_TO_LIVE, CONNECTION_TTL);
-            JmsFactory.register(IDENTITY, connectionFactory);
+            MicroFox.jmsRegister(IDENTITY, connectionFactory);
         } catch (Exception e) {
             throw new MicroFoxException(e);
         }

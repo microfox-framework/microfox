@@ -1,3 +1,4 @@
+import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.jms.JmsFactory;
@@ -66,6 +67,6 @@ public class ActiveMQTest {
         connectionFactory.setUserName(USERNAME);
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setCloseTimeout(CONNECTION_TTL);
-        JmsFactory.register(IDENTITY, connectionFactory, 3);
+        MicroFox.jmsRegister(IDENTITY, connectionFactory, 3);
     }
 }
