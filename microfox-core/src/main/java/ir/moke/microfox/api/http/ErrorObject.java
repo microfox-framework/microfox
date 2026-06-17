@@ -1,7 +1,7 @@
 package ir.moke.microfox.api.http;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import ir.moke.utils.JsonUtils;
+import ir.moke.utils.json.JsonUtils;
 import jakarta.servlet.http.Cookie;
 
 import java.nio.charset.StandardCharsets;

@@ -1,7 +1,9 @@
+import ch.qos.logback.classic.Level;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.jms.JmsFactory;
+import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import ir.moke.utils.date.CalendarType;
 import ir.moke.utils.date.DatePattern;
 import ir.moke.utils.date.DateTimeUtils;
@@ -31,6 +33,7 @@ public class ArtemisTest {
     private static final int CONNECTION_TTL = 5000; // 5 seconds
 
     static {
+        MicroFox.logger(new ConsoleGenericModel("jms", "ir.moke.microfox.jms", Level.TRACE));
         registerArtemisConnectionFactory();
     }
 

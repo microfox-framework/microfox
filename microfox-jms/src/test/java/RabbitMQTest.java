@@ -1,8 +1,10 @@
+import ch.qos.logback.classic.Level;
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.exception.MicroFoxException;
+import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import ir.moke.utils.date.CalendarType;
 import ir.moke.utils.date.DatePattern;
 import ir.moke.utils.date.DateTimeUtils;
@@ -13,8 +15,7 @@ import jakarta.jms.TextMessage;
 import java.time.ZonedDateTime;
 import java.util.Locale;
 
-import static ir.moke.microfox.MicroFox.jmsListener;
-import static ir.moke.microfox.MicroFox.jmsProducer;
+import static ir.moke.microfox.MicroFox.*;
 
 /**
  * Run rabbitmq container with this command :
@@ -32,13 +33,25 @@ public class RabbitMQTest {
     private static final String QUEUE_NAME = "test";
 
     static {
+        MicroFox.logger(new ConsoleGenericModel("jms", "ir.moke.microfox.jms", Level.TRACE));
         registerRabbitMQConnectionFactory();
     }
 
 
     static void main() {
         jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
-        sendTestMessage();
+        int count = 0;
+        for (; ; ) {
+            sendTestMessage();
+            count++;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignore) {
+            }
+            if (count == 10) {
+                jmsStop(IDENTITY);
+            }
+        }
     }
 
     public static void sendTestMessage() {

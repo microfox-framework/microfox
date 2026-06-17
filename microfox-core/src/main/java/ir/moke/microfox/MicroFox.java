@@ -344,9 +344,14 @@ public class MicroFox {
         jmsProvider.register(identity, connectionFactory);
     }
 
-    public static void jmsRegister(String identity, ConnectionFactory connectionFactory,int concurrency) {
+    public static void jmsRegister(String identity, ConnectionFactory connectionFactory, int concurrency) {
         if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.register(identity, connectionFactory,concurrency);
+        jmsProvider.register(identity, connectionFactory, concurrency);
+    }
+
+    public static void jmsUnregister(String identity) {
+        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
+        jmsProvider.unregister(identity);
     }
 
     public static void jmsListener(String identity, DestinationType type, String destination, AckMode acknowledgeMode, MessageListener listener) {

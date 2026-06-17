@@ -11,9 +11,8 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
-public class JmsConsumerController implements ExceptionListener {
+public class JmsConsumerController {
     private static final Logger logger = LoggerFactory.getLogger(JmsConsumerController.class);
     private static final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "jms-consumer"));
     private final ConnectionFactory connectionFactory;
@@ -31,35 +30,26 @@ public class JmsConsumerController implements ExceptionListener {
         this.identity = info.getIdentity();
     }
 
-    public void start(String topicName, MessageListener listener, AckMode acknowledgeMode, DestinationType type) {
+    public void start(String destinationName, MessageListener listener, AckMode acknowledgeMode, DestinationType type) {
         this.destinationName = destinationName;
         this.type = type;
         for (int i = 0; i < concurrency; i++) {
-            ses.scheduleWithFixedDelay(() -> consume(topicName, acknowledgeMode, type, listener), 0, 2000, TimeUnit.SECONDS);
+            ses.scheduleWithFixedDelay(() -> consume(destinationName, acknowledgeMode, type, listener), 0, 2000, TimeUnit.SECONDS);
         }
     }
 
-    public void consume(String destinationName, AckMode acknowledgeMode, DestinationType type, MessageListener listener) {
+    private void consume(String destinationName, AckMode acknowledgeMode, DestinationType type, MessageListener listener) {
         createContext(acknowledgeMode);
-        context.setExceptionListener(this);
         createDestination(destinationName, type);
         createConsumer(destination);
         consumer.setMessageListener(listener);
         context.start();
     }
 
-    public void consumeNext(String destinationName, AckMode acknowledgeMode, DestinationType type, Integer timeout, Consumer<Message> messageConsumer) {
-        createContext(acknowledgeMode);
-        createDestination(destinationName, type);
-        createConsumer(destination);
-        Message message = consumer.receiveNoWait();
-        messageConsumer.accept(message);
-    }
-
     private void createContext(AckMode acknowledgeMode) {
         if (context == null) {
             context = connectionFactory.createContext(acknowledgeMode.getMode());
-            context.setExceptionListener(this);
+            context.setExceptionListener(new JmsConsumerExceptionListener());
         }
     }
 
@@ -71,11 +61,6 @@ public class JmsConsumerController implements ExceptionListener {
 
     private void createDestination(String destinationName, DestinationType type) {
         destination = type.equals(DestinationType.TOPIC) ? context.createTopic(this.destinationName) : context.createQueue(destinationName);
-    }
-
-    @Override
-    public void onException(JMSException exception) {
-        logger.error("Error on  {} consumer, {}", destinationName, exception.getMessage());
     }
 
     public void close() {
@@ -99,13 +84,6 @@ public class JmsConsumerController implements ExceptionListener {
         }
     }
 
-    public void recover() {
-        if (this.context != null) {
-            logger.info("Recover consumer {} {}", type, destinationName);
-            context.recover();
-        }
-    }
-
     public String getDestinationName() {
         return destinationName;
     }
@@ -123,8 +101,8 @@ public class JmsConsumerController implements ExceptionListener {
         if (o == null || getClass() != o.getClass()) return false;
         JmsConsumerController that = (JmsConsumerController) o;
         return Objects.equals(destinationName, that.destinationName)
-                && Objects.equals(identity, that.identity)
-                && type == that.type;
+               && Objects.equals(identity, that.identity)
+               && type == that.type;
     }
 
     @Override

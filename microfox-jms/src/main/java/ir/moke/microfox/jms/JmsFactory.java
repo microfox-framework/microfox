@@ -25,6 +25,10 @@ public class JmsFactory {
         logger.info("Jms with identity {} registered", identity);
     }
 
+    static void unregister(String identity) {
+        INFO_LIST.removeIf(item -> item.getIdentity().equals(identity));
+    }
+
     static void register(String identity, ConnectionFactory connectionFactory) {
         register(identity, connectionFactory, 1);
     }
