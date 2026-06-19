@@ -51,13 +51,11 @@ public class ResourceHolder {
         return ROUTES;
     }
 
-    public static void addFilter(String path, int order, Filter... filters) {
+    public static void addFilter(String path, int order, Filter filter) {
         if (!path.startsWith("/")) throw new MicroFoxException("filter path should started with '/'");
         path = concatContextPath(path);
         logger.info("register filter {}{}{}", GREEN, path, RESET);
-        for (Filter filter : filters) {
-            FILTERS.add(new FilterInfo(path, order, filter));
-        }
+        FILTERS.add(new FilterInfo(path, order, filter));
     }
 
     public static void addWebsocket(Class<?> wsClass) {

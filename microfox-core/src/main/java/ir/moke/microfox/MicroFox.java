@@ -104,9 +104,9 @@ public class MicroFox {
         });
     }
 
-    public static void httpFilter(String path, int order, Filter... filters) {
+    public static void httpFilter(String path, int order, Filter filter) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.filter(path, order, filters);
+        httpProvider.filter(path, order, filter);
     }
 
     public static void httpRouter(String path, HttpMethod httpMethod, Route route) {
