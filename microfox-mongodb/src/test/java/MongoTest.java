@@ -1,6 +1,6 @@
 import com.mongodb.client.MongoCollection;
 import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.mongodb.MongoConnectionInfo;
+import ir.moke.microfox.api.mongodb.MongoConnectionInfo;
 import ir.moke.microfox.mongodb.MongoFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package ir.moke.microfox.mongodb;
+package ir.moke.microfox.api.mongodb;
 
 public class MongoConnectionInfo {
     private String username;

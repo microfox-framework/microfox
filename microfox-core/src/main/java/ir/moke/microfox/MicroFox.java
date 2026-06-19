@@ -24,6 +24,7 @@ import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.kafka.KafkaStreamController;
 import ir.moke.microfox.api.metrics.MetricsProvider;
+import ir.moke.microfox.api.mongodb.MongoConnectionInfo;
 import ir.moke.microfox.api.mongodb.MongoProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
@@ -391,6 +392,16 @@ public class MicroFox {
 
     public static <T> T httpClient(HttpClientConfig config, Class<T> clazz) {
         return new Kafir.KafirBuilder().setBaseUri(config.getBaseUri()).setAuthenticator(config.getAuthenticator()).setInterceptor(config.getInterceptor()).setHeaders(config.getHeaders()).setConnectionTimeout(config.getConnectionTimeout()).setExecutorService(config.getExecutorService()).setVersion(config.getVersion()).setSslContext(config.getSslContext()).build(clazz);
+    }
+
+    public static void mongoRegister(String identity, MongoConnectionInfo connectionInfo) {
+        if (mongoProvider == null) throw new UnsupportedOperationException("MongoDB support not available");
+        mongoProvider.register(identity, connectionInfo);
+    }
+
+    public static void mongoUnregister(String identity) {
+        if (mongoProvider == null) throw new UnsupportedOperationException("MongoDB support not available");
+        mongoProvider.unregister(identity);
     }
 
     public static <T> MongoCollection<T> mongo(String identity, Class<T> entityClass) {

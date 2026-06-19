@@ -2,6 +2,7 @@ package ir.moke.microfox.mongodb;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import ir.moke.microfox.api.mongodb.MongoConnectionInfo;
 import ir.moke.microfox.api.mongodb.MongoProvider;
 import ir.moke.microfox.exception.MicroFoxException;
 
@@ -11,6 +12,16 @@ public class MongoProviderImpl implements MongoProvider {
     public <T> MongoCollection<T> collection(String identity, Class<T> entityClass) {
         MongoDatabase database = MongoFactory.getMongoDatabase(identity);
         return database.getCollection(collectionName(entityClass), entityClass);
+    }
+
+    @Override
+    public void register(String identity, MongoConnectionInfo connectionInfo) {
+        MongoFactory.registerMongoDatabase(identity, connectionInfo);
+    }
+
+    @Override
+    public void unregister(String identity) {
+        MongoFactory.unregister(identity);
     }
 
     private static <T> String collectionName(Class<T> entityClass) {

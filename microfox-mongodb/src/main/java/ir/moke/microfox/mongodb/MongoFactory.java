@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.connection.ConnectionPoolSettings;
+import ir.moke.microfox.api.mongodb.MongoConnectionInfo;
 import ir.moke.microfox.exception.MicroFoxException;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.jsr310.Jsr310CodecProvider;
@@ -56,6 +57,12 @@ public class MongoFactory {
         MONGO_CLIENTS.put(identity, mongoClient);
         MONGO_CONNECTION_INFOS.put(identity, info);
         logger.info("Mongo database successfully registered");
+    }
+
+    public static void unregister(String identity) {
+        MONGO_CONNECTION_INFOS.remove(identity);
+        MongoClient client = MONGO_CLIENTS.remove(identity);
+        client.close();
     }
 
     private static void getBuilder(ConnectionPoolSettings.Builder builder, MongoConnectionInfo info) {
