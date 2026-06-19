@@ -1,4 +1,4 @@
-package ir.moke.microfox.elastic;
+package ir.moke.microfox.api.elastic;
 
 import java.time.Duration;
 

@@ -3,6 +3,7 @@ package ir.moke.microfox;
 import com.jcraft.jsch.ChannelSftp;
 import com.mongodb.client.MongoCollection;
 import ir.moke.kafir.http.Kafir;
+import ir.moke.microfox.api.elastic.ElasticConfig;
 import ir.moke.microfox.api.elastic.ElasticProvider;
 import ir.moke.microfox.api.elastic.ElasticRepository;
 import ir.moke.microfox.api.ftp.*;
@@ -383,6 +384,16 @@ public class MicroFox {
     public static <K, V> void kafkaStream(String clientId, Consumer<KafkaStreamController> consumer) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
         kafkaProvider.stream(clientId, consumer);
+    }
+
+    public static void elasticRegister(String identity, ElasticConfig config) {
+        if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");
+        elasticProvider.register(identity, config);
+    }
+
+    public static void elasticUnregister(String identity) {
+        if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");
+        elasticProvider.unregister(identity);
     }
 
     public static <T> ElasticRepository<T> elastic(String identity, Class<T> entityClass) {

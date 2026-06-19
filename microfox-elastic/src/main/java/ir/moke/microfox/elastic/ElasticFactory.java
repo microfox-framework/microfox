@@ -1,16 +1,21 @@
 package ir.moke.microfox.elastic;
 
+import ir.moke.microfox.api.elastic.ElasticConfig;
 import ir.moke.microfox.api.elastic.ElasticRepository;
 
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ElasticFactory {
+class ElasticFactory {
     private static final Map<String, ElasticConfig> ELASTIC_MAP = new HashMap<>();
 
     public static void register(String identity, ElasticConfig config) {
         ELASTIC_MAP.put(identity, config);
+    }
+
+    public static void unregister(String identity) {
+        ELASTIC_MAP.remove(identity);
     }
 
     public static ElasticConfig getConfig(String identity) {

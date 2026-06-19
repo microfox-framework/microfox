@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-public class MongoFactory {
+class MongoFactory {
     private static final Logger logger = LoggerFactory.getLogger(MongoFactory.class);
     private static final Map<String, MongoClient> MONGO_CLIENTS = new ConcurrentHashMap<>();
     private static final Map<String, MongoConnectionInfo> MONGO_CONNECTION_INFOS = new ConcurrentHashMap<>();

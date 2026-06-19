@@ -1,10 +1,5 @@
 import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.api.elastic.BulkActionType;
-import ir.moke.microfox.api.elastic.BulkOperation;
-import ir.moke.microfox.api.elastic.ElasticCriteria;
-import ir.moke.microfox.api.elastic.ElasticRepository;
-import ir.moke.microfox.elastic.ElasticConfig;
-import ir.moke.microfox.elastic.ElasticFactory;
+import ir.moke.microfox.api.elastic.*;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
@@ -15,7 +10,7 @@ public class ElasticTest {
     @BeforeAll
     public static void init() {
         ElasticConfig config = new ElasticConfig("127.0.0.1", 9200, "admin", "adminpass", false);
-        ElasticFactory.register("el", config);
+        MicroFox.elasticRegister("el", config);
     }
 
     @Test
@@ -92,14 +87,14 @@ public class ElasticTest {
     @Test
     @Order(9)
     public void checkBulk() {
-        Person p1 = new Person(1,"mahdi","Sheikh Hosseini",33);
-        Person p2 = new Person(2,"Ali","Mohammadi",33);
-        Person p3 = new Person(3,"Vahid","Jafari",33);
-        BulkOperation<Person> bulkOperation1 = new BulkOperation<>(BulkActionType.SAVE,"1",p1);
-        BulkOperation<Person> bulkOperation2 = new BulkOperation<>(BulkActionType.SAVE,"2",p2);
-        BulkOperation<Person> bulkOperation3 = new BulkOperation<>(BulkActionType.SAVE,"3",p3);
+        Person p1 = new Person(1, "mahdi", "Sheikh Hosseini", 33);
+        Person p2 = new Person(2, "Ali", "Mohammadi", 33);
+        Person p3 = new Person(3, "Vahid", "Jafari", 33);
+        BulkOperation<Person> bulkOperation1 = new BulkOperation<>(BulkActionType.SAVE, "1", p1);
+        BulkOperation<Person> bulkOperation2 = new BulkOperation<>(BulkActionType.SAVE, "2", p2);
+        BulkOperation<Person> bulkOperation3 = new BulkOperation<>(BulkActionType.SAVE, "3", p3);
 
         ElasticRepository<Person> elasticRepository = MicroFox.elastic("el", Person.class);
-        elasticRepository.bulk(List.of(bulkOperation1,bulkOperation2,bulkOperation3));
+        elasticRepository.bulk(List.of(bulkOperation1, bulkOperation2, bulkOperation3));
     }
 }
