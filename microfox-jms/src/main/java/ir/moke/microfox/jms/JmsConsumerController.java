@@ -7,22 +7,23 @@ import jakarta.jms.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
+import java.io.Closeable;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class JmsConsumerController {
+public class JmsConsumerController implements Closeable {
     private static final Logger logger = LoggerFactory.getLogger(JmsConsumerController.class);
-    private static final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "jms-consumer"));
+
+    private final List<JMSContext> CONTEXTS = new CopyOnWriteArrayList<>();
     private final ConnectionFactory connectionFactory;
     private final int concurrency;
     private final String identity;
-    private JMSContext context;
-    private JMSConsumer consumer;
-    private String destinationName;
-    private DestinationType type;
-    private Destination destination;
+
+    private ScheduledExecutorService scheduler;
+    private volatile boolean running = false;
 
     public JmsConsumerController(JmsConnectionInfo info) {
         this.connectionFactory = info.getConnectionFactory();
@@ -31,82 +32,88 @@ public class JmsConsumerController {
     }
 
     public void start(String destinationName, MessageListener listener, AckMode acknowledgeMode, DestinationType type) {
-        this.destinationName = destinationName;
-        this.type = type;
+
+        if (running) return;
+        running = true;
+        scheduler = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "jms-consumer" + identity));
+
         for (int i = 0; i < concurrency; i++) {
-            ses.scheduleWithFixedDelay(() -> consume(destinationName, acknowledgeMode, type, listener), 0, 2000, TimeUnit.SECONDS);
+            scheduler.scheduleWithFixedDelay(() -> ensureConsumerIsRunning(destinationName, acknowledgeMode, type, listener), 0, 5, TimeUnit.SECONDS);
         }
     }
 
-    private void consume(String destinationName, AckMode acknowledgeMode, DestinationType type, MessageListener listener) {
-        createContext(acknowledgeMode);
-        createDestination(destinationName, type);
-        createConsumer(destination);
-        consumer.setMessageListener(listener);
-        context.start();
-    }
+    private void ensureConsumerIsRunning(String destinationName, AckMode acknowledgeMode, DestinationType type, MessageListener listener) {
 
-    private void createContext(AckMode acknowledgeMode) {
-        if (context == null) {
-            context = connectionFactory.createContext(acknowledgeMode.getMode());
-            context.setExceptionListener(new JmsConsumerExceptionListener());
+        if (!running) return;
+
+        try {
+            if (isFull()) {
+                return;
+            }
+
+            logger.info("Creating new JMS consumer for {}", identity);
+            JMSContext context = connectionFactory.createContext(acknowledgeMode.getMode());
+            CONTEXTS.add(context);
+            context.setExceptionListener(ex -> handleException(context, ex));
+            Destination destination = type.equals(DestinationType.TOPIC) ? context.createTopic(destinationName) : context.createQueue(destinationName);
+            JMSConsumer consumer = context.createConsumer(destination);
+            consumer.setMessageListener(listener);
+            context.start();
+            logger.info("JMS Consumer started successfully: {}", identity);
+
+        } catch (Exception e) {
+            logger.error("Failed to ensure JMS consumer is running for {}", identity, e);
         }
     }
 
-    private void createConsumer(Destination destination) {
-        if (this.consumer == null) {
-            consumer = context.createConsumer(destination);
-        }
+    private boolean isFull() {
+        return !CONTEXTS.isEmpty() && CONTEXTS.size() >= concurrency;
     }
 
-    private void createDestination(String destinationName, DestinationType type) {
-        destination = type.equals(DestinationType.TOPIC) ? context.createTopic(this.destinationName) : context.createQueue(destinationName);
+    private void handleException(JMSContext context, JMSException ex) {
+        logger.error("JMS Exception for consumer {} - {}", identity, ex.getMessage());
+        removeContext(context);
     }
 
-    public void close() {
-        if (this.context != null) {
-            logger.info("Close consumer {} {}", type, destinationName);
-            context.close();
+    private void removeContext(JMSContext context) {
+        if (context != null) {
+            try {
+                context.close();
+            } catch (Exception ignored) {
+            }
+            CONTEXTS.remove(context);
         }
     }
 
     public void stop() {
-        if (this.context != null) {
-            logger.info("Stop consumer {} {}", type, destinationName);
-            context.stop();
+        running = false;
+        for (JMSContext ctx : CONTEXTS) {
+            try {
+                ctx.stop();
+            } catch (Exception ignored) {
+            }
         }
     }
 
-    public void start() {
-        if (this.context != null) {
-            logger.info("Start consumer {} {}", type, destinationName);
-            context.start();
+    @Override
+    public void close() {
+        running = false;
+        stop();
+
+        for (JMSContext ctx : CONTEXTS) {
+            try {
+                ctx.close();
+            } catch (Exception ignored) {
+            }
         }
-    }
+        CONTEXTS.clear();
 
-    public String getDestinationName() {
-        return destinationName;
-    }
-
-    public DestinationType getType() {
-        return type;
+        if (scheduler != null) {
+            scheduler.shutdownNow();
+        }
     }
 
     public String getIdentity() {
         return identity;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        JmsConsumerController that = (JmsConsumerController) o;
-        return Objects.equals(destinationName, that.destinationName)
-               && Objects.equals(identity, that.identity)
-               && type == that.type;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(identity, destinationName, type);
     }
 }

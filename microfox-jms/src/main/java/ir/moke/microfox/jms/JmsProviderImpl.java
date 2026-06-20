@@ -4,116 +4,143 @@ import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsConnectionInfo;
 import ir.moke.microfox.api.jms.JmsProvider;
-import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class JmsProviderImpl implements JmsProvider {
     private static final Logger logger = LoggerFactory.getLogger(JmsProviderImpl.class);
-    private static final Set<JmsConsumerController> CONSUMER_CONTROLLERS = new HashSet<>();
-    private static final Map<String, JMSContext> PRODUCER_CONTEXT_MAP = new HashMap<>();
+    private static final Set<JmsConsumerController> CONSUMER_CONTROLLERS = ConcurrentHashMap.newKeySet();
+    private static final Map<String, JMSContext> PRODUCER_CONTEXT_MAP = new ConcurrentHashMap<>();
 
     @Override
-    public void register(String identity, ConnectionFactory connectionFactory) {
-        JmsFactory.register(identity, connectionFactory);
-    }
-
-    @Override
-    public void register(String identity, ConnectionFactory connectionFactory, int concurrency) {
-        JmsFactory.register(identity, connectionFactory, concurrency);
+    public void register(String identity, JmsConnectionInfo connectionInfo) {
+        JmsFactory.register(identity, connectionInfo);
     }
 
     @Override
     public void unregister(String identity) {
-        try (JMSContext context = PRODUCER_CONTEXT_MAP.remove(identity)) {
-            JmsFactory.unregister(identity);
+        CONSUMER_CONTROLLERS.removeIf(controller -> {
+            if (controller.getIdentity().equals(identity)) {
+                try {
+                    controller.close();
+                } catch (Exception e) {
+                    logger.warn("Error closing consumer for {}", identity, e);
+                }
+                return true;
+            }
+            return false;
+        });
+
+        JMSContext context = PRODUCER_CONTEXT_MAP.remove(identity);
+        if (context != null) {
+            try {
+                context.close();
+            } catch (Exception e) {
+                logger.warn("Error closing producer context for {}", identity, e);
+            }
         }
+
+        JmsFactory.unregister(identity);
     }
 
     @Override
     public void produce(String identity, Consumer<JMSContext> contextConsumer) {
         try {
-            logger.trace("JMS producer called on identity {}", identity);
-            JmsConnectionInfo connectionInfo = JmsFactory.getConnectionInfo(identity);
-            JMSContext jmsContext = PRODUCER_CONTEXT_MAP.computeIfAbsent(identity, _ -> connectionInfo.getConnectionFactory().createContext());
+            JmsConnectionInfo info = JmsFactory.getConnectionInfo(identity);
+            JMSContext jmsContext = PRODUCER_CONTEXT_MAP.computeIfAbsent(identity, _ -> info.getConnectionFactory().createContext());
+
+            if (!isContextAlive(jmsContext)) {
+                JMSContext oldContext = PRODUCER_CONTEXT_MAP.remove(identity);
+                try {
+                    oldContext.close();
+                } catch (Exception ignore) {
+                }
+                PRODUCER_CONTEXT_MAP.put(identity, info.getConnectionFactory().createContext());
+            }
+
             jmsContext.setExceptionListener(new JmsConsumerExceptionListener());
             contextConsumer.accept(jmsContext);
+
         } catch (Exception e) {
-            logger.error("Jms producer exception - {}", e.getMessage());
-            JMSContext context = PRODUCER_CONTEXT_MAP.remove(identity);
-            if (context != null) context.close();
+            logger.error("JMS producer exception for identity {}", identity, e);
+            cleanupProducerContext(identity);
+        }
+    }
+
+    private void cleanupProducerContext(String identity) {
+        JMSContext context = PRODUCER_CONTEXT_MAP.remove(identity);
+        if (context != null) {
+            try {
+                context.close();
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private static boolean isContextAlive(JMSContext context) {
+        if (context == null) return false;
+        try {
+            context.getClientID(); // Still hacky but common
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
     @Override
-    public void consume(String identity, String destinationName, AckMode acknowledgeMode, DestinationType type, MessageListener listener) {
+    public void consume(String identity, String destinationName,
+                        AckMode acknowledgeMode, DestinationType type,
+                        MessageListener listener) {
+
+        // Prevent duplicate controllers
+        boolean alreadyExists = CONSUMER_CONTROLLERS.stream()
+                .anyMatch(c -> c.getIdentity().equals(identity));
+
+        if (alreadyExists) {
+            logger.warn("Consumer for identity {} already exists", identity);
+            return;
+        }
+
         JmsConnectionInfo connectionInfo = JmsFactory.getConnectionInfo(identity);
         JmsConsumerController controller = new JmsConsumerController(connectionInfo);
+
         controller.start(destinationName, listener, acknowledgeMode, type);
         CONSUMER_CONTROLLERS.add(controller);
-    }
 
-    @Override
-    public void stop(String identity, String destinationName, DestinationType type) {
-        CONSUMER_CONTROLLERS.stream()
-                .filter(item -> item.getIdentity().equals(identity))
-                .filter(item -> item.getDestinationName().equals(destinationName))
-                .filter(item -> item.getType().equals(type))
-                .findFirst()
-                .ifPresent(JmsConsumerController::stop);
+        logger.info("Registered consumer for identity: {}", identity);
     }
 
     @Override
     public void stop(String identity) {
         CONSUMER_CONTROLLERS.stream()
-                .filter(item -> item.getIdentity().equals(identity))
-                .findFirst()
-                .ifPresent(JmsConsumerController::stop);
+                .filter(c -> c.getIdentity().equals(identity))
+                .forEach(JmsConsumerController::stop);
     }
 
-    @Override
-    public void stopAll() {
-        CONSUMER_CONTROLLERS.forEach(JmsConsumerController::stop);
-    }
+    // Add this method for proper shutdown
+    public void shutdown() {
+        CONSUMER_CONTROLLERS.forEach(controller -> {
+            try {
+                controller.close();
+            } catch (Exception e) {
+                logger.warn("Error closing controller", e);
+            }
+        });
+        CONSUMER_CONTROLLERS.clear();
 
-    @Override
-    public void close(String identity, String destinationName, DestinationType type) {
-        CONSUMER_CONTROLLERS.stream()
-                .filter(item -> item.getIdentity().equals(identity))
-                .filter(item -> item.getDestinationName().equals(destinationName))
-                .filter(item -> item.getType().equals(type))
-                .findFirst()
-                .ifPresent(JmsConsumerController::close);
-    }
-
-    @Override
-    public void close(String identity) {
-        CONSUMER_CONTROLLERS.stream()
-                .filter(item -> item.getIdentity().equals(identity))
-                .findFirst()
-                .ifPresent(JmsConsumerController::close);
-    }
-
-    @Override
-    public void closeAll() {
-        CONSUMER_CONTROLLERS.forEach(JmsConsumerController::close);
-    }
-
-    @Override
-    public void start(String identity, String destinationName, DestinationType type) {
-        CONSUMER_CONTROLLERS.stream()
-                .filter(item -> item.getIdentity().equals(identity))
-                .filter(item -> item.getDestinationName().equals(destinationName))
-                .filter(item -> item.getType().equals(type))
-                .findFirst()
-                .ifPresent(JmsConsumerController::start);
+        PRODUCER_CONTEXT_MAP.values().forEach(ctx -> {
+            try {
+                ctx.close();
+            } catch (Exception ignored) {
+            }
+        });
+        PRODUCER_CONTEXT_MAP.clear();
     }
 }

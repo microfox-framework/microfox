@@ -14,6 +14,7 @@ import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
+import ir.moke.microfox.api.jms.JmsConnectionInfo;
 import ir.moke.microfox.api.jms.JmsProvider;
 import ir.moke.microfox.api.job.JobInfo;
 import ir.moke.microfox.api.job.JobProvider;
@@ -37,7 +38,6 @@ import ir.moke.microfox.exception.ExceptionMapperHolder;
 import ir.moke.microfox.logger.LoggerManager;
 import ir.moke.microfox.logger.model.LogModel;
 import ir.moke.microfox.utils.HttpClientConfig;
-import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
 import jakarta.persistence.EntityManager;
@@ -341,14 +341,9 @@ public class MicroFox {
         jpaProvider.jpaPrintUpdateSchemaSQL(identity);
     }
 
-    public static void jmsRegister(String identity, ConnectionFactory connectionFactory) {
+    public static void jmsRegister(String identity, JmsConnectionInfo connectionInfo) {
         if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.register(identity, connectionFactory);
-    }
-
-    public static void jmsRegister(String identity, ConnectionFactory connectionFactory, int concurrency) {
-        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.register(identity, connectionFactory, concurrency);
+        jmsProvider.register(identity, connectionInfo);
     }
 
     public static void jmsUnregister(String identity) {

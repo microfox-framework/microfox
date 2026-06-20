@@ -4,6 +4,7 @@ import com.ibm.msg.client.jakarta.wmq.WMQConstants;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
+import ir.moke.microfox.api.jms.JmsConnectionInfo;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.jms.JmsFactory;
 import jakarta.jms.JMSProducer;
@@ -41,9 +42,12 @@ public class IbmMQTest {
     }
 
     @Test
-    public void checkConsumer() {
+    public void checkConsumer() throws InterruptedException {
         jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
-        messageProducer();
+        while (true) {
+            messageProducer();
+            Thread.sleep(1000);
+        }
     }
 
     public static void messageProducer() {
@@ -74,7 +78,7 @@ public class IbmMQTest {
             connectionFactory.setStringProperty(WMQConstants.USERID, USERNAME);
             connectionFactory.setStringProperty(WMQConstants.PASSWORD, PASSWORD);
             connectionFactory.setStringProperty(WMQConstants.TIME_TO_LIVE, CONNECTION_TTL);
-            MicroFox.jmsRegister(IDENTITY, connectionFactory);
+            MicroFox.jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory));
         } catch (Exception e) {
             throw new MicroFoxException(e);
         }
