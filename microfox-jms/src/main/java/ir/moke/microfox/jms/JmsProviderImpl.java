@@ -87,7 +87,7 @@ public class JmsProviderImpl implements JmsProvider {
     private static boolean isContextAlive(JMSContext context) {
         if (context == null) return false;
         try {
-            context.getClientID(); // Still hacky but common
+            context.getClientID();
             return true;
         } catch (Exception e) {
             return false;
