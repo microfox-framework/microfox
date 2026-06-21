@@ -2,6 +2,7 @@ package ir.moke.microfox.kafka;
 
 import ir.moke.microfox.api.kafka.KafkaStreamState;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +16,11 @@ import java.util.function.BiConsumer;
 public class KafkaStreamHandler implements InvocationHandler {
     private static final Logger logger = LoggerFactory.getLogger(KafkaStreamHandler.class);
     private final String clientId;
+    private final Topology topology;
 
-    public KafkaStreamHandler(String clientId) {
+    public KafkaStreamHandler(String clientId, Topology topology) {
         this.clientId = clientId;
+        this.topology = topology;
     }
 
     @SuppressWarnings("unchecked")
@@ -88,7 +91,7 @@ public class KafkaStreamHandler implements InvocationHandler {
             log.warn("Exception while closing old streams", e);
         }
         // build a fresh instance
-        KafkaStreams streams = KafkaStreamFactory.buildStreams(clientId);
+        KafkaStreams streams = KafkaStreamFactory.buildStreams(clientId, topology);
         KafkaStreamFactory.replaceStreams(clientId, streams);
         streams.start();
     }

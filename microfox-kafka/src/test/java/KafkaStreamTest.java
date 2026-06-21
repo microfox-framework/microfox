@@ -20,11 +20,7 @@ public class KafkaStreamTest {
     private static final int PORT = 9092;
 
     static {
-        StreamsBuilder builder = new StreamsBuilder();
-        builder.stream("input-topic")
-                .mapValues(v -> v.toString().toUpperCase())
-                .to("output-topic");
-        Topology topology = builder.build();
+        createTopology();
 
         Map<String, Object> configs = new HashMap<>();
         configs.put(StreamsConfig.CLIENT_ID_CONFIG, "sample-cid");
@@ -33,12 +29,21 @@ public class KafkaStreamTest {
         configs.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         configs.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
-        KafkaStreamFactory.register(IDENTITY, topology, configs);
+        KafkaStreamFactory.register(IDENTITY, configs);
+    }
+
+    private static Topology createTopology() {
+        StreamsBuilder builder = new StreamsBuilder();
+        builder.stream("input-topic")
+                .mapValues(v -> v.toString().toUpperCase())
+                .to("output-topic");
+        return builder.build();
     }
 
     public static void main(String[] args) {
-        MicroFox.kafkaStream(IDENTITY, KafkaStreamController::start);
-        MicroFox.kafkaStream(IDENTITY, controller -> {
+        Topology topology = createTopology();
+        MicroFox.kafkaStream(IDENTITY, topology, KafkaStreamController::start);
+        MicroFox.kafkaStream(IDENTITY, topology, controller -> {
             // add state listener
             BiConsumer<KafkaStreamState, KafkaStreamState> listener = (newState, oldState) ->
                     System.out.println("State changed: " + oldState + " -> " + newState);

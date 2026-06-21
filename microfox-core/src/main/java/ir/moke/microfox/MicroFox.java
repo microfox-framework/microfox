@@ -366,6 +366,21 @@ public class MicroFox {
         jmsProvider.stop(identity);
     }
 
+    public static <K, V> void kafkaProducerRegister(String clientId, Map<String, Object> config) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.registerProducer(clientId, config);
+    }
+
+    public static <K, V> void kafkaConsumerRegister(String clientId, Map<String, Object> config) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.registerConsumer(clientId, config);
+    }
+
+    public static <K, V> void kafkaStreamRegister(String clientId, Map<String, Object> config) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.registerStream(clientId, config);
+    }
+
     public static <K, V> void kafkaProducer(String clientId, Consumer<KafkaProducerController<K, V>> consumer) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
         kafkaProvider.produce(clientId, consumer);
@@ -376,9 +391,9 @@ public class MicroFox {
         kafkaProvider.consumer(clientId, consumer);
     }
 
-    public static <K, V> void kafkaStream(String clientId, Consumer<KafkaStreamController> consumer) {
+    public static <K, V> void kafkaStream(String clientId, Object topology, Consumer<KafkaStreamController> consumer) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
-        kafkaProvider.stream(clientId, consumer);
+        kafkaProvider.stream(clientId, topology, consumer);
     }
 
     public static void elasticRegister(String identity, ElasticConfig config) {

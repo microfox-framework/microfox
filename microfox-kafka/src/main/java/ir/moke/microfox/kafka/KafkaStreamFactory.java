@@ -28,24 +28,19 @@ public class KafkaStreamFactory {
         shutdownHook();
     }
 
-    public static void register(String identity, Topology topology, Map<String, Object> configs) {
+    public static void register(String identity, Map<String, Object> configs) {
         if (identity == null)
             throw new MicroFoxException("identity could not be null");
-        if (topology == null)
-            throw new MicroFoxException("topology could not be null");
         if (configs == null)
             throw new MicroFoxException("config map could not be null");
         if (isAlreadyExists(identity))
             throw new MicroFoxException("Stream %s already registered".formatted(identity));
 
-        TOPOLOGY_MAP.put(identity, topology);
         CONFIGS.put(identity, configs);
         LISTENERS.put(identity, new CopyOnWriteArrayList<>());
-        STREAMS_MAP.put(identity, buildStreams(identity));
     }
 
-    static KafkaStreams buildStreams(String identity) {
-        Topology topology = TOPOLOGY_MAP.get(identity);
+    static KafkaStreams buildStreams(String identity, Topology topology) {
         Map<String, Object> configs = getConfig(identity);
 
         Properties properties = new Properties();
@@ -104,11 +99,11 @@ public class KafkaStreamFactory {
         STREAMS_MAP.keySet().forEach(KafkaStreamFactory::close);
     }
 
-    public static KafkaStreamController createProxyInstance(String clientId) {
+    public static KafkaStreamController createProxyInstance(String clientId,Topology topology) {
         return (KafkaStreamController) Proxy.newProxyInstance(
                 KafkaStreamController.class.getClassLoader(),
                 new Class<?>[]{KafkaStreamController.class},
-                new KafkaStreamHandler(clientId)
+                new KafkaStreamHandler(clientId, topology)
         );
     }
 

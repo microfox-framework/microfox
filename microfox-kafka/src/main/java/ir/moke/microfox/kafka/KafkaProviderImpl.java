@@ -4,10 +4,27 @@ import ir.moke.microfox.api.kafka.KafkaConsumerController;
 import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.kafka.KafkaStreamController;
+import org.apache.kafka.streams.Topology;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class KafkaProviderImpl implements KafkaProvider {
+
+    @Override
+    public void registerProducer(String identity, Map<String, Object> config) {
+        KafkaProducerFactory.register(identity, config);
+    }
+
+    @Override
+    public void registerConsumer(String identity, Map<String, Object> config) {
+        KafkaConsumerFactory.register(identity, config);
+    }
+
+    @Override
+    public void registerStream(String identity, Map<String, Object> config) {
+        KafkaStreamFactory.register(identity, config);
+    }
 
     @Override
     public <K, V> void produce(String clientId, Consumer<KafkaProducerController<K, V>> consumer) {
@@ -22,8 +39,8 @@ public class KafkaProviderImpl implements KafkaProvider {
     }
 
     @Override
-    public void stream(String clientId, Consumer<KafkaStreamController> consumer) {
-        KafkaStreamController kafkaStreamController = KafkaStreamFactory.createProxyInstance(clientId);
+    public void stream(String clientId, Object topology, Consumer<KafkaStreamController> consumer) {
+        KafkaStreamController kafkaStreamController = KafkaStreamFactory.createProxyInstance(clientId, (Topology) topology);
         consumer.accept(kafkaStreamController);
     }
 }
