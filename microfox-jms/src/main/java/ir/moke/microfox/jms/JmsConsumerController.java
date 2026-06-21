@@ -57,7 +57,7 @@ public class JmsConsumerController implements Closeable {
             context.start();
             logger.info("JMS Consumer started successfully: {}", identity);
         } catch (Exception e) {
-            logger.error("Failed to ensure JMS consumer is running for {}", identity, e);
+            logger.error("Failed to ensure JMS consumer is running for {} - {}", identity, e.getMessage());
         }
     }
 

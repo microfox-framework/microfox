@@ -55,7 +55,7 @@ public class JmsProviderImpl implements JmsProvider {
             jmsContext.setExceptionListener(new JmsConsumerExceptionListener());
             contextConsumer.accept(jmsContext);
         } catch (Exception e) {
-            logger.error("JMS producer exception for identity {}", identity, e);
+            logger.error("JMS producer exception for identity {} - {}", identity, e.getMessage());
             cleanupProducerContext(identity);
         }
     }
