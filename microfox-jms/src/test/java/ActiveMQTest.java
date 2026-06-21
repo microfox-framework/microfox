@@ -1,7 +1,7 @@
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
-import ir.moke.microfox.jms.JmsFactory;
+import ir.moke.microfox.api.jms.JmsConnectionInfo;
 import ir.moke.utils.date.CalendarType;
 import ir.moke.utils.date.DatePattern;
 import ir.moke.utils.date.DateTimeUtils;
@@ -13,7 +13,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import java.time.ZonedDateTime;
 import java.util.Locale;
 
-import static ir.moke.microfox.MicroFox.*;
+import static ir.moke.microfox.MicroFox.jmsListener;
+import static ir.moke.microfox.MicroFox.jmsProducer;
 
 /**
  * Run artemis container with this command :
@@ -36,18 +37,7 @@ public class ActiveMQTest {
 
     static void main() {
         jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
-        int count = 0;
-        for (; ; ) {
-            sendTestMessage();
-            count++;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ignore) {
-            }
-            if (count == 10) {
-                jmsStop(IDENTITY);
-            }
-        }
+        sendTestMessage();
     }
 
     public static void sendTestMessage() {
@@ -67,6 +57,6 @@ public class ActiveMQTest {
         connectionFactory.setUserName(USERNAME);
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setCloseTimeout(CONNECTION_TTL);
-        MicroFox.jmsRegister(IDENTITY, connectionFactory, 3);
+        MicroFox.jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory, 3));
     }
 }

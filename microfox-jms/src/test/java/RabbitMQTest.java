@@ -3,6 +3,7 @@ import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
+import ir.moke.microfox.api.jms.JmsConnectionInfo;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import ir.moke.utils.date.CalendarType;
@@ -15,7 +16,8 @@ import jakarta.jms.TextMessage;
 import java.time.ZonedDateTime;
 import java.util.Locale;
 
-import static ir.moke.microfox.MicroFox.*;
+import static ir.moke.microfox.MicroFox.jmsListener;
+import static ir.moke.microfox.MicroFox.jmsProducer;
 
 /**
  * Run rabbitmq container with this command :
@@ -40,18 +42,7 @@ public class RabbitMQTest {
 
     static void main() {
         jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
-        int count = 0;
-        for (; ; ) {
-            sendTestMessage();
-            count++;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ignore) {
-            }
-            if (count == 10) {
-                jmsStop(IDENTITY);
-            }
-        }
+        sendTestMessage();
     }
 
     public static void sendTestMessage() {
@@ -76,6 +67,6 @@ public class RabbitMQTest {
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setVirtualHost(VIRTUAL_HOST);
 
-        MicroFox.jmsRegister(IDENTITY, connectionFactory);
+        MicroFox.jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory));
     }
 }

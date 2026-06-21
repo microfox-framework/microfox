@@ -9,6 +9,15 @@ public class JmsConnectionInfo {
     private ConnectionFactory connectionFactory;
     private int concurrency;
 
+    public JmsConnectionInfo(ConnectionFactory connectionFactory, int concurrency) {
+        this.connectionFactory = connectionFactory;
+        this.concurrency = concurrency;
+    }
+
+    public JmsConnectionInfo(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
+
     public String getIdentity() {
         return identity;
     }

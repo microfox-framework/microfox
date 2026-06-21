@@ -9,7 +9,7 @@ public class CustomMessageListener implements MessageListener {
     public void onMessage(Message message) {
         try {
             if (message instanceof TextMessage tx) {
-                System.out.println(tx.getText());
+                System.out.println("> Receive: " + tx.getText());
             }
         } catch (JMSException e) {
             throw new MicroFoxException(e);

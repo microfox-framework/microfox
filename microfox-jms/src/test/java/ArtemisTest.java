@@ -2,7 +2,7 @@ import ch.qos.logback.classic.Level;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
-import ir.moke.microfox.jms.JmsFactory;
+import ir.moke.microfox.api.jms.JmsConnectionInfo;
 import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import ir.moke.utils.date.CalendarType;
 import ir.moke.utils.date.DatePattern;
@@ -37,8 +37,14 @@ public class ArtemisTest {
         registerArtemisConnectionFactory();
     }
 
-    static void main() {
+    static void main() throws InterruptedException {
         jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
+
+//        while (true) {
+//            sendTestMessage();
+//            Thread.sleep(1000);
+//        }
+
         int count = 0;
         for (; ; ) {
             sendTestMessage();
@@ -70,6 +76,8 @@ public class ArtemisTest {
         connectionFactory.setUser(USERNAME);
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setConnectionTTL(CONNECTION_TTL);
-        MicroFox.jmsRegister(IDENTITY, connectionFactory, 3);
+        connectionFactory.setCallTimeout(10000);
+
+        MicroFox.jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory, 5));
     }
 }
