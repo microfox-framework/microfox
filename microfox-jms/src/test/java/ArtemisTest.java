@@ -40,11 +40,6 @@ public class ArtemisTest {
     static void main() throws InterruptedException {
         jmsListener(IDENTITY, DestinationType.QUEUE, QUEUE_NAME, AckMode.AUTO_ACKNOWLEDGE, new CustomMessageListener());
 
-//        while (true) {
-//            sendTestMessage();
-//            Thread.sleep(1000);
-//        }
-
         int count = 0;
         for (; ; ) {
             sendTestMessage();
@@ -76,7 +71,6 @@ public class ArtemisTest {
         connectionFactory.setUser(USERNAME);
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setConnectionTTL(CONNECTION_TTL);
-        connectionFactory.setCallTimeout(10000);
 
         MicroFox.jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory, 5));
     }

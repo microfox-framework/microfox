@@ -7,7 +7,7 @@ import java.util.Objects;
 public class JmsConnectionInfo {
     private String identity;
     private ConnectionFactory connectionFactory;
-    private int concurrency;
+    private int concurrency = 1; // default value;
 
     public JmsConnectionInfo(ConnectionFactory connectionFactory, int concurrency) {
         this.connectionFactory = connectionFactory;
