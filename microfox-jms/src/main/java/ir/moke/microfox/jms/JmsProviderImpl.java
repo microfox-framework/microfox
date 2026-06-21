@@ -28,25 +28,14 @@ public class JmsProviderImpl implements JmsProvider {
     public void unregister(String identity) {
         CONSUMER_CONTROLLERS.removeIf(controller -> {
             if (controller.getIdentity().equals(identity)) {
-                try {
-                    controller.close();
-                } catch (Exception e) {
-                    logger.warn("Error closing consumer for {}", identity, e);
-                }
+                controller.close();
                 return true;
             }
             return false;
         });
 
         JMSContext context = PRODUCER_CONTEXT_MAP.remove(identity);
-        if (context != null) {
-            try {
-                context.close();
-            } catch (Exception e) {
-                logger.warn("Error closing producer context for {}", identity, e);
-            }
-        }
-
+        if (context != null) JmsUtils.contextClose(context);
         JmsFactory.unregister(identity);
     }
 
@@ -58,16 +47,13 @@ public class JmsProviderImpl implements JmsProvider {
 
             if (!isContextAlive(jmsContext)) {
                 JMSContext oldContext = PRODUCER_CONTEXT_MAP.remove(identity);
-                try {
-                    oldContext.close();
-                } catch (Exception ignore) {
-                }
-                PRODUCER_CONTEXT_MAP.put(identity, info.getConnectionFactory().createContext());
+                JmsUtils.contextClose(oldContext);
+                jmsContext = info.getConnectionFactory().createContext();
+                PRODUCER_CONTEXT_MAP.put(identity, jmsContext);
             }
 
             jmsContext.setExceptionListener(new JmsConsumerExceptionListener());
             contextConsumer.accept(jmsContext);
-
         } catch (Exception e) {
             logger.error("JMS producer exception for identity {}", identity, e);
             cleanupProducerContext(identity);
@@ -76,12 +62,7 @@ public class JmsProviderImpl implements JmsProvider {
 
     private void cleanupProducerContext(String identity) {
         JMSContext context = PRODUCER_CONTEXT_MAP.remove(identity);
-        if (context != null) {
-            try {
-                context.close();
-            } catch (Exception ignored) {
-            }
-        }
+        if (context != null) JmsUtils.contextClose(context);
     }
 
     private static boolean isContextAlive(JMSContext context) {
@@ -95,10 +76,7 @@ public class JmsProviderImpl implements JmsProvider {
     }
 
     @Override
-    public void consume(String identity, String destinationName,
-                        AckMode acknowledgeMode, DestinationType type,
-                        MessageListener listener) {
-
+    public void consume(String identity, String destinationName, AckMode acknowledgeMode, DestinationType type, MessageListener listener) {
         // Prevent duplicate controllers
         boolean alreadyExists = CONSUMER_CONTROLLERS.stream()
                 .anyMatch(c -> c.getIdentity().equals(identity));
@@ -126,21 +104,9 @@ public class JmsProviderImpl implements JmsProvider {
 
     // Add this method for proper shutdown
     public void shutdown() {
-        CONSUMER_CONTROLLERS.forEach(controller -> {
-            try {
-                controller.close();
-            } catch (Exception e) {
-                logger.warn("Error closing controller", e);
-            }
-        });
+        CONSUMER_CONTROLLERS.forEach(JmsConsumerController::close);
         CONSUMER_CONTROLLERS.clear();
-
-        PRODUCER_CONTEXT_MAP.values().forEach(ctx -> {
-            try {
-                ctx.close();
-            } catch (Exception ignored) {
-            }
-        });
+        PRODUCER_CONTEXT_MAP.values().forEach(JmsUtils::contextClose);
         PRODUCER_CONTEXT_MAP.clear();
     }
 }

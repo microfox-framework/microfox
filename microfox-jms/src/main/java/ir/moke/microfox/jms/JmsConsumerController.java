@@ -32,7 +32,6 @@ public class JmsConsumerController implements Closeable {
     }
 
     public void start(String destinationName, MessageListener listener, AckMode acknowledgeMode, DestinationType type) {
-
         if (running) return;
         running = true;
         scheduler = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "jms-consumer" + identity));
@@ -47,10 +46,7 @@ public class JmsConsumerController implements Closeable {
         if (!running) return;
 
         try {
-            if (isFull()) {
-                return;
-            }
-
+            if (isFull()) return;
             logger.info("Creating new JMS consumer for {}", identity);
             JMSContext context = connectionFactory.createContext(acknowledgeMode.getMode());
             CONTEXTS.add(context);
@@ -60,7 +56,6 @@ public class JmsConsumerController implements Closeable {
             consumer.setMessageListener(listener);
             context.start();
             logger.info("JMS Consumer started successfully: {}", identity);
-
         } catch (Exception e) {
             logger.error("Failed to ensure JMS consumer is running for {}", identity, e);
         }
@@ -77,40 +72,23 @@ public class JmsConsumerController implements Closeable {
 
     private void removeContext(JMSContext context) {
         if (context != null) {
-            try {
-                context.close();
-            } catch (Exception ignored) {
-            }
+            JmsUtils.contextClose(context);
             CONTEXTS.remove(context);
         }
     }
 
     public void stop() {
         running = false;
-        for (JMSContext ctx : CONTEXTS) {
-            try {
-                ctx.stop();
-            } catch (Exception ignored) {
-            }
-        }
+        CONTEXTS.forEach(JMSContext::stop);
     }
 
     @Override
     public void close() {
         running = false;
         stop();
-
-        for (JMSContext ctx : CONTEXTS) {
-            try {
-                ctx.close();
-            } catch (Exception ignored) {
-            }
-        }
+        CONTEXTS.forEach(JmsUtils::contextClose);
         CONTEXTS.clear();
-
-        if (scheduler != null) {
-            scheduler.shutdownNow();
-        }
+        if (scheduler != null) scheduler.shutdownNow();
     }
 
     public String getIdentity() {
