@@ -74,6 +74,10 @@
         </dependency>
         <dependency>
             <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
             <artifactId>microfox-system</artifactId>
         </dependency>
     </dependencies>
