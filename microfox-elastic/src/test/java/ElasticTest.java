@@ -1,4 +1,5 @@
 import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.elastic.*;
 import org.junit.jupiter.api.*;
 
@@ -10,7 +11,7 @@ public class ElasticTest {
     @BeforeAll
     public static void init() {
         ElasticConfig config = new ElasticConfig("127.0.0.1", 9200, "admin", "adminpass", false);
-        MicroFox.elasticRegister("el", config);
+        MicrofoxRegistry.elasticRegister("el", config);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package ir.moke.test;
 
+import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.test.sse.SseTask;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.sse.SseObject;
@@ -22,7 +23,7 @@ public class SseHttpTest {
          * run this command :
          * http --stream http://localhost:8080/api/sse 'Accept: text/event-stream'
          * */
-        MicroFox.sseRegister("sse-test", "/api/sse");
+        MicrofoxRegistry.sseRegister("sse-test", "/api/sse");
         MicroFox.ssePublisher("sse-test", new SseObject("Hello"));
 
     }

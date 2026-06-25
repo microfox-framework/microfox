@@ -1,5 +1,6 @@
 import ch.qos.logback.classic.Level;
 import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.kafka.KafkaConsumerController;
 import ir.moke.microfox.kafka.KafkaConsumerFactory;
 import ir.moke.microfox.logger.model.ConsoleGenericModel;
@@ -29,7 +30,7 @@ public class KafkaConsumerTest {
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, "G1");
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        KafkaConsumerFactory.register(IDENTITY, configs);
+        MicrofoxRegistry.kafkaConsumerRegister(IDENTITY, configs);
     }
 
     static void main() {

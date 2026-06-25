@@ -1,7 +1,7 @@
 import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.kafka.KafkaStreamController;
 import ir.moke.microfox.api.kafka.KafkaStreamState;
-import ir.moke.microfox.kafka.KafkaStreamFactory;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
@@ -29,7 +29,7 @@ public class KafkaStreamTest {
         configs.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         configs.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
-        KafkaStreamFactory.register(IDENTITY, configs);
+        MicrofoxRegistry.kafkaStreamRegister(IDENTITY, configs);
     }
 
     private static Topology createTopology() {

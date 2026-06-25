@@ -3,7 +3,6 @@ package ir.moke.microfox;
 import com.jcraft.jsch.ChannelSftp;
 import com.mongodb.client.MongoCollection;
 import ir.moke.kafir.http.Kafir;
-import ir.moke.microfox.api.elastic.ElasticConfig;
 import ir.moke.microfox.api.elastic.ElasticProvider;
 import ir.moke.microfox.api.elastic.ElasticRepository;
 import ir.moke.microfox.api.ftp.*;
@@ -14,7 +13,6 @@ import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
-import ir.moke.microfox.api.jms.JmsConnectionInfo;
 import ir.moke.microfox.api.jms.JmsProvider;
 import ir.moke.microfox.api.job.JobInfo;
 import ir.moke.microfox.api.job.JobProvider;
@@ -26,15 +24,11 @@ import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.kafka.KafkaStreamController;
 import ir.moke.microfox.api.metrics.MetricsProvider;
-import ir.moke.microfox.api.mongodb.MongoConnectionInfo;
 import ir.moke.microfox.api.mongodb.MongoProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
-import ir.moke.microfox.api.redis.RedisConfig;
 import ir.moke.microfox.api.redis.RedisProvider;
 import ir.moke.microfox.api.system.SystemProvider;
-import ir.moke.microfox.exception.ExceptionMapper;
-import ir.moke.microfox.exception.ExceptionMapperHolder;
 import ir.moke.microfox.logger.LoggerManager;
 import ir.moke.microfox.logger.model.LogModel;
 import ir.moke.microfox.utils.HttpClientConfig;
@@ -50,6 +44,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class MicroFox {
+
     private static final HttpProvider httpProvider = ServiceLoader.load(HttpProvider.class).findFirst().orElse(null);
     private static final JobProvider jobProvider = ServiceLoader.load(JobProvider.class).findFirst().orElse(null);
     private static final FtpProvider ftpProvider = ServiceLoader.load(FtpProvider.class).findFirst().orElse(null);
@@ -76,14 +71,6 @@ public class MicroFox {
 
     public static void logger(LogModel log) {
         LoggerManager.registerLog(log);
-    }
-
-    public static <T extends Throwable> void exceptionMapperRegister(Class<T> t, ExceptionMapper mapper) {
-        ExceptionMapperHolder.add(t, mapper);
-    }
-
-    public static <T extends Throwable> void exceptionMapperUnregister(Class<T> t) {
-        ExceptionMapperHolder.remove(t);
     }
 
     public static void cors(Map<CORSHeader, String> valueMap) {
@@ -126,11 +113,6 @@ public class MicroFox {
         httpProvider.http(path, httpMethod, route, strategy, roles, scopes);
     }
 
-    public static void removeHttpRoute(String path, HttpMethod method) {
-        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.remove(path, method);
-    }
-
     public static void httpRouter(RouteInfo routeInfo) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.http(routeInfo);
@@ -139,11 +121,6 @@ public class MicroFox {
     public static void websocket(Class<?> endpointClass) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.websocket(endpointClass);
-    }
-
-    public static void sseRegister(String identity, String path) {
-        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.sseRegister(identity, path);
     }
 
     public static void ssePublisher(String identity, SseObject sseObject) {
@@ -291,21 +268,6 @@ public class MicroFox {
         myBatisProvider.mybatisBatch(identity, mapper, consumer);
     }
 
-    public static void jpaRegisterWithEntities(String identity, Set<Class<?>> entities, Map<String, Object> settings) {
-        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.registerWithEntities(identity, entities, settings);
-    }
-
-    public static void jpaRegisterWithPackage(String identity, Set<String> scanPackages, Map<String, Object> settings) {
-        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.registerWithPackages(identity, scanPackages, settings);
-    }
-
-    public static void jpaUnregister(String identity) {
-        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.unregister(identity);
-    }
-
     public static void jpa(String identity, Runnable runnable) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
         jpaProvider.jpa(identity, TransactionPolicy.REQUIRED, runnable);
@@ -341,16 +303,6 @@ public class MicroFox {
         jpaProvider.jpaPrintUpdateSchemaSQL(identity);
     }
 
-    public static void jmsRegister(String identity, JmsConnectionInfo connectionInfo) {
-        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.register(identity, connectionInfo);
-    }
-
-    public static void jmsUnregister(String identity) {
-        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.unregister(identity);
-    }
-
     public static void jmsListener(String identity, DestinationType type, String destination, AckMode acknowledgeMode, MessageListener listener) {
         if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
         jmsProvider.consume(identity, destination, acknowledgeMode, type, listener);
@@ -364,21 +316,6 @@ public class MicroFox {
     public static void jmsStop(String identity) {
         if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
         jmsProvider.stop(identity);
-    }
-
-    public static <K, V> void kafkaProducerRegister(String clientId, Map<String, Object> config) {
-        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
-        kafkaProvider.registerProducer(clientId, config);
-    }
-
-    public static <K, V> void kafkaConsumerRegister(String clientId, Map<String, Object> config) {
-        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
-        kafkaProvider.registerConsumer(clientId, config);
-    }
-
-    public static <K, V> void kafkaStreamRegister(String clientId, Map<String, Object> config) {
-        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
-        kafkaProvider.registerStream(clientId, config);
     }
 
     public static <K, V> void kafkaProducer(String clientId, Consumer<KafkaProducerController<K, V>> consumer) {
@@ -396,16 +333,6 @@ public class MicroFox {
         kafkaProvider.stream(clientId, topology, consumer);
     }
 
-    public static void elasticRegister(String identity, ElasticConfig config) {
-        if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");
-        elasticProvider.register(identity, config);
-    }
-
-    public static void elasticUnregister(String identity) {
-        if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");
-        elasticProvider.unregister(identity);
-    }
-
     public static <T> ElasticRepository<T> elastic(String identity, Class<T> entityClass) {
         if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");
         return elasticProvider.elastic(identity, entityClass);
@@ -413,16 +340,6 @@ public class MicroFox {
 
     public static <T> T httpClient(HttpClientConfig config, Class<T> clazz) {
         return new Kafir.KafirBuilder().setBaseUri(config.getBaseUri()).setAuthenticator(config.getAuthenticator()).setInterceptor(config.getInterceptor()).setHeaders(config.getHeaders()).setConnectionTimeout(config.getConnectionTimeout()).setExecutorService(config.getExecutorService()).setVersion(config.getVersion()).setSslContext(config.getSslContext()).build(clazz);
-    }
-
-    public static void mongoRegister(String identity, MongoConnectionInfo connectionInfo) {
-        if (mongoProvider == null) throw new UnsupportedOperationException("MongoDB support not available");
-        mongoProvider.register(identity, connectionInfo);
-    }
-
-    public static void mongoUnregister(String identity) {
-        if (mongoProvider == null) throw new UnsupportedOperationException("MongoDB support not available");
-        mongoProvider.unregister(identity);
     }
 
     public static <T> MongoCollection<T> mongo(String identity, Class<T> entityClass) {
@@ -478,16 +395,6 @@ public class MicroFox {
     public static void metricCounter(String name, Map<String, String> tags) {
         if (metricsProvider == null) throw new UnsupportedOperationException("Metrics support not available");
         metricsProvider.counter(name, tags);
-    }
-
-    public static void redisRegister(String identity, RedisConfig config) {
-        if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
-        redisProvider.register(identity, config);
-    }
-
-    public static void redisUnregister(String identity) {
-        if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
-        redisProvider.unregister(identity);
     }
 
     public static Object redis(String identity) {

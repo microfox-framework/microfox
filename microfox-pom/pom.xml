@@ -17,6 +17,10 @@
     <dependencies>
         <dependency>
             <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
             <artifactId>microfox-core</artifactId>
         </dependency>
         <dependency>

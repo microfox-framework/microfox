@@ -2,6 +2,7 @@ package ir.moke.test;
 
 import ch.qos.logback.classic.Level;
 import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.http.Chain;
 import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.Request;
@@ -29,8 +30,8 @@ public class BasicHttpTest {
     }
 
     static void main(String[] args) {
-        MicroFox.exceptionMapperRegister(SampleException.class, ExceptionController::handleSampleException);
-        MicroFox.exceptionMapperRegister(MicroFoxException.class, ExceptionController::handleMicrofoxException);
+        MicrofoxRegistry.exceptionMapperRegister(SampleException.class, ExceptionController::handleSampleException);
+        MicrofoxRegistry.exceptionMapperRegister(MicroFoxException.class, ExceptionController::handleMicrofoxException);
 
         MicroFox.httpFilter("/api/*", -700, BasicHttpTest::simpleFilter);
         MicroFox.httpRouter("/api/login", HttpMethod.GET, new RouteLogin(), new BasicAuthSecurity());
