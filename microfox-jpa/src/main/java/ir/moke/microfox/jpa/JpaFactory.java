@@ -6,7 +6,10 @@ import jakarta.persistence.*;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.service.ServiceRegistry;
 import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +46,7 @@ public class JpaFactory {
         getMetaSource(identity, entities, settings);
     }
 
+    @SuppressWarnings("unchecked")
     static void registerWithPackage(String identity, Set<String> scanPackages, Map<String, Object> settings) {
         if (CONNECTION_FACTORY_LIST.stream().map(EntityManagerFactory::getName).anyMatch(item -> item.equalsIgnoreCase(identity)))
             throw new MicroFoxException("Jpa with identity %s already exists".formatted(identity));
@@ -50,7 +54,8 @@ public class JpaFactory {
         PersistenceConfiguration configuration = new PersistenceConfiguration(identity);
         Optional.ofNullable(validatorFactory).ifPresent(item -> settings.put(AvailableSettings.JAKARTA_VALIDATION_FACTORY, item));
         settings.forEach(configuration::property);
-        Set<Class<?>> entities = scanPackages(scanPackages);
+        Collection<ClassLoader> classLoaders = (Collection<ClassLoader>) settings.get(AvailableSettings.CLASSLOADERS);
+        Set<Class<?>> entities = scanPackages(scanPackages, classLoaders);
         entities.forEach(configuration::managedClass);
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(configuration);
         CONNECTION_FACTORY_LIST.add(emf);
@@ -61,6 +66,9 @@ public class JpaFactory {
 
     static void unregister(String identity) {
         EntityManagerFactory emf = getEntityManagerFactory(identity);
+        MetadataSources metadataSources = METADATA_SOURCES_MAP.remove(identity);
+        ServiceRegistry serviceRegistry = metadataSources.getServiceRegistry();
+        StandardServiceRegistryBuilder.destroy(serviceRegistry);
         emf.close();
         CONNECTION_FACTORY_LIST.remove(emf);
     }
@@ -73,16 +81,18 @@ public class JpaFactory {
         METADATA_SOURCES_MAP.put(identity, sources);
     }
 
-    private static Set<Class<?>> scanPackages(Set<String> packages) {
-        Set<Class<?>> result = new HashSet<>();
+    private static Set<Class<?>> scanPackages(Set<String> packages, Collection<ClassLoader> classLoader) {
         if (packages != null && !packages.isEmpty()) {
-            for (String p : packages) {
-                Reflections reflections = new Reflections(p);
-                Set<Class<?>> entityClasses = reflections.getTypesAnnotatedWith(Entity.class);
-                result.addAll(entityClasses);
-            }
+            ConfigurationBuilder builder = new ConfigurationBuilder()
+                    .forPackages(packages.toArray(String[]::new))
+                    .addScanners(Scanners.TypesAnnotated);
+
+            if (classLoader != null) builder.addClassLoaders(classLoader.toArray(ClassLoader[]::new));
+
+            Reflections reflections = new Reflections(builder);
+            return reflections.getTypesAnnotatedWith(Entity.class);
         }
-        return result;
+        return Set.of();
     }
 
     static EntityManagerFactory getEntityManagerFactory(String identity) {
