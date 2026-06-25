@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.service.ServiceRegistry;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
@@ -66,10 +67,11 @@ public class JpaFactory {
 
     static void unregister(String identity) {
         EntityManagerFactory emf = getEntityManagerFactory(identity);
+        emf.unwrap(SessionFactoryImplementor.class).close();
+        emf.close();
         MetadataSources metadataSources = METADATA_SOURCES_MAP.remove(identity);
         ServiceRegistry serviceRegistry = metadataSources.getServiceRegistry();
         StandardServiceRegistryBuilder.destroy(serviceRegistry);
-        emf.close();
         CONNECTION_FACTORY_LIST.remove(emf);
     }
 
