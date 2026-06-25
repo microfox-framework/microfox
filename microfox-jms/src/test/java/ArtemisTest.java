@@ -1,5 +1,6 @@
 import ch.qos.logback.classic.Level;
 import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsConnectionInfo;
@@ -72,6 +73,6 @@ public class ArtemisTest {
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setConnectionTTL(CONNECTION_TTL);
 
-        MicroFox.jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory, 5));
+        MicrofoxRegistry.jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory, 5));
     }
 }

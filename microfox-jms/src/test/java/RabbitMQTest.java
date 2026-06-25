@@ -1,6 +1,7 @@
 import ch.qos.logback.classic.Level;
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsConnectionInfo;
@@ -78,6 +79,6 @@ public class RabbitMQTest {
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setVirtualHost(VIRTUAL_HOST);
 
-        MicroFox.jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory));
+        MicrofoxRegistry.jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory));
     }
 }
