@@ -35,7 +35,6 @@ public class KafkaProviderImpl implements KafkaProvider {
     @Override
     public void unregisterConsumer(String identity, Duration duration) {
         KafkaConsumerFactory.close(identity, duration);
-
     }
 
     @Override
