@@ -32,6 +32,7 @@ public class ElasticHttpClient {
                 .header("Content-Type", "application/json")
                 .header("Authorization", basicAuth)
                 .POST(HttpRequest.BodyPublishers.ofString(json))
+                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : 600))
                 .build();
 
         try (HttpClient client = create(config)) {
@@ -48,6 +49,7 @@ public class ElasticHttpClient {
                 .uri(URI.create(generateBaseURL(identity) + url))
                 .header("Content-Type", "application/json")
                 .header("Authorization", basicAuth)
+                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : 600))
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
@@ -67,6 +69,7 @@ public class ElasticHttpClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(generateBaseURL(identity) + url))
                 .header("Authorization", basicAuth)
+                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : 600))
                 .GET()
                 .build();
 
@@ -83,6 +86,7 @@ public class ElasticHttpClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(generateBaseURL(identity) + url))
                 .header("Authorization", basicAuth)
+                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : 600))
                 .DELETE()
                 .build();
 
@@ -94,10 +98,10 @@ public class ElasticHttpClient {
     }
 
     public static HttpClient create(ElasticConfig config) {
-        Duration duration = config.connectionTimeout();
+        int millis = config.connectionTimeout() != null ? config.connectionTimeout() : 600;
         if (!config.useSSL()) {
             return HttpClient.newBuilder()
-                    .connectTimeout(duration != null ? duration : Duration.ofSeconds(60))
+                    .connectTimeout(Duration.ofMillis(millis))
                     .build();
         }
 
@@ -121,7 +125,7 @@ public class ElasticHttpClient {
 
             return HttpClient.newBuilder()
                     .sslContext(sslContext)
-                    .connectTimeout(duration != null ? duration : Duration.ofSeconds(60))
+                    .connectTimeout(Duration.ofMillis(millis))
                     .build();
         } catch (Exception e) {
             throw new MicroFoxException(e);
