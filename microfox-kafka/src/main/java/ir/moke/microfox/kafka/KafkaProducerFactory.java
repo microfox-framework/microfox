@@ -39,8 +39,10 @@ public class KafkaProducerFactory {
     public static <K, V> void close(String identity, Duration timeout) {
         CONFIGS.remove(identity);
         KafkaProducer<?, ?> producer = PRODUCERS.remove(identity);
-        if (timeout != null) producer.close(timeout);
-        else producer.close();
+        if (producer != null) {
+            if (timeout != null) producer.close(timeout);
+            else producer.close();
+        }
     }
 
     @SuppressWarnings("unchecked")

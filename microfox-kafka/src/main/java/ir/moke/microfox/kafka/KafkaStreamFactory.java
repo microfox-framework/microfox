@@ -85,8 +85,7 @@ public class KafkaStreamFactory {
 
     public static void close(String clientId, Duration duration) {
         CONFIGS.remove(clientId);
-        CopyOnWriteArrayList<BiConsumer<KafkaStreamState, KafkaStreamState>> list = LISTENERS.remove(clientId);
-        list.clear();
+        LISTENERS.remove(clientId).clear();
         KafkaStreams kafkaStreams = STREAMS_MAP.remove(clientId);
         if (kafkaStreams != null) {
             kafkaStreams.close(duration);
