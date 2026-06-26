@@ -28,14 +28,7 @@ class MongoFactory {
     private static final Map<String, MongoConnectionInfo> MONGO_CONNECTION_INFOS = new ConcurrentHashMap<>();
 
     public static void registerMongoDatabase(String identity, MongoConnectionInfo info) {
-        String username = info.getUsername();
-        String password = info.getPassword();
-        String host = info.getHost();
-        int port = info.getPort();
-        String databaseName = info.getDatabaseName();
-        String connectionMetadata = info.getConnectionMetadata();
-        String connectionURL = "mongodb://%s:%s@%s:%s/%s?%s".formatted(username, password, host, port, databaseName, connectionMetadata);
-        ConnectionString connString = new ConnectionString(connectionURL);
+        ConnectionString connString = getConnectionString(info);
 
         CodecRegistry fromProviders = fromProviders(
                 new Jsr310CodecProvider(),
@@ -57,6 +50,17 @@ class MongoFactory {
         MONGO_CLIENTS.put(identity, mongoClient);
         MONGO_CONNECTION_INFOS.put(identity, info);
         logger.info("Mongo database successfully registered");
+    }
+
+    private static ConnectionString getConnectionString(MongoConnectionInfo info) {
+        String username = info.getUsername();
+        String password = info.getPassword();
+        String host = info.getHost();
+        int port = info.getPort();
+        String databaseName = info.getDatabaseName();
+        String connectionMetadata = info.getConnectionMetadata() == null ? "" : info.getConnectionMetadata();
+        String connectionURL = "mongodb://%s:%s@%s:%s/%s?%s".formatted(username, password, host, port, databaseName, connectionMetadata);
+        return new ConnectionString(connectionURL);
     }
 
     public static void unregister(String identity) {
