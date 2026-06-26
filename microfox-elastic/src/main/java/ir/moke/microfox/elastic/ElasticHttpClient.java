@@ -1,5 +1,6 @@
 package ir.moke.microfox.elastic;
 
+import ir.moke.microfox.api.elastic.ElasticConfig;
 import ir.moke.microfox.exception.MicroFoxException;
 
 import javax.net.ssl.SSLContext;
@@ -16,7 +17,7 @@ import java.time.Duration;
 public class ElasticHttpClient {
 
     public static String generateBaseURL(String identity) {
-        ir.moke.microfox.api.elastic.ElasticConfig config = ElasticFactory.getConfig(identity);
+        ElasticConfig config = ElasticFactory.getConfig(identity);
         boolean useSSL = config.useSSL();
         String host = config.host();
         int port = config.port();
@@ -24,7 +25,7 @@ public class ElasticHttpClient {
     }
 
     public static HttpResponse<String> post(String identity, String url, String json) {
-        ir.moke.microfox.api.elastic.ElasticConfig config = ElasticFactory.getConfig(identity);
+        ElasticConfig config = ElasticFactory.getConfig(identity);
         String basicAuth = ElasticAuth.basic(config.username(), config.password());
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(generateBaseURL(identity) + url))
@@ -41,7 +42,7 @@ public class ElasticHttpClient {
     }
 
     public static HttpResponse<String> put(String identity, String url, String json) {
-        ir.moke.microfox.api.elastic.ElasticConfig config = ElasticFactory.getConfig(identity);
+        ElasticConfig config = ElasticFactory.getConfig(identity);
         String basicAuth = ElasticAuth.basic(config.username(), config.password());
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(generateBaseURL(identity) + url))
@@ -61,7 +62,7 @@ public class ElasticHttpClient {
     }
 
     public static HttpResponse<String> get(String identity, String url) {
-        ir.moke.microfox.api.elastic.ElasticConfig config = ElasticFactory.getConfig(identity);
+        ElasticConfig config = ElasticFactory.getConfig(identity);
         String basicAuth = ElasticAuth.basic(config.username(), config.password());
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(generateBaseURL(identity) + url))
@@ -77,7 +78,7 @@ public class ElasticHttpClient {
     }
 
     public static HttpResponse<String> delete(String identity, String url) {
-        ir.moke.microfox.api.elastic.ElasticConfig config = ElasticFactory.getConfig(identity);
+        ElasticConfig config = ElasticFactory.getConfig(identity);
         String basicAuth = ElasticAuth.basic(config.username(), config.password());
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(generateBaseURL(identity) + url))
@@ -92,7 +93,7 @@ public class ElasticHttpClient {
         }
     }
 
-    public static HttpClient create(ir.moke.microfox.api.elastic.ElasticConfig config) {
+    public static HttpClient create(ElasticConfig config) {
         Duration duration = config.connectionTimeout();
         if (!config.useSSL()) {
             return HttpClient.newBuilder()
