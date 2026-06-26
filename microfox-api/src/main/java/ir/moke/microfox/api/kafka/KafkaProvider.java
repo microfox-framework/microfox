@@ -1,5 +1,6 @@
 package ir.moke.microfox.api.kafka;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -11,11 +12,11 @@ public interface KafkaProvider {
 
     void registerStream(String identity, Map<String, Object> config);
 
-    void unregisterProducer(String identity);
+    void unregisterProducer(String identity, Duration duration);
 
-    void unregisterConsumer(String identity);
+    void unregisterConsumer(String identity, Duration duration);
 
-    void unregisterStream(String identity);
+    void unregisterStream(String identity, Duration duration);
 
     <K, V> void produce(String identity, Consumer<KafkaProducerController<K, V>> consumer);
 

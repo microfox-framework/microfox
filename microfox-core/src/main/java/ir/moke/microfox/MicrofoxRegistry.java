@@ -15,6 +15,7 @@ import ir.moke.microfox.api.redis.RedisProvider;
 import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.ExceptionMapperHolder;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -77,19 +78,19 @@ public class MicrofoxRegistry {
         kafkaProvider.registerStream(clientId, config);
     }
 
-    public static void kafkaProducerUnregister(String clientId) {
+    public static void kafkaProducerUnregister(String clientId, Duration duration) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
-        kafkaProvider.unregisterProducer(clientId);
+        kafkaProvider.unregisterProducer(clientId, duration);
     }
 
-    public static void kafkaConsumerUnregister(String clientId) {
+    public static void kafkaConsumerUnregister(String clientId, Duration duration) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
-        kafkaProvider.unregisterConsumer(clientId);
+        kafkaProvider.unregisterConsumer(clientId, duration);
     }
 
-    public static void kafkaStreamUnregister(String clientId) {
+    public static void kafkaStreamUnregister(String clientId, Duration duration) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
-        kafkaProvider.unregisterStream(clientId);
+        kafkaProvider.unregisterStream(clientId, duration);
     }
 
     /* JMS */

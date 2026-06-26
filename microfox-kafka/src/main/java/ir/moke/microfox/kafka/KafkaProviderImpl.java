@@ -28,19 +28,19 @@ public class KafkaProviderImpl implements KafkaProvider {
     }
 
     @Override
-    public void unregisterProducer(String identity) {
-        KafkaProducerFactory.close(identity, Duration.ZERO);
+    public void unregisterProducer(String identity, Duration duration) {
+        KafkaProducerFactory.close(identity, duration);
     }
 
     @Override
-    public void unregisterConsumer(String identity) {
-        KafkaConsumerFactory.close(identity, Duration.ZERO);
+    public void unregisterConsumer(String identity, Duration duration) {
+        KafkaConsumerFactory.close(identity, duration);
 
     }
 
     @Override
-    public void unregisterStream(String identity) {
-        KafkaStreamFactory.close(identity);
+    public void unregisterStream(String identity, Duration duration) {
+        KafkaStreamFactory.close(identity, duration);
     }
 
     @Override

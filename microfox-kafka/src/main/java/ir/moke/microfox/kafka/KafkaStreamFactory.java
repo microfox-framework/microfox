@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Proxy;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,19 +83,19 @@ public class KafkaStreamFactory {
         LISTENERS.get(clientId).remove(listener);
     }
 
-    public static void close(String clientId) {
+    public static void close(String clientId, Duration duration) {
         CONFIGS.remove(clientId);
         CopyOnWriteArrayList<BiConsumer<KafkaStreamState, KafkaStreamState>> list = LISTENERS.remove(clientId);
         list.clear();
         KafkaStreams kafkaStreams = STREAMS_MAP.remove(clientId);
         if (kafkaStreams != null) {
-            kafkaStreams.close();
+            kafkaStreams.close(duration);
             kafkaStreams.cleanUp();
         }
     }
 
     public static void closeAll() {
-        STREAMS_MAP.keySet().forEach(KafkaStreamFactory::close);
+        STREAMS_MAP.keySet().forEach(item -> close(item, null));
     }
 
     public static KafkaStreamController createProxyInstance(String clientId, Topology topology) {
