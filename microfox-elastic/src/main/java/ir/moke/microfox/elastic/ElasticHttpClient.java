@@ -15,6 +15,7 @@ import java.security.cert.X509Certificate;
 import java.time.Duration;
 
 public class ElasticHttpClient {
+    private static final int DEFAULT_TIMEOUT = 30 * 100;
 
     public static String generateBaseURL(String identity) {
         ElasticConfig config = ElasticFactory.getConfig(identity);
@@ -32,7 +33,7 @@ public class ElasticHttpClient {
                 .header("Content-Type", "application/json")
                 .header("Authorization", basicAuth)
                 .POST(HttpRequest.BodyPublishers.ofString(json))
-                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : 600))
+                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : DEFAULT_TIMEOUT))
                 .build();
 
         try (HttpClient client = create(config)) {
@@ -49,7 +50,7 @@ public class ElasticHttpClient {
                 .uri(URI.create(generateBaseURL(identity) + url))
                 .header("Content-Type", "application/json")
                 .header("Authorization", basicAuth)
-                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : 600))
+                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : DEFAULT_TIMEOUT))
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
@@ -69,7 +70,7 @@ public class ElasticHttpClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(generateBaseURL(identity) + url))
                 .header("Authorization", basicAuth)
-                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : 600))
+                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : DEFAULT_TIMEOUT))
                 .GET()
                 .build();
 
@@ -86,7 +87,7 @@ public class ElasticHttpClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(generateBaseURL(identity) + url))
                 .header("Authorization", basicAuth)
-                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : 600))
+                .timeout(Duration.ofMillis(config.requestTimeout() != null ? config.requestTimeout() : DEFAULT_TIMEOUT))
                 .DELETE()
                 .build();
 
@@ -98,7 +99,7 @@ public class ElasticHttpClient {
     }
 
     public static HttpClient create(ElasticConfig config) {
-        int millis = config.connectionTimeout() != null ? config.connectionTimeout() : 600;
+        int millis = config.connectionTimeout() != null ? config.connectionTimeout() : DEFAULT_TIMEOUT;
         if (!config.useSSL()) {
             return HttpClient.newBuilder()
                     .connectTimeout(Duration.ofMillis(millis))
