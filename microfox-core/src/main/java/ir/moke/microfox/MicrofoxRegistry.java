@@ -77,6 +77,21 @@ public class MicrofoxRegistry {
         kafkaProvider.registerStream(clientId, config);
     }
 
+    public static void kafkaProducerUnregister(String clientId) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.unregisterProducer(clientId);
+    }
+
+    public static void kafkaConsumerUnregister(String clientId) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.unregisterConsumer(clientId);
+    }
+
+    public static void kafkaStreamUnregister(String clientId) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.unregisterStream(clientId);
+    }
+
     /* JMS */
     public static void jmsRegister(String identity, JmsConnectionInfo connectionInfo) {
         if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");

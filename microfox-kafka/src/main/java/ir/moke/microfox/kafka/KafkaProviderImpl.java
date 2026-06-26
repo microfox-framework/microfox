@@ -6,6 +6,7 @@ import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.kafka.KafkaStreamController;
 import org.apache.kafka.streams.Topology;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -24,6 +25,22 @@ public class KafkaProviderImpl implements KafkaProvider {
     @Override
     public void registerStream(String identity, Map<String, Object> config) {
         KafkaStreamFactory.register(identity, config);
+    }
+
+    @Override
+    public void unregisterProducer(String identity) {
+        KafkaProducerFactory.close(identity, Duration.ZERO);
+    }
+
+    @Override
+    public void unregisterConsumer(String identity) {
+        KafkaConsumerFactory.close(identity, Duration.ZERO);
+
+    }
+
+    @Override
+    public void unregisterStream(String identity) {
+        KafkaStreamFactory.close(identity);
     }
 
     @Override

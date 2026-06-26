@@ -32,6 +32,7 @@ public class KafkaConsumerFactory {
     }
 
     public static void close(String identity, Duration timeout) {
+        CONFIGS.remove(identity);
         KafkaConsumer<?, ?> consumer = CONSUMERS.remove(identity);
         if (consumer != null) {
             consumer.wakeup();

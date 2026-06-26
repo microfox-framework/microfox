@@ -19,7 +19,6 @@ import java.util.function.BiConsumer;
 
 public class KafkaStreamFactory {
     private static final Logger logger = LoggerFactory.getLogger(KafkaStreamFactory.class);
-    private static final Map<String, Topology> TOPOLOGY_MAP = new HashMap<>();
     private static final Map<String, Map<String, Object>> CONFIGS = new HashMap<>();
     private static final Map<String, KafkaStreams> STREAMS_MAP = new ConcurrentHashMap<>();
     private static final Map<String, CopyOnWriteArrayList<BiConsumer<KafkaStreamState, KafkaStreamState>>> LISTENERS = new ConcurrentHashMap<>();
@@ -83,11 +82,10 @@ public class KafkaStreamFactory {
         LISTENERS.get(clientId).remove(listener);
     }
 
-    public static Topology getTopology(String clientId) {
-        return TOPOLOGY_MAP.get(clientId);
-    }
-
     public static void close(String clientId) {
+        CONFIGS.remove(clientId);
+        CopyOnWriteArrayList<BiConsumer<KafkaStreamState, KafkaStreamState>> list = LISTENERS.remove(clientId);
+        list.clear();
         KafkaStreams kafkaStreams = STREAMS_MAP.remove(clientId);
         if (kafkaStreams != null) {
             kafkaStreams.close();
@@ -99,7 +97,7 @@ public class KafkaStreamFactory {
         STREAMS_MAP.keySet().forEach(KafkaStreamFactory::close);
     }
 
-    public static KafkaStreamController createProxyInstance(String clientId,Topology topology) {
+    public static KafkaStreamController createProxyInstance(String clientId, Topology topology) {
         return (KafkaStreamController) Proxy.newProxyInstance(
                 KafkaStreamController.class.getClassLoader(),
                 new Class<?>[]{KafkaStreamController.class},

@@ -11,6 +11,12 @@ public interface KafkaProvider {
 
     void registerStream(String identity, Map<String, Object> config);
 
+    void unregisterProducer(String identity);
+
+    void unregisterConsumer(String identity);
+
+    void unregisterStream(String identity);
+
     <K, V> void produce(String identity, Consumer<KafkaProducerController<K, V>> consumer);
 
     <K, V> void consumer(String identity, Consumer<KafkaConsumerController<K, V>> consumer);
