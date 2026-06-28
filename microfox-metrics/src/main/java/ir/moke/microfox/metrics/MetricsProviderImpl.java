@@ -1,6 +1,7 @@
 package ir.moke.microfox.metrics;
 
 import io.micrometer.core.instrument.Timer;
+import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.FilterInfo;
 import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.RouteInfo;
@@ -18,8 +19,8 @@ public class MetricsProviderImpl implements MetricsProvider, TtyAsciiCodecs {
     static {
         /* Metrics */
         logger.info("{}{}{}{}", "Metrics Activated", BACKGROUND_BLUE, "/metrics", RESET);
-        ResourceHolder.addFilter(new FilterInfo("/*", -999, MetricHttp::handleFilter, "metrics", "microfox"));
-        ResourceHolder.addRoute(new RouteInfo("/metrics", HttpMethod.GET, MetricHttp::handleRouter, "metrics", "microfox"));
+        MicroFox.httpFilter(new FilterInfo("/*", -999, MetricHttp::handleFilter, "metrics", "microfox"));
+        MicroFox.httpRouter(new RouteInfo("/metrics", HttpMethod.GET, MetricHttp::handleRouter, "metrics", "microfox"));
     }
 
     @Override

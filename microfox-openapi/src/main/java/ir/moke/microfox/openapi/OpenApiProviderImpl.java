@@ -1,5 +1,6 @@
 package ir.moke.microfox.openapi;
 
+import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
@@ -15,7 +16,7 @@ public class OpenApiProviderImpl implements OpenApiProvider, TtyAsciiCodecs {
     public void registerOpenAPI() {
         /* Redoc & Swagger */
         logger.info("{}{}{}", BACKGROUND_BLUE, "OpenAPI Activated", RESET);
-        ResourceHolder.addRoute(new RouteInfo("/docs", HttpMethod.GET, OpenApiServlet::handle));
-        ResourceHolder.addRoute(new RouteInfo("/docs/*", HttpMethod.GET, OpenApiServlet::handle));
+        MicroFox.httpRouter(new RouteInfo("/docs", HttpMethod.GET, OpenApiServlet::handle, "rapidoc", "microfox"));
+        MicroFox.httpRouter(new RouteInfo("/docs/*", HttpMethod.GET, OpenApiServlet::handle, "rapidoc", "microfox"));
     }
 }
