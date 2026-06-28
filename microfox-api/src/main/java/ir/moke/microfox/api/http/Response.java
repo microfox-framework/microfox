@@ -8,6 +8,8 @@ import java.time.Instant;
 import java.util.Date;
 
 public interface Response {
+    void body(byte[] bytes);
+
     void body(String payload);
 
     void body(Object o);

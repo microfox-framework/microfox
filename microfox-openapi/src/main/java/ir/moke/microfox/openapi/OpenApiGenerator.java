@@ -44,7 +44,6 @@ public class OpenApiGenerator {
                 .description(MicroFoxEnvironment.getEnv("microfox.open.api.description")));
         Paths paths = new Paths();
 
-
         for (RouteInfo routeInfo : ResourceHolder.listRoutes()) {
             PathItem item = paths.computeIfAbsent(routeInfo.getPath(), k -> new PathItem());
 

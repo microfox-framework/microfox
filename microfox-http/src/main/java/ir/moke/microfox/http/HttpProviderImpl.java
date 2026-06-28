@@ -12,22 +12,27 @@ public class HttpProviderImpl implements HttpProvider {
 
     @Override
     public void filter(String path, int order, Filter filter) {
-        ResourceHolder.addFilter(path, order, filter);
+        ResourceHolder.addFilter(new FilterInfo(path, order, filter));
+    }
+
+    @Override
+    public void filter(FilterInfo filterInfo) {
+        ResourceHolder.addFilter(filterInfo);
     }
 
     @Override
     public void http(String path, HttpMethod httpMethod, Route route) {
-        ResourceHolder.addRoute(httpMethod, path, route);
+        ResourceHolder.addRoute(new RouteInfo(path, httpMethod, route));
     }
 
     @Override
     public void http(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
-        ResourceHolder.addRoute(httpMethod, path, route, strategy, roles, scopes);
+        ResourceHolder.addRoute(new RouteInfo(path, httpMethod, route, strategy, roles, scopes));
     }
 
     @Override
     public void http(RouteInfo routeInfo) {
-        ResourceHolder.addRoute(routeInfo.getHttpMethod(), routeInfo.getPath(), routeInfo.getRoute());
+        ResourceHolder.addRoute(routeInfo);
     }
 
     @Override

@@ -19,7 +19,19 @@ public class RouteInfo {
     private String name;
     private String category;
 
-    public RouteInfo(HttpMethod httpMethod, String path, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
+    public RouteInfo(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes, String name, String category) {
+        this.httpMethod = httpMethod;
+        this.path = path;
+        this.route = route;
+        this.strategy = strategy;
+        this.roles = roles;
+        this.scopes = scopes;
+        this.name = name;
+        this.category = category;
+        pattern = HttpUtils.compilePattern(path);
+    }
+
+    public RouteInfo(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
         this.httpMethod = httpMethod;
         this.path = path;
         this.route = route;
@@ -29,10 +41,19 @@ public class RouteInfo {
         pattern = HttpUtils.compilePattern(path);
     }
 
-    public RouteInfo(HttpMethod httpMethod, String path, Route route) {
+    public RouteInfo(String path, HttpMethod httpMethod, Route route) {
         this.httpMethod = httpMethod;
         this.path = path;
         this.route = route;
+        pattern = HttpUtils.compilePattern(path);
+    }
+
+    public RouteInfo(String path, HttpMethod httpMethod, Route route, String name, String category) {
+        this.httpMethod = httpMethod;
+        this.path = path;
+        this.route = route;
+        this.name = name;
+        this.category = category;
         pattern = HttpUtils.compilePattern(path);
     }
 

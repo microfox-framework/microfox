@@ -98,6 +98,11 @@ public class MicroFox {
         httpProvider.filter(path, order, filter);
     }
 
+    public static void httpFilter(FilterInfo filterInfo) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.filter(filterInfo);
+    }
+
     public static void httpRouter(String path, HttpMethod httpMethod, Route route) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.http(path, httpMethod, route);

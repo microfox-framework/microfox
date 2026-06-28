@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
@@ -20,13 +21,17 @@ import java.util.Optional;
 public class ResponseHelper {
     private static final Logger logger = LoggerFactory.getLogger(ResponseHelper.class);
 
-    public static void body(String payload, HttpServletResponse response) {
+    public static void body(byte[] bytes, HttpServletResponse response) {
         try {
             ServletOutputStream outputStream = response.getOutputStream();
-            outputStream.write(payload.getBytes());
+            outputStream.write(bytes);
         } catch (IOException e) {
             throw new MicroFoxException(e);
         }
+    }
+
+    public static void body(String payload, HttpServletResponse response) {
+        body(payload.getBytes(StandardCharsets.UTF_8), response);
     }
 
     public static void body(Object o, HttpServletResponse response) {

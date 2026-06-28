@@ -1,6 +1,7 @@
 #!/bin/bash
 
 rm -rf lib/
-mvn clean compile package install -DskipTests
+# mvn clean compile package install -DskipTests
+time mvnd compile package install -DskipTests -Dmaven.test.skip=true -Dparallel=all -T 16
 
 rm lib/*.pom

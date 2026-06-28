@@ -71,7 +71,9 @@ public class ResponseProxy implements InvocationHandler {
     }
 
     private void invokeBody(Object[] args) {
-        if (args[0] instanceof String) {
+        if (args[0] instanceof byte[]) {
+            ResponseHelper.body((byte[]) args[0], response);
+        } else if (args[0] instanceof String) {
             ResponseHelper.body((String) args[0], response);
         } else {
             ResponseHelper.body(args[0], response);

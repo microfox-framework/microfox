@@ -1,25 +1,22 @@
-package ir.moke.microfox.openapi.servlet;
+package ir.moke.microfox.openapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.models.OpenAPI;
 import ir.moke.microfox.api.http.ContentType;
-import ir.moke.microfox.openapi.OpenApiGenerator;
+import ir.moke.microfox.api.http.Request;
+import ir.moke.microfox.api.http.Response;
 import ir.moke.utils.json.JsonUtils;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class OpenApiServlet extends HttpServlet {
+public class OpenApiServlet {
     private static final Logger logger = LoggerFactory.getLogger(OpenApiServlet.class);
-    private String json;
+    private static final String json;
 
-    @Override
-    public void init() {
+    static {
         OpenAPI openAPI = OpenApiGenerator.generate();
         try {
             json = JsonUtils.toJson(openAPI);
@@ -29,30 +26,29 @@ public class OpenApiServlet extends HttpServlet {
         logger.info("Initialize OpenAPI");
     }
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String pathInfo = req.getRequestURI();
-        resp.setCharacterEncoding("UTF-8");
+
+    public static void handle(Request req, Response resp) throws Throwable {
+        String pathInfo = req.uri();
         if (pathInfo.equalsIgnoreCase("/docs/rapidoc-min.js")) {
-            resp.setContentType(ContentType.TEXT_JAVASCRIPT.getType());
-            resp.getOutputStream().write(rapidocJS().getBytes());
+            resp.contentType(ContentType.TEXT_JAVASCRIPT);
+            resp.body(rapidocJS().getBytes());
         } else if (pathInfo.endsWith("woff2")) {
             String[] split = pathInfo.split("/");
             String fontFile = split[split.length - 1];
-            resp.setContentType(ContentType.FONT_WOFF2.getType());
-            resp.getOutputStream().write(fontWOFF2(fontFile).getBytes());
+            resp.contentType(ContentType.FONT_WOFF2);
+            resp.body(fontWOFF2(fontFile).getBytes());
         } else if (pathInfo.equalsIgnoreCase("/docs/openapi.json")) {
-            resp.setContentType(ContentType.APPLICATION_JSON.getType());
-            resp.getOutputStream().write(json.getBytes());
+            resp.contentType(ContentType.APPLICATION_JSON);
+            resp.body(json.getBytes());
         } else if (pathInfo.equalsIgnoreCase("/docs/microfox.png")) {
-            resp.setContentType(ContentType.IMAGE_PNG.getType());
+            resp.contentType(ContentType.IMAGE_PNG);
             byte[] bytes = logoPNG();
             if (bytes != null) {
-                resp.getOutputStream().write(bytes);
+                resp.body(bytes);
             }
         } else {
-            resp.setContentType(ContentType.TEXT_HTML.getType());
-            resp.getOutputStream().write(indexHTML().getBytes());
+            resp.contentType(ContentType.TEXT_HTML);
+            resp.body(indexHTML().getBytes());
         }
     }
 

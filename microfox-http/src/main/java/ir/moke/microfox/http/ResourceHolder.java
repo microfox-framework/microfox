@@ -1,7 +1,8 @@
 package ir.moke.microfox.http;
 
-import ir.moke.microfox.api.http.*;
-import ir.moke.microfox.api.http.security.SecurityStrategy;
+import ir.moke.microfox.api.http.FilterInfo;
+import ir.moke.microfox.api.http.HttpMethod;
+import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.sse.SseInfo;
@@ -27,16 +28,18 @@ public class ResourceHolder {
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
     public static final ExecutorService SSE_EXECUTOR = Executors.newCachedThreadPool();
 
-    public static void addRoute(HttpMethod httpMethod, String path, Route route) {
-        addRoute(httpMethod, path, route, null, List.of(), List.of());
+    static {
+        EXECUTOR.execute(HttpContainer::start);
     }
 
-    public static void addRoute(HttpMethod httpMethod, String path, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
+    public static void addRoute(RouteInfo routeInfo) {
+        String path = routeInfo.getPath();
+        HttpMethod httpMethod = routeInfo.getHttpMethod();
+
         if (!path.startsWith("/")) throw new MicroFoxException("route path should started with '/'");
-        if (!HttpContainer.isStarted()) EXECUTOR.execute(HttpContainer::start);
         path = concatContextPath(path);
         logger.info("register route {}{} {}{}{}", BLUE, httpMethod, GREEN, path, RESET);
-        ROUTES.add(new RouteInfo(httpMethod, path, route, strategy, roles, scopes));
+        ROUTES.add(routeInfo);
     }
 
     public static void removeRoute(String path, HttpMethod httpMethod) {
@@ -48,11 +51,12 @@ public class ResourceHolder {
         return ROUTES;
     }
 
-    public static void addFilter(String path, int order, Filter filter) {
+    public static void addFilter(FilterInfo filterInfo) {
+        String path = filterInfo.getPath();
         if (!path.startsWith("/")) throw new MicroFoxException("filter path should started with '/'");
         path = concatContextPath(path);
         logger.info("register filter {}{}{}", GREEN, path, RESET);
-        FILTERS.add(new FilterInfo(path, order, filter));
+        FILTERS.add(filterInfo);
     }
 
     public static void addWebsocket(Class<?> wsClass) {
