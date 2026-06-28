@@ -6,7 +6,7 @@ import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.exception.MicroFoxException;
-import ir.moke.microfox.http.HttpUtils;
+import ir.moke.microfox.http.HttpHelper;
 import ir.moke.microfox.http.SecurityContext;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
+import static ir.moke.microfox.http.HttpHelper.findMatchingRouteInfo;
 
 public class SecurityFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(SecurityFilter.class);
@@ -37,23 +37,23 @@ public class SecurityFilter implements Filter {
     }
 
     private void applySecurity(RouteInfo routeInfo, HttpServletRequest req, HttpServletResponse resp, FilterChain chain) {
-        if (routeInfo.strategy() == null) {
+        if (routeInfo.getStrategy() == null) {
             doChain(req, resp, chain); // No security required
             return;
         }
 
-        SecurityStrategy strategy = routeInfo.strategy();
+        SecurityStrategy strategy = routeInfo.getStrategy();
         if (!strategy.isRequired()) {
             doChain(req, resp, chain);
             return;
         }
 
-        Credential credential = strategy.authenticate(HttpUtils.getRequest(req));
+        Credential credential = strategy.authenticate(HttpHelper.getRequest(req));
         if (credential == null) {
             throw new MicroFoxException(StatusCode.UNAUTHORIZED);
         }
 
-        if (!strategy.authorize(credential, routeInfo.roles(), routeInfo.scopes())) {
+        if (!strategy.authorize(credential, routeInfo.getRoles(), routeInfo.getScopes())) {
             throw new MicroFoxException(StatusCode.FORBIDDEN);
         }
 
@@ -65,7 +65,7 @@ public class SecurityFilter implements Filter {
         try {
             chain.doFilter(req, resp);
         } catch (Throwable e) {
-            HttpUtils.handleExceptionMapper(resp, e);
+            HttpHelper.handleExceptionMapper(resp, e);
         }
     }
 }

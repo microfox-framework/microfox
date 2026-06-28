@@ -24,8 +24,8 @@ import ir.moke.microfox.MicroFoxEnvironment;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.Route;
-import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.api.http.RouteInfo;
+import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.utils.json.JsonUtils;
 
 import java.lang.reflect.Method;
@@ -46,11 +46,11 @@ public class OpenApiGenerator {
 
 
         for (RouteInfo routeInfo : ResourceHolder.listRoutes()) {
-            PathItem item = paths.computeIfAbsent(routeInfo.path(), k -> new PathItem());
+            PathItem item = paths.computeIfAbsent(routeInfo.getPath(), k -> new PathItem());
 
-            Operation op = extractSwaggerAnnotation(routeInfo.route());
+            Operation op = extractSwaggerAnnotation(routeInfo.getRoute());
 
-            switch (routeInfo.httpMethod()) {
+            switch (routeInfo.getHttpMethod()) {
                 case GET -> item.get(op);
                 case POST -> item.post(op);
                 case PUT -> item.put(op);
@@ -61,7 +61,7 @@ public class OpenApiGenerator {
                 case TRACE -> item.trace(op);
             }
 
-            paths.addPathItem(routeInfo.path(), item);
+            paths.addPathItem(routeInfo.getPath(), item);
         }
 
         openAPI.setPaths(paths);

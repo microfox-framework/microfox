@@ -4,7 +4,7 @@ import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.RouteInfo;
-import ir.moke.microfox.http.HttpUtils;
+import ir.moke.microfox.http.HttpHelper;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.sse.SseInfo;
 import ir.moke.microfox.http.sse.SseSubscriber;
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import static ir.moke.microfox.http.HttpUtils.findMatchingRouteInfo;
+import static ir.moke.microfox.http.HttpHelper.findMatchingRouteInfo;
 
 public class BaseServlet extends HttpServlet {
 
@@ -35,7 +35,7 @@ public class BaseServlet extends HttpServlet {
                 try {
                     handle(req, resp, routeInfo);
                 } catch (Throwable e) {
-                    HttpUtils.handleExceptionMapper(resp, e);
+                    HttpHelper.handleExceptionMapper(resp, e);
                 }
             } else {
                 notFound(resp);
@@ -44,8 +44,8 @@ public class BaseServlet extends HttpServlet {
     }
 
     private static void handle(HttpServletRequest req, HttpServletResponse resp, RouteInfo routeInfo) throws Throwable {
-        Route route = routeInfo.route();
-        route.handle(HttpUtils.getRequest(req), HttpUtils.getResponse(resp));
+        Route route = routeInfo.getRoute();
+        route.handle(HttpHelper.getRequest(req), HttpHelper.getResponse(resp));
     }
 
     private static void handleSse(HttpServletRequest req, HttpServletResponse resp) {
@@ -64,7 +64,7 @@ public class BaseServlet extends HttpServlet {
             return;
         }
 
-        SseSubscriber subscriber = new SseSubscriber(HttpUtils.getResponse(resp), asyncContext, opt.get());
+        SseSubscriber subscriber = new SseSubscriber(HttpHelper.getResponse(resp), asyncContext, opt.get());
         opt.get().getPublisher().subscribe(subscriber);
     }
 

@@ -4,7 +4,7 @@ import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.StatusCode;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
-import ir.moke.microfox.http.HttpUtils;
+import ir.moke.microfox.http.HttpHelper;
 import ir.moke.utils.json.JsonUtils;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
@@ -43,10 +43,10 @@ public class ResponseHelper {
     public static void sse(SseObject sseObject, HttpServletResponse response) {
         try {
             ServletOutputStream outputStream = response.getOutputStream();
-            Optional.ofNullable(sseObject.retry()).ifPresent(item -> HttpUtils.sendResponse(response, "retry: %s \n".formatted(sseObject.retry()).getBytes()));
-            Optional.ofNullable(sseObject.id()).ifPresent(item -> HttpUtils.sendResponse(response, "id: %s \n".formatted(sseObject.id()).getBytes()));
-            Optional.ofNullable(sseObject.event()).ifPresent(item -> HttpUtils.sendResponse(response, "event: %s \n".formatted(sseObject.event()).getBytes()));
-            Optional.ofNullable(sseObject.data()).ifPresent(item -> HttpUtils.sendResponse(response, "data: %s \n\n".formatted(sseObject.data()).getBytes()));
+            Optional.ofNullable(sseObject.retry()).ifPresent(item -> HttpHelper.sendResponse(response, "retry: %s \n".formatted(sseObject.retry()).getBytes()));
+            Optional.ofNullable(sseObject.id()).ifPresent(item -> HttpHelper.sendResponse(response, "id: %s \n".formatted(sseObject.id()).getBytes()));
+            Optional.ofNullable(sseObject.event()).ifPresent(item -> HttpHelper.sendResponse(response, "event: %s \n".formatted(sseObject.event()).getBytes()));
+            Optional.ofNullable(sseObject.data()).ifPresent(item -> HttpHelper.sendResponse(response, "data: %s \n\n".formatted(sseObject.data()).getBytes()));
             outputStream.flush();
         } catch (IOException e) {
             throw new MicroFoxException(e);

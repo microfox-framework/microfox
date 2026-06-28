@@ -27,7 +27,7 @@ public class HttpProviderImpl implements HttpProvider {
 
     @Override
     public void http(RouteInfo routeInfo) {
-        ResourceHolder.addRoute(routeInfo.httpMethod(), routeInfo.path(), routeInfo.route());
+        ResourceHolder.addRoute(routeInfo.getHttpMethod(), routeInfo.getPath(), routeInfo.getRoute());
     }
 
     @Override

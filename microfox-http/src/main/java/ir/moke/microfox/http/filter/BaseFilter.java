@@ -1,10 +1,10 @@
 package ir.moke.microfox.http.filter;
 
 import ir.moke.microfox.api.http.Chain;
+import ir.moke.microfox.api.http.FilterInfo;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
-import ir.moke.microfox.http.FilterInfo;
-import ir.moke.microfox.http.HttpUtils;
+import ir.moke.microfox.http.HttpHelper;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static ir.moke.microfox.http.HttpUtils.findMatchingFilterInfo;
-
 public class BaseFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(BaseFilter.class);
 
@@ -26,7 +24,7 @@ public class BaseFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
-        List<FilterInfo> list = findMatchingFilterInfo(req.getRequestURI());
+        List<FilterInfo> list = HttpHelper.findMatchingFilterInfo(req.getRequestURI());
         applyFilter(0, list, req, resp, chain);
     }
 
@@ -38,17 +36,17 @@ public class BaseFilter implements Filter {
 
         FilterInfo filterInfo = filterList.get(index);
 
-        Request req = HttpUtils.getRequest(request);
-        Response resp = HttpUtils.getResponse(response);
+        Request req = HttpHelper.getRequest(request);
+        Response resp = HttpHelper.getResponse(response);
         Chain chain = (_, _) -> applyFilter(index + 1, filterList, request, response, filterChain);
-        filterInfo.filter().handle(req, resp, chain);
+        filterInfo.getFilter().handle(req, resp, chain);
     }
 
     private static void doChain(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
         try {
             chain.doFilter(request, response);
         } catch (Throwable e) {
-            HttpUtils.handleExceptionMapper(response, e);
+            HttpHelper.handleExceptionMapper(response, e);
         }
     }
 }

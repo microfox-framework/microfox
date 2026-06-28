@@ -1,9 +1,6 @@
 package ir.moke.microfox.http;
 
-import ir.moke.microfox.api.http.Filter;
-import ir.moke.microfox.api.http.HttpMethod;
-import ir.moke.microfox.api.http.Route;
-import ir.moke.microfox.api.http.RouteInfo;
+import ir.moke.microfox.api.http.*;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
@@ -18,7 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.SubmissionPublisher;
 
-import static ir.moke.microfox.http.HttpUtils.concatContextPath;
+import static ir.moke.microfox.http.HttpHelper.concatContextPath;
 import static ir.moke.utils.TtyAsciiCodecs.*;
 
 public class ResourceHolder {
@@ -43,7 +40,7 @@ public class ResourceHolder {
     }
 
     public static void removeRoute(String path, HttpMethod httpMethod) {
-        ROUTES.removeIf(item -> item.path().equals(path) && item.httpMethod().equals(httpMethod));
+        ROUTES.removeIf(item -> item.getPath().equals(path) && item.getHttpMethod().equals(httpMethod));
         logger.info("remove route {}{} {}{}{}", BACKGROUND_RED, httpMethod, BACKGROUND_RED, path, RESET);
     }
 
