@@ -4,7 +4,6 @@ import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
-import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.utils.TtyAsciiCodecs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
