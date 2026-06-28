@@ -34,11 +34,12 @@ public class ResourceHolder {
 
     public static void addRoute(RouteInfo routeInfo) {
         String path = routeInfo.getPath();
+        String name = routeInfo.getName();
         HttpMethod httpMethod = routeInfo.getHttpMethod();
 
         if (!path.startsWith("/")) throw new MicroFoxException("route path should started with '/'");
         path = concatContextPath(path);
-        logger.info("register route {}{} {}{}{}", BLUE, httpMethod, GREEN, path, RESET);
+        logger.info("register route [{}] - {}{} {}{}{}", name, BLUE, httpMethod, GREEN, path, RESET);
         ROUTES.add(routeInfo);
     }
 
@@ -53,9 +54,10 @@ public class ResourceHolder {
 
     public static void addFilter(FilterInfo filterInfo) {
         String path = filterInfo.getPath();
+        String name = filterInfo.getName();
         if (!path.startsWith("/")) throw new MicroFoxException("filter path should started with '/'");
         path = concatContextPath(path);
-        logger.info("register filter {}{}{}", GREEN, path, RESET);
+        logger.info("register filter [{}] - {}{}{}", name, GREEN, path, RESET);
         FILTERS.add(filterInfo);
     }
 
@@ -72,6 +74,13 @@ public class ResourceHolder {
 
     public static List<FilterInfo> listFilters() {
         return FILTERS;
+    }
+
+    public static FilterInfo getFilterByHash(String hash) {
+        return listFilters().stream()
+                .filter(item -> item.getHash().equals(hash))
+                .findFirst()
+                .orElse(null);
     }
 
     public static void registerSse(String identity, String path) {

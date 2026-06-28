@@ -98,9 +98,9 @@ public class MicroFox {
         httpProvider.filter(path, order, filter);
     }
 
-    public static List<FilterInfo> filters() {
+    public static void filter(String path, int order, String name, String category, Filter filter) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        return httpProvider.filterList();
+        httpProvider.filter(path, order, name, category, filter);
     }
 
     public static void filter(FilterInfo filterInfo) {
@@ -108,9 +108,24 @@ public class MicroFox {
         httpProvider.filter(filterInfo);
     }
 
+    public static List<FilterInfo> filters() {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        return httpProvider.filterList();
+    }
+
+    public static void filterSort(String... sortedHash) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.filterSort(sortedHash);
+    }
+
     public static void route(String path, HttpMethod httpMethod, Route route) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.route(path, httpMethod, route);
+    }
+
+    public static void route(String path, HttpMethod httpMethod, String name, String category, Route route) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.route(path, httpMethod, name, category, route);
     }
 
     public static void route(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy) {

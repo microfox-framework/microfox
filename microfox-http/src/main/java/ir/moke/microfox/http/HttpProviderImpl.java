@@ -17,6 +17,11 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
+    public void filter(String path, int order, String name, String category, Filter filter) {
+        ResourceHolder.addFilter(new FilterInfo(path, order, filter, name, category));
+    }
+
+    @Override
     public void filter(FilterInfo filterInfo) {
         ResourceHolder.addFilter(filterInfo);
     }
@@ -27,8 +32,22 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
+    public void filterSort(String... sortedHash) {
+        for (int i = 0; i < sortedHash.length; i++) {
+            String hash = sortedHash[i];
+            FilterInfo filterInfo = ResourceHolder.getFilterByHash(hash);
+            filterInfo.setOrder(i);
+        }
+    }
+
+    @Override
     public void route(String path, HttpMethod httpMethod, Route route) {
         ResourceHolder.addRoute(new RouteInfo(path, httpMethod, route));
+    }
+
+    @Override
+    public void route(String path, HttpMethod httpMethod, String name, String category, Route route) {
+        ResourceHolder.addRoute(new RouteInfo(path, httpMethod, route, name, category));
     }
 
     @Override

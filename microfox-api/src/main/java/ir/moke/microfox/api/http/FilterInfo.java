@@ -1,15 +1,18 @@
 package ir.moke.microfox.api.http;
 
+import ir.moke.utils.StringUtils;
+
 import java.util.regex.Pattern;
 
 public class FilterInfo {
 
     private final String path;
-    private final int order;
+    private int order;
     private final Filter filter;
     private final Pattern pattern;
     private String name;
     private String category;
+    private String hash;
 
     public FilterInfo(String path, int order, Filter filter, String name, String category) {
         this.path = path;
@@ -18,6 +21,7 @@ public class FilterInfo {
         this.name = name;
         this.category = category;
         pattern = HttpUtils.compilePattern(path);
+        this.hash = StringUtils.randomHash();
     }
 
     public FilterInfo(String path, int order, Filter filter) {
@@ -33,6 +37,10 @@ public class FilterInfo {
 
     public int getOrder() {
         return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     public Filter getFilter() {
@@ -57,5 +65,9 @@ public class FilterInfo {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getHash() {
+        return hash;
     }
 }
