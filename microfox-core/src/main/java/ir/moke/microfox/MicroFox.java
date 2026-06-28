@@ -93,34 +93,44 @@ public class MicroFox {
         });
     }
 
-    public static void httpFilter(String path, int order, Filter filter) {
+    public static void filter(String path, int order, Filter filter) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.filter(path, order, filter);
     }
 
-    public static void httpFilter(FilterInfo filterInfo) {
+    public static List<FilterInfo> filters() {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        return httpProvider.filterList();
+    }
+
+    public static void filter(FilterInfo filterInfo) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.filter(filterInfo);
     }
 
-    public static void httpRouter(String path, HttpMethod httpMethod, Route route) {
+    public static void route(String path, HttpMethod httpMethod, Route route) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.http(path, httpMethod, route);
+        httpProvider.route(path, httpMethod, route);
     }
 
-    public static void httpRouter(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy) {
+    public static void route(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.http(path, httpMethod, route, strategy, List.of(), List.of());
+        httpProvider.route(path, httpMethod, route, strategy, List.of(), List.of());
     }
 
-    public static void httpRouter(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
+    public static void route(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.http(path, httpMethod, route, strategy, roles, scopes);
+        httpProvider.route(path, httpMethod, route, strategy, roles, scopes);
     }
 
-    public static void httpRouter(RouteInfo routeInfo) {
+    public static void route(RouteInfo routeInfo) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.http(routeInfo);
+        httpProvider.route(routeInfo);
+    }
+
+    public static Set<RouteInfo> routes() {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        return httpProvider.routeList();
     }
 
     public static void websocket(Class<?> endpointClass) {

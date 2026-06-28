@@ -15,7 +15,7 @@ public class OpenApiProviderImpl implements OpenApiProvider, TtyAsciiCodecs {
     public void registerOpenAPI() {
         /* Redoc & Swagger */
         logger.info("{}{}{}", BACKGROUND_BLUE, "OpenAPI Activated", RESET);
-        MicroFox.httpRouter(new RouteInfo("/docs", HttpMethod.GET, OpenApiServlet::handle, "rapidoc", "microfox"));
-        MicroFox.httpRouter(new RouteInfo("/docs/*", HttpMethod.GET, OpenApiServlet::handle, "rapidoc", "microfox"));
+        MicroFox.route(new RouteInfo("/docs", HttpMethod.GET, OpenApiServlet::handle, "rapidoc", "microfox"));
+        MicroFox.route(new RouteInfo("/docs/*", HttpMethod.GET, OpenApiServlet::handle, "rapidoc", "microfox"));
     }
 }

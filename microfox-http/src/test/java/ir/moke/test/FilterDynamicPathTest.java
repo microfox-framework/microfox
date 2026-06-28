@@ -15,8 +15,8 @@ public class FilterDynamicPathTest {
 //        MicroFox.httpFilter("/api/v1/123", 1, FilterDynamicPathTest::filter);
 //        MicroFox.httpRouter("/api/v1/123", HttpMethod.GET, FilterDynamicPathTest::hello);
 
-        MicroFox.httpFilter("/api/v1/{id}/*", 1, FilterDynamicPathTest::filter);
-        MicroFox.httpRouter("/api/v1/{id}hello", HttpMethod.GET, FilterDynamicPathTest::hello);
+        MicroFox.filter("/api/v1/{id}/*", 1, FilterDynamicPathTest::filter);
+        MicroFox.route("/api/v1/{id}hello", HttpMethod.GET, FilterDynamicPathTest::hello);
     }
 
     private static void filter(Request request, Response response, Chain chain) {

@@ -6,6 +6,7 @@ import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.SubmissionPublisher;
 
 public class HttpProviderImpl implements HttpProvider {
@@ -21,18 +22,28 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
-    public void http(String path, HttpMethod httpMethod, Route route) {
+    public List<FilterInfo> filterList() {
+        return ResourceHolder.listFilters();
+    }
+
+    @Override
+    public void route(String path, HttpMethod httpMethod, Route route) {
         ResourceHolder.addRoute(new RouteInfo(path, httpMethod, route));
     }
 
     @Override
-    public void http(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
+    public void route(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
         ResourceHolder.addRoute(new RouteInfo(path, httpMethod, route, strategy, roles, scopes));
     }
 
     @Override
-    public void http(RouteInfo routeInfo) {
+    public void route(RouteInfo routeInfo) {
         ResourceHolder.addRoute(routeInfo);
+    }
+
+    @Override
+    public Set<RouteInfo> routeList() {
+        return ResourceHolder.listRoutes();
     }
 
     @Override
