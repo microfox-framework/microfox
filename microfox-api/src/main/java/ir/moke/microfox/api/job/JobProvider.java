@@ -20,4 +20,6 @@ public interface JobProvider {
 
     List<JobInfo> listJobs();
 
+    JobInfo job(String name, String group);
+
 }

@@ -160,6 +160,15 @@ public class JobProviderImpl implements JobProvider {
         return jobInfos;
     }
 
+    @Override
+    public JobInfo job(String name, String group) {
+        return listJobs().stream()
+                .filter(item -> item.name().equals(name))
+                .filter(item -> item.group().equals(group))
+                .findAny()
+                .orElse(null);
+    }
+
     private boolean isJobExists(JobKey jobKey) {
         try {
             return scheduler.checkExists(jobKey);

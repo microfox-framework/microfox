@@ -223,6 +223,11 @@ public class MicroFox {
         return jobProvider.listJobs();
     }
 
+    public static JobInfo job(String name, String group) {
+        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
+        return jobProvider.job(name, group);
+    }
+
     public static void ftpDownload(MicroFoxFtpConfig config, Path remoteFilePath, Path localDownloadDir) {
         if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
         ftpProvider.ftpDownload(config, remoteFilePath, localDownloadDir);
