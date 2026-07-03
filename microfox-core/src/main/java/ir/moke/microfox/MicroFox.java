@@ -39,7 +39,6 @@ import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Consumer;
@@ -164,9 +163,9 @@ public class MicroFox {
         jobProvider.job(task, name, null, cronExpression, concurrentExecution);
     }
 
-    public static void job(Task task, String name, Date date) {
+    public static void job(Task task, String name, ZonedDateTime zonedDateTime) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        jobProvider.job(task, name, null, date);
+        jobProvider.job(task, name, null, zonedDateTime);
     }
 
     public static void job(Task task, String name, String group, String cronExpression, boolean concurrentExecution) {
@@ -174,9 +173,9 @@ public class MicroFox {
         jobProvider.job(task, name, group, cronExpression, concurrentExecution);
     }
 
-    public static void job(Task task, String name, String group, Date date) {
+    public static void job(Task task, String name, String group, ZonedDateTime zonedDateTime) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        jobProvider.job(task, name, group, date);
+        jobProvider.job(task, name, group, zonedDateTime);
     }
 
     public static void jobPause(String name, String group) {
