@@ -7,7 +7,6 @@ import ir.moke.microfox.exception.MicroFoxException;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,8 +73,8 @@ public class JobProviderImpl implements JobProvider {
     }
 
     @Override
-    public void job(Task task, String name, String group, ZonedDateTime zonedDateTime) {
-        register(task, name, group, Date.from(zonedDateTime.toInstant()));
+    public void job(Task task, String name, String group, Date date) {
+        register(task, name, group, date);
     }
 
     @Override
