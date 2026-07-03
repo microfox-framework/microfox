@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface JobProvider {
-    void job(Task task, String name, String group, String cronExpression, boolean disableConcurrentExecution);
+    void job(Task task, String name, String group, String cronExpression, boolean concurrentExecution);
 
     void job(Task task, String name, String group, ZonedDateTime zonedDateTime);
 

@@ -158,9 +158,9 @@ public class MicroFox {
         httpProvider.ssePublisher(identity, sseObject);
     }
 
-    public static void job(Task task, String name, String cronExpression, boolean disableConcurrentExecution) {
+    public static void job(Task task, String name, String cronExpression, boolean concurrentExecution) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        jobProvider.job(task, name, null, cronExpression, disableConcurrentExecution);
+        jobProvider.job(task, name, null, cronExpression, concurrentExecution);
     }
 
     public static void job(Task task, String name, ZonedDateTime zonedDateTime) {
@@ -168,9 +168,9 @@ public class MicroFox {
         jobProvider.job(task, name, null, zonedDateTime);
     }
 
-    public static void job(Task task, String name, String group, String cronExpression, boolean disableConcurrentExecution) {
+    public static void job(Task task, String name, String group, String cronExpression, boolean concurrentExecution) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        jobProvider.job(task, name, group, cronExpression, disableConcurrentExecution);
+        jobProvider.job(task, name, group, cronExpression, concurrentExecution);
     }
 
     public static void job(Task task, String name, String group, ZonedDateTime zonedDateTime) {

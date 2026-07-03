@@ -29,14 +29,14 @@ public class JobProviderImpl implements JobProvider {
         }
     }
 
-    private void register(Task task, String name, String group, String cronExpression, boolean disableConcurrentExecution) {
+    private void register(Task task, String name, String group, String cronExpression, boolean concurrentExecution) {
         try {
             JobKey jobKey = new JobKey(name, DEFAULT_JOB_NAME.apply(group));
             if (isJobExists(jobKey)) throw new MicroFoxException("The job with same name and group already exists");
             TaskRegistry.register(jobKey, task);
             JobDetail job = JobBuilder.newJob(DelegateJob.class)
                     .withIdentity(jobKey)
-                    .usingJobData("disableConcurrentExecution", disableConcurrentExecution)
+                    .usingJobData("concurrentExecution", concurrentExecution)
                     .build();
             CronTrigger trigger = TriggerBuilder.newTrigger()
                     .withSchedule(cronSchedule(cronExpression))
@@ -69,8 +69,8 @@ public class JobProviderImpl implements JobProvider {
     }
 
     @Override
-    public void job(Task task, String name, String group, String cronExpression, boolean disableConcurrentExecution) {
-        register(task, name, group, cronExpression, disableConcurrentExecution);
+    public void job(Task task, String name, String group, String cronExpression, boolean concurrentExecution) {
+        register(task, name, group, cronExpression, concurrentExecution);
     }
 
     @Override

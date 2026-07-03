@@ -18,9 +18,9 @@ public class DelegateJob implements Job {
     public void execute(JobExecutionContext context) {
         JobDataMap dataMap = context.getMergedJobDataMap();
         JobKey key = context.getJobDetail().getKey();
-        boolean disableConcurrentExecution = dataMap.getBoolean("disableConcurrentExecution");
+        boolean concurrentExecution = dataMap.getBoolean("concurrentExecution");
         ReentrantLock lock = null;
-        if (disableConcurrentExecution) {
+        if (!concurrentExecution) {
             String jobKey = key.toString();
             lock = locks.computeIfAbsent(jobKey, k -> new ReentrantLock());
 
@@ -33,7 +33,7 @@ public class DelegateJob implements Job {
         try {
             TaskRegistry.get(key).run();
         } finally {
-            if (disableConcurrentExecution) lock.unlock();
+            if (!concurrentExecution) lock.unlock();
         }
     }
 }
