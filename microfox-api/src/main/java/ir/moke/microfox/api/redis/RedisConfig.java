@@ -1,10 +1,8 @@
 package ir.moke.microfox.api.redis;
 
-import java.time.Duration;
-
 public class RedisConfig {
 
-    // jedis client config
+    // client config
     private String host;
     private Integer port;
     private String username;
@@ -15,11 +13,7 @@ public class RedisConfig {
 
     // pool configs
     private Integer minIdle;
-    private Integer maxIdle;
     private Integer maxTotal;
-    private Boolean fireness;
-    private Boolean lifo;
-    private Duration maxWait;
 
     public RedisConfig(String host, Integer port) {
         this.host = host;
@@ -103,43 +97,11 @@ public class RedisConfig {
         this.minIdle = minIdle;
     }
 
-    public Integer getMaxIdle() {
-        return maxIdle;
-    }
-
-    public void setMaxIdle(Integer maxIdle) {
-        this.maxIdle = maxIdle;
-    }
-
     public Integer getMaxTotal() {
         return maxTotal;
     }
 
     public void setMaxTotal(Integer maxTotal) {
         this.maxTotal = maxTotal;
-    }
-
-    public Boolean isFireness() {
-        return fireness;
-    }
-
-    public void setFireness(Boolean fireness) {
-        this.fireness = fireness;
-    }
-
-    public Boolean isLifo() {
-        return lifo;
-    }
-
-    public void setLifo(Boolean lifo) {
-        this.lifo = lifo;
-    }
-
-    public Duration getMaxWait() {
-        return maxWait;
-    }
-
-    public void setMaxWait(Duration maxWait) {
-        this.maxWait = maxWait;
     }
 }

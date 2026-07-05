@@ -5,5 +5,7 @@ public interface RedisProvider {
 
     void unregister(String identity);
 
-    Object unwrap(String identity);
+    Cache cache(String identity);
+
+    ClusterCoordinator cluster(String identity);
 }
