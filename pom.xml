@@ -33,7 +33,6 @@
 
     <modules>
         <module>microfox-api</module>
-        <module>microfox-pom</module>
         <module>microfox-core</module>
         <module>microfox-elastic</module>
         <module>microfox-ftp</module>

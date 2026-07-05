@@ -83,7 +83,7 @@ public class MicroFoxEnvironment {
             properties.putAll(loadYamlResources());
 
             // Merge environment variables
-            properties.putAll(System.getenv());
+            properties.putAll(loadSystemEnv());
             return properties;
         } catch (IOException e) {
             logger.error("Unknown error", e);
@@ -106,10 +106,6 @@ public class MicroFoxEnvironment {
         return properties;
     }
 
-    public static String getEnv(String key) {
-        return (String) sortedMap.get(normalizeKey(key));
-    }
-
     private static Properties loadYamlResources() {
         Properties props = new Properties();
         try {
@@ -118,7 +114,8 @@ public class MicroFoxEnvironment {
             List<URL> urls = Collections.list(resources).reversed(); // only for apply application config after accept all default values
             for (URL url : urls) {
                 try (InputStream is = url.openStream()) {
-                    props.putAll(YamlUtils.loadAsProperties(is));
+                    Properties properties = YamlUtils.loadAsProperties(is);
+                    properties.forEach((k, v) -> props.put(normalizeKey(String.valueOf(k)), String.valueOf(v)));
                 }
             }
         } catch (IOException e) {
@@ -128,8 +125,18 @@ public class MicroFoxEnvironment {
         return props;
     }
 
+    private static Properties loadSystemEnv() {
+        Properties props = new Properties();
+        System.getenv().forEach((k, v) -> props.put(normalizeKey(k), v));
+        return props;
+    }
+
     public static String normalizeKey(String key) {
         // make dash/underscore/dot interchangeable → all to dot
         return key.replace("-", ".").replace("_", ".").toLowerCase();
+    }
+
+    public static String getEnv(String key) {
+        return (String) sortedMap.get(normalizeKey(key));
     }
 }
