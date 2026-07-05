@@ -1,5 +1,6 @@
 package ir.moke.microfox.job;
 
+import ir.moke.microfox.api.job.JobOption;
 import ir.moke.microfox.api.job.JobProvider;
 import ir.moke.microfox.api.job.Task;
 import ir.moke.microfox.exception.MicroFoxException;
@@ -9,14 +10,12 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
 public class JobProviderImpl implements JobProvider {
     private final Scheduler scheduler;
-
-    private static final Function<String, String> DEFAULT_JOB_NAME = g -> Optional.ofNullable(g).orElse("MICROFOX_JOB");
+    private static final String DEFAULT_JOB_GROUP = "microfox";
 
     public JobProviderImpl() {
         try {
@@ -26,14 +25,20 @@ public class JobProviderImpl implements JobProvider {
         }
     }
 
-    private void register(Task task, String name, String group, String cronExpression, boolean concurrentExecution) {
+    private void register(Task task, String name, String group, String cronExpression, JobOption option) {
         try {
-            JobKey jobKey = new JobKey(name, DEFAULT_JOB_NAME.apply(group));
+            boolean allowConcurrent = option.isAllowConcurrent();
+            boolean distributed = option.isDistributed();
+            String identity = option.getIdentity();
+
+            JobKey jobKey = new JobKey(name, Optional.ofNullable(group).orElse(DEFAULT_JOB_GROUP));
             if (isJobExists(jobKey)) throw new MicroFoxException("The job with same name and group already exists");
             TaskRegistry.register(jobKey, task);
             JobDetail job = JobBuilder.newJob(DelegateJob.class)
                     .withIdentity(jobKey)
-                    .usingJobData("concurrentExecution", concurrentExecution)
+                    .usingJobData("allowConcurrent", allowConcurrent)
+                    .usingJobData("distribute", distributed)
+                    .usingJobData("identity", identity)
                     .build();
             CronTrigger trigger = TriggerBuilder.newTrigger()
                     .withSchedule(cronSchedule(cronExpression))
@@ -48,7 +53,7 @@ public class JobProviderImpl implements JobProvider {
 
     private void register(Task task, String name, String group, ZonedDateTime zonedDateTime) {
         try {
-            JobKey jobKey = new JobKey(name, DEFAULT_JOB_NAME.apply(group));
+            JobKey jobKey = new JobKey(name, Optional.ofNullable(group).orElse(DEFAULT_JOB_GROUP));
             if (isJobExists(jobKey)) throw new MicroFoxException("The job with same name and group already exists");
             TaskRegistry.register(jobKey, task);
             JobDetail job = JobBuilder.newJob(DelegateJob.class)
@@ -66,8 +71,8 @@ public class JobProviderImpl implements JobProvider {
     }
 
     @Override
-    public void job(Task task, String name, String group, String cronExpression, boolean concurrentExecution) {
-        register(task, name, group, cronExpression, concurrentExecution);
+    public void job(Task task, String name, String group, String cronExpression, JobOption option) {
+        register(task, name, group, cronExpression, option);
     }
 
     @Override
@@ -87,7 +92,7 @@ public class JobProviderImpl implements JobProvider {
     @Override
     public void pauseJob(String name, String group) {
         try {
-            scheduler.pauseJob(new JobKey(name, DEFAULT_JOB_NAME.apply(group)));
+            scheduler.pauseJob(new JobKey(name, Optional.ofNullable(group).orElse(DEFAULT_JOB_GROUP)));
         } catch (SchedulerException e) {
             throw new MicroFoxException(e);
         }
@@ -96,7 +101,7 @@ public class JobProviderImpl implements JobProvider {
     @Override
     public void resumeJob(String name, String group) {
         try {
-            scheduler.resumeJob(new JobKey(name, DEFAULT_JOB_NAME.apply(group)));
+            scheduler.resumeJob(new JobKey(name, Optional.ofNullable(group).orElse(DEFAULT_JOB_GROUP)));
         } catch (SchedulerException e) {
             throw new MicroFoxException(e);
         }

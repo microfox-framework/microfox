@@ -14,6 +14,7 @@ import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsProvider;
+import ir.moke.microfox.api.job.JobOption;
 import ir.moke.microfox.api.job.JobProvider;
 import ir.moke.microfox.api.job.Task;
 import ir.moke.microfox.api.jpa.JpaProvider;
@@ -159,9 +160,9 @@ public class MicroFox {
         httpProvider.ssePublisher(identity, sseObject);
     }
 
-    public static void job(Task task, String name, String cronExpression, boolean concurrentExecution) {
+    public static void job(Task task, String name, String cronExpression, JobOption option) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        jobProvider.job(task, name, null, cronExpression, concurrentExecution);
+        jobProvider.job(task, name, null, cronExpression, option);
     }
 
     public static void job(Task task, String name, ZonedDateTime zonedDateTime) {
@@ -169,9 +170,9 @@ public class MicroFox {
         jobProvider.job(task, name, null, zonedDateTime);
     }
 
-    public static void job(Task task, String name, String group, String cronExpression, boolean concurrentExecution) {
+    public static void job(Task task, String name, String group, String cronExpression, JobOption option) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        jobProvider.job(task, name, group, cronExpression, concurrentExecution);
+        jobProvider.job(task, name, group, cronExpression, option);
     }
 
     public static void job(Task task, String name, String group, ZonedDateTime zonedDateTime) {

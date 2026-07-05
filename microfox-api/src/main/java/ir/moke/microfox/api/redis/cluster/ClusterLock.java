@@ -1,11 +1,11 @@
 package ir.moke.microfox.api.redis.cluster;
 
-import java.time.Duration;
-
 public interface ClusterLock {
-    boolean tryLock(Duration waitTime, Duration leaseTime);
+    boolean tryLock(long waitTime, long leaseTime);
 
-    void lock(Duration leaseTime);
+    void lock(long leaseTime);
+
+    void lock();
 
     void unlock();
 

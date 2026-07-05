@@ -1,5 +1,7 @@
 package ir.moke.microfox.job;
 
+import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.api.redis.cluster.ClusterLock;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -18,22 +20,62 @@ public class DelegateJob implements Job {
     public void execute(JobExecutionContext context) {
         JobDataMap dataMap = context.getMergedJobDataMap();
         JobKey key = context.getJobDetail().getKey();
-        boolean concurrentExecution = dataMap.getBoolean("concurrentExecution");
-        ReentrantLock lock = null;
-        if (!concurrentExecution) {
-            String jobKey = key.toString();
-            lock = locks.computeIfAbsent(jobKey, k -> new ReentrantLock());
 
-            if (!lock.tryLock()) {
-                logger.debug("Job {} is already running, skipping...", jobKey);
-                return;
-            }
+        boolean allowConcurrent = dataMap.getBoolean("allowConcurrent");
+        boolean distribute = dataMap.getBoolean("distribute");
+        String identity = dataMap.getString("identity");
+
+        String group = key.getGroup();
+        String name = key.getName();
+
+        String jobKey = "QUARTZ:JOB:%s:%s".formatted(group, name);
+
+        if (distribute && (identity == null || identity.isBlank())) {
+            logger.error("Distributed job {} has no identity configured", jobKey);
+            return;
         }
 
-        try {
-            TaskRegistry.get(key).run();
-        } finally {
-            if (!concurrentExecution) lock.unlock();
+        if (distribute) {
+            if (!allowConcurrent) {
+                ClusterLock lock = MicroFox.redisCluster(identity).getLock(jobKey);
+                try {
+                    if (lock.isLocked()) {
+                        logger.debug("Job {} is already running, skipping...", jobKey);
+                        return;
+                    }
+
+                    lock.lock(-1);
+                    TaskRegistry.get(key).run();
+                } catch (Exception e) {
+                    logger.error("Job {} failed", jobKey, e);
+                } finally {
+                    if (lock.isHeldByCurrentThread()) {
+                        lock.unlock();
+                    }
+                }
+            } else {
+                TaskRegistry.get(key).run();
+            }
+        } else {
+            if (!allowConcurrent) {
+                ReentrantLock lock = locks.computeIfAbsent(jobKey, k -> new ReentrantLock());
+
+                if (!lock.tryLock()) {
+                    logger.debug("Local job {} is already running, skipping...", jobKey);
+                    return;
+                }
+
+                try {
+                    TaskRegistry.get(key).run();
+                } finally {
+                    if (lock.isHeldByCurrentThread()) {
+                        lock.unlock();
+                        locks.remove(jobKey, lock);
+                    }
+                }
+            } else {
+                TaskRegistry.get(key).run();
+            }
         }
     }
 }

@@ -17,24 +17,28 @@ public class ClusterLockImpl implements ClusterLock {
         this.lock = client.getLock(name);
     }
 
+    public String getName() {
+        return name;
+    }
 
     @Override
-    public boolean tryLock(Duration waitTime, Duration leaseTime) {
+    public boolean tryLock(long waitTime, long leaseTime) {
         try {
-            return lock.tryLock(waitTime.toMillis(), leaseTime.toMillis(), TimeUnit.MILLISECONDS);
+            return lock.tryLock(waitTime, leaseTime, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return false;
         }
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public void lock(long leaseTime) {
+        lock.lock(leaseTime, TimeUnit.MILLISECONDS);
     }
 
     @Override
-    public void lock(Duration leaseTime) {
-        lock.lock(leaseTime.toMillis(), TimeUnit.MILLISECONDS);
+    public void lock() {
+        lock.lock();
     }
 
     @Override

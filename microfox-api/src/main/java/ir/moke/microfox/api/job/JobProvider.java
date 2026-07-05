@@ -3,7 +3,7 @@ package ir.moke.microfox.api.job;
 import java.time.ZonedDateTime;
 
 public interface JobProvider {
-    void job(Task task, String name, String group, String cronExpression, boolean concurrentExecution);
+    void job(Task task, String name, String group, String cronExpression, JobOption option);
 
     void job(Task task, String name, String group, ZonedDateTime zonedDateTime);
 
