@@ -34,12 +34,21 @@ public class JobProviderImpl implements JobProvider {
             JobKey jobKey = new JobKey(name, Optional.ofNullable(group).orElse(DEFAULT_JOB_GROUP));
             if (isJobExists(jobKey)) throw new MicroFoxException("The job with same name and group already exists");
             TaskRegistry.register(jobKey, task);
-            JobDetail job = JobBuilder.newJob(DelegateJob.class)
-                    .withIdentity(jobKey)
-                    .usingJobData("allowConcurrent", allowConcurrent)
-                    .usingJobData("distribute", distributed)
-                    .usingJobData("identity", identity)
-                    .build();
+
+            JobDetail job;
+            if (distributed) {
+                job = JobBuilder.newJob(LocalDelegateJob.class)
+                        .withIdentity(jobKey)
+                        .usingJobData("allowConcurrent", allowConcurrent)
+                        .usingJobData("identity", identity)
+                        .build();
+            } else {
+                job = JobBuilder.newJob(LocalDelegateJob.class)
+                        .withIdentity(jobKey)
+                        .usingJobData("allowConcurrent", allowConcurrent)
+                        .build();
+            }
+
             CronTrigger trigger = TriggerBuilder.newTrigger()
                     .withSchedule(cronSchedule(cronExpression))
                     .build();
@@ -56,7 +65,7 @@ public class JobProviderImpl implements JobProvider {
             JobKey jobKey = new JobKey(name, Optional.ofNullable(group).orElse(DEFAULT_JOB_GROUP));
             if (isJobExists(jobKey)) throw new MicroFoxException("The job with same name and group already exists");
             TaskRegistry.register(jobKey, task);
-            JobDetail job = JobBuilder.newJob(DelegateJob.class)
+            JobDetail job = JobBuilder.newJob(LocalDelegateJob.class)
                     .withIdentity(jobKey)
                     .build();
             Trigger trigger = TriggerBuilder.newTrigger()
