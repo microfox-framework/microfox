@@ -14,7 +14,6 @@ import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsProvider;
-import ir.moke.microfox.api.job.JobInfo;
 import ir.moke.microfox.api.job.JobProvider;
 import ir.moke.microfox.api.job.Task;
 import ir.moke.microfox.api.jpa.JpaProvider;
@@ -178,6 +177,11 @@ public class MicroFox {
         jobProvider.job(task, name, group, zonedDateTime);
     }
 
+    public static void jobTrigger(String name, String group) {
+        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
+        jobProvider.jobTrigger(name, group);
+    }
+
     public static void jobPause(String name, String group) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
         jobProvider.pauseJob(name, group);
@@ -216,16 +220,6 @@ public class MicroFox {
     public static void jobDelete(String name) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
         jobProvider.deleteJob(name, null);
-    }
-
-    public static List<JobInfo> jobs() {
-        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        return jobProvider.listJobs();
-    }
-
-    public static JobInfo job(String name, String group) {
-        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        return jobProvider.job(name, group);
     }
 
     public static void ftpDownload(MicroFoxFtpConfig config, Path remoteFilePath, Path localDownloadDir) {

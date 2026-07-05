@@ -1,6 +1,5 @@
 package ir.moke.microfox.job;
 
-import ir.moke.microfox.api.job.JobInfo;
 import ir.moke.microfox.api.job.JobProvider;
 import ir.moke.microfox.api.job.Task;
 import ir.moke.microfox.exception.MicroFoxException;
@@ -8,9 +7,7 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -79,6 +76,15 @@ public class JobProviderImpl implements JobProvider {
     }
 
     @Override
+    public void jobTrigger(String name, String group) {
+        try {
+            scheduler.triggerJob(JobKey.jobKey(name, group));
+        } catch (SchedulerException e) {
+            throw new MicroFoxException(e);
+        }
+    }
+
+    @Override
     public void pauseJob(String name, String group) {
         try {
             scheduler.pauseJob(new JobKey(name, DEFAULT_JOB_NAME.apply(group)));
@@ -125,48 +131,6 @@ public class JobProviderImpl implements JobProvider {
         } catch (SchedulerException e) {
             throw new MicroFoxException(e);
         }
-    }
-
-    public List<JobInfo> listJobs() {
-        List<JobInfo> jobInfos = new ArrayList<>();
-        try {
-            for (JobExecutionContext currentlyExecutingJob : scheduler.getCurrentlyExecutingJobs()) {
-                String name = currentlyExecutingJob.getJobDetail().getKey().getName();
-                String group = currentlyExecutingJob.getJobDetail().getKey().getGroup();
-                int refireCount = currentlyExecutingJob.getRefireCount();
-                Date fireTime = currentlyExecutingJob.getFireTime();
-                Date scheduledFireTime = currentlyExecutingJob.getScheduledFireTime();
-                Date previousFireTime = currentlyExecutingJob.getPreviousFireTime();
-                Date nextFireTime = currentlyExecutingJob.getNextFireTime();
-                String fireInstanceId = currentlyExecutingJob.getFireInstanceId();
-                long jobRunTime = currentlyExecutingJob.getJobRunTime();
-
-                JobInfo jobInfo = new JobInfo(
-                        name,
-                        group,
-                        refireCount,
-                        fireTime,
-                        scheduledFireTime,
-                        previousFireTime,
-                        nextFireTime,
-                        fireInstanceId,
-                        jobRunTime);
-
-                jobInfos.add(jobInfo);
-            }
-        } catch (SchedulerException e) {
-            throw new MicroFoxException(e);
-        }
-        return jobInfos;
-    }
-
-    @Override
-    public JobInfo job(String name, String group) {
-        return listJobs().stream()
-                .filter(item -> item.name().equals(name))
-                .filter(item -> item.group().equals(group))
-                .findAny()
-                .orElse(null);
     }
 
     private boolean isJobExists(JobKey jobKey) {
