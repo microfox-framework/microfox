@@ -29,6 +29,7 @@ public class DelegateJob implements Job {
         String name = key.getName();
 
         String jobKey = "QUARTZ:JOB:%s:%s".formatted(group, name);
+        boolean acquire = false;
 
         if (distribute && (identity == null || identity.isBlank())) {
             logger.error("Distributed job {} has no identity configured", jobKey);
@@ -39,17 +40,17 @@ public class DelegateJob implements Job {
             if (!allowConcurrent) {
                 ClusterLock lock = MicroFox.redisCluster(identity).getLock(jobKey);
                 try {
-                    if (lock.isLocked()) {
+                    acquire = lock.tryLock(0);
+                    if (!acquire) {
                         logger.debug("Job {} is already running, skipping...", jobKey);
                         return;
                     }
 
-                    lock.lock(-1);
                     TaskRegistry.get(key).run();
                 } catch (Exception e) {
                     logger.error("Job {} failed", jobKey, e);
                 } finally {
-                    if (lock.isHeldByCurrentThread()) {
+                    if (acquire && lock.isHeldByCurrentThread()) {
                         lock.unlock();
                     }
                 }

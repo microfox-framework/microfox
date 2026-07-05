@@ -4,7 +4,6 @@ import ir.moke.microfox.api.redis.cluster.ClusterLock;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 public class ClusterLockImpl implements ClusterLock {
@@ -25,6 +24,16 @@ public class ClusterLockImpl implements ClusterLock {
     public boolean tryLock(long waitTime, long leaseTime) {
         try {
             return lock.tryLock(waitTime, leaseTime, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean tryLock(long time) {
+        try {
+            return lock.tryLock(time, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return false;
