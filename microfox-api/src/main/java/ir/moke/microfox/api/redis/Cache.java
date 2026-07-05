@@ -3,11 +3,12 @@ package ir.moke.microfox.api.redis;
 import java.time.Duration;
 
 public interface Cache {
-    <T> T get(String key);
 
-    void set(String key, Object value);
+    String get(String key);
 
-    void set(String key, Object value, Duration ttl);
+    void set(String key, String value);
+
+    void set(String key, String value, Duration ttl);
 
     boolean exists(String key);
 

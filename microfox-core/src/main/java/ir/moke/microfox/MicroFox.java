@@ -26,6 +26,8 @@ import ir.moke.microfox.api.metrics.MetricsProvider;
 import ir.moke.microfox.api.mongodb.MongoProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
+import ir.moke.microfox.api.redis.Cache;
+import ir.moke.microfox.api.redis.ClusterCoordinator;
 import ir.moke.microfox.api.redis.RedisProvider;
 import ir.moke.microfox.api.system.SystemProvider;
 import ir.moke.microfox.logger.LoggerManager;
@@ -426,8 +428,13 @@ public class MicroFox {
         metricsProvider.counter(name, tags);
     }
 
-    public static Object redis(String identity) {
+    public static Cache redis(String identity) {
         if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
-        return redisProvider.unwrap(identity);
+        return redisProvider.cache(identity);
+    }
+
+    public static ClusterCoordinator redisCluster(String identity) {
+        if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
+        return redisProvider.cluster(identity);
     }
 }

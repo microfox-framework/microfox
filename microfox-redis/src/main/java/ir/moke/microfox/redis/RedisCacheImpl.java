@@ -2,6 +2,7 @@ package ir.moke.microfox.redis;
 
 import ir.moke.microfox.api.redis.Cache;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.StringCodec;
 
 import java.time.Duration;
 
@@ -13,19 +14,18 @@ public class RedisCacheImpl implements Cache {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T get(String key) {
-        return (T) client.getBucket(key).get();
+    public String get(String key) {
+        return client.getBucket(key, StringCodec.INSTANCE).get().toString();
     }
 
     @Override
-    public void set(String key, Object value) {
-        client.getBucket(key).set(value);
+    public void set(String key, String value) {
+        client.getBucket(key, StringCodec.INSTANCE).set(value);
     }
 
     @Override
-    public void set(String key, Object value, Duration ttl) {
-        client.getBucket(key).set(value, ttl);
+    public void set(String key, String value, Duration ttl) {
+        client.getBucket(key, StringCodec.INSTANCE).set(value, ttl);
     }
 
     @Override
