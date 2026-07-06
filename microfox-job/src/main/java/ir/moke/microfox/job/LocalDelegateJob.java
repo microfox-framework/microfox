@@ -20,11 +20,12 @@ public class LocalDelegateJob implements Job {
         JobKey key = context.getJobDetail().getKey();
 
         boolean allowConcurrent = dataMap.getBoolean("allowConcurrent");
+        String type = dataMap.getString("type");
 
         String group = key.getGroup();
         String name = key.getName();
 
-        String jobKey = "quartz:job:local:%s:%s".formatted(group, name);
+        String jobKey = "quartz:distributed:%s:%s:%s".formatted(type, group, name);
 
         if (!allowConcurrent) {
             ReentrantLock lock = locks.computeIfAbsent(jobKey, k -> new ReentrantLock());

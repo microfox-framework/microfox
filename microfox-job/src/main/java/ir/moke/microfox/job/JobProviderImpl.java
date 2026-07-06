@@ -35,19 +35,12 @@ public class JobProviderImpl implements JobProvider {
             if (isJobExists(jobKey)) throw new MicroFoxException("The job with same name and group already exists");
             TaskRegistry.register(jobKey, task);
 
-            JobDetail job;
-            if (distributed) {
-                job = JobBuilder.newJob(LocalDelegateJob.class)
-                        .withIdentity(jobKey)
-                        .usingJobData("allowConcurrent", allowConcurrent)
-                        .usingJobData("identity", identity)
-                        .build();
-            } else {
-                job = JobBuilder.newJob(LocalDelegateJob.class)
-                        .withIdentity(jobKey)
-                        .usingJobData("allowConcurrent", allowConcurrent)
-                        .build();
-            }
+            JobDetail job = JobBuilder.newJob(distributed ? DistributedDelegateJob.class : LocalDelegateJob.class)
+                    .withIdentity(jobKey)
+                    .usingJobData("allowConcurrent", allowConcurrent)
+                    .usingJobData("identity", identity)
+                    .usingJobData("type", "cron")
+                    .build();
 
             CronTrigger trigger = TriggerBuilder.newTrigger()
                     .withSchedule(cronSchedule(cronExpression))
@@ -60,14 +53,20 @@ public class JobProviderImpl implements JobProvider {
         }
     }
 
-    private void register(Task task, String name, String group, ZonedDateTime zonedDateTime) {
+    private void register(Task task, String name, String group, ZonedDateTime zonedDateTime, JobOption option) {
         try {
+            boolean distributed = option.isDistributed();
+            String identity = option.getIdentity();
             JobKey jobKey = new JobKey(name, Optional.ofNullable(group).orElse(DEFAULT_JOB_GROUP));
             if (isJobExists(jobKey)) throw new MicroFoxException("The job with same name and group already exists");
             TaskRegistry.register(jobKey, task);
-            JobDetail job = JobBuilder.newJob(LocalDelegateJob.class)
+
+            JobDetail job = JobBuilder.newJob(distributed ? DistributedDelegateJob.class : LocalDelegateJob.class)
                     .withIdentity(jobKey)
+                    .usingJobData("identity", identity)
+                    .usingJobData("type", "once")
                     .build();
+
             Trigger trigger = TriggerBuilder.newTrigger()
                     .startAt(Date.from(zonedDateTime.toInstant()))
                     .build();
@@ -85,8 +84,8 @@ public class JobProviderImpl implements JobProvider {
     }
 
     @Override
-    public void job(Task task, String name, String group, ZonedDateTime zonedDateTime) {
-        register(task, name, group, zonedDateTime);
+    public void job(Task task, String name, String group, ZonedDateTime zonedDateTime, JobOption option) {
+        register(task, name, group, zonedDateTime, option);
     }
 
     @Override

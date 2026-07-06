@@ -19,12 +19,12 @@ public class DistributedDelegateJob implements Job {
 
         boolean allowConcurrent = dataMap.getBoolean("allowConcurrent");
         String identity = dataMap.getString("identity");
+        String type = dataMap.getString("type");
 
         String group = key.getGroup();
         String name = key.getName();
 
-        String jobKey = "quartz:job:distributed:%s:%s".formatted(group, name);
-        boolean acquire = false;
+        String jobKey = "quartz:distributed:%s:%s:%s".formatted(type, group, name);
 
         if (identity == null || identity.isBlank()) {
             logger.error("Distributed job {} has no identity configured", jobKey);
@@ -34,16 +34,16 @@ public class DistributedDelegateJob implements Job {
         if (!allowConcurrent) {
             ClusterLock lock = MicroFox.redisCluster(identity).getLock(jobKey);
             try {
-                acquire = lock.tryLock(0);
-                if (!acquire) {
+                if (lock.isLocked()) {
                     logger.debug("Job {} is already running, skipping...", jobKey);
                     return;
                 }
+                lock.lock();
                 TaskRegistry.get(key).run();
             } catch (Exception e) {
                 logger.error("Job {} failed", jobKey, e);
             } finally {
-                if (acquire && lock.isHeldByCurrentThread()) {
+                if (lock.isHeldByCurrentThread()) {
                     lock.unlock();
                 }
             }

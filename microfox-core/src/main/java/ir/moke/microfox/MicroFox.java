@@ -165,9 +165,9 @@ public class MicroFox {
         jobProvider.job(task, name, null, cronExpression, option);
     }
 
-    public static void job(Task task, String name, ZonedDateTime zonedDateTime) {
+    public static void job(Task task, String name, ZonedDateTime zonedDateTime, JobOption option) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        jobProvider.job(task, name, null, zonedDateTime);
+        jobProvider.job(task, name, null, zonedDateTime, option);
     }
 
     public static void job(Task task, String name, String group, String cronExpression, JobOption option) {
@@ -175,9 +175,9 @@ public class MicroFox {
         jobProvider.job(task, name, group, cronExpression, option);
     }
 
-    public static void job(Task task, String name, String group, ZonedDateTime zonedDateTime) {
+    public static void job(Task task, String name, String group, ZonedDateTime zonedDateTime, JobOption option) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
-        jobProvider.job(task, name, group, zonedDateTime);
+        jobProvider.job(task, name, group, zonedDateTime, option);
     }
 
     public static void jobTrigger(String name, String group) {
