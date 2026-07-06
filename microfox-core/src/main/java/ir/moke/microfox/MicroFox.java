@@ -180,6 +180,11 @@ public class MicroFox {
         jobProvider.job(task, name, group, zonedDateTime, option);
     }
 
+    public static void job(Task task, String name, Set<String> cronExpressions, Set<ZonedDateTime> onceExecutions, JobOption option) {
+        if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
+        jobProvider.job(task, name, null, cronExpressions, onceExecutions, option);
+    }
+
     public static void jobTrigger(String name, String group) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
         jobProvider.jobTrigger(name, group);

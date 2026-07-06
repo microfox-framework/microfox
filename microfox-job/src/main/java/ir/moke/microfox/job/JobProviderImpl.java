@@ -10,6 +10,8 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
@@ -86,6 +88,40 @@ public class JobProviderImpl implements JobProvider {
     @Override
     public void job(Task task, String name, String group, ZonedDateTime zonedDateTime, JobOption option) {
         register(task, name, group, zonedDateTime, option);
+    }
+
+    @Override
+    public void job(Task task, String name, String group, Set<String> cronExpressions, Set<ZonedDateTime> onceExecutions, JobOption option) {
+        try {
+            boolean allowConcurrent = option.isAllowConcurrent();
+            boolean distributed = option.isDistributed();
+            String identity = option.getIdentity();
+
+            JobKey jobKey = new JobKey(name, Optional.ofNullable(group).orElse(DEFAULT_JOB_GROUP));
+            if (isJobExists(jobKey)) throw new MicroFoxException("The job with same name and group already exists");
+            TaskRegistry.register(jobKey, task);
+
+            JobDetail cronJob = JobBuilder.newJob(distributed ? DistributedDelegateJob.class : LocalDelegateJob.class)
+                    .withIdentity(jobKey)
+                    .usingJobData("allowConcurrent", allowConcurrent)
+                    .usingJobData("identity", identity)
+                    .usingJobData("type", "cron")
+                    .build();
+            Set<Trigger> cronTriggers = cronExpressions.stream().map(item -> TriggerBuilder.newTrigger().withSchedule(cronSchedule(item)).build()).collect(Collectors.toSet());
+
+            JobDetail onceJob = JobBuilder.newJob(distributed ? DistributedDelegateJob.class : LocalDelegateJob.class)
+                    .withIdentity(jobKey)
+                    .usingJobData("identity", identity)
+                    .usingJobData("type", "once")
+                    .build();
+            Set<Trigger> onceTriggers = onceExecutions.stream().map(item -> TriggerBuilder.newTrigger().startAt(Date.from(item.toInstant())).build()).collect(Collectors.toSet());
+
+            scheduler.start();
+            scheduler.scheduleJob(cronJob, cronTriggers, true);
+            scheduler.scheduleJob(onceJob, onceTriggers, true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
