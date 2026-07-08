@@ -15,7 +15,11 @@ public class RedisCacheImpl implements Cache {
 
     @Override
     public String get(String key) {
-        return client.getBucket(key, StringCodec.INSTANCE).get().toString();
+        try {
+            return client.getBucket(key, StringCodec.INSTANCE).get().toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
