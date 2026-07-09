@@ -16,8 +16,9 @@ public class MicroFoxValidator {
     public static <T> void validate(T t) {
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<T>> violations = validator.validate(t);
-        for (ConstraintViolation<T> violation : violations) {
-            throw new ValidationException(violation.getMessage());
+        if (!violations.isEmpty()) {
+            String message = violations.stream().findFirst().get().getMessage();
+            throw new ValidationException(message);
         }
     }
 }
