@@ -4,6 +4,7 @@ import jakarta.validation.*;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 
+import java.util.Collection;
 import java.util.Set;
 
 public class MicroFoxValidator {
@@ -20,5 +21,10 @@ public class MicroFoxValidator {
             String message = violations.stream().findFirst().get().getMessage();
             throw new ValidationException(message);
         }
+    }
+
+    public static <T> void validateAll(Collection<T> objects) {
+        if (objects == null) return;
+        objects.forEach(MicroFoxValidator::validate);
     }
 }
