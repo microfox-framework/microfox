@@ -1,9 +1,7 @@
 package ir.moke.microfox.system;
 
-import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.MicroFoxEnvironment;
 import ir.moke.microfox.api.system.SystemProvider;
-import ir.moke.microfox.utils.HttpClientConfig;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,16 +25,16 @@ public class SystemProviderImpl implements SystemProvider {
 
     public synchronized void run() {
         generateSystemDTO();
-        send();
+//        send();
     }
 
-    public static void send() {
-        HttpClientConfig config = new HttpClientConfig.Builder()
-                .setBaseUri(MicroFoxEnvironment.getEnv("microfox.admin.base-url"))
-                .build();
-        MicroFoxAdminAPI microFoxAdminAPI = MicroFox.httpClient(config, MicroFoxAdminAPI.class);
-        microFoxAdminAPI.statistics(SYSTEM_DTO);
-    }
+//    public static void send() {
+//        HttpClientConfig config = new HttpClientConfig.Builder()
+//                .setBaseUri(MicroFoxEnvironment.getEnv("microfox.admin.base-url"))
+//                .build();
+//        MicroFoxAdminAPI microFoxAdminAPI = MicroFox.httpClient(config, MicroFoxAdminAPI.class);
+//        microFoxAdminAPI.statistics(SYSTEM_DTO);
+//    }
 
     private static void generateSystemDTO() {
         SYSTEM_DTO.setPid(SystemInformation.pid());

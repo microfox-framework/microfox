@@ -2,7 +2,6 @@ package ir.moke.microfox;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.mongodb.client.MongoCollection;
-import ir.moke.kafir.http.Kafir;
 import ir.moke.microfox.api.elastic.ElasticProvider;
 import ir.moke.microfox.api.elastic.ElasticRepository;
 import ir.moke.microfox.api.ftp.*;
@@ -33,7 +32,6 @@ import ir.moke.microfox.api.redis.RedisProvider;
 import ir.moke.microfox.api.system.SystemProvider;
 import ir.moke.microfox.logger.LoggerManager;
 import ir.moke.microfox.logger.model.LogModel;
-import ir.moke.microfox.utils.HttpClientConfig;
 import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
 import jakarta.persistence.EntityManager;
@@ -378,10 +376,6 @@ public class MicroFox {
     public static <T> ElasticRepository<T> elastic(String identity, Class<T> entityClass) {
         if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");
         return elasticProvider.elastic(identity, entityClass);
-    }
-
-    public static <T> T httpClient(HttpClientConfig config, Class<T> clazz) {
-        return new Kafir.KafirBuilder().setBaseUri(config.getBaseUri()).setAuthenticator(config.getAuthenticator()).setInterceptor(config.getInterceptor()).setHeaders(config.getHeaders()).setConnectionTimeout(config.getConnectionTimeout()).setExecutorService(config.getExecutorService()).setVersion(config.getVersion()).setSslContext(config.getSslContext()).build(clazz);
     }
 
     public static <T> MongoCollection<T> mongo(String identity, Class<T> entityClass) {

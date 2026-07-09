@@ -404,13 +404,6 @@
                 </exclusions>
             </dependency>
 
-            <!-- Http Client -->
-            <dependency>
-                <groupId>ir.moke</groupId>
-                <artifactId>kafir</artifactId>
-                <version>1.5.0</version>
-            </dependency>
-
             <!-- JMS Test -->
             <dependency>
                 <groupId>com.ibm.mq</groupId>
