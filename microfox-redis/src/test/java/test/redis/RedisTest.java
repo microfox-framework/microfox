@@ -21,6 +21,6 @@ public class RedisTest {
         Cache cache = MicroFox.redis(IDENTITY);
 
         cache.set("name", "Ali");
-        System.out.println(cache.get("name"));
+        System.out.println(cache.getKeysByPattern("n*"));
     }
 }

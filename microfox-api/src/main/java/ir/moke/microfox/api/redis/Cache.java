@@ -1,6 +1,7 @@
 package ir.moke.microfox.api.redis;
 
 import java.time.Duration;
+import java.util.List;
 
 public interface Cache {
 
@@ -15,4 +16,6 @@ public interface Cache {
     void delete(String key);
 
     void expire(String key, Duration ttl);
+
+    List<String> getKeysByPattern(String pattern);
 }

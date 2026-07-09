@@ -2,9 +2,13 @@ package ir.moke.microfox.redis;
 
 import ir.moke.microfox.api.redis.Cache;
 import org.redisson.api.RedissonClient;
+import org.redisson.api.options.KeysScanOptions;
 import org.redisson.client.codec.StringCodec;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class RedisCacheImpl implements Cache {
     private final RedissonClient client;
@@ -45,5 +49,13 @@ public class RedisCacheImpl implements Cache {
     @Override
     public void expire(String key, Duration ttl) {
         client.getBucket(key).expire(ttl);
+    }
+
+    public List<String> getKeysByPattern(String pattern) {
+        List<String> result = new ArrayList<>();
+        for (String key : client.getKeys().getKeys(KeysScanOptions.defaults().pattern(pattern))) {
+            result.add(key);
+        }
+        return result;
     }
 }
