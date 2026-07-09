@@ -23,7 +23,7 @@ public class MicroFoxValidator {
         }
     }
 
-    public static <T> void validateAll(Collection<T> objects) {
+    public static <T> void validate(Collection<T> objects) {
         if (objects == null) return;
         objects.forEach(MicroFoxValidator::validate);
     }
