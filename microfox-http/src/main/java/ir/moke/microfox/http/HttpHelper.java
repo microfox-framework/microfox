@@ -41,7 +41,7 @@ public class HttpHelper extends HttpUtils {
         List<SecurityInfo> list = new ArrayList<>();
         for (SecurityInfo securityInfo : ResourceHolder.listSecurities()) {
             Pattern pattern = securityInfo.getPattern();
-            if (pattern.matcher(reqPath).matches() && securityInfo.getStrategy().isRequired()) {
+            if (pattern.matcher(reqPath).matches() && securityInfo.isActive()) {
                 list.add(securityInfo);
             }
         }
