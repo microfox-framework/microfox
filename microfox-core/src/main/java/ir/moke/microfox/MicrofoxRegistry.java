@@ -45,6 +45,12 @@ public class MicrofoxRegistry {
         httpProvider.remove(path, method);
     }
 
+    public static void removeHttpRoute(String category) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.remove(category);
+    }
+
+
     public static void sseRegister(String identity, String path) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.sseRegister(identity, path);

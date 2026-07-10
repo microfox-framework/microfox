@@ -35,4 +35,6 @@ public interface HttpProvider {
     void ssePublisher(String identity, SseObject sseObject);
 
     void security(SecurityInfo securityInfo);
+
+    void remove(String category);
 }

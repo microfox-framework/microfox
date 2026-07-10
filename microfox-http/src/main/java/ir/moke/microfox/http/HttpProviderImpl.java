@@ -90,4 +90,12 @@ public class HttpProviderImpl implements HttpProvider {
     public void security(SecurityInfo securityInfo) {
         ResourceHolder.addSecurity(securityInfo);
     }
+
+    @Override
+    public void remove(String category) {
+        ResourceHolder.listRoutes()
+                .stream()
+                .filter(item -> item.getCategory().equalsIgnoreCase(category))
+                .forEach(item -> remove(item.getPath(), item.getHttpMethod()));
+    }
 }
