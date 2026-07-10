@@ -1,6 +1,5 @@
 package ir.moke.microfox.api.http;
 
-import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.sse.SseObject;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public interface HttpProvider {
 
     void route(String path, HttpMethod httpMethod, String name, String category, Route route);
 
-    void route(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes);
+    void route(String path, HttpMethod httpMethod, Route route, List<String> roles, List<String> scopes);
 
     void route(RouteInfo routeInfo);
 
@@ -35,4 +34,5 @@ public interface HttpProvider {
 
     void ssePublisher(String identity, SseObject sseObject);
 
+    void security(SecurityInfo securityInfo);
 }

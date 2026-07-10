@@ -36,6 +36,18 @@ public class HttpHelper extends HttpUtils {
         return null;
     }
 
+    public static List<SecurityInfo> findMatchingSecurityInfo(String reqPath) {
+        reqPath = normalizePath(reqPath);
+        List<SecurityInfo> list = new ArrayList<>();
+        for (SecurityInfo securityInfo : ResourceHolder.listSecurities()) {
+            Pattern pattern = securityInfo.getPattern();
+            if (pattern.matcher(reqPath).matches() && securityInfo.getStrategy().isRequired()) {
+                list.add(securityInfo);
+            }
+        }
+        list.sort(Comparator.comparingInt(SecurityInfo::getOrder));
+        return list;
+    }
 
     public static List<FilterInfo> findMatchingFilterInfo(String reqPath) {
         reqPath = normalizePath(reqPath);

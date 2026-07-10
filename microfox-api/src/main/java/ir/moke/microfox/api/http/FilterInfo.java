@@ -7,12 +7,12 @@ import java.util.regex.Pattern;
 public class FilterInfo {
 
     private final String path;
-    private int order;
     private final Filter filter;
     private final Pattern pattern;
     private String name;
     private String category;
     private String hash;
+    private int order;
 
     public FilterInfo(String path, int order, Filter filter, String name, String category) {
         this.path = path;

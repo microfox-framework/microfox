@@ -1,7 +1,6 @@
 package ir.moke.microfox.http;
 
 import ir.moke.microfox.api.http.*;
-import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
 
@@ -51,8 +50,8 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
-    public void route(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
-        ResourceHolder.addRoute(new RouteInfo(path, httpMethod, route, strategy, roles, scopes));
+    public void route(String path, HttpMethod httpMethod, Route route, List<String> roles, List<String> scopes) {
+        ResourceHolder.addRoute(new RouteInfo(path, httpMethod, route, roles, scopes));
     }
 
     @Override
@@ -85,5 +84,10 @@ public class HttpProviderImpl implements HttpProvider {
         SubmissionPublisher<SseObject> submissionPublisher = ResourceHolder.getSseByIdentity(identity);
         if (submissionPublisher == null) throw new MicroFoxException("No SSE connection has been established yet.");
         submissionPublisher.submit(sseObject);
+    }
+
+    @Override
+    public void security(SecurityInfo securityInfo) {
+        ResourceHolder.addSecurity(securityInfo);
     }
 }

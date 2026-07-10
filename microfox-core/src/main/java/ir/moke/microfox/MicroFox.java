@@ -8,7 +8,6 @@ import ir.moke.microfox.api.ftp.*;
 import ir.moke.microfox.api.groovy.GroovyProvider;
 import ir.moke.microfox.api.hc.HealthCheckProvider;
 import ir.moke.microfox.api.http.*;
-import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
@@ -118,6 +117,11 @@ public class MicroFox {
         httpProvider.filterSort(sortedHash);
     }
 
+    public static void security(SecurityInfo securityInfo) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.security(securityInfo);
+    }
+
     public static void route(String path, HttpMethod httpMethod, Route route) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.route(path, httpMethod, route);
@@ -128,14 +132,9 @@ public class MicroFox {
         httpProvider.route(path, httpMethod, name, category, route);
     }
 
-    public static void route(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy) {
+    public static void route(String path, HttpMethod httpMethod, Route route, List<String> roles, List<String> scopes) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.route(path, httpMethod, route, strategy, List.of(), List.of());
-    }
-
-    public static void route(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
-        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.route(path, httpMethod, route, strategy, roles, scopes);
+        httpProvider.route(path, httpMethod, route, roles, scopes);
     }
 
     public static void route(RouteInfo routeInfo) {

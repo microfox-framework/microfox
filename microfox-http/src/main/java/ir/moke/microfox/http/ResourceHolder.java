@@ -3,6 +3,7 @@ package ir.moke.microfox.http;
 import ir.moke.microfox.api.http.FilterInfo;
 import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.RouteInfo;
+import ir.moke.microfox.api.http.SecurityInfo;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.sse.SseInfo;
@@ -24,6 +25,7 @@ public class ResourceHolder {
     private static final Set<RouteInfo> ROUTES = ConcurrentHashMap.newKeySet();
     private static final List<FilterInfo> FILTERS = new ArrayList<>();
     private static final Set<SseInfo> SSE_LIST = ConcurrentHashMap.newKeySet();
+    private static final Set<SecurityInfo> SECURITY_LIST = ConcurrentHashMap.newKeySet();
     private static final Set<Class<?>> WEBSOCKET_LIST = ConcurrentHashMap.newKeySet();
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
     public static final ExecutorService SSE_EXECUTOR = Executors.newCachedThreadPool();
@@ -113,5 +115,13 @@ public class ResourceHolder {
     public static void closeAllSse() {
         SSE_LIST.forEach(sse -> sse.getPublisher().close());
         SSE_LIST.clear();
+    }
+
+    public static void addSecurity(SecurityInfo securityInfo) {
+        SECURITY_LIST.add(securityInfo);
+    }
+
+    public static Set<SecurityInfo> listSecurities() {
+        return SECURITY_LIST;
     }
 }

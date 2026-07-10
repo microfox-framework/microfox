@@ -1,7 +1,5 @@
 package ir.moke.microfox.api.http;
 
-import ir.moke.microfox.api.http.security.SecurityStrategy;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,18 +10,16 @@ public class RouteInfo {
     private final HttpMethod httpMethod;
     private final String path;
     private final Route route;
-    private SecurityStrategy strategy;
     private List<String> roles = new ArrayList<>();
     private List<String> scopes = new ArrayList<>();
     private final Pattern pattern;
     private String name;
     private String category;
 
-    public RouteInfo(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes, String name, String category) {
+    public RouteInfo(String path, HttpMethod httpMethod, Route route, List<String> roles, List<String> scopes, String name, String category) {
         this.httpMethod = httpMethod;
         this.path = path;
         this.route = route;
-        this.strategy = strategy;
         this.roles = roles;
         this.scopes = scopes;
         this.name = name;
@@ -31,11 +27,10 @@ public class RouteInfo {
         pattern = HttpUtils.compilePattern(path);
     }
 
-    public RouteInfo(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes) {
+    public RouteInfo(String path, HttpMethod httpMethod, Route route, List<String> roles, List<String> scopes) {
         this.httpMethod = httpMethod;
         this.path = path;
         this.route = route;
-        this.strategy = strategy;
         this.roles = roles;
         this.scopes = scopes;
         pattern = HttpUtils.compilePattern(path);
@@ -67,10 +62,6 @@ public class RouteInfo {
 
     public Route getRoute() {
         return route;
-    }
-
-    public SecurityStrategy getStrategy() {
-        return strategy;
     }
 
     public List<String> getRoles() {
