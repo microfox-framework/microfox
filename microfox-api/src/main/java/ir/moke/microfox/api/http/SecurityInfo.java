@@ -15,6 +15,7 @@ public class SecurityInfo {
     private String category;
     private String hash;
     private int order;
+    private boolean active = true;
 
     public SecurityInfo(String path, SecurityStrategy strategy, int order, String name, String category) {
         this.path = path;
@@ -76,6 +77,14 @@ public class SecurityInfo {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override
