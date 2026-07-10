@@ -18,6 +18,7 @@ public interface HttpProvider {
     void filterSort(String... sortedHash);
 
     void route(String path, HttpMethod httpMethod, Route route);
+
     void route(String path, HttpMethod httpMethod, String name, String category, Route route);
 
     void route(String path, HttpMethod httpMethod, Route route, SecurityStrategy strategy, List<String> roles, List<String> scopes);
