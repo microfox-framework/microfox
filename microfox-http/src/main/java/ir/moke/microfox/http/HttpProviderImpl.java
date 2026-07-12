@@ -95,6 +95,7 @@ public class HttpProviderImpl implements HttpProvider {
     public void remove(String category) {
         ResourceHolder.listRoutes()
                 .stream()
+                .filter(item -> item.getCategory() != null)
                 .filter(item -> item.getCategory().equalsIgnoreCase(category))
                 .forEach(item -> remove(item.getPath(), item.getHttpMethod()));
     }
