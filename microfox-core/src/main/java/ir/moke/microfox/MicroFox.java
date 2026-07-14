@@ -97,9 +97,9 @@ public class MicroFox {
         httpProvider.filter(path, order, filter);
     }
 
-    public static void filter(String path, int order, String name, String category, Filter filter) {
+    public static void filter(String path, int order, String description, String category, Filter filter) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.filter(path, order, name, category, filter);
+        httpProvider.filter(path, order, description, category, filter);
     }
 
     public static void filter(FilterInfo filterInfo) {
