@@ -8,7 +8,7 @@ import java.util.Set;
 public interface HttpProvider {
     void filter(String path, int order, Filter filter);
 
-    void filter(String path, int order, String name, String category, Filter filter);
+    void filter(String path, int order, String description, String category, Filter filter);
 
     void filter(FilterInfo filterInfo);
 
