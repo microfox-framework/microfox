@@ -56,7 +56,7 @@ public class ResourceHolder {
 
     public static void addFilter(FilterInfo filterInfo) {
         String path = filterInfo.getPath();
-        String name = filterInfo.getName();
+        String name = filterInfo.getDescription();
         if (!path.startsWith("/")) throw new MicroFoxException("filter path should started with '/'");
         path = concatContextPath(path);
         logger.info("register filter [{}] - {}{}{}", name, GREEN, path, RESET);

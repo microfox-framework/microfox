@@ -9,16 +9,16 @@ public class FilterInfo {
     private final String path;
     private final Filter filter;
     private final Pattern pattern;
-    private String name;
+    private String description;
     private String category;
     private String hash;
     private int order;
 
-    public FilterInfo(String path, int order, Filter filter, String name, String category) {
+    public FilterInfo(String path, int order, Filter filter, String description, String category) {
         this.path = path;
         this.order = order;
         this.filter = filter;
-        this.name = name;
+        this.description = description;
         this.category = category;
         pattern = HttpUtils.compilePattern(path);
         this.hash = StringUtils.randomHash();
@@ -51,12 +51,12 @@ public class FilterInfo {
         return pattern;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getCategory() {
