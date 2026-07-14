@@ -2,6 +2,7 @@ package ir.moke.microfox.api.http;
 
 import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.utils.StringUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -11,19 +12,19 @@ public class SecurityInfo {
     private final String path;
     private final SecurityStrategy strategy;
     private final Pattern pattern;
-    private String name;
+    private String description;
     private String category;
     private String hash;
     private int order;
     private boolean active = true;
 
-    public SecurityInfo(String path, SecurityStrategy strategy, int order, String name, String category) {
+    public SecurityInfo(String path, SecurityStrategy strategy, int order, String description, String category) {
         this.path = path;
         this.strategy = strategy;
-        this.name = name;
+        this.description = description;
         this.category = category;
         pattern = HttpUtils.compilePattern(path);
-        this.hash = StringUtils.randomHash();
+        this.hash = DigestUtils.md5Hex(path + description + category);
         this.order = order;
     }
 
@@ -32,7 +33,6 @@ public class SecurityInfo {
         this.strategy = strategy;
         this.order = order;
         pattern = HttpUtils.compilePattern(path);
-        this.hash = StringUtils.randomHash();
     }
 
     public String getPath() {
@@ -47,12 +47,12 @@ public class SecurityInfo {
         return pattern;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getCategory() {

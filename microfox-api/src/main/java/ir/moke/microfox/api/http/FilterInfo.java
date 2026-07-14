@@ -1,6 +1,6 @@
 package ir.moke.microfox.api.http;
 
-import ir.moke.utils.StringUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.regex.Pattern;
 
@@ -21,7 +21,7 @@ public class FilterInfo {
         this.description = description;
         this.category = category;
         pattern = HttpUtils.compilePattern(path);
-        this.hash = StringUtils.randomHash();
+        this.hash = DigestUtils.md5Hex(path + description + category);
     }
 
     public FilterInfo(String path, int order, Filter filter) {
