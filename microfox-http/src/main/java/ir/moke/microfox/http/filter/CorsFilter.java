@@ -19,7 +19,7 @@ public class CorsFilter implements Filter {
 
     @Override
     public void handle(Request request, Response response, Chain chain) {
-        logger.debug("Filter CORS {}", request.uri());
+        logger.trace("Filter CORS {}", request.uri());
         valueMap.forEach((k, v) -> response.header(k.getValue(), v));
         chain.doFilter(request, response);
     }

@@ -31,7 +31,7 @@ public class MetricHttp {
         HttpMethod method = request.getMethod();
         String path = request.pathInfo();
         String metricBase = method + "_" + path.replace("/", "_");
-        logger.debug("Filter metric {}", metricBase);
+        logger.trace("Filter metric {}", metricBase);
 
         String exceptionName = "None";
         Timer.Sample sample = Timer.start(Metrics.registry());
