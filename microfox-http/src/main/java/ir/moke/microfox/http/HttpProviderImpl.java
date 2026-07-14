@@ -68,7 +68,7 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
-    public void remove(String path, HttpMethod method) {
+    public void removeRoute(String path, HttpMethod method) {
         ResourceHolder.removeRoute(path, method);
     }
 
@@ -95,12 +95,17 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
-    public void remove(String category) {
+    public void removeRoute(String category) {
         ResourceHolder.listRoutes()
                 .stream()
                 .filter(item -> item.getCategory() != null)
                 .filter(item -> item.getCategory().equalsIgnoreCase(category))
-                .forEach(item -> remove(item.getPath(), item.getHttpMethod()));
+                .forEach(item -> removeRoute(item.getPath(), item.getHttpMethod()));
+    }
+
+    @Override
+    public void removeFilter(String category) {
+        ResourceHolder.removeFilter(category);
     }
 
     @Override

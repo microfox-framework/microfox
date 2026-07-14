@@ -42,14 +42,18 @@ public class MicrofoxRegistry {
     /* HTTP */
     public static void removeHttpRoute(String path, HttpMethod method) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.remove(path, method);
+        httpProvider.removeRoute(path, method);
     }
 
     public static void removeHttpRoute(String category) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.remove(category);
+        httpProvider.removeRoute(category);
     }
 
+    public static void removeHttpFilter(String category) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.removeFilter(category);
+    }
 
     public static void sseRegister(String identity, String path) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");

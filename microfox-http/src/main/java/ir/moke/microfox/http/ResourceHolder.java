@@ -87,6 +87,10 @@ public class ResourceHolder {
                 .orElse(null);
     }
 
+    public static void removeFilter(String category) {
+        FILTERS.removeIf(item -> item.getCategory().equals(category));
+    }
+
     public static void registerSse(String identity, String path) {
         logger.info("register sse {}{}{}", GREEN, path, RESET);
         if (!HttpContainer.isStarted()) EXECUTOR.execute(HttpContainer::start);

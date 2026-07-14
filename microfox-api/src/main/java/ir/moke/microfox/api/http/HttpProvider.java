@@ -27,8 +27,6 @@ public interface HttpProvider {
 
     Set<RouteInfo> routeList();
 
-    void remove(String path, HttpMethod method);
-
     void websocket(Class<?> endpointClass);
 
     void sseRegister(String identity, String path);
@@ -37,7 +35,11 @@ public interface HttpProvider {
 
     void security(SecurityInfo securityInfo);
 
-    void remove(String category);
+    void removeRoute(String path, HttpMethod method);
+
+    void removeRoute(String category);
+
+    void removeFilter(String category);
 
     void cors(Map<CORSHeader, String> valueMap);
 
