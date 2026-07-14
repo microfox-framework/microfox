@@ -3,6 +3,7 @@ package ir.moke.microfox.api.http;
 import ir.moke.microfox.api.http.sse.SseObject;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface HttpProvider {
@@ -37,4 +38,8 @@ public interface HttpProvider {
     void security(SecurityInfo securityInfo);
 
     void remove(String category);
+
+    void cors(Map<CORSHeader, String> valueMap);
+
+    void corsAccessAll();
 }

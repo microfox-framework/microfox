@@ -74,22 +74,12 @@ public class MicroFox {
 
     public static void cors(Map<CORSHeader, String> valueMap) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.filter("/*", -801, "Microfox cors", "microfox", (request, response, chain) -> {
-            valueMap.forEach((k, v) -> response.header(k.getValue(), v));
-            chain.doFilter(request, response);
-        });
+        httpProvider.cors(valueMap);
     }
 
     public static void corsAccessAll() {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.filter("/*", -800, "Microfox cors", "microfox", (request, response, chain) -> {
-            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_ORIGIN.getValue(), "*");
-            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_METHODS.getValue(), "POST,GET,PUT,DELETE,OPTIONS");
-            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_HEADERS.getValue(), "Accept, Content-Type, Authorization,accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers");
-            response.header(CORSHeader.ACCESS_CONTROL_ALLOW_CREDENTIALS.getValue(), "true");
-            response.header(CORSHeader.ACCESS_CONTROL_MAX_AGE.getValue(), "86400");
-            chain.doFilter(request, response);
-        });
+        httpProvider.corsAccessAll();
     }
 
     public static void filter(String path, int order, Filter filter) {

@@ -3,12 +3,15 @@ package ir.moke.microfox.metrics;
 import io.micrometer.core.instrument.Timer;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class MetricHttp {
+    private static final Logger logger = LoggerFactory.getLogger(MetricHttp.class);
 
     public static void handleRouter(Request request, Response response) throws Throwable {
         String accept = Optional.ofNullable(request.header("Accept")).orElse("text/plain");
@@ -28,6 +31,7 @@ public class MetricHttp {
         HttpMethod method = request.getMethod();
         String path = request.pathInfo();
         String metricBase = method + "_" + path.replace("/", "_");
+        logger.info("Filter metric {}", metricBase);
 
         String exceptionName = "None";
         Timer.Sample sample = Timer.start(Metrics.registry());

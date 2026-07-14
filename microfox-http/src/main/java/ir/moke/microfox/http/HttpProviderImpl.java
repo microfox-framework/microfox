@@ -3,8 +3,11 @@ package ir.moke.microfox.http;
 import ir.moke.microfox.api.http.*;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
+import ir.moke.microfox.http.filter.CorsFilter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.SubmissionPublisher;
 
@@ -98,5 +101,22 @@ public class HttpProviderImpl implements HttpProvider {
                 .filter(item -> item.getCategory() != null)
                 .filter(item -> item.getCategory().equalsIgnoreCase(category))
                 .forEach(item -> remove(item.getPath(), item.getHttpMethod()));
+    }
+
+    @Override
+    public void cors(Map<CORSHeader, String> valueMap) {
+        filter("/*", -800, "Microfox cors", "microfox", new CorsFilter(valueMap));
+    }
+
+    @Override
+    public void corsAccessAll() {
+        Map<CORSHeader, String> valueMap = new HashMap<>();
+        valueMap.put(CORSHeader.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+        valueMap.put(CORSHeader.ACCESS_CONTROL_ALLOW_METHODS, "POST,GET,PUT,DELETE,OPTIONS");
+        valueMap.put(CORSHeader.ACCESS_CONTROL_ALLOW_HEADERS, "Accept, Content-Type, Authorization,accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers");
+        valueMap.put(CORSHeader.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+        valueMap.put(CORSHeader.ACCESS_CONTROL_MAX_AGE, "86400");
+
+        filter("/*", -800, "Microfox cors", "microfox", new CorsFilter(valueMap));
     }
 }

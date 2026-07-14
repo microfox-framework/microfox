@@ -19,6 +19,7 @@ public class SecurityFilter implements Filter {
 
     @Override
     public void handle(Request request, Response response, Chain chain) {
+        logger.info("Filter security {}", request.uri());
         HttpMethod httpMethod = request.getMethod();
 
         RouteInfo routeInfo = findMatchingRouteInfo(request.uri(), httpMethod);
