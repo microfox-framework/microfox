@@ -58,7 +58,7 @@ public class HttpHelper extends HttpUtils {
                 list.add(filterInfo);
             }
         }
-        list.sort(Comparator.comparingInt(FilterInfo::getOrder));
+        list.sort(Comparator.comparingInt(FilterInfo::getSort));
         return list;
     }
 

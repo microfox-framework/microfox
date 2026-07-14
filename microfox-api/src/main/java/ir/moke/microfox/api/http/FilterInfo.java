@@ -12,11 +12,11 @@ public class FilterInfo {
     private String description;
     private String category;
     private String hash;
-    private int order;
+    private int sort;
 
-    public FilterInfo(String path, int order, Filter filter, String description, String category) {
+    public FilterInfo(String path, int sort, Filter filter, String description, String category) {
         this.path = path;
-        this.order = order;
+        this.sort = sort;
         this.filter = filter;
         this.description = description;
         this.category = category;
@@ -24,9 +24,9 @@ public class FilterInfo {
         this.hash = DigestUtils.md5Hex(path + description + category);
     }
 
-    public FilterInfo(String path, int order, Filter filter) {
+    public FilterInfo(String path, int sort, Filter filter) {
         this.path = path;
-        this.order = order;
+        this.sort = sort;
         this.filter = filter;
         pattern = HttpUtils.compilePattern(path);
     }
@@ -35,12 +35,12 @@ public class FilterInfo {
         return path;
     }
 
-    public int getOrder() {
-        return order;
+    public int getSort() {
+        return sort;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 
     public Filter getFilter() {
