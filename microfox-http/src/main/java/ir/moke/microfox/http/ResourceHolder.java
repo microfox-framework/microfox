@@ -6,6 +6,7 @@ import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.http.SecurityInfo;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
+import ir.moke.microfox.http.filter.SecurityFilter;
 import ir.moke.microfox.http.sse.SseInfo;
 import jakarta.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ public class ResourceHolder {
 
     static {
         EXECUTOR.execute(HttpContainer::start);
+        addFilter(new FilterInfo("/*", -1, new SecurityFilter(), "Microfox security filter", "Microfox"));
     }
 
     public static void addRoute(RouteInfo routeInfo) {

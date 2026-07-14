@@ -95,7 +95,6 @@ public class HttpContainer {
 
         /* Register filter and servlet */
         context.addFilter(BaseFilter.class, "/*", EnumSet.of(FORWARD, ASYNC, REQUEST, INCLUDE, ERROR));
-        context.addFilter(SecurityFilter.class, "/*", EnumSet.of(FORWARD, ASYNC, REQUEST, INCLUDE, ERROR));
         context.addServlet(BaseServlet.class, "/*");
         server.setHandler(context);
     }

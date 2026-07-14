@@ -42,6 +42,9 @@ public class ResponseProxy implements InvocationHandler {
             case "outputStream" -> {
                 return ResponseHelper.outputStream(response);
             }
+            case "httpServletResponse" -> {
+                return response;
+            }
         }
         return null;
     }

@@ -34,10 +34,5 @@ public class JwtSecurity implements SecurityStrategy {
         }
         return false;
     }
-
-    @Override
-    public boolean isRequired() {
-        return true;
-    }
 }
 

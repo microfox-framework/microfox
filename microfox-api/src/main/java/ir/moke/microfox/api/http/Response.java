@@ -3,6 +3,7 @@ package ir.moke.microfox.api.http;
 import ir.moke.microfox.api.http.sse.SseObject;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.time.Instant;
 import java.util.Date;
@@ -45,4 +46,6 @@ public interface Response {
     void flushBuffer();
 
     ServletOutputStream outputStream();
+
+    HttpServletResponse httpServletResponse();
 }

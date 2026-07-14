@@ -30,9 +30,4 @@ public class BasicAuthSecurity implements SecurityStrategy {
     public boolean authorize(Credential credential, List<String> roles, List<String> scopes) {
         return true; // BasicAuth here only authenticates, no roles
     }
-
-    @Override
-    public boolean isRequired() {
-        return true;
-    }
 }
