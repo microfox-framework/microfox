@@ -36,9 +36,8 @@ public class Jpa {
      * @param <T>      return type
      */
     private static <T> void notSupportedTx(String identity, Consumer<EntityManager> consumer) {
-        try (EntityManager em = JpaFactory.getEntityManagerFactory(identity).createEntityManager()) {
-            consumer.accept(em);
-        }
+        EntityManager em = JpaFactory.getEntityManagerFactory(identity).createEntityManager();
+        consumer.accept(em);
     }
 
     private static <T> void neverTx(String identity, Consumer<EntityManager> consumer) {
