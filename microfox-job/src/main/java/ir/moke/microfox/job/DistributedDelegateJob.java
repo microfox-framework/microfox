@@ -24,7 +24,7 @@ public class DistributedDelegateJob implements Job {
         String group = key.getGroup();
         String name = key.getName();
 
-        String jobKey = "quartz:distributed:%s:%s:%s".formatted(type, group, name);
+        String jobKey = "microfox:quartz:lock:%s:%s:%s".formatted(type, group, name);
 
         if (identity == null || identity.isBlank()) {
             logger.error("Distributed job {} has no identity configured", jobKey);
