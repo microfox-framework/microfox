@@ -16,11 +16,16 @@ public class CorsFilter implements Filter {
         this.valueMap = valueMap;
     }
 
-
     @Override
     public void handle(Request request, Response response, Chain chain) {
         logger.trace("Filter CORS {}", request.uri());
         valueMap.forEach((k, v) -> response.header(k.getValue(), v));
+
+        if (HttpMethod.OPTIONS.equals(request.getMethod())) {
+            response.status(200);
+            return;
+        }
+
         chain.doFilter(request, response);
     }
 }
