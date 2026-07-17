@@ -4,6 +4,7 @@ import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.api.http.RouteInfo;
+import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.http.HttpHelper;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.sse.SseInfo;
@@ -16,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+import java.util.concurrent.Flow;
+import java.util.concurrent.SubmissionPublisher;
 
 import static ir.moke.microfox.http.HttpHelper.findMatchingRouteInfo;
 
@@ -64,8 +67,16 @@ public class BaseServlet extends HttpServlet {
             return;
         }
 
-        SseSubscriber subscriber = new SseSubscriber(HttpHelper.getResponse(resp), asyncContext, opt.get());
-        opt.get().getPublisher().subscribe(subscriber);
+        SseInfo sseInfo = opt.get();
+        SseSubscriber subscriber = new SseSubscriber(HttpHelper.getResponse(resp), asyncContext, sseInfo);
+
+        SubmissionPublisher<SseObject> publisher = sseInfo.getPublisher();
+        if (publisher.isClosed()) {
+            publisher = new SubmissionPublisher<>(ResourceHolder.SSE_EXECUTOR, Flow.defaultBufferSize());
+            sseInfo.setPublisher(publisher);
+        }
+
+        publisher.subscribe(subscriber);
     }
 
     private static void notFound(HttpServletResponse resp) {
