@@ -62,6 +62,5 @@ public class SseInfo implements Closeable {
     @Override
     public void close() {
         publisher.close();
-        ResourceHolder.removeSse(this);
     }
 }
