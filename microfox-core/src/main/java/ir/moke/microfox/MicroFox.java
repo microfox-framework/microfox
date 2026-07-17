@@ -72,9 +72,9 @@ public class MicroFox {
         LoggerManager.registerLog(log);
     }
 
-    public static void cors(Map<CORSHeader, String> valueMap) {
+    public static void cors(String path, String name, Map<CORSHeader, String> valueMap) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
-        httpProvider.cors(valueMap);
+        httpProvider.cors(path, name, valueMap);
     }
 
     public static void corsAccessAll() {

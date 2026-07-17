@@ -109,8 +109,8 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
-    public void cors(Map<CORSHeader, String> valueMap) {
-        filter("/*", -800, "CORS", "microfox", new CorsFilter(valueMap));
+    public void cors(String path, String name, Map<CORSHeader, String> valueMap) {
+        filter(path, -800, name, "microfox", new CorsFilter(valueMap));
     }
 
     @Override
@@ -122,6 +122,6 @@ public class HttpProviderImpl implements HttpProvider {
         valueMap.put(CORSHeader.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
         valueMap.put(CORSHeader.ACCESS_CONTROL_MAX_AGE, "86400");
 
-        filter("/*", -800, "CORS", "microfox", new CorsFilter(valueMap));
+        filter("/*", -800, "Wildcard CORS", "microfox", new CorsFilter(valueMap));
     }
 }

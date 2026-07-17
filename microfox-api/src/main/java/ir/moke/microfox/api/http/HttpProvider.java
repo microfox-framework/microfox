@@ -41,7 +41,7 @@ public interface HttpProvider {
 
     void removeFilter(String category);
 
-    void cors(Map<CORSHeader, String> valueMap);
+    void cors(String path, String name, Map<CORSHeader, String> valueMap);
 
     void corsAccessAll();
 }
