@@ -70,14 +70,14 @@ public class OptionalRepository<T> {
     private static <T> boolean isPrimaryKeyIsNull(T t) {
         boolean isPrimaryKeyNull = false;
         try {
-            Field idField = Arrays.stream(t.getClass().getDeclaredFields()).filter(item -> item.isAnnotationPresent(Id.class)).findFirst().orElse(null);
+            Field idField = Arrays.stream(t.getClass().getFields()).filter(item -> item.isAnnotationPresent(Id.class)).findFirst().orElse(null);
             if (idField != null) {
                 idField.setAccessible(true);
                 isPrimaryKeyNull = idField.get(t) == null;
 
                 idField.setAccessible(false);
             } else {
-                Method idMethod = Arrays.stream(t.getClass().getDeclaredMethods()).filter(item -> item.isAnnotationPresent(Id.class)).findFirst().orElse(null);
+                Method idMethod = Arrays.stream(t.getClass().getMethods()).filter(item -> item.isAnnotationPresent(Id.class)).findFirst().orElse(null);
                 if (idMethod != null) {
                     idMethod.setAccessible(true);
                     isPrimaryKeyNull = idMethod.invoke(t) != null;
