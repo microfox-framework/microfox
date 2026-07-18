@@ -1,5 +1,11 @@
 package ir.moke.microfox.jpa;
 
+import ir.moke.microfox.exception.MicroFoxException;
+import jakarta.persistence.Id;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -17,22 +23,19 @@ public class OptionalRepository<T> {
     }
 
     public void save(T t) {
-        Crud.insert(identity, t);
-    }
-
-    public void update(T t) {
-        Crud.update(identity, t);
+        boolean isIdNull = isPrimaryKeyIsNull(t);
+        if (isIdNull) {
+            Crud.insert(identity, t);
+        } else {
+            Crud.update(identity, t);
+        }
     }
 
     public void remove(T t) {
         Crud.delete(identity, t);
     }
 
-    public void removeByPrimaryKey(Object primaryKey) {
-        Crud.delete(identity, primaryKey, entityClass);
-    }
-
-    public T findByPrimaryKey(Object primaryKey) {
+    public T find(Object primaryKey) {
         return Crud.select(identity, primaryKey, entityClass);
     }
 
@@ -60,5 +63,30 @@ public class OptionalRepository<T> {
 
     public boolean exists(String hql, Map<String, Object> parameters) {
         return Crud.count(identity, hql, parameters) > 0;
+    }
+
+    /*-------------------------------*/
+
+    private static <T> boolean isPrimaryKeyIsNull(T t) {
+        boolean isPrimaryKeyNull = false;
+        try {
+            Field idField = Arrays.stream(t.getClass().getDeclaredFields()).filter(item -> item.isAnnotationPresent(Id.class)).findFirst().orElse(null);
+            if (idField != null) {
+                idField.setAccessible(true);
+                isPrimaryKeyNull = idField.get(t) == null;
+
+                idField.setAccessible(false);
+            } else {
+                Method idMethod = Arrays.stream(t.getClass().getDeclaredMethods()).filter(item -> item.isAnnotationPresent(Id.class)).findFirst().orElse(null);
+                if (idMethod != null) {
+                    idMethod.setAccessible(true);
+                    isPrimaryKeyNull = idMethod.invoke(t) != null;
+                    idMethod.setAccessible(false);
+                }
+            }
+            return isPrimaryKeyNull;
+        } catch (Exception e) {
+            throw new MicroFoxException(e);
+        }
     }
 }
