@@ -80,7 +80,7 @@ public class OptionalRepository<T> {
                 Method idMethod = Arrays.stream(t.getClass().getMethods()).filter(item -> item.isAnnotationPresent(Id.class)).findFirst().orElse(null);
                 if (idMethod != null) {
                     idMethod.setAccessible(true);
-                    isPrimaryKeyNull = idMethod.invoke(t) != null;
+                    isPrimaryKeyNull = idMethod.invoke(t) == null;
                     idMethod.setAccessible(false);
                 }
             }
