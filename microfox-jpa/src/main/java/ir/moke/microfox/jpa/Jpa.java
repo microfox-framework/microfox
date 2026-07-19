@@ -36,8 +36,9 @@ public class Jpa {
      * @param <T>      return type
      */
     private static <T> void notSupportedTx(String identity, Consumer<EntityManager> consumer) {
+        ScopedValue<Map<String, EntityManager>> sv = JpaFactory.getScopedValue();
         try (EntityManager em = JpaFactory.getEntityManagerFactory(identity).createEntityManager()) {
-            consumer.accept(em);
+            ScopedValue.where(sv, Map.of(identity, em)).run(() -> consumer.accept(em));
         }
     }
 

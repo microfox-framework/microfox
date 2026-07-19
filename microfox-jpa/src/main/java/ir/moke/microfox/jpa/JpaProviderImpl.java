@@ -3,6 +3,7 @@ package ir.moke.microfox.jpa;
 import ir.moke.microfox.api.jpa.JpaProvider;
 import ir.moke.microfox.api.jpa.TransactionPolicy;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 import java.util.Map;
 import java.util.Set;
@@ -51,5 +52,14 @@ public class JpaProviderImpl implements JpaProvider {
     @Override
     public void jpa(String identity, TransactionPolicy policy, Runnable runnable) {
         Jpa.persistence(identity, policy, runnable);
+    }
+
+    @Override
+    public void openEntityManager(String identity, Consumer<EntityManager> consumer) {
+        ScopedValue<Map<String, EntityManager>> sv = JpaFactory.getScopedValue();
+        EntityManagerFactory emf = JpaFactory.getEntityManagerFactory(identity);
+        EntityManager em = emf.createEntityManager();
+
+        ScopedValue.where(sv, Map.of(identity, em)).run(() -> consumer.accept(em));
     }
 }

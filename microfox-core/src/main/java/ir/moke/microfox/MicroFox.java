@@ -317,6 +317,11 @@ public class MicroFox {
         jpaProvider.jpa(identity, policy, consumer);
     }
 
+    public static void openEntityManager(String identity, Consumer<EntityManager> consumer) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.openEntityManager(identity, consumer);
+    }
+
     public static <T> void jpaTxRollback(String identity) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
         jpaProvider.rollback(identity);

@@ -22,4 +22,6 @@ public interface JpaProvider {
     void jpa(String identity, TransactionPolicy policy, Consumer<EntityManager> consumer);
 
     void jpa(String identity, TransactionPolicy policy, Runnable consumer);
+
+    void openEntityManager(String identity, Consumer<EntityManager> consumer);
 }
