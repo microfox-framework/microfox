@@ -27,7 +27,7 @@ public class Crud extends Jpa {
         Objects.requireNonNull(entityClass, "JPA entity class could not be null");
 
         List<T> result = new ArrayList<>();
-        persistence(identity, TransactionPolicy.NOT_SUPPORTED, em -> {
+        persistence(identity, TransactionPolicy.REQUIRED, em -> {
             TypedQuery<T> typedQuery = em.createQuery(hql, entityClass);
             if (parameters != null && !parameters.isEmpty()) parameters.forEach(typedQuery::setParameter);
             Optional.ofNullable(offset).ifPresent(typedQuery::setFirstResult);
@@ -42,7 +42,7 @@ public class Crud extends Jpa {
         Objects.requireNonNull(identity, "JPA hql could not be null");
 
         AtomicLong countRef = new AtomicLong();
-        persistence(identity, TransactionPolicy.NOT_SUPPORTED, em -> {
+        persistence(identity, TransactionPolicy.REQUIRED, em -> {
             TypedQuery<Long> typedQuery = em.createQuery(hql, Long.class);
             if (parameters != null && !parameters.isEmpty()) parameters.forEach(typedQuery::setParameter);
             Long count = typedQuery.getSingleResult();
@@ -65,7 +65,7 @@ public class Crud extends Jpa {
         Objects.requireNonNull(entityClass, "JPA entity class could not be null");
 
         AtomicReference<T> ref = new AtomicReference<>();
-        persistence(identity, TransactionPolicy.NOT_SUPPORTED, em -> ref.set(em.find(entityClass, primaryKey)));
+        persistence(identity, TransactionPolicy.REQUIRED, em -> ref.set(em.find(entityClass, primaryKey)));
         return ref.get();
     }
 
