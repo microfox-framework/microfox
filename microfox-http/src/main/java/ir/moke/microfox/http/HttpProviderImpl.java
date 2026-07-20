@@ -4,6 +4,8 @@ import ir.moke.microfox.api.http.*;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.filter.CorsFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.SubmissionPublisher;
 
 public class HttpProviderImpl implements HttpProvider {
+    private static final Logger logger = LoggerFactory.getLogger(HttpProviderImpl.class);
 
     @Override
     public void filter(String path, int order, Filter filter) {
@@ -38,7 +41,11 @@ public class HttpProviderImpl implements HttpProvider {
         for (int i = 0; i < sortedHash.length; i++) {
             String hash = sortedHash[i];
             FilterInfo filterInfo = ResourceHolder.getFilterByHash(hash);
-            if (filterInfo != null) filterInfo.setSort(i);
+            if (filterInfo != null) {
+                filterInfo.setSort(i);
+            } else {
+                logger.warn("Filter with hash {} does not exists", hash);
+            }
         }
     }
 
