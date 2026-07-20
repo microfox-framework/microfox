@@ -3,7 +3,6 @@ package ir.moke.microfox.http;
 import ir.moke.microfox.MicroFoxEnvironment;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.filter.BaseFilter;
-import ir.moke.microfox.http.filter.SecurityFilter;
 import ir.moke.microfox.http.servlet.BaseServlet;
 import jakarta.servlet.Filter;
 import jakarta.servlet.Servlet;
