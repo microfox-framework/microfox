@@ -38,7 +38,7 @@ public class HttpProviderImpl implements HttpProvider {
         for (int i = 0; i < sortedHash.length; i++) {
             String hash = sortedHash[i];
             FilterInfo filterInfo = ResourceHolder.getFilterByHash(hash);
-            filterInfo.setSort(i);
+            if (filterInfo != null) filterInfo.setSort(i);
         }
     }
 
