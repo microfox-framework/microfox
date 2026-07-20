@@ -24,6 +24,11 @@ public class EntityManagerFilter implements Filter {
 
     @Override
     public void handle(Request request, Response response, Chain chain) {
+        if (this.identity == null) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         MicroFox.openEntityManager(identity, em -> {
             try {
                 chain.doFilter(request, response);
