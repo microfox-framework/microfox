@@ -83,10 +83,16 @@ public class Jpa {
     private static <T> void requiredTx(String identity, Consumer<EntityManager> consumer) {
         EntityManagerFactory emf = JpaFactory.getEntityManagerFactory(identity);
         ScopedValue<Map<String, EntityManager>> sv = JpaFactory.getScopedValue();
-        boolean isOwner = !sv.isBound();
-        EntityManager em = isOwner ? emf.createEntityManager() : JpaFactory.getEntityManager(identity);
+
+        EntityManager currentEm = sv.isBound() ? JpaFactory.getEntityManager(identity) : null;
+        boolean isOwner = currentEm == null || !currentEm.isOpen() || !currentEm.getTransaction().isActive();
+
+        EntityManager em = isOwner ? emf.createEntityManager() : currentEm;
         EntityTransaction tx = em.getTransaction();
-        tx.setTimeout(Integer.parseInt(MicroFoxEnvironment.getEnv("microfox.jpa.transaction-timeout")));
+
+        if (isOwner) {
+            tx.setTimeout(Integer.parseInt(MicroFoxEnvironment.getEnv("microfox.jpa.transaction-timeout")));
+        }
 
         ScopedValue.where(sv, Map.of(identity, em)).run(() -> {
             try {
