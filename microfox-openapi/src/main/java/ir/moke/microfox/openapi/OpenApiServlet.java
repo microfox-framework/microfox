@@ -5,7 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
-import ir.moke.utils.json.JsonUtils;
+import ir.moke.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

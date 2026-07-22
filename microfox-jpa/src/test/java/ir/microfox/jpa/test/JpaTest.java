@@ -32,7 +32,7 @@ public class JpaTest {
         // Update
         person1.setName("Sina");
         person1.setFamily("Zoheir");
-        personRepository.update(person1);
+        personRepository.save(person1);
         System.out.println("Update person1: " + person1);
 
         // Delete item

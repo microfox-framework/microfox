@@ -1,6 +1,6 @@
 package ir.moke.microfox.api.http;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import ir.moke.utils.DigestUtils;
 
 import java.util.regex.Pattern;
 

@@ -5,7 +5,7 @@ import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.HttpHelper;
 import ir.moke.microfox.http.validation.MicroFoxValidator;
-import ir.moke.utils.json.JsonUtils;
+import ir.moke.utils.JsonUtils;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.Cookie;

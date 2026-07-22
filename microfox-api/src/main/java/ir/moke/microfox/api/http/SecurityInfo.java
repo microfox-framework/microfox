@@ -1,8 +1,7 @@
 package ir.moke.microfox.api.http;
 
 import ir.moke.microfox.api.http.security.SecurityStrategy;
-import ir.moke.utils.StringUtils;
-import org.apache.commons.codec.digest.DigestUtils;
+import ir.moke.utils.DigestUtils;
 
 import java.util.Objects;
 import java.util.regex.Pattern;

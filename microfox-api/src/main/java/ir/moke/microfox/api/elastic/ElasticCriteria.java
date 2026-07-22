@@ -1,7 +1,7 @@
 package ir.moke.microfox.api.elastic;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import ir.moke.utils.json.JsonUtils;
+import ir.moke.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

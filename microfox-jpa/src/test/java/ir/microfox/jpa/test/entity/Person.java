@@ -1,7 +1,7 @@
 package ir.microfox.jpa.test.entity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import ir.moke.utils.json.JsonUtils;
+import ir.moke.utils.JsonUtils;
 import jakarta.persistence.*;
 
 @Entity
