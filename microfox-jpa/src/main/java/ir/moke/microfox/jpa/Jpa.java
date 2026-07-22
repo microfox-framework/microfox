@@ -37,8 +37,14 @@ public class Jpa {
      */
     private static <T> void notSupportedTx(String identity, Consumer<EntityManager> consumer) {
         ScopedValue<Map<String, EntityManager>> sv = JpaFactory.getScopedValue();
-        try (EntityManager em = JpaFactory.getEntityManagerFactory(identity).createEntityManager()) {
-            ScopedValue.where(sv, Map.of(identity, em)).run(() -> consumer.accept(em));
+        EntityManager existingEm = sv.isBound() ? sv.get().get(identity) : null;
+
+        if (existingEm != null && existingEm.isOpen()) {
+            consumer.accept(existingEm);
+        } else {
+            try (EntityManager em = JpaFactory.getEntityManagerFactory(identity).createEntityManager()) {
+                ScopedValue.where(sv, Map.of(identity, em)).run(() -> consumer.accept(em));
+            }
         }
     }
 
