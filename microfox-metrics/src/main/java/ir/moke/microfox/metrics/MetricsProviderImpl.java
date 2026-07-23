@@ -19,7 +19,7 @@ public class MetricsProviderImpl implements MetricsProvider, TtyAsciiCodecs {
         /* Metrics */
         logger.info("{}{}{}{}", "Metrics Activated", BACKGROUND_BLUE, "/metrics", RESET);
         MicroFox.filter(new FilterInfo("/*", -999, MetricHttp::handleFilter, "Prometheus http metrics", "microfox"));
-        MicroFox.route(new RouteInfo("/metrics", HttpMethod.GET, MetricHttp::handleRouter, "metrics", "microfox"));
+        MicroFox.route(new RouteInfo("/metrics", HttpMethod.GET, MetricHttp::handle, "metrics", "microfox"));
     }
 
     @Override

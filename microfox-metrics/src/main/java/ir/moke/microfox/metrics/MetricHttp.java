@@ -13,7 +13,7 @@ import java.util.Optional;
 public class MetricHttp {
     private static final Logger logger = LoggerFactory.getLogger(MetricHttp.class);
 
-    public static void handleRouter(Request request, Response response) throws Throwable {
+    public static void handle(Request request, Response response) {
         String accept = Optional.ofNullable(request.header("Accept")).orElse("text/plain");
         ContentType contentType = Optional.ofNullable(ContentType.fromValue(accept)).orElse(ContentType.TEXT_PLAIN);
         if (contentType.equals(ContentType.TEXT_PLAIN)) {
