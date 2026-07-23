@@ -48,7 +48,7 @@
         <module>microfox-mybatis</module>
         <module>microfox-openapi</module>
         <module>microfox-redis</module>
-        <module>microfox-system</module>
+<!--        <module>microfox-system</module>-->
     </modules>
 
     <properties>
@@ -145,11 +145,13 @@
                 <artifactId>microfox-redis</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
+<!--
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-system</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
+-->
 
             <!-- Metrics -->
             <dependency>
@@ -387,21 +389,11 @@
                 <version>77.1</version>
             </dependency>
 
-            <!-- Jsysbox -->
+            <!-- Utils -->
             <dependency>
                 <groupId>ir.moke</groupId>
-                <artifactId>jsysbox</artifactId>
+                <artifactId>utils</artifactId>
                 <version>0.5.1</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.core</groupId>
-                        <artifactId>jackson-databind</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-classic</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <!-- JMS Test -->

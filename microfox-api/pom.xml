@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>ir.moke</groupId>
-            <artifactId>jsysbox</artifactId>
+            <artifactId>utils</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
