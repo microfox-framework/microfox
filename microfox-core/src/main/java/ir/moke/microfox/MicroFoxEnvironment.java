@@ -13,6 +13,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static ir.moke.utils.TtyAsciiCodecs.*;
 
@@ -22,6 +23,7 @@ public class MicroFoxEnvironment {
     private static final boolean doPrintEnvironments = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_ENVIRONMENTS")).orElse("false"));
     private static final boolean doPrintLogo = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_LOGO")).orElse("false"));
     private static final boolean activateDefaultConsoleLog = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_CONSOLE_LOG")).orElse("true"));
+    private static final AtomicBoolean oneTimePrint = new AtomicBoolean(false);
 
     static {
         if (activateDefaultConsoleLog) {
@@ -30,8 +32,10 @@ public class MicroFoxEnvironment {
     }
 
     public static void introduce() {
-        if (doPrintLogo) printLogo();
-        if (doPrintEnvironments) printEnvironments();
+        if (oneTimePrint.compareAndSet(false,true)) {
+            if (doPrintLogo) printLogo();
+            if (doPrintEnvironments) printEnvironments();
+        }
     }
 
     private static void printEnvironments() {
