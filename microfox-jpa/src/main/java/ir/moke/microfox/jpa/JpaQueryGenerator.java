@@ -20,7 +20,7 @@ public class JpaQueryGenerator {
         schemaUpdate.setFormat(false);
         schemaUpdate.setDelimiter(";");
         schemaUpdate.setOutputFile(outputFile);
-        schemaUpdate.execute(EnumSet.of(TargetType.STDOUT), metadata.buildMetadata());
+        schemaUpdate.execute(EnumSet.of(outputFile == null ? TargetType.STDOUT : TargetType.SCRIPT), metadata.buildMetadata());
     }
 
     public static void createSchema(String persistenceUnitName, String outputFile) {
@@ -32,6 +32,6 @@ public class JpaQueryGenerator {
         schemaExport.setFormat(false);
         schemaExport.setDelimiter(";");
         schemaExport.setOutputFile(outputFile);
-        schemaExport.execute(EnumSet.of(TargetType.STDOUT), SchemaExport.Action.CREATE, metadata.buildMetadata());
+        schemaExport.execute(EnumSet.of(outputFile == null ? TargetType.STDOUT : TargetType.SCRIPT), SchemaExport.Action.CREATE, metadata.buildMetadata());
     }
 }
