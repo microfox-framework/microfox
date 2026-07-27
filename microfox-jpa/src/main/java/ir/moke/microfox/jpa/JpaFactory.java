@@ -4,6 +4,9 @@ package ir.moke.microfox.jpa;
 import ir.moke.microfox.exception.MicroFoxException;
 import jakarta.persistence.*;
 import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.BootstrapServiceRegistry;
+import org.hibernate.boot.registry.BootstrapServiceRegistryBuilder;
+import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -39,15 +42,15 @@ public class JpaFactory {
         PersistenceConfiguration configuration = new PersistenceConfiguration(identity);
         Optional.ofNullable(validatorFactory).ifPresent(item -> settings.put(AvailableSettings.JAKARTA_VALIDATION_FACTORY, item));
         settings.forEach(configuration::property);
+        ClassLoader classLoader = (ClassLoader) settings.get(AvailableSettings.CLASSLOADERS);
         entities.forEach(configuration::managedClass);
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(configuration);
         CONNECTION_FACTORY_LIST.add(emf);
 
         // extract MetaSource
-        getMetaSource(identity, entities, settings);
+        getMetaSource(identity, entities, settings, classLoader);
     }
 
-    @SuppressWarnings("unchecked")
     static void registerWithPackage(String identity, Set<String> scanPackages, Map<String, Object> settings) {
         if (CONNECTION_FACTORY_LIST.stream().map(EntityManagerFactory::getName).anyMatch(item -> item.equalsIgnoreCase(identity)))
             throw new MicroFoxException("Jpa with identity %s already exists".formatted(identity));
@@ -55,14 +58,14 @@ public class JpaFactory {
         PersistenceConfiguration configuration = new PersistenceConfiguration(identity);
         Optional.ofNullable(validatorFactory).ifPresent(item -> settings.put(AvailableSettings.JAKARTA_VALIDATION_FACTORY, item));
         settings.forEach(configuration::property);
-        Collection<ClassLoader> classLoaders = (Collection<ClassLoader>) settings.get(AvailableSettings.CLASSLOADERS);
-        Set<Class<?>> entities = scanPackages(scanPackages, classLoaders);
+        ClassLoader classLoader = (ClassLoader) settings.get(AvailableSettings.CLASSLOADERS);
+        Set<Class<?>> entities = scanPackages(scanPackages, classLoader);
         entities.forEach(configuration::managedClass);
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(configuration);
         CONNECTION_FACTORY_LIST.add(emf);
 
         // extract MetaSource
-        getMetaSource(identity, entities, settings);
+        getMetaSource(identity, entities, settings, classLoader);
     }
 
     static void unregister(String identity) {
@@ -75,21 +78,21 @@ public class JpaFactory {
         CONNECTION_FACTORY_LIST.remove(emf);
     }
 
-    private static void getMetaSource(String identity, Set<Class<?>> entities, Map<String, Object> settings) {
-        StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
-        registryBuilder.applySettings(settings);
-        MetadataSources sources = new MetadataSources(registryBuilder.build());
+    private static void getMetaSource(String identity, Set<Class<?>> entities, Map<String, Object> settings, ClassLoader classLoader) {
+        BootstrapServiceRegistry bootstrapRegistry = new BootstrapServiceRegistryBuilder().applyClassLoader(classLoader).build();
+        StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder(bootstrapRegistry).applySettings(settings).build();
+        MetadataSources sources = new MetadataSources(standardRegistry);
         sources.addAnnotatedClasses(entities.toArray(Class[]::new));
         METADATA_SOURCES_MAP.put(identity, sources);
     }
 
-    private static Set<Class<?>> scanPackages(Set<String> packages, Collection<ClassLoader> classLoader) {
+    private static Set<Class<?>> scanPackages(Set<String> packages, ClassLoader classLoader) {
         if (packages != null && !packages.isEmpty()) {
             ConfigurationBuilder builder = new ConfigurationBuilder()
                     .forPackages(packages.toArray(String[]::new))
                     .addScanners(Scanners.TypesAnnotated);
 
-            if (classLoader != null) builder.addClassLoaders(classLoader.toArray(ClassLoader[]::new));
+            if (classLoader != null) builder.addClassLoaders(classLoader);
 
             Reflections reflections = new Reflections(builder);
             return reflections.getTypesAnnotatedWith(Entity.class);
