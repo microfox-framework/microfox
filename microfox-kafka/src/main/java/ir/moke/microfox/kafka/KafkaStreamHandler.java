@@ -23,7 +23,6 @@ public class KafkaStreamHandler implements InvocationHandler {
         this.topology = topology;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String name = method.getName();
