@@ -19,13 +19,19 @@ import static ir.moke.utils.TtyAsciiCodecs.*;
 public class MicroFoxEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(MicroFoxEnvironment.class);
     private static final Map<Object, Object> sortedMap = new TreeMap<>(loadEnvironments());
-    private static final boolean doPrint = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_LOGO")).orElse("true"));
+    private static final boolean doPrintEnvironments = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_ENVIRONMENTS")).orElse("false"));
+    private static final boolean doPrintLogo = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_LOGO")).orElse("false"));
     private static final boolean activateDefaultConsoleLog = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_CONSOLE_LOG")).orElse("true"));
 
     static {
         if (activateDefaultConsoleLog) {
             LoggerManager.registerLog(new ConsoleGenericModel("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
         }
+    }
+
+    public static void introduce() {
+        if (doPrintLogo) printLogo();
+        if (doPrintEnvironments) printEnvironments();
     }
 
     private static void printEnvironments() {
@@ -45,32 +51,25 @@ public class MicroFoxEnvironment {
     }
 
     private static void printLogo() {
-        if (doPrint) {
-            try {
-                Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("logo");
-                List<URL> list = Collections.list(urls);
-                URL url;
-                if (list.size() > 1) {
-                    url = list.stream().filter(item -> !item.getPath().contains("microfox")).findFirst().orElse(null);
-                } else {
-                    url = list.getFirst();
-                }
-                if (url != null) {
-                    try (InputStream inputStream = url.openStream()) {
-                        byte[] bytes = inputStream.readAllBytes();
-                        System.out.write(bytes);
-                        System.out.flush();
-                    }
-                }
-            } catch (IOException e) {
-                logger.error("Unknown error", e);
+        try {
+            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("logo");
+            List<URL> list = Collections.list(urls);
+            URL url;
+            if (list.size() > 1) {
+                url = list.stream().filter(item -> !item.getPath().contains("microfox")).findFirst().orElse(null);
+            } else {
+                url = list.getFirst();
             }
+            if (url != null) {
+                try (InputStream inputStream = url.openStream()) {
+                    byte[] bytes = inputStream.readAllBytes();
+                    System.out.write(bytes);
+                    System.out.flush();
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Unknown error", e);
         }
-    }
-
-    public static void introduce() {
-        printLogo();
-        printEnvironments();
     }
 
     private static Properties loadEnvironments() {
