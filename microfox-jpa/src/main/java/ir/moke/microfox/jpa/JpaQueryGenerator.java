@@ -11,7 +11,7 @@ import java.util.EnumSet;
 import static ir.moke.microfox.jpa.JpaFactory.getMetadataSources;
 
 public class JpaQueryGenerator {
-    public static void updateSchema(String persistenceUnitName) {
+    public static void updateSchema(String persistenceUnitName, String outputFile) {
         MetadataSources metadata = getMetadataSources(persistenceUnitName);
         if (metadata == null)
             throw new MicroFoxException("Persistence with name %s does not exists".formatted(persistenceUnitName));
@@ -19,10 +19,11 @@ public class JpaQueryGenerator {
         schemaUpdate.setHaltOnError(true);
         schemaUpdate.setFormat(false);
         schemaUpdate.setDelimiter(";");
+        schemaUpdate.setOutputFile(outputFile);
         schemaUpdate.execute(EnumSet.of(TargetType.STDOUT), metadata.buildMetadata());
     }
 
-    public static void createSchema(String persistenceUnitName) {
+    public static void createSchema(String persistenceUnitName, String outputFile) {
         MetadataSources metadata = getMetadataSources(persistenceUnitName);
         if (metadata == null)
             throw new MicroFoxException("Persistence with name %s does not exists".formatted(persistenceUnitName));
@@ -30,6 +31,7 @@ public class JpaQueryGenerator {
         schemaExport.setHaltOnError(true);
         schemaExport.setFormat(false);
         schemaExport.setDelimiter(";");
+        schemaExport.setOutputFile(outputFile);
         schemaExport.execute(EnumSet.of(TargetType.STDOUT), SchemaExport.Action.CREATE, metadata.buildMetadata());
     }
 }

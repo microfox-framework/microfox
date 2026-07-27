@@ -327,14 +327,14 @@ public class MicroFox {
         jpaProvider.rollback(identity);
     }
 
-    public static void jpaPrintCreateSchemaSQL(String identity) {
+    public static void jpaPrintCreateSchemaSQL(String identity, String outputFile) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaPrintCreateSchemaSQL(identity);
+        jpaProvider.jpaPrintCreateSchemaSQL(identity, outputFile);
     }
 
-    public static void jpaPrintUpdateSchemaSQL(String identity) {
+    public static void jpaPrintUpdateSchemaSQL(String identity, String outputFile) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
-        jpaProvider.jpaPrintUpdateSchemaSQL(identity);
+        jpaProvider.jpaPrintUpdateSchemaSQL(identity, outputFile);
     }
 
     public static void jmsListener(String identity, DestinationType type, String destination, AckMode acknowledgeMode, MessageListener listener) {

@@ -13,9 +13,9 @@ public interface JpaProvider {
 
     void unregister(String identity);
 
-    void jpaPrintCreateSchemaSQL(String identity);
+    void jpaPrintCreateSchemaSQL(String identity, String outputFile);
 
-    void jpaPrintUpdateSchemaSQL(String identity);
+    void jpaPrintUpdateSchemaSQL(String identity, String outputFile);
 
     void rollback(String identity);
 

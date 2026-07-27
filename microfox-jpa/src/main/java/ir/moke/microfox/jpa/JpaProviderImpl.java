@@ -27,13 +27,13 @@ public class JpaProviderImpl implements JpaProvider {
     }
 
     @Override
-    public void jpaPrintCreateSchemaSQL(String identity) {
-        JpaQueryGenerator.createSchema(identity);
+    public void jpaPrintCreateSchemaSQL(String identity, String outputFile) {
+        JpaQueryGenerator.createSchema(identity, outputFile);
     }
 
     @Override
-    public void jpaPrintUpdateSchemaSQL(String identity) {
-        JpaQueryGenerator.updateSchema(identity);
+    public void jpaPrintUpdateSchemaSQL(String identity, String outputFile) {
+        JpaQueryGenerator.updateSchema(identity, outputFile);
     }
 
     @Override
