@@ -20,8 +20,8 @@ import static ir.moke.utils.TtyAsciiCodecs.*;
 public class MicroFoxEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(MicroFoxEnvironment.class);
     private static final Map<Object, Object> sortedMap = new TreeMap<>(loadEnvironments());
-    private static final boolean doPrintEnvironments = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_ENVIRONMENTS")).orElse("false"));
-    private static final boolean doPrintLogo = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_LOGO")).orElse("false"));
+    private static final boolean doPrintLogo = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_LOGO")).orElse("true"));
+    private static final boolean doPrintEnvironments = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_PRINT_ENVIRONMENTS")).orElse("true"));
     private static final boolean activateDefaultConsoleLog = Boolean.parseBoolean(Optional.ofNullable(System.getenv("MICROFOX_CONSOLE_LOG")).orElse("true"));
     private static final AtomicBoolean oneTimePrint = new AtomicBoolean(false);
 
