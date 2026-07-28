@@ -25,6 +25,11 @@ public class ClusterTopicImpl implements ClusterTopic {
     }
 
     @Override
+    public void publishAsync(Object message) {
+        topic.publishAsync(message);
+    }
+
+    @Override
     public <T> void subscribe(Class<T> type, MessageListener<T> listener) {
         topic.addListener(type, (channel, msg) -> listener.onMessage(msg));
     }
