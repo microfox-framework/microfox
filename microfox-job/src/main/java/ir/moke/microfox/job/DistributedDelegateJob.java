@@ -35,7 +35,7 @@ public class DistributedDelegateJob implements Job {
             ClusterLock lock = MicroFox.redisCluster(identity).getLock(jobKey);
             boolean acquired = false;
             try {
-                acquired = lock.tryLock(0, 60000);
+                acquired = lock.tryLock(0);
                 if (!acquired) {
                     logger.debug("Job {} is already running, skipping...", jobKey);
                     return;
