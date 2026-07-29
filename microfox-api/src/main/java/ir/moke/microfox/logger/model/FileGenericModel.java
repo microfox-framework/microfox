@@ -6,7 +6,6 @@ import ch.qos.logback.core.encoder.Encoder;
 import ir.moke.microfox.utils.LogUtils;
 
 public class FileGenericModel extends GenericModel {
-    private String pattern;
     private final String filePath;
     private final String fileNamePattern;
     private final String maxFileSize;
@@ -49,9 +48,5 @@ public class FileGenericModel extends GenericModel {
 
     public String getTotalSizeCap() {
         return totalSizeCap;
-    }
-
-    public String getPattern() {
-        return pattern;
     }
 }
