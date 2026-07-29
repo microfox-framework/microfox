@@ -1,8 +1,11 @@
 package ir.moke.microfox;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ir.moke.microfox.logger.LoggerManager;
 import ir.moke.microfox.logger.model.ConsoleGenericModel;
+import ir.moke.microfox.utils.LogUtils;
 import ir.moke.utils.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +29,8 @@ public class MicroFoxEnvironment {
 
     static {
         if (activateDefaultConsoleLog) {
-            LoggerManager.registerLog(new ConsoleGenericModel("microfox-console-log", "ir.moke.microfox", Level.DEBUG));
+            LayoutWrappingEncoder<ILoggingEvent> encoder = LogUtils.getEncoder(LogUtils.getBasicPatternLayout(null));
+            LoggerManager.registerLog(new ConsoleGenericModel("microfox-console-log", "ir.moke.microfox", Level.DEBUG, encoder));
         }
     }
 

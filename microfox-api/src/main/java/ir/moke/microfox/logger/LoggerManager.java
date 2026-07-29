@@ -14,6 +14,7 @@ import ir.moke.microfox.logger.model.*;
 import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 
 public class LoggerManager {
@@ -27,13 +28,18 @@ public class LoggerManager {
         loggerContext.putObject(CoreConstants.PATTERN_RULE_REGISTRY, Map.of("highlighter", LogHighlighter.class.getCanonicalName()));
     }
 
+    public static List<Logger> list() {
+        return loggerContext.getLoggerList();
+    }
+
     public static void registerLog(LogModel log) {
         switch (log) {
             case SysGenericModel sysLog -> SyslogAppender.addSyslogLogger(sysLog);
             case FileGenericModel fileLog -> FileAppender.addFileLogger(fileLog);
             case StreamGenericModel streamLog -> StreamAppender.addOutputStreamLogger(streamLog);
-            case ConsoleGenericModel consoleLog -> ConsoleAppender.addConsoleLogger(consoleLog);
-            default -> ConsoleAppender.addConsoleLogger(log.getAppenderName(), log.getPackageName(), Level.DEBUG, LogUtils.DEFAULT_CONSOLE_PATTERN);
+            case ConsoleGenericModel consoleLog -> ConsoleAppender.addConsoleLogger(consoleLog, log.getEncoder());
+            default ->
+                    ConsoleAppender.addConsoleLogger(log.getAppenderName(), log.getPackageName(), Level.DEBUG, LogUtils.getEncoder(LogUtils.getBasicPatternLayout(null)));
         }
     }
 

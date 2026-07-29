@@ -14,6 +14,7 @@ import ir.moke.microfox.api.redis.RedisConfig;
 import ir.moke.microfox.api.redis.RedisProvider;
 import ir.moke.microfox.exception.ExceptionMapper;
 import ir.moke.microfox.exception.ExceptionMapperHolder;
+import ir.moke.microfox.logger.LoggerManager;
 
 import java.time.Duration;
 import java.util.Map;
@@ -29,6 +30,11 @@ public class MicrofoxRegistry {
     private static final ElasticProvider elasticProvider = ServiceLoader.load(ElasticProvider.class).findFirst().orElse(null);
     private static final MongoProvider mongoProvider = ServiceLoader.load(MongoProvider.class).findFirst().orElse(null);
     private static final RedisProvider redisProvider = ServiceLoader.load(RedisProvider.class).findFirst().orElse(null);
+
+    /* Logger */
+    public static void detachLogAppender(String appenderName, String packageName) {
+        LoggerManager.detachLoggerAppender(appenderName, packageName);
+    }
 
     /* Exception */
     public static <T extends Throwable> void exceptionMapperRegister(Class<T> t, ExceptionMapper mapper) {

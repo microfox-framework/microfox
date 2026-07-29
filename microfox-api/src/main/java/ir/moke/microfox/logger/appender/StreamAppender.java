@@ -4,9 +4,8 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.OutputStreamAppender;
-import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
+import ch.qos.logback.core.encoder.Encoder;
 import ir.moke.microfox.logger.model.StreamGenericModel;
 import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
@@ -21,12 +20,13 @@ public class StreamAppender {
                 log.getAppenderName(),
                 log.getPackageName(),
                 log.getLevel(),
-                log.getOutputStream()
+                log.getOutputStream(),
+                log.getEncoder()
         );
     }
 
-    public static void addOutputStreamLogger(String name, String packageName, Level level, OutputStream outputStream) {
-        OutputStreamAppender<ILoggingEvent> outputStreamAppender = getOutputStreamAppender(name, outputStream);
+    public static void addOutputStreamLogger(String name, String packageName, Level level, OutputStream outputStream, Encoder<ILoggingEvent> encoder) {
+        OutputStreamAppender<ILoggingEvent> outputStreamAppender = getOutputStreamAppender(name, outputStream, encoder);
 
         LogUtils.setFilter(level, outputStreamAppender);
 
@@ -35,9 +35,7 @@ public class StreamAppender {
         log.addAppender(outputStreamAppender);
     }
 
-    private static OutputStreamAppender<ILoggingEvent> getOutputStreamAppender(String name, OutputStream outputStream) {
-        Layout<ILoggingEvent> layout = LogUtils.getBasicPatternLayout(null);
-        LayoutWrappingEncoder<ILoggingEvent> encoder = LogUtils.getEncoder(layout);
+    private static OutputStreamAppender<ILoggingEvent> getOutputStreamAppender(String name, OutputStream outputStream, Encoder<ILoggingEvent> encoder) {
         OutputStreamAppender<ILoggingEvent> outputStreamAppender = new OutputStreamAppender<>();
         outputStreamAppender.setContext(loggerContext);
         outputStreamAppender.setName(name);

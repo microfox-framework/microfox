@@ -1,6 +1,9 @@
 package ir.moke.microfox.logger.model;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.encoder.Encoder;
+import ir.moke.microfox.utils.LogUtils;
 
 public class SysGenericModel extends GenericModel {
     public enum Facility {
@@ -34,19 +37,18 @@ public class SysGenericModel extends GenericModel {
     private final Facility facility;
     private String pattern;
 
-    public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility) {
-        super(appenderName, packageName, level);
+    public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility, Encoder<ILoggingEvent> encoder) {
+        super(appenderName, packageName, level, encoder);
         this.facility = facility;
         this.port = port;
         this.host = host;
     }
 
-    public SysGenericModel(String name, String packageName, Level level, String host, int port, Facility facility, String pattern) {
-        super(name, packageName, level);
-        this.host = host;
-        this.port = port;
+    public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility) {
+        super(appenderName, packageName, level, LogUtils.getEncoder());
         this.facility = facility;
-        this.pattern = pattern;
+        this.port = port;
+        this.host = host;
     }
 
     public String getHost() {

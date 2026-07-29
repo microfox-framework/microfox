@@ -1,5 +1,6 @@
 package ir.moke.microfox;
 
+import ch.qos.logback.classic.Logger;
 import com.jcraft.jsch.ChannelSftp;
 import com.mongodb.client.MongoCollection;
 import ir.moke.microfox.api.elastic.ElasticProvider;
@@ -70,6 +71,10 @@ public class MicroFox {
 
     public static void logger(LogModel log) {
         LoggerManager.registerLog(log);
+    }
+
+    public static List<Logger> logger() {
+        return LoggerManager.list();
     }
 
     public static void cors(String path, String name, Map<CORSHeader, String> valueMap) {

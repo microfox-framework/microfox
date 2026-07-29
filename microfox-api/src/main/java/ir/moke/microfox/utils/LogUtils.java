@@ -26,6 +26,10 @@ public class LogUtils {
         levelFilter.start();
     }
 
+    public static LayoutWrappingEncoder<ILoggingEvent> getEncoder() {
+        return getEncoder(getBasicPatternLayout(null));
+    }
+
     public static LayoutWrappingEncoder<ILoggingEvent> getEncoder(Layout<ILoggingEvent> pattern) {
         LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<>();
         encoder.setContext(loggerContext);
@@ -41,19 +45,4 @@ public class LogUtils {
         patternLayout.start();
         return patternLayout;
     }
-
-/*
-    public static Layout<ILoggingEvent> getJsonPatternLayout() {
-        JsonFormatter formatter = JsonUtils::toJson;
-        JsonLayout layout = new JsonLayout();
-        layout.setContext(loggerContext);
-        layout.setJsonFormatter(formatter);
-        layout.setAppendLineSeparator(true);
-        layout.setIncludeException(true);
-        layout.setIncludeLoggerName(true);
-        layout.setIncludeContextName(false);
-        layout.start();
-        return layout;
-    }
-*/
 }

@@ -1,6 +1,8 @@
 package ir.moke.microfox.logger.model;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.encoder.Encoder;
 
 import java.util.Objects;
 
@@ -8,11 +10,13 @@ public abstract class GenericModel implements LogModel {
     private final String appenderName;
     private final String packageName;
     private final Level level;
+    private final Encoder<ILoggingEvent> encoder;
 
-    GenericModel(String appenderName, String packageName, Level level) {
+    GenericModel(String appenderName, String packageName, Level level, Encoder<ILoggingEvent> encoder) {
         this.appenderName = appenderName;
         this.packageName = packageName;
         this.level = level;
+        this.encoder = encoder;
     }
 
     public String getPackageName() {
@@ -25,6 +29,11 @@ public abstract class GenericModel implements LogModel {
 
     public String getAppenderName() {
         return appenderName;
+    }
+
+    @Override
+    public Encoder<ILoggingEvent> getEncoder() {
+        return encoder;
     }
 
     @Override
