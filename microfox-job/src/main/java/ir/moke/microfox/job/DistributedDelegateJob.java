@@ -33,17 +33,18 @@ public class DistributedDelegateJob implements Job {
 
         if (!allowConcurrent) {
             ClusterLock lock = MicroFox.redisCluster(identity).getLock(jobKey);
+            boolean acquired = false;
             try {
-                if (lock.isLocked()) {
+                acquired = lock.tryLock(0, 60000);
+                if (!acquired) {
                     logger.debug("Job {} is already running, skipping...", jobKey);
                     return;
                 }
-                lock.lock();
                 TaskRegistry.get(key).run();
             } catch (Exception e) {
                 logger.error("Job {} failed", jobKey, e);
             } finally {
-                if (lock.isHeldByCurrentThread()) {
+                if (acquired && lock.isHeldByCurrentThread()) {
                     lock.unlock();
                 }
             }
