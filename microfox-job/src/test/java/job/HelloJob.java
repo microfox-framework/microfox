@@ -1,11 +1,15 @@
 package job;
 
 import ir.moke.microfox.api.job.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HelloJob implements Task {
+    private static final Logger logger = LoggerFactory.getLogger(HelloJob.class);
+
     @Override
     public void run() {
-        System.out.println("Hello Job executed");
+        logger.info("Hello Job executed");
         sleep();
     }
 

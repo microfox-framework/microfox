@@ -8,9 +8,12 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
+import ch.qos.logback.core.pattern.DynamicConverter;
+import ir.moke.microfox.logger.LogHighlighter;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
+import java.util.function.Supplier;
 
 public class LogUtils {
     private static final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -20,7 +23,6 @@ public class LogUtils {
     public static void setFilter(Level level, Appender<ILoggingEvent> appender) {
         appender.clearAllFilters();
         ThresholdFilter levelFilter = new ThresholdFilter();
-//        LevelFilter levelFilter = new LevelFilter();
         levelFilter.setLevel(level.levelStr);
         appender.addFilter(levelFilter);
         levelFilter.start();
@@ -42,6 +44,7 @@ public class LogUtils {
         PatternLayout patternLayout = new PatternLayout();
         patternLayout.setContext(loggerContext);
         patternLayout.setPattern(pattern != null ? pattern : DEFAULT_CONSOLE_PATTERN);
+        patternLayout.getInstanceConverterMap().put("highlighter", LogHighlighter::new);
         patternLayout.start();
         return patternLayout;
     }

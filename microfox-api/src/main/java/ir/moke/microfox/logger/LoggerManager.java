@@ -5,7 +5,6 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.CoreConstants;
 import ir.moke.microfox.logger.appender.ConsoleAppender;
 import ir.moke.microfox.logger.appender.FileAppender;
 import ir.moke.microfox.logger.appender.StreamAppender;
@@ -15,7 +14,6 @@ import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Map;
 
 public class LoggerManager {
     private static final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -24,8 +22,6 @@ public class LoggerManager {
         loggerContext.reset();
         Logger rootLogger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         rootLogger.setLevel(Level.TRACE);
-
-        loggerContext.putObject(CoreConstants.PATTERN_RULE_REGISTRY, Map.of("highlighter", LogHighlighter.class.getCanonicalName()));
     }
 
     public static List<Logger> list() {
