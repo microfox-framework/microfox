@@ -66,6 +66,11 @@ public class MicrofoxRegistry {
         httpProvider.sseRegister(identity, path);
     }
 
+    public static void sseUnregister(String identity, String path) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.sseUnregister(identity, path);
+    }
+
     /* Elastic */
     public static void elasticRegister(String identity, ElasticConfig config) {
         if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");

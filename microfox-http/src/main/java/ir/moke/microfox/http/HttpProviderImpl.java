@@ -90,6 +90,11 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
+    public void sseUnregister(String identity, String path) {
+        ResourceHolder.removeSse(identity, path);
+    }
+
+    @Override
     public void ssePublisher(String identity, SseObject sseObject) {
         SubmissionPublisher<SseObject> submissionPublisher = ResourceHolder.getSseByIdentity(identity);
         if (submissionPublisher == null) throw new MicroFoxException("No SSE connection has been established yet.");

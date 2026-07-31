@@ -112,8 +112,8 @@ public class ResourceHolder {
                 .orElse(null);
     }
 
-    public static void removeSse(SseInfo sseInfo) {
-        SSE_LIST.remove(sseInfo);
+    public static void removeSse(String identity, String path) {
+        SSE_LIST.removeIf(item -> item.getIdentity().equals(identity) && item.getPath().equals(path));
     }
 
     public boolean isSseRegistered(String path) {
