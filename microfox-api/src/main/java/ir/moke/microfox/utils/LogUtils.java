@@ -8,12 +8,10 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
-import ch.qos.logback.core.pattern.DynamicConverter;
 import ir.moke.microfox.logger.LogHighlighter;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
-import java.util.function.Supplier;
 
 public class LogUtils {
     private static final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
