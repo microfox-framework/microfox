@@ -6,11 +6,19 @@ import ch.qos.logback.core.encoder.Encoder;
 import ir.moke.microfox.utils.LogUtils;
 
 public class ConsoleGenericModel extends GenericModel {
+    public ConsoleGenericModel(String appenderName, String packageName, Level level, Encoder<ILoggingEvent> encoder, boolean isAsync) {
+        super(appenderName, packageName, level, encoder, isAsync);
+    }
+
+    public ConsoleGenericModel(String appenderName, String packageName, Level level, boolean isAsync) {
+        super(appenderName, packageName, level, LogUtils.getEncoder(), isAsync);
+    }
+
     public ConsoleGenericModel(String appenderName, String packageName, Level level, Encoder<ILoggingEvent> encoder) {
-        super(appenderName, packageName, level, encoder);
+        super(appenderName, packageName, level, encoder, false);
     }
 
     public ConsoleGenericModel(String appenderName, String packageName, Level level) {
-        super(appenderName, packageName, level, LogUtils.getEncoder());
+        super(appenderName, packageName, level, LogUtils.getEncoder(), false);
     }
 }

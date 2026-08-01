@@ -12,8 +12,26 @@ public class FileGenericModel extends GenericModel {
     private final int maxHistory;
     private final String totalSizeCap;
 
+    public FileGenericModel(String appenderName, String packageName, Level level, String filePath, String fileNamePattern, Encoder<ILoggingEvent> encoder, String maxFileSize, int maxHistory, String totalSizeCap, boolean isAsync) {
+        super(appenderName, packageName, level, encoder, isAsync);
+        this.filePath = filePath;
+        this.fileNamePattern = fileNamePattern;
+        this.maxFileSize = maxFileSize;
+        this.maxHistory = maxHistory;
+        this.totalSizeCap = totalSizeCap;
+    }
+
+    public FileGenericModel(String appenderName, String packageName, Level level, String filePath, String fileNamePattern, String maxFileSize, int maxHistory, String totalSizeCap, boolean isAsync) {
+        super(appenderName, packageName, level, LogUtils.getEncoder(), isAsync);
+        this.filePath = filePath;
+        this.fileNamePattern = fileNamePattern;
+        this.maxFileSize = maxFileSize;
+        this.maxHistory = maxHistory;
+        this.totalSizeCap = totalSizeCap;
+    }
+
     public FileGenericModel(String appenderName, String packageName, Level level, String filePath, String fileNamePattern, Encoder<ILoggingEvent> encoder, String maxFileSize, int maxHistory, String totalSizeCap) {
-        super(appenderName, packageName, level, encoder);
+        super(appenderName, packageName, level, encoder, false);
         this.filePath = filePath;
         this.fileNamePattern = fileNamePattern;
         this.maxFileSize = maxFileSize;
@@ -22,7 +40,7 @@ public class FileGenericModel extends GenericModel {
     }
 
     public FileGenericModel(String appenderName, String packageName, Level level, String filePath, String fileNamePattern, String maxFileSize, int maxHistory, String totalSizeCap) {
-        super(appenderName, packageName, level, LogUtils.getEncoder());
+        super(appenderName, packageName, level, LogUtils.getEncoder(), false);
         this.filePath = filePath;
         this.fileNamePattern = fileNamePattern;
         this.maxFileSize = maxFileSize;

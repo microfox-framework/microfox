@@ -11,12 +11,14 @@ public abstract class GenericModel implements LogModel {
     private final String packageName;
     private final Level level;
     private final Encoder<ILoggingEvent> encoder;
+    private final boolean async;
 
-    GenericModel(String appenderName, String packageName, Level level, Encoder<ILoggingEvent> encoder) {
+    GenericModel(String appenderName, String packageName, Level level, Encoder<ILoggingEvent> encoder, boolean async) {
         this.appenderName = appenderName;
         this.packageName = packageName;
         this.level = level;
         this.encoder = encoder;
+        this.async = async;
     }
 
     public String getPackageName() {
@@ -34,6 +36,10 @@ public abstract class GenericModel implements LogModel {
     @Override
     public Encoder<ILoggingEvent> getEncoder() {
         return encoder;
+    }
+
+    public boolean isAsync() {
+        return async;
     }
 
     @Override

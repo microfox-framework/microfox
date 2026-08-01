@@ -35,6 +35,9 @@ public class SyslogAppender {
         LoggerManager.detachLoggerAppender(name, packageName);
         log.detachAppender(name);
         LogUtils.setFilter(level, syslogAppender);
+
+        LogUtils.getAsyncAppender("async-" + name, syslogAppender);
+
         log.setAdditive(false);
         log.addAppender(syslogAppender);
     }

@@ -46,14 +46,20 @@ public class LoggerManager {
         }
     }
 
-    public static void detachLoggerAppender(String appenderName, String packageName) {
+    public static void detachLoggerAppender(String name, String packageName) {
         Logger logger = loggerContext.getLogger(packageName);
         if (logger != null) {
-            Appender<ILoggingEvent> appender = logger.getAppender(appenderName);
+            Appender<ILoggingEvent> asyncAppender = logger.getAppender("async-" + name);
+            if (asyncAppender != null) {
+                asyncAppender.stop();
+                logger.detachAppender(asyncAppender);
+            }
+
+            Appender<ILoggingEvent> appender = logger.getAppender(name);
             if (appender != null) {
                 appender.stop();
                 logger.detachAppender(appender);
-                appenders.remove(appenderName);
+                appenders.remove(name);
             }
         }
     }

@@ -21,12 +21,18 @@ public class SseAppender extends AppenderBase<ILoggingEvent> {
     private final Encoder<ILoggingEvent> encoder;
 
     public static void addSseLogger(SseGenericModel model) {
-        Logger logger = loggerContext.getLogger(model.getPackageName());
+        String name = model.getAppenderName();
+        String packageName = model.getPackageName();
+
+        Logger logger = loggerContext.getLogger(packageName);
         SseAppender appender = new SseAppender(model.getIdentity(), model.getEncoder(), model.getSsePublisher());
-        LoggerManager.detachLoggerAppender(model.getAppenderName(), model.getPackageName());
+        LoggerManager.detachLoggerAppender(name, packageName);
         appender.setContext(loggerContext);
-        appender.setName("SSE-" + model.getIdentity());
+        appender.setName(model.getIdentity());
         LogUtils.setFilter(model.getLevel(), appender);
+
+        LogUtils.getAsyncAppender("async-" + name, appender);
+
         appender.start();
         logger.addAppender(appender);
         logger.setAdditive(true);

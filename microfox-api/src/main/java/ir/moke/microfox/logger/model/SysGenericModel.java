@@ -37,15 +37,29 @@ public class SysGenericModel extends GenericModel {
     private final Facility facility;
     private String pattern;
 
+    public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility, Encoder<ILoggingEvent> encoder, boolean isAsync) {
+        super(appenderName, packageName, level, encoder, isAsync);
+        this.facility = facility;
+        this.port = port;
+        this.host = host;
+    }
+
+    public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility, boolean isAsync) {
+        super(appenderName, packageName, level, LogUtils.getEncoder(), isAsync);
+        this.facility = facility;
+        this.port = port;
+        this.host = host;
+    }
+
     public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility, Encoder<ILoggingEvent> encoder) {
-        super(appenderName, packageName, level, encoder);
+        super(appenderName, packageName, level, encoder, false);
         this.facility = facility;
         this.port = port;
         this.host = host;
     }
 
     public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility) {
-        super(appenderName, packageName, level, LogUtils.getEncoder());
+        super(appenderName, packageName, level, LogUtils.getEncoder(), false);
         this.facility = facility;
         this.port = port;
         this.host = host;

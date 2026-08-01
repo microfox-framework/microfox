@@ -10,8 +10,6 @@ import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
 
-import java.util.logging.LogManager;
-
 public class ConsoleAppender {
     private static final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
@@ -24,17 +22,16 @@ public class ConsoleAppender {
         );
     }
 
-    public static void addConsoleLogger(String name, String packageName, Level level,
-                                        Encoder<ILoggingEvent> encoder) {
-
+    public static void addConsoleLogger(String name, String packageName, Level level, Encoder<ILoggingEvent> encoder) {
         Logger log = loggerContext.getLogger(packageName);
-        LoggerManager.detachLoggerAppender(name,packageName);
+        LoggerManager.detachLoggerAppender(name, packageName);
 
         ch.qos.logback.core.ConsoleAppender<ILoggingEvent> consoleAppender = new ch.qos.logback.core.ConsoleAppender<>();
         consoleAppender.setContext(loggerContext);
         consoleAppender.setName(name);
-        consoleAppender.setImmediateFlush(true);
+        consoleAppender.setImmediateFlush(false);
 
+        LogUtils.getAsyncAppender("async-" + name, consoleAppender);
 
         encoder.setContext(loggerContext);
         if (!encoder.isStarted()) encoder.start();

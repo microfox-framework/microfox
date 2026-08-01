@@ -1,5 +1,6 @@
 package ir.moke.microfox.utils;
 
+import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
@@ -48,5 +49,20 @@ public class LogUtils {
         patternLayout.getInstanceConverterMap().put("highlighter", LogHighlighter::new);
         patternLayout.start();
         return patternLayout;
+    }
+
+    public static AsyncAppender getAsyncAppender(String name, Appender<ILoggingEvent> underlyingAppender) {
+        AsyncAppender asyncAppender = new AsyncAppender();
+        asyncAppender.setContext(loggerContext);
+        asyncAppender.setName(name);
+
+        asyncAppender.setQueueSize(512);
+        asyncAppender.setDiscardingThreshold(0);
+        asyncAppender.setNeverBlock(false);
+        asyncAppender.setIncludeCallerData(false);
+
+        asyncAppender.addAppender(underlyingAppender);
+        asyncAppender.start();
+        return asyncAppender;
     }
 }

@@ -29,9 +29,11 @@ public class StreamAppender {
     public static void addOutputStreamLogger(String name, String packageName, Level level, OutputStream outputStream, Encoder<ILoggingEvent> encoder) {
         OutputStreamAppender<ILoggingEvent> outputStreamAppender = getOutputStreamAppender(name, outputStream, encoder);
         Logger log = loggerContext.getLogger(packageName);
-        LoggerManager.detachLoggerAppender(name,packageName);
+        LoggerManager.detachLoggerAppender(name, packageName);
 
         LogUtils.setFilter(level, outputStreamAppender);
+
+        LogUtils.getAsyncAppender("async-" + name, outputStreamAppender);
 
         log.setAdditive(false);
         log.addAppender(outputStreamAppender);

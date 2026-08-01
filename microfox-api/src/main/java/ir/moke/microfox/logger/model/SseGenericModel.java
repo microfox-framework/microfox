@@ -13,14 +13,26 @@ public class SseGenericModel extends GenericModel {
     private final String identity;
     private final BiConsumer<String, SseObject> ssePublisher;
 
+    public SseGenericModel(String identity, String appenderName, String packageName, Level level, Encoder<ILoggingEvent> encoder, BiConsumer<String, SseObject> ssePublisher, boolean isAsync) {
+        super(appenderName, packageName, level, encoder, isAsync);
+        this.identity = identity;
+        this.ssePublisher = ssePublisher;
+    }
+
+    public SseGenericModel(String identity, String appenderName, String packageName, Level level, BiConsumer<String, SseObject> ssePublisher, boolean isAsync) {
+        super(appenderName, packageName, level, LogUtils.getEncoder(), isAsync);
+        this.identity = identity;
+        this.ssePublisher = ssePublisher;
+    }
+
     public SseGenericModel(String identity, String appenderName, String packageName, Level level, Encoder<ILoggingEvent> encoder, BiConsumer<String, SseObject> ssePublisher) {
-        super(appenderName, packageName, level, encoder);
+        super(appenderName, packageName, level, encoder, false);
         this.identity = identity;
         this.ssePublisher = ssePublisher;
     }
 
     public SseGenericModel(String identity, String appenderName, String packageName, Level level, BiConsumer<String, SseObject> ssePublisher) {
-        super(appenderName, packageName, level, LogUtils.getEncoder());
+        super(appenderName, packageName, level, LogUtils.getEncoder(), false);
         this.identity = identity;
         this.ssePublisher = ssePublisher;
     }
