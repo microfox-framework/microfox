@@ -5,15 +5,19 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
+import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.logger.appender.*;
 import ir.moke.microfox.logger.model.*;
 import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LoggerManager {
     private static final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+    private static final Map<String, String> appenders = new HashMap<>();
 
     static {
         loggerContext.reset();
@@ -26,6 +30,11 @@ public class LoggerManager {
     }
 
     public static void registerLog(LogModel log) {
+        String appenderName = log.getAppenderName();
+        String packageName = log.getPackageName();
+        if (appenders.containsKey(appenderName))
+            throw new MicroFoxException("Appender name %s already registered".formatted(appenderName));
+        appenders.put(appenderName, packageName);
         switch (log) {
             case SysGenericModel sysLog -> SyslogAppender.addSyslogLogger(sysLog);
             case FileGenericModel fileLog -> FileAppender.addFileLogger(fileLog);
@@ -33,7 +42,7 @@ public class LoggerManager {
             case ConsoleGenericModel consoleLog -> ConsoleAppender.addConsoleLogger(consoleLog, log.getEncoder());
             case SseGenericModel sseLog -> SseAppender.addSseLogger(sseLog);
             default ->
-                    ConsoleAppender.addConsoleLogger(log.getAppenderName(), log.getPackageName(), Level.DEBUG, LogUtils.getEncoder(LogUtils.getBasicPatternLayout(null)));
+                    ConsoleAppender.addConsoleLogger(appenderName, packageName, Level.DEBUG, LogUtils.getEncoder(LogUtils.getBasicPatternLayout(null)));
         }
     }
 
@@ -44,6 +53,7 @@ public class LoggerManager {
             if (appender != null) {
                 appender.stop();
                 logger.detachAppender(appender);
+                appenders.remove(appenderName);
             }
         }
     }
