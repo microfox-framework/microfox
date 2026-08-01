@@ -5,6 +5,7 @@ import ir.moke.microfox.http.ResourceHolder;
 
 import java.io.Closeable;
 import java.util.Objects;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 
@@ -19,7 +20,7 @@ public class SseInfo implements Closeable {
     public SseInfo(String identity, String path) {
         this.identity = identity;
         this.path = path;
-        this.publisher = new SubmissionPublisher<>(ResourceHolder.SSE_EXECUTOR, Flow.defaultBufferSize());
+        this.publisher = new SubmissionPublisher<>(Executors.newSingleThreadExecutor(), Flow.defaultBufferSize());
     }
 
     public SubmissionPublisher<SseObject> getPublisher() {
