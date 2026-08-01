@@ -29,7 +29,6 @@ public class ResourceHolder {
     private static final Set<SecurityInfo> SECURITY_LIST = ConcurrentHashMap.newKeySet();
     private static final Set<Class<?>> WEBSOCKET_LIST = ConcurrentHashMap.newKeySet();
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
-    public static final ExecutorService SSE_EXECUTOR = Executors.newCachedThreadPool();
 
     static {
         EXECUTOR.execute(HttpContainer::start);
