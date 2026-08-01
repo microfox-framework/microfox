@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 
@@ -73,7 +72,7 @@ public class BaseServlet extends HttpServlet {
 
         SubmissionPublisher<SseObject> publisher = sseInfo.getPublisher();
         if (publisher.isClosed()) {
-            publisher = new SubmissionPublisher<>(Executors.newSingleThreadExecutor(), Flow.defaultBufferSize());
+            publisher = new SubmissionPublisher<>(ResourceHolder.SSE_EXECUTOR, Flow.defaultBufferSize());
             sseInfo.setPublisher(publisher);
         }
 
