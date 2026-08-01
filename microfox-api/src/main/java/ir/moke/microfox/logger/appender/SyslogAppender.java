@@ -3,6 +3,7 @@ package ir.moke.microfox.logger.appender;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ir.moke.microfox.logger.LoggerManager;
 import ir.moke.microfox.logger.model.SysGenericModel;
 import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,8 @@ public class SyslogAppender {
                                        String pattern) {
         ch.qos.logback.classic.net.SyslogAppender syslogAppender = getSyslogAppender(name, host, port, facility, pattern);
         Logger log = loggerContext.getLogger(packageName);
+        LoggerManager.detachLoggerAppender(name, packageName);
+        log.detachAppender(name);
         LogUtils.setFilter(level, syslogAppender);
         log.setAdditive(false);
         log.addAppender(syslogAppender);

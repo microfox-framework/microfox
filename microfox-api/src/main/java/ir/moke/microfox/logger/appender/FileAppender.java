@@ -8,6 +8,7 @@ import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
+import ir.moke.microfox.logger.LoggerManager;
 import ir.moke.microfox.logger.model.FileGenericModel;
 import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,8 @@ public class FileAppender {
 
     public static void addFileLogger(String name, String packageName, Level level, String logPath, Encoder<ILoggingEvent> encoder, String fileArchivePattern, String maxFileSize, String totalSize, int maxHistory) {
         RollingFileAppender<ILoggingEvent> fileAppender = getFileAppender(name, logPath, encoder, fileArchivePattern, maxFileSize, totalSize, maxHistory);
+        LoggerManager.detachLoggerAppender(name,packageName);
+        fileAppender.setImmediateFlush(true);
         LogUtils.setFilter(level, fileAppender);
         Logger logger = loggerContext.getLogger(packageName);
         logger.setAdditive(false);

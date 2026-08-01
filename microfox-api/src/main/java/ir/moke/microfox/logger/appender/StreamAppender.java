@@ -6,6 +6,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.OutputStreamAppender;
 import ch.qos.logback.core.encoder.Encoder;
+import ir.moke.microfox.logger.LoggerManager;
 import ir.moke.microfox.logger.model.StreamGenericModel;
 import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
@@ -27,10 +28,11 @@ public class StreamAppender {
 
     public static void addOutputStreamLogger(String name, String packageName, Level level, OutputStream outputStream, Encoder<ILoggingEvent> encoder) {
         OutputStreamAppender<ILoggingEvent> outputStreamAppender = getOutputStreamAppender(name, outputStream, encoder);
+        Logger log = loggerContext.getLogger(packageName);
+        LoggerManager.detachLoggerAppender(name,packageName);
 
         LogUtils.setFilter(level, outputStreamAppender);
 
-        Logger log = loggerContext.getLogger(packageName);
         log.setAdditive(false);
         log.addAppender(outputStreamAppender);
     }

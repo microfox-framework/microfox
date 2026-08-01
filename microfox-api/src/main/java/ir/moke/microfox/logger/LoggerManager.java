@@ -5,10 +5,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import ir.moke.microfox.logger.appender.ConsoleAppender;
-import ir.moke.microfox.logger.appender.FileAppender;
-import ir.moke.microfox.logger.appender.StreamAppender;
-import ir.moke.microfox.logger.appender.SyslogAppender;
+import ir.moke.microfox.logger.appender.*;
 import ir.moke.microfox.logger.model.*;
 import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
@@ -34,6 +31,7 @@ public class LoggerManager {
             case FileGenericModel fileLog -> FileAppender.addFileLogger(fileLog);
             case StreamGenericModel streamLog -> StreamAppender.addOutputStreamLogger(streamLog);
             case ConsoleGenericModel consoleLog -> ConsoleAppender.addConsoleLogger(consoleLog, log.getEncoder());
+            case SseGenericModel sseLog -> SseAppender.addSseLogger(sseLog);
             default ->
                     ConsoleAppender.addConsoleLogger(log.getAppenderName(), log.getPackageName(), Level.DEBUG, LogUtils.getEncoder(LogUtils.getBasicPatternLayout(null)));
         }

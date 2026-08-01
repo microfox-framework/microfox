@@ -30,11 +30,14 @@ public class LogUtils {
         return getEncoder(getBasicPatternLayout(null));
     }
 
-    public static LayoutWrappingEncoder<ILoggingEvent> getEncoder(Layout<ILoggingEvent> pattern) {
+    public static LayoutWrappingEncoder<ILoggingEvent> getEncoder(Layout<ILoggingEvent> layout) {
         LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<>();
         encoder.setContext(loggerContext);
         encoder.setCharset(StandardCharsets.UTF_8);
-        encoder.setLayout(pattern);
+        encoder.setLayout(layout);
+        encoder.setImmediateFlush(true);
+
+        layout.start();
         return encoder;
     }
 
