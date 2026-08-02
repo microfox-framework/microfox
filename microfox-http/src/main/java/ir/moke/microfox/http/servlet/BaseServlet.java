@@ -60,15 +60,15 @@ public class BaseServlet extends HttpServlet {
         final AsyncContext asyncContext = req.startAsync();
         asyncContext.setTimeout(0);
 
-        Optional<SseInfo> opt = ResourceHolder.getSsePublisher(req.getRequestURI());
-        if (opt.isEmpty()) {
+        Optional<SseInfo> optSse = ResourceHolder.getSseInfo(req.getRequestURI());
+        if (optSse.isEmpty()) {
             notFound(resp);
             asyncContext.complete();
             return;
         }
 
-        SseInfo sseInfo = opt.get();
-        SseSubscriber subscriber = new SseSubscriber(HttpHelper.getResponse(resp), asyncContext, sseInfo);
+        SseInfo sseInfo = optSse.get();
+        SseSubscriber subscriber = new SseSubscriber(HttpHelper.getResponse(resp), asyncContext);
 
         SubmissionPublisher<SseObject> publisher = sseInfo.getPublisher();
         if (publisher.isClosed()) {

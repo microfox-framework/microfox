@@ -10,12 +10,10 @@ public class SseSubscriber implements Flow.Subscriber<SseObject> {
     private Flow.Subscription subscription;
     private final Response response;
     private final AsyncContext asyncContext;
-    private final SseInfo sseInfo;
 
-    public SseSubscriber(Response response, AsyncContext asyncContext, SseInfo sseInfo) {
+    public SseSubscriber(Response response, AsyncContext asyncContext) {
         this.response = response;
         this.asyncContext = asyncContext;
-        this.sseInfo = sseInfo;
     }
 
     @Override
@@ -47,6 +45,5 @@ public class SseSubscriber implements Flow.Subscriber<SseObject> {
     private void close() {
         subscription.cancel();
         asyncContext.complete();
-        sseInfo.close();
     }
 }
