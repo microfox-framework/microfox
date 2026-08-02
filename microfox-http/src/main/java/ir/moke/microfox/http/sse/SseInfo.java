@@ -69,13 +69,12 @@ public class SseInfo implements Closeable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SseInfo other)) return false;
-        return Objects.equals(identity, other.identity)
-                && Objects.equals(path, other.path);
+        return Objects.equals(identity, other.identity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identity, path);
+        return Objects.hash(identity);
     }
 
     @Override

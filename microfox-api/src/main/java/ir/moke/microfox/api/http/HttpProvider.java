@@ -31,7 +31,7 @@ public interface HttpProvider {
 
     void sseRegister(String identity, String path);
 
-    void sseUnregister(String identity, String path);
+    void sseUnregister(String identity);
 
     void ssePublisher(String identity, SseObject sseObject);
 

@@ -99,7 +99,7 @@ public class ResourceHolder {
         SSE_LIST.add(new SseInfo(identity, concatContextPath(path)));
     }
 
-    public static Optional<SseInfo> getSsePublisher(String path) {
+    public static Optional<SseInfo> getSseInfo(String path) {
         return SSE_LIST.stream().filter(item -> item.getPath().equals(path)).findFirst();
     }
 
@@ -112,8 +112,8 @@ public class ResourceHolder {
                 .orElse(null);
     }
 
-    public static void removeSse(String identity, String path) {
-        SSE_LIST.removeIf(item -> item.getIdentity().equals(identity) && item.getPath().equals(path));
+    public static void removeSse(String identity) {
+        SSE_LIST.removeIf(item -> item.getIdentity().equals(identity));
     }
 
     public boolean isSseRegistered(String path) {

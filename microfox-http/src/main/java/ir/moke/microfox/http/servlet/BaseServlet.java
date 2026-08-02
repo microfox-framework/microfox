@@ -8,6 +8,7 @@ import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.http.HttpHelper;
 import ir.moke.microfox.http.ResourceHolder;
 import ir.moke.microfox.http.proxy.RequestHelper;
+import ir.moke.microfox.http.proxy.RequestHelper;
 import ir.moke.microfox.http.sse.SseInfo;
 import ir.moke.microfox.http.sse.SseSubscriber;
 import jakarta.servlet.AsyncContext;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Flow;
@@ -62,21 +64,21 @@ public class BaseServlet extends HttpServlet {
         final AsyncContext asyncContext = req.startAsync();
         asyncContext.setTimeout(0);
 
-        Optional<SseInfo> opt = ResourceHolder.getSsePublisher(req.getRequestURI());
-        if (opt.isEmpty()) {
+        Optional<SseInfo> optSse = ResourceHolder.getSseInfo(req.getRequestURI());
+        if (optSse.isEmpty()) {
             notFound(resp);
             asyncContext.complete();
             return;
         }
 
-        SseInfo sseInfo = opt.get();
+        SseInfo sseInfo = optSse.get();
 
         Map<String, String[]> headers = RequestHelper.headersMap(req);
         Map<String, String[]> queryParameters = RequestHelper.queryParametersMap(req);
         sseInfo.setHeaders(headers);
         sseInfo.setQueryParameters(queryParameters);
 
-        SseSubscriber subscriber = new SseSubscriber(HttpHelper.getResponse(resp), asyncContext, sseInfo);
+        SseSubscriber subscriber = new SseSubscriber(HttpHelper.getResponse(resp), asyncContext);
 
         SubmissionPublisher<SseObject> publisher = sseInfo.getPublisher();
         if (publisher.isClosed()) {
