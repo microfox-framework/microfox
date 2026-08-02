@@ -8,10 +8,7 @@ import ir.moke.microfox.http.sse.SseInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.SubmissionPublisher;
 
 public class HttpProviderImpl implements HttpProvider {
@@ -92,15 +89,15 @@ public class HttpProviderImpl implements HttpProvider {
 
     @Override
     public void sseUnregister(String identity) {
-        ResourceHolder.getSseInfo(identity).ifPresent(SseInfo::close);
+        ResourceHolder.getSseInfoByIdentity(identity).ifPresent(SseInfo::close);
         ResourceHolder.removeSse(identity);
     }
 
     @Override
     public void ssePublisher(String identity, SseObject sseObject) {
-        SubmissionPublisher<SseObject> submissionPublisher = ResourceHolder.getSseByIdentity(identity);
-        if (submissionPublisher == null) throw new MicroFoxException("No SSE connection has been established yet.");
-        submissionPublisher.submit(sseObject);
+        Optional<SseInfo> optSseInfo = ResourceHolder.getSseInfoByIdentity(identity);
+        if (optSseInfo.isEmpty()) throw new MicroFoxException("No SSE connection has been established yet.");
+        optSseInfo.get().getPublisher().submit(sseObject);
     }
 
     @Override

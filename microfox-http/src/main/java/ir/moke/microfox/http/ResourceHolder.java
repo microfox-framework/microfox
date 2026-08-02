@@ -99,17 +99,12 @@ public class ResourceHolder {
         SSE_LIST.add(new SseInfo(identity, concatContextPath(path)));
     }
 
-    public static Optional<SseInfo> getSseInfo(String path) {
-        return SSE_LIST.stream().filter(item -> item.getPath().equals(path)).findFirst();
+    public static Optional<SseInfo> getSseInfo(String apiPath) {
+        return SSE_LIST.stream().filter(item -> item.getPath().equals(apiPath)).findFirst();
     }
 
-    public static SubmissionPublisher<SseObject> getSseByIdentity(String identity) {
-        return SSE_LIST.stream()
-                .filter(item -> item.getIdentity().equals(identity))
-                .map(SseInfo::getPublisher)
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
+    public static Optional<SseInfo> getSseInfoByIdentity(String identity) {
+        return SSE_LIST.stream().filter(item -> item.getIdentity().equals(identity)).findFirst();
     }
 
     public static void removeSse(String identity) {
