@@ -217,4 +217,14 @@ public class RequestHelper {
             throw new MicroFoxException(e);
         }
     }
+
+    public static Map<String, String[]> headersMap(HttpServletRequest request) {
+        Map<String, String[]> headers = new LinkedHashMap<>();
+        Collections.list(request.getHeaderNames()).forEach(name -> headers.put(name, Collections.list(request.getHeaders(name)).toArray(String[]::new)));
+        return headers;
+    }
+
+    public static Map<String, String[]> queryParametersMap(HttpServletRequest req) {
+        return req.getParameterMap();
+    }
 }

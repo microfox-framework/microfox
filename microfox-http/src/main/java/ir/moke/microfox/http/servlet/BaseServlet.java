@@ -7,6 +7,7 @@ import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.http.HttpHelper;
 import ir.moke.microfox.http.ResourceHolder;
+import ir.moke.microfox.http.proxy.RequestHelper;
 import ir.moke.microfox.http.sse.SseInfo;
 import ir.moke.microfox.http.sse.SseSubscriber;
 import jakarta.servlet.AsyncContext;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
@@ -68,6 +70,12 @@ public class BaseServlet extends HttpServlet {
         }
 
         SseInfo sseInfo = opt.get();
+
+        Map<String, String[]> headers = RequestHelper.headersMap(req);
+        Map<String, String[]> queryParameters = RequestHelper.queryParametersMap(req);
+        sseInfo.setHeaders(headers);
+        sseInfo.setQueryParameters(queryParameters);
+
         SseSubscriber subscriber = new SseSubscriber(HttpHelper.getResponse(resp), asyncContext, sseInfo);
 
         SubmissionPublisher<SseObject> publisher = sseInfo.getPublisher();
