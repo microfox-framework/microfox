@@ -1,5 +1,0 @@
-microfox:
-  admin:
-    base-url: "http://localhost:8080"
-  system:
-    active: false
