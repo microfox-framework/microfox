@@ -1,8 +1,6 @@
 package ir.moke.microfox.logger.model;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.encoder.Encoder;
 import ir.moke.microfox.utils.LogUtils;
 
 public class SysGenericModel extends GenericModel {
@@ -35,34 +33,22 @@ public class SysGenericModel extends GenericModel {
     private final String host;
     private final int port;
     private final Facility facility;
-    private String pattern;
+    private String suffixPattern;
 
-    public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility, Encoder<ILoggingEvent> encoder, boolean isAsync) {
-        super(appenderName, packageName, level, encoder, isAsync);
+    public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility, String suffixPattern , boolean isAsync) {
+        super(appenderName, packageName, level, null, isAsync);
         this.facility = facility;
         this.port = port;
         this.host = host;
+        this.suffixPattern = suffixPattern;
     }
 
-    public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility, boolean isAsync) {
-        super(appenderName, packageName, level, LogUtils.getEncoder(), isAsync);
-        this.facility = facility;
-        this.port = port;
-        this.host = host;
-    }
-
-    public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility, Encoder<ILoggingEvent> encoder) {
-        super(appenderName, packageName, level, encoder, false);
-        this.facility = facility;
-        this.port = port;
-        this.host = host;
-    }
-
-    public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility) {
+    public SysGenericModel(String appenderName, String packageName, Level level, String host, int port, Facility facility,String suffixPattern) {
         super(appenderName, packageName, level, LogUtils.getEncoder(), false);
         this.facility = facility;
         this.port = port;
         this.host = host;
+        this.suffixPattern = suffixPattern;
     }
 
     public String getHost() {
@@ -77,7 +63,7 @@ public class SysGenericModel extends GenericModel {
         return facility;
     }
 
-    public String getPattern() {
-        return pattern;
+    public String getSuffixPattern() {
+        return suffixPattern;
     }
 }

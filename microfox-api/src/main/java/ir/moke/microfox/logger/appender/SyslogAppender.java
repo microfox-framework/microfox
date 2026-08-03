@@ -19,7 +19,7 @@ public class SyslogAppender {
                 log.getHost(),
                 log.getPort(),
                 log.getFacility(),
-                log.getPattern()
+                log.getSuffixPattern()
         );
     }
 
