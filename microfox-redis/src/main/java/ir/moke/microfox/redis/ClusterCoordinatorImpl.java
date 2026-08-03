@@ -2,6 +2,7 @@ package ir.moke.microfox.redis;
 
 import ir.moke.microfox.api.redis.ClusterCoordinator;
 import ir.moke.microfox.api.redis.cluster.*;
+import ir.moke.microfox.api.redis.cluster.stream.ClusterStream;
 import ir.moke.microfox.redis.cluster.*;
 import org.redisson.api.RedissonClient;
 
@@ -50,5 +51,10 @@ public class ClusterCoordinatorImpl implements ClusterCoordinator {
     @Override
     public ClusterLeaderElection leaderElection(String name) {
         return new ClusterLeaderElectionImpl(name, client);
+    }
+
+    @Override
+    public <K, V> ClusterStream<K, V> getStream(String name) {
+        return null;
     }
 }

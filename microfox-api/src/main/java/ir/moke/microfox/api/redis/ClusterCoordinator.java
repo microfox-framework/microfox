@@ -1,6 +1,7 @@
 package ir.moke.microfox.api.redis;
 
 import ir.moke.microfox.api.redis.cluster.*;
+import ir.moke.microfox.api.redis.cluster.stream.ClusterStream;
 
 public interface ClusterCoordinator {
     ClusterLock getLock(String name);
@@ -18,4 +19,6 @@ public interface ClusterCoordinator {
     ClusterCountDownLatch getCountDownLatch(String name);
 
     ClusterLeaderElection leaderElection(String name);
+
+    <K, V> ClusterStream<K, V> getStream(String name);
 }
