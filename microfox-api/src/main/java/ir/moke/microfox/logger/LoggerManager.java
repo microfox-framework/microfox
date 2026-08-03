@@ -47,10 +47,12 @@ public class LoggerManager {
     public static void detachLoggerAppender(String name, String packageName) {
         Logger logger = loggerContext.getLogger(packageName);
         if (logger != null) {
-            Appender<ILoggingEvent> asyncAppender = logger.getAppender("async-" + name);
+            String asyncName = "async-" + name;
+            Appender<ILoggingEvent> asyncAppender = logger.getAppender(asyncName);
             if (asyncAppender != null) {
                 asyncAppender.stop();
                 logger.detachAppender(asyncAppender);
+                appenders.remove(asyncName);
             }
 
             Appender<ILoggingEvent> appender = logger.getAppender(name);
