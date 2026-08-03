@@ -8,7 +8,6 @@ import ch.qos.logback.core.Appender;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.logger.appender.*;
 import ir.moke.microfox.logger.model.*;
-import ir.moke.microfox.utils.LogUtils;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
@@ -41,8 +40,7 @@ public class LoggerManager {
             case StreamGenericModel streamLog -> StreamAppender.addOutputStreamLogger(streamLog);
             case ConsoleGenericModel consoleLog -> ConsoleAppender.addConsoleLogger(consoleLog, log.getEncoder());
             case SseGenericModel sseLog -> SseAppender.addSseLogger(sseLog);
-            default ->
-                    ConsoleAppender.addConsoleLogger(appenderName, packageName, Level.DEBUG, LogUtils.getEncoder(LogUtils.getBasicPatternLayout(null)));
+            default -> throw new IllegalStateException("Unexpected value: " + log);
         }
     }
 
