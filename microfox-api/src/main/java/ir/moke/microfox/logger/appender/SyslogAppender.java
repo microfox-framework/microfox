@@ -19,7 +19,8 @@ public class SyslogAppender {
                 log.getHost(),
                 log.getPort(),
                 log.getFacility(),
-                log.getSuffixPattern()
+                log.getSuffixPattern(),
+                log.isAsync()
         );
     }
 
@@ -29,17 +30,16 @@ public class SyslogAppender {
                                        String host,
                                        int port,
                                        SysGenericModel.Facility facility,
-                                       String pattern) {
+                                       String pattern,
+                                       boolean isAsync) {
         ch.qos.logback.classic.net.SyslogAppender syslogAppender = getSyslogAppender(name, host, port, facility, pattern);
         Logger log = loggerContext.getLogger(packageName);
         LoggerManager.detachLoggerAppender(name, packageName);
         log.detachAppender(name);
         LogUtils.setFilter(level, syslogAppender);
 
-        LogUtils.getAsyncAppender("async-" + name, syslogAppender);
-
         log.setAdditive(false);
-        log.addAppender(syslogAppender);
+        log.addAppender(isAsync ? LogUtils.getAsyncAppender("async-" + name, syslogAppender) : syslogAppender);
     }
 
     private static ch.qos.logback.classic.net.SyslogAppender getSyslogAppender(String name,

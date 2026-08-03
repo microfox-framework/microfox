@@ -18,11 +18,12 @@ public class ConsoleAppender {
                 log.getAppenderName(),
                 log.getPackageName(),
                 log.getLevel(),
-                encoder
+                encoder,
+                log.isAsync()
         );
     }
 
-    public static void addConsoleLogger(String name, String packageName, Level level, Encoder<ILoggingEvent> encoder) {
+    public static void addConsoleLogger(String name, String packageName, Level level, Encoder<ILoggingEvent> encoder, boolean isAsync) {
         Logger log = loggerContext.getLogger(packageName);
         LoggerManager.detachLoggerAppender(name, packageName);
 
@@ -30,8 +31,6 @@ public class ConsoleAppender {
         consoleAppender.setContext(loggerContext);
         consoleAppender.setName(name);
         consoleAppender.setImmediateFlush(false);
-
-        LogUtils.getAsyncAppender("async-" + name, consoleAppender);
 
         encoder.setContext(loggerContext);
         if (!encoder.isStarted()) encoder.start();
@@ -41,7 +40,7 @@ public class ConsoleAppender {
 
         LogUtils.setFilter(level, consoleAppender);
         log.setAdditive(false);
-        log.addAppender(consoleAppender);
+        log.addAppender(isAsync ? LogUtils.getAsyncAppender("async-" + name, consoleAppender) : consoleAppender);
     }
 
     private static ch.qos.logback.core.ConsoleAppender<ILoggingEvent> getConsoleAppender(String name, Encoder<ILoggingEvent> encoder) {

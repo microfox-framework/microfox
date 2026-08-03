@@ -26,18 +26,19 @@ public class FileAppender {
                 log.getFileNamePattern(),
                 log.getMaxFileSize(),
                 log.getTotalSizeCap(),
-                log.getMaxHistory()
+                log.getMaxHistory(),
+                log.isAsync()
         );
     }
 
-    public static void addFileLogger(String name, String packageName, Level level, String logPath, Encoder<ILoggingEvent> encoder, String fileArchivePattern, String maxFileSize, String totalSize, int maxHistory) {
+    public static void addFileLogger(String name, String packageName, Level level, String logPath, Encoder<ILoggingEvent> encoder, String fileArchivePattern, String maxFileSize, String totalSize, int maxHistory, boolean isAsync) {
         RollingFileAppender<ILoggingEvent> fileAppender = getFileAppender(name, logPath, encoder, fileArchivePattern, maxFileSize, totalSize, maxHistory);
         LoggerManager.detachLoggerAppender(name, packageName);
         fileAppender.setImmediateFlush(true);
         LogUtils.setFilter(level, fileAppender);
         Logger logger = loggerContext.getLogger(packageName);
         logger.setAdditive(false);
-        logger.addAppender(fileAppender);
+        logger.addAppender(isAsync ? LogUtils.getAsyncAppender("async-" + name, fileAppender) : fileAppender);
     }
 
     private static RollingFileAppender<ILoggingEvent> getFileAppender(String name, String logPath, Encoder<ILoggingEvent> encoder, String fileArchivePattern, String maxFileSize, String totalSize, int maxHistory) {
@@ -47,8 +48,6 @@ public class FileAppender {
         logFileAppender.setEncoder(encoder);
         logFileAppender.setAppend(true);
         logFileAppender.setFile(logPath);
-
-        LogUtils.getAsyncAppender("async-" + name, logFileAppender);
 
         SizeAndTimeBasedRollingPolicy<ILoggingEvent> logFilePolicy = new SizeAndTimeBasedRollingPolicy<>();
         logFilePolicy.setContext(loggerContext);

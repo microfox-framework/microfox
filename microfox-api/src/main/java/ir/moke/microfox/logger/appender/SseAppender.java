@@ -31,11 +31,9 @@ public class SseAppender extends AppenderBase<ILoggingEvent> {
         appender.setName(model.getIdentity());
         LogUtils.setFilter(model.getLevel(), appender);
 
-        LogUtils.getAsyncAppender("async-" + name, appender);
-
-        appender.start();
-        logger.addAppender(appender);
+        logger.addAppender(model.isAsync() ? LogUtils.getAsyncAppender("async-" + name, appender) : appender);
         logger.setAdditive(true);
+        appender.start();
     }
 
     private SseAppender(String identity, Encoder<ILoggingEvent> encoder, BiConsumer<String, SseObject> ssePublisher) {
