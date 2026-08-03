@@ -48,7 +48,6 @@
         <module>microfox-mybatis</module>
         <module>microfox-openapi</module>
         <module>microfox-redis</module>
-<!--        <module>microfox-system</module>-->
     </modules>
 
     <properties>
@@ -145,13 +144,6 @@
                 <artifactId>microfox-redis</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
-<!--
-            <dependency>
-                <groupId>ir.moke.microfox</groupId>
-                <artifactId>microfox-system</artifactId>
-                <version>${microfox.version}</version>
-            </dependency>
--->
 
             <!-- Metrics -->
             <dependency>
