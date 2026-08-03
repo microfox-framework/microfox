@@ -2,6 +2,7 @@ package ir.moke.microfox.api.redis;
 
 import ir.moke.microfox.api.redis.cluster.*;
 import ir.moke.microfox.api.redis.cluster.stream.ClusterStream;
+import ir.moke.microfox.api.redis.cluster.topic.ClusterTopic;
 
 public interface ClusterCoordinator {
     ClusterLock getLock(String name);

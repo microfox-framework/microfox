@@ -3,6 +3,7 @@ package ir.moke.microfox.redis;
 import ir.moke.microfox.api.redis.ClusterCoordinator;
 import ir.moke.microfox.api.redis.cluster.*;
 import ir.moke.microfox.api.redis.cluster.stream.ClusterStream;
+import ir.moke.microfox.api.redis.cluster.topic.ClusterTopic;
 import ir.moke.microfox.redis.cluster.*;
 import org.redisson.api.RedissonClient;
 
