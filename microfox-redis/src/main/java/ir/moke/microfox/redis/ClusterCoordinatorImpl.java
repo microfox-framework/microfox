@@ -27,7 +27,7 @@ public class ClusterCoordinatorImpl implements ClusterCoordinator {
 
     @Override
     public ClusterPatternTopic getPatternTopic(String pattern) {
-        return null;
+        return new ClusterPatternTopicImpl(pattern, client);
     }
 
     @Override
