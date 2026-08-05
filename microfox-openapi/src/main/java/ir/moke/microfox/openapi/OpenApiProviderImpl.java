@@ -1,8 +1,5 @@
 package ir.moke.microfox.openapi;
 
-import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.api.http.HttpMethod;
-import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
 import ir.moke.microfox.http.HttpContainer;
 import ir.moke.utils.TtyAsciiCodecs;
