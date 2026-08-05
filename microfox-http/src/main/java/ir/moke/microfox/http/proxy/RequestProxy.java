@@ -1,9 +1,13 @@
 package ir.moke.microfox.http.proxy;
 
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class RequestProxy implements InvocationHandler {
     private final HttpServletRequest request;
@@ -46,10 +50,16 @@ public class RequestProxy implements InvocationHandler {
                 return RequestHelper.queryParameters(request);
             }
             case "queryParameter" -> {
-                return RequestHelper.queryParameter((String) args[0], request);
+                return handleQueryParameter(args);
+            }
+            case "queryParameterThrowable" -> {
+                return handleQueryParameterThrowable(args);
             }
             case "pathParam" -> {
-                return RequestHelper.pathParam((String) args[0], request);
+                return handlePathParameter(args);
+            }
+            case "pathParamThrowable" -> {
+                return handlePathParameter(args);
             }
             case "cookies" -> {
                 return RequestHelper.cookies(request);
@@ -129,6 +139,68 @@ public class RequestProxy implements InvocationHandler {
             }
         }
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private  <U> U handlePathParameter(Object[] args) {
+        if (args.length == 1) {
+            return (U) RequestHelper.pathParam((String) args[0], request);
+        } else if (Supplier.class.isAssignableFrom(args[3].getClass())) {
+            Predicate<String> predicate = (Predicate<String>) args[1];
+            Function<String, ? extends U> parser = (Function<String, ? extends U>) args[2];
+            Supplier<? extends U> supplier = (Supplier<? extends U>) args[3];
+            return RequestHelper.pathParam((String) args[0], predicate, parser, supplier, request);
+        } else {
+            Predicate<String> predicate = (Predicate<String>) args[1];
+            Function<String, ? extends U> parser = (Function<String, ? extends U>) args[2];
+            U u = (U) args[3];
+            return RequestHelper.pathParam((String) args[0], predicate, parser, u, request);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private  <U> U handlePathParameterThrowable(Object[] args) throws Throwable {
+        Predicate<String> predicate = (Predicate<String>) args[1];
+        Function<String, ? extends U> parser = (Function<String, ? extends U>) args[2];
+
+        if (Supplier.class.isAssignableFrom(args[3].getClass())) {
+            Supplier<? extends Throwable> supplier = (Supplier<? extends Throwable>) args[3];
+            return RequestHelper.pathParamThrowable((String) args[0], predicate, parser, supplier, request);
+        } else {
+            String msg = (String) args[3];
+            return RequestHelper.pathParamThrowable((String) args[0], predicate, parser, msg, request);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <U> U handleQueryParameter(Object[] args) {
+        if (args.length == 1) {
+            return (U) RequestHelper.queryParameter((String) args[0], request);
+        } else if (Supplier.class.isAssignableFrom(args[3].getClass())) {
+            Predicate<String> predicate = (Predicate<String>) args[1];
+            Function<String, ? extends U> parser = (Function<String, ? extends U>) args[2];
+            Supplier<? extends U> supplier = (Supplier<? extends U>) args[3];
+            return RequestHelper.queryParameter((String) args[0], predicate, parser, supplier, request);
+        } else {
+            Predicate<String> predicate = (Predicate<String>) args[1];
+            Function<String, ? extends U> parser = (Function<String, ? extends U>) args[2];
+            U u = (U) args[3];
+            return RequestHelper.queryParameter((String) args[0], predicate, parser, u, request);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <U> U handleQueryParameterThrowable(Object[] args) throws Throwable {
+        Predicate<String> predicate = (Predicate<String>) args[1];
+        Function<String, ? extends U> parser = (Function<String, ? extends U>) args[2];
+
+        if (Supplier.class.isAssignableFrom(args[3].getClass())) {
+            Supplier<? extends Throwable> supplier = (Supplier<? extends Throwable>) args[3];
+            return RequestHelper.queryParameterThrowable((String) args[0], predicate, parser, supplier, request);
+        } else {
+            String msg = (String) args[3];
+            return RequestHelper.queryParameterThrowable((String) args[0], predicate, parser, msg, request);
+        }
     }
 
     @SuppressWarnings("unchecked")

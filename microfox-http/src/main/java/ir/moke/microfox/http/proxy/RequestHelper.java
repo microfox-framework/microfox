@@ -3,9 +3,11 @@ package ir.moke.microfox.http.proxy;
 import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.exception.MicroFoxException;
+import ir.moke.microfox.exception.MicroFoxParameterException;
 import ir.moke.microfox.http.HttpHelper;
 import ir.moke.microfox.http.validation.MicroFoxValidator;
 import ir.moke.utils.JsonUtils;
+import ir.moke.utils.OptionalObject;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.Cookie;
@@ -15,6 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class RequestHelper {
     private static final Logger logger = LoggerFactory.getLogger(RequestHelper.class);
@@ -80,6 +85,26 @@ public class RequestHelper {
         return request.getParameter(key);
     }
 
+    public static <U> U queryParameter(String key, Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends U> supplier, HttpServletRequest request) {
+        String value = request.getParameter(key);
+        return OptionalObject.of(value).parseOrGet(predicate, parser, supplier);
+    }
+
+    public static <U> U queryParameter(String key, Predicate<String> predicate, Function<String, ? extends U> parser, U u, HttpServletRequest request) {
+        String value = request.getParameter(key);
+        return OptionalObject.of(value).parseOrGet(predicate, parser, u);
+    }
+
+    public static <U> U queryParameterThrowable(String key, Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends Throwable> supplier, HttpServletRequest request) throws Throwable {
+        String value = request.getParameter(key);
+        return OptionalObject.of(value).parseOrThrows(predicate, parser, supplier);
+    }
+
+    public static <U> U queryParameterThrowable(String key, Predicate<String> predicate, Function<String, ? extends U> parser, String message, HttpServletRequest request) throws Throwable {
+        String value = request.getParameter(key);
+        return OptionalObject.of(value).parseOrThrows(predicate, parser, () -> new MicroFoxParameterException(message));
+    }
+
     public static String pathParam(String key, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
@@ -87,8 +112,28 @@ public class RequestHelper {
         if (routeInfo == null) return null;
         Map<String, String> map = HttpHelper.extractPathParams(routeInfo.getPath(), requestURI);
         return map.get(key);
-
     }
+
+    public static <U> U pathParam(String key, Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends U> supplier, HttpServletRequest request) {
+        String value = request.getParameter(key);
+        return OptionalObject.of(value).parseOrGet(predicate, parser, supplier);
+    }
+
+    public static <U> U pathParam(String key, Predicate<String> predicate, Function<String, ? extends U> parser, U u, HttpServletRequest request) {
+        String value = request.getParameter(key);
+        return OptionalObject.of(value).parseOrGet(predicate, parser, u);
+    }
+
+    public static <U> U pathParamThrowable(String key, Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends Throwable> supplier, HttpServletRequest request) throws Throwable {
+        String value = request.getParameter(key);
+        return OptionalObject.of(value).parseOrThrows(predicate, parser, supplier);
+    }
+
+    public static <U> U pathParamThrowable(String key, Predicate<String> predicate, Function<String, ? extends U> parser, String message, HttpServletRequest request) throws Throwable {
+        String value = request.getParameter(key);
+        return OptionalObject.of(value).parseOrThrows(predicate, parser, () -> new MicroFoxParameterException(message));
+    }
+
 
     public static Map<String, String> cookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();

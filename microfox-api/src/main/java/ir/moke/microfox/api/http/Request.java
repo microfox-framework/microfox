@@ -6,6 +6,9 @@ import jakarta.servlet.ServletInputStream;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public interface Request {
     String body();
@@ -26,7 +29,23 @@ public interface Request {
 
     String queryParameter(String key);
 
+    <U> U queryParameter(String key, Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends U> supplier);
+
+    <U> U queryParameter(String key, Predicate<String> predicate, Function<String, ? extends U> parser, U u);
+
+    <U> U queryParameterThrowable(String key, Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends Throwable> supplier);
+
+    <U> U queryParameterThrowable(String key, Predicate<String> predicate, Function<String, ? extends U> parser, String message);
+
     String pathParam(String key);
+
+    <U> U pathParam(String key, Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends U> supplier);
+
+    <U> U pathParam(String key, Predicate<String> predicate, Function<String, ? extends U> parser, U u);
+
+    <U> U pathParamThrowable(String key, Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends Throwable> supplier);
+
+    <U> U pathParamThrowable(String key, Predicate<String> predicate, Function<String, ? extends U> parser, String message);
 
     Map<String, String> cookies();
 
