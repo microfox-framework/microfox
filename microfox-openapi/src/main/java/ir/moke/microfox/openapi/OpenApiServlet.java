@@ -6,13 +6,16 @@ import ir.moke.microfox.api.http.ContentType;
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.utils.JsonUtils;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class OpenApiServlet {
+public class OpenApiServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(OpenApiServlet.class);
     private static final String json;
 
@@ -27,28 +30,30 @@ public class OpenApiServlet {
     }
 
 
-    public static void handle(Request req, Response resp) throws Throwable {
-        String pathInfo = req.uri();
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String pathInfo = req.getRequestURI();
+        resp.setCharacterEncoding("UTF-8");
         if (pathInfo.equalsIgnoreCase("/docs/rapidoc-min.js")) {
-            resp.contentType(ContentType.TEXT_JAVASCRIPT);
-            resp.body(rapidocJS().getBytes());
+            resp.setContentType(ContentType.TEXT_JAVASCRIPT.getType());
+            resp.getOutputStream().write(rapidocJS().getBytes());
         } else if (pathInfo.endsWith("woff2")) {
             String[] split = pathInfo.split("/");
             String fontFile = split[split.length - 1];
-            resp.contentType(ContentType.FONT_WOFF2);
-            resp.body(fontWOFF2(fontFile).getBytes());
+            resp.setContentType(ContentType.FONT_WOFF2.getType());
+            resp.getOutputStream().write(fontWOFF2(fontFile).getBytes());
         } else if (pathInfo.equalsIgnoreCase("/docs/openapi.json")) {
-            resp.contentType(ContentType.APPLICATION_JSON);
-            resp.body(json.getBytes());
+            resp.setContentType(ContentType.APPLICATION_JSON.getType());
+            resp.getOutputStream().write(json.getBytes());
         } else if (pathInfo.equalsIgnoreCase("/docs/microfox.png")) {
-            resp.contentType(ContentType.IMAGE_PNG);
+            resp.setContentType(ContentType.IMAGE_PNG.getType());
             byte[] bytes = logoPNG();
             if (bytes != null) {
-                resp.body(bytes);
+                resp.getOutputStream().write(bytes);
             }
         } else {
-            resp.contentType(ContentType.TEXT_HTML);
-            resp.body(indexHTML().getBytes());
+            resp.setContentType(ContentType.TEXT_HTML.getType());
+            resp.getOutputStream().write(indexHTML().getBytes());
         }
     }
 

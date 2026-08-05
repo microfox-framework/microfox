@@ -4,6 +4,7 @@ import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
+import ir.moke.microfox.http.HttpContainer;
 import ir.moke.utils.TtyAsciiCodecs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ public class OpenApiProviderImpl implements OpenApiProvider, TtyAsciiCodecs {
     public void registerOpenAPI() {
         /* Redoc & Swagger */
         logger.info("{}{}{}", BACKGROUND_BLUE, "OpenAPI Activated", RESET);
-        MicroFox.route(new RouteInfo("/docs", HttpMethod.GET, OpenApiServlet::handle, "rapidoc", "microfox"));
-        MicroFox.route(new RouteInfo("/docs/*", HttpMethod.GET, OpenApiServlet::handle, "rapidoc", "microfox"));
+        HttpContainer.addServlet(OpenApiServlet.class, "/docs");
+        HttpContainer.addServlet(OpenApiServlet.class, "/docs/*");
     }
 }
