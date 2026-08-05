@@ -2,11 +2,15 @@ package ir.moke.microfox.api.redis;
 
 import ir.moke.microfox.api.redis.cluster.*;
 import ir.moke.microfox.api.redis.cluster.stream.ClusterStream;
+import ir.moke.microfox.api.redis.cluster.topic.ClusterPatternTopic;
+import ir.moke.microfox.api.redis.cluster.topic.ClusterTopic;
 
 public interface ClusterCoordinator {
     ClusterLock getLock(String name);
 
     ClusterTopic getTopic(String name);
+
+    ClusterPatternTopic getPatternTopic(String pattern);
 
     <K, V> ClusterMap<K, V> getMap(String name);
 
