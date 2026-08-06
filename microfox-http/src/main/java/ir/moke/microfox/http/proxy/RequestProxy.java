@@ -1,6 +1,6 @@
 package ir.moke.microfox.http.proxy;
 
-import jakarta.annotation.Nullable;
+import ir.moke.microfox.http.filter.SecurityContext;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.lang.reflect.InvocationHandler;
@@ -137,12 +137,18 @@ public class RequestProxy implements InvocationHandler {
             case "inputStream" -> {
                 return RequestHelper.inputStream(request);
             }
+            case "principal" -> {
+                return SecurityContext.principal();
+            }
+            case "remoteUser" -> {
+                return SecurityContext.principal().getName();
+            }
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    private  <U> U handlePathParameter(Object[] args) {
+    private <U> U handlePathParameter(Object[] args) {
         if (args.length == 1) {
             return (U) RequestHelper.pathParam((String) args[0], request);
         } else if (Supplier.class.isAssignableFrom(args[3].getClass())) {
@@ -159,7 +165,7 @@ public class RequestProxy implements InvocationHandler {
     }
 
     @SuppressWarnings("unchecked")
-    private  <U> U handlePathParameterThrowable(Object[] args) throws Throwable {
+    private <U> U handlePathParameterThrowable(Object[] args) throws Throwable {
         Predicate<String> predicate = (Predicate<String>) args[1];
         Function<String, ? extends U> parser = (Function<String, ? extends U>) args[2];
 

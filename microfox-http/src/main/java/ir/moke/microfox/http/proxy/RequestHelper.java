@@ -269,7 +269,7 @@ public class RequestHelper {
         return headers;
     }
 
-    public static Map<String, String[]> queryParametersMap(HttpServletRequest req) {
-        return req.getParameterMap();
+    public static Map<String, String[]> queryParametersMap(HttpServletRequest request) {
+        return request.getParameterMap();
     }
 }

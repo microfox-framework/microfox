@@ -3,6 +3,7 @@ package ir.moke.microfox.api.http;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletInputStream;
 
+import java.security.Principal;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -98,4 +99,8 @@ public interface Request {
     HttpMethod getMethod();
 
     ServletInputStream inputStream();
+
+    Principal principal();
+
+    String remoteUser();
 }

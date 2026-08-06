@@ -1,14 +1,13 @@
 package ir.moke.microfox.http.filter;
 
 import ir.moke.microfox.api.http.*;
-import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.HttpHelper;
-import ir.moke.microfox.http.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.Principal;
 import java.util.List;
 
 import static ir.moke.microfox.http.HttpHelper.findMatchingRouteInfo;
@@ -42,17 +41,17 @@ public class SecurityFilter implements Filter {
             SecurityInfo securityInfo = securities.getFirst();
             SecurityStrategy strategy = securityInfo.getStrategy();
 
-            Credential credential = strategy.authenticate(req);
-            if (credential == null) {
+            Principal principle = strategy.authenticate(req);
+            if (principle == null) {
                 throw new MicroFoxException(StatusCode.UNAUTHORIZED);
             }
 
-            if (!strategy.authorize(credential, routeInfo.getRoles(), routeInfo.getScopes())) {
+            if (!strategy.authorize(principle, routeInfo.getRoles(), routeInfo.getScopes())) {
                 throw new MicroFoxException(StatusCode.FORBIDDEN);
             }
 
             // Store into SecurityContext for business layer
-            ScopedValue.where(SecurityContext.getScopedValue(), credential).run(() -> chain.doFilter(req, resp));
+            ScopedValue.where(SecurityContext.getScopedValue(), principle).run(() -> chain.doFilter(req, resp));
         } catch (Exception e) {
             HttpHelper.handleExceptionMapper(resp.httpServletResponse(), e);
         }

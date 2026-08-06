@@ -29,8 +29,8 @@ public class BasicHttpTest {
     static void main(String[] args) {
         MicrofoxRegistry.exceptionMapperRegister(SampleException.class, ExceptionController::handleSampleException);
         MicrofoxRegistry.exceptionMapperRegister(MicroFoxException.class, ExceptionController::handleMicrofoxException);
-        MicroFox.security(new SecurityInfo("/api/login",new BasicAuthSecurity(),1));
-        MicroFox.security(new SecurityInfo("/api/users",new JwtSecurity(),2));
+        MicroFox.security(new SecurityInfo("/api/login", new BasicAuthSecurity(), 1));
+        MicroFox.security(new SecurityInfo("/api/users", new JwtSecurity(), 2));
 
         MicroFox.filter("/api/*", -700, BasicHttpTest::simpleFilter);
         MicroFox.route("/api/login", HttpMethod.GET, new RouteLogin());

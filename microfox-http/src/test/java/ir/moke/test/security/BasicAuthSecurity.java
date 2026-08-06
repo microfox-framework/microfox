@@ -1,17 +1,16 @@
 package ir.moke.test.security;
 
 import ir.moke.microfox.api.http.Request;
-import ir.moke.microfox.api.http.security.Credential;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
-import ir.moke.microfox.api.http.security.UsernamePasswordCredential;
 
+import java.security.Principal;
 import java.util.Base64;
 import java.util.List;
 
 public class BasicAuthSecurity implements SecurityStrategy {
 
     @Override
-    public Credential authenticate(Request request) {
+    public Principal authenticate(Request request) {
 
         String auth = request.header("Authorization");
         if (auth != null && auth.startsWith("Basic ")) {
@@ -20,14 +19,18 @@ public class BasicAuthSecurity implements SecurityStrategy {
             String username = credential.split(":")[0];
             String password = credential.split(":")[1];
 
-            // check username & password on db
-            return new UsernamePasswordCredential(username, password);
+            /*
+             * check username & password on db
+             * */
+
+            // return principal
+            return new BasicPrincipal(username);
         }
         return null;
     }
 
     @Override
-    public boolean authorize(Credential credential, List<String> roles, List<String> scopes) {
+    public boolean authorize(Principal credential, List<String> roles, List<String> scopes) {
         return true; // BasicAuth here only authenticates, no roles
     }
 }
