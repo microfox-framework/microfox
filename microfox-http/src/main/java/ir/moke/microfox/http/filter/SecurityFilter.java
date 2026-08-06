@@ -4,6 +4,7 @@ import ir.moke.microfox.api.http.*;
 import ir.moke.microfox.api.http.security.SecurityStrategy;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.HttpHelper;
+import ir.moke.microfox.http.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,7 @@ import java.util.List;
 import static ir.moke.microfox.http.HttpHelper.findMatchingRouteInfo;
 import static ir.moke.microfox.http.HttpHelper.findMatchingSecurityInfo;
 
-public class SecurityFilter implements Filter {
+public class SecurityFilter extends SecurityContext implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(SecurityFilter.class);
 
     @Override

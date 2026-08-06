@@ -1,6 +1,6 @@
 package ir.moke.microfox.http.proxy;
 
-import ir.moke.microfox.http.filter.SecurityContext;
+import ir.moke.microfox.http.SecurityContext;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.lang.reflect.InvocationHandler;

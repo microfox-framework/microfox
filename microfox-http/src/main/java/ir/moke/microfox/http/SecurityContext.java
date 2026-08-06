@@ -1,4 +1,4 @@
-package ir.moke.microfox.http.filter;
+package ir.moke.microfox.http;
 
 import java.security.Principal;
 
@@ -9,7 +9,7 @@ public class SecurityContext {
         return SCOPED_VALUE.get();
     }
 
-    static ScopedValue<Principal> getScopedValue() {
+    protected static ScopedValue<Principal> getScopedValue() {
         return SCOPED_VALUE;
     }
 }
