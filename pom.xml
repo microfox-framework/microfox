@@ -4,7 +4,7 @@
 
     <groupId>ir.moke.microfox</groupId>
     <artifactId>microfox-parent</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2</version>
     <packaging>pom</packaging>
     <name>Microfox Framework</name>
 
@@ -51,7 +51,7 @@
     </modules>
 
     <properties>
-        <microfox.version>0.9.1</microfox.version>
+        <microfox.version>0.9.2</microfox.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jetty.version>12.0.22</jetty.version>
@@ -127,7 +127,7 @@
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-mongodb</artifactId>
-                <version>0.9.1</version>
+                <version>0.9.2</version>
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
