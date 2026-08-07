@@ -59,7 +59,7 @@ public class RequestProxy implements InvocationHandler {
                 return handlePathParameter(args);
             }
             case "pathParamThrowable" -> {
-                return handlePathParameter(args);
+                return handlePathParameterThrowable(args);
             }
             case "cookies" -> {
                 return RequestHelper.cookies(request);
@@ -151,7 +151,7 @@ public class RequestProxy implements InvocationHandler {
     private <U> U handlePathParameter(Object[] args) {
         if (args.length == 1) {
             return (U) RequestHelper.pathParam((String) args[0], request);
-        } else if (Supplier.class.isAssignableFrom(args[3].getClass())) {
+        } else if (args[3] != null && Supplier.class.isAssignableFrom(args[3].getClass())) {
             Predicate<String> predicate = (Predicate<String>) args[1];
             Function<String, ? extends U> parser = (Function<String, ? extends U>) args[2];
             Supplier<? extends U> supplier = (Supplier<? extends U>) args[3];
@@ -169,7 +169,7 @@ public class RequestProxy implements InvocationHandler {
         Predicate<String> predicate = (Predicate<String>) args[1];
         Function<String, ? extends U> parser = (Function<String, ? extends U>) args[2];
 
-        if (Supplier.class.isAssignableFrom(args[3].getClass())) {
+        if (args[3] != null && Supplier.class.isAssignableFrom(args[3].getClass())) {
             Supplier<? extends Throwable> supplier = (Supplier<? extends Throwable>) args[3];
             return RequestHelper.pathParamThrowable((String) args[0], predicate, parser, supplier, request);
         } else {
@@ -182,7 +182,7 @@ public class RequestProxy implements InvocationHandler {
     private <U> U handleQueryParameter(Object[] args) {
         if (args.length == 1) {
             return (U) RequestHelper.queryParameter((String) args[0], request);
-        } else if (Supplier.class.isAssignableFrom(args[3].getClass())) {
+        } else if (args[3] != null && Supplier.class.isAssignableFrom(args[3].getClass())) {
             Predicate<String> predicate = (Predicate<String>) args[1];
             Function<String, ? extends U> parser = (Function<String, ? extends U>) args[2];
             Supplier<? extends U> supplier = (Supplier<? extends U>) args[3];
@@ -200,7 +200,7 @@ public class RequestProxy implements InvocationHandler {
         Predicate<String> predicate = (Predicate<String>) args[1];
         Function<String, ? extends U> parser = (Function<String, ? extends U>) args[2];
 
-        if (Supplier.class.isAssignableFrom(args[3].getClass())) {
+        if (args[3] != null && Supplier.class.isAssignableFrom(args[3].getClass())) {
             Supplier<? extends Throwable> supplier = (Supplier<? extends Throwable>) args[3];
             return RequestHelper.queryParameterThrowable((String) args[0], predicate, parser, supplier, request);
         } else {
