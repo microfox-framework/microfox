@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-jpa</artifactId>
-    <name>Microfox Framework :: JPA</name>
+    <name>MicroFox Framework :: JPA</name>
 
     <dependencies>
         <dependency>

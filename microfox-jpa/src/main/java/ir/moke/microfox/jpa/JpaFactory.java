@@ -122,7 +122,7 @@ public class JpaFactory {
             Field field = microfoxValidatorClass.getDeclaredField("factory");
             return field.get(null);
         } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
-            logger.warn("MicrofoxValidator not registered");
+            logger.warn("MicroFoxValidator not registered");
         }
         return null;
     }

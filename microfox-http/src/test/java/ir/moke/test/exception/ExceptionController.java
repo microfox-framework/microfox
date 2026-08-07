@@ -18,7 +18,7 @@ public class ExceptionController {
                 .build();
     }
 
-    public static ErrorObject handleMicrofoxException(Throwable throwable) {
+    public static ErrorObject handleMicroFoxException(Throwable throwable) {
         MicroFoxException exception = (MicroFoxException) throwable;
         return new ErrorObject.Builder()
                 .setStatusCode(exception.getStatusCode())

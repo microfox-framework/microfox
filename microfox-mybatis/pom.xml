@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-mybatis</artifactId>
-    <name>Microfox Framework :: MyBatis</name>
+    <name>MicroFox Framework :: MyBatis</name>
 
     <dependencies>
         <dependency>

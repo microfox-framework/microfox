@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-metrics</artifactId>
-    <name>Microfox Framework :: Metrics</name>
+    <name>MicroFox Framework :: Metrics</name>
 
     <dependencies>
         <dependency>

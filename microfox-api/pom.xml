@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-api</artifactId>
-    <name>Microfox Framework :: Core</name>
+    <name>MicroFox Framework :: Core</name>
 
     <dependencies>
         <dependency>

@@ -106,7 +106,7 @@ public class HttpHelper extends HttpUtils {
     }
 
     private static void internalServerError(HttpServletResponse resp, Throwable t) {
-        logger.error("Microfox Unknown Error", t);
+        logger.error("MicroFox Unknown Error", t);
         resp.setStatus(StatusCode.INTERNAL_SERVER_ERROR.getCode());
         sendResponse(resp, t.getMessage().getBytes(StandardCharsets.UTF_8));
     }
@@ -124,7 +124,7 @@ public class HttpHelper extends HttpUtils {
             ServletOutputStream outputStream = resp.getOutputStream();
             outputStream.write(bytes);
         } catch (IOException io) {
-            logger.error("Microfox IO Error", io);
+            logger.error("MicroFox IO Error", io);
         }
     }
 }

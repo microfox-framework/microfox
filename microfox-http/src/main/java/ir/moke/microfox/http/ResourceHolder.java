@@ -34,7 +34,7 @@ public class ResourceHolder {
 
     static {
         EXECUTOR.execute(HttpContainer::start);
-        addFilter(new FilterInfo("/*", -1, new SecurityFilter(), "Security filter", "Microfox"));
+        addFilter(new FilterInfo("/*", -1, new SecurityFilter(), "MicroFox Security filter", "MicroFox"));
     }
 
     public static void addRoute(RouteInfo routeInfo) {

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-health-check</artifactId>
-    <name>Microfox Framework :: Health Check</name>
+    <name>MicroFox Framework :: Health Check</name>
 
     <dependencies>
         <dependency>

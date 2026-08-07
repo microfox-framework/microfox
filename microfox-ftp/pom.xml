@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-ftp</artifactId>
-    <name>Microfox Framework :: FTP</name>
+    <name>MicroFox Framework :: FTP</name>
 
     <dependencies>
         <dependency>

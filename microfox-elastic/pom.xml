@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-elastic</artifactId>
-    <name>Microfox Framework :: ElasticSearch</name>
+    <name>MicroFox Framework :: ElasticSearch</name>
 
     <dependencies>
         <dependency>

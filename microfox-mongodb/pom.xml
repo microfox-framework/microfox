@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-mongodb</artifactId>
-    <name>Microfox Framework :: MongoDB</name>
+    <name>MicroFox Framework :: MongoDB</name>
 
     <dependencies>
         <dependency>

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-groovy</artifactId>
-    <name>Microfox Framework :: Groovy</name>
+    <name>MicroFox Framework :: Groovy</name>
 
     <dependencies>
         <dependency>

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-job</artifactId>
-    <name>Microfox Framework :: JOB</name>
+    <name>MicroFox Framework :: JOB</name>
 
     <dependencies>
         <dependency>

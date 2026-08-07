@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-http</artifactId>
-    <name>Microfox Framework :: HTTP</name>
+    <name>MicroFox Framework :: HTTP</name>
 
     <dependencies>
         <dependency>

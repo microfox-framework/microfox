@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-jms</artifactId>
-    <name>Microfox Framework :: JMS</name>
+    <name>MicroFox Framework :: JMS</name>
 
     <dependencies>
         <dependency>

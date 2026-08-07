@@ -29,7 +29,7 @@ public class BasicHttpTest {
 
     static void main(String[] args) {
         exceptionMapperRegister(SampleException.class, ExceptionController::handleSampleException);
-        exceptionMapperRegister(MicroFoxException.class, ExceptionController::handleMicrofoxException);
+        exceptionMapperRegister(MicroFoxException.class, ExceptionController::handleMicroFoxException);
         MicroFox.security(new SecurityInfo("/api/login", new BasicAuthSecurity(), 1));
         MicroFox.security(new SecurityInfo("/api/users", new JwtSecurity(), 2));
 

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-openapi</artifactId>
-    <name>Microfox Framework :: OpenAPI</name>
+    <name>MicroFox Framework :: OpenAPI</name>
 
     <dependencies>
         <dependency>

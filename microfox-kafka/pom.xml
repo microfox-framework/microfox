@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>microfox-kafka</artifactId>
-    <name>Microfox Framework :: Kafka</name>
+    <name>MicroFox Framework :: Kafka</name>
 
     <repositories>
         <repository>
