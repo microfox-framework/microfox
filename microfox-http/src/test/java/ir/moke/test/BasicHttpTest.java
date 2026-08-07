@@ -2,7 +2,6 @@ package ir.moke.test;
 
 import ch.qos.logback.classic.Level;
 import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.http.*;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.logger.model.ConsoleGenericModel;
@@ -19,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static ir.moke.microfox.MicroFox.exceptionMapperRegister;
+
 public class BasicHttpTest {
     private static final Logger logger = LoggerFactory.getLogger(BasicHttpTest.class);
 
@@ -27,8 +28,8 @@ public class BasicHttpTest {
     }
 
     static void main(String[] args) {
-        MicrofoxRegistry.exceptionMapperRegister(SampleException.class, ExceptionController::handleSampleException);
-        MicrofoxRegistry.exceptionMapperRegister(MicroFoxException.class, ExceptionController::handleMicrofoxException);
+        exceptionMapperRegister(SampleException.class, ExceptionController::handleSampleException);
+        exceptionMapperRegister(MicroFoxException.class, ExceptionController::handleMicrofoxException);
         MicroFox.security(new SecurityInfo("/api/login", new BasicAuthSecurity(), 1));
         MicroFox.security(new SecurityInfo("/api/users", new JwtSecurity(), 2));
 

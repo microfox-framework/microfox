@@ -1,6 +1,5 @@
 package ir.moke.test;
 
-import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.test.sse.SseTask;
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.sse.SseObject;
@@ -8,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
+
+import static ir.moke.microfox.MicroFox.sseRegister;
 
 public class SseHttpTest {
     private static final Logger logger = LoggerFactory.getLogger(SseHttpTest.class);
@@ -23,7 +24,7 @@ public class SseHttpTest {
          * run this command :
          * http --stream http://localhost:8080/api/sse 'Accept: text/event-stream'
          * */
-        MicrofoxRegistry.sseRegister("sse-test", "/api/sse");
+        sseRegister("sse-test", "/api/sse");
         MicroFox.ssePublisher("sse-test", new SseObject("Hello"));
 
     }

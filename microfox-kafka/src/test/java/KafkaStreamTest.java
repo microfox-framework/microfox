@@ -1,5 +1,4 @@
 import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.kafka.KafkaStreamController;
 import ir.moke.microfox.api.kafka.KafkaStreamState;
 import org.apache.kafka.common.serialization.Serdes;
@@ -12,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+
+import static ir.moke.microfox.MicroFox.kafkaStreamRegister;
 
 public class KafkaStreamTest {
     private static final Logger logger = LoggerFactory.getLogger(KafkaStreamTest.class);
@@ -29,7 +30,7 @@ public class KafkaStreamTest {
         configs.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         configs.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
-        MicrofoxRegistry.kafkaStreamRegister(IDENTITY, configs);
+        kafkaStreamRegister(IDENTITY, configs);
     }
 
     private static Topology createTopology() {

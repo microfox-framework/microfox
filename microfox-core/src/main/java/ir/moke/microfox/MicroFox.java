@@ -3,6 +3,7 @@ package ir.moke.microfox;
 import ch.qos.logback.classic.Logger;
 import com.jcraft.jsch.ChannelSftp;
 import com.mongodb.client.MongoCollection;
+import ir.moke.microfox.api.elastic.ElasticConfig;
 import ir.moke.microfox.api.elastic.ElasticProvider;
 import ir.moke.microfox.api.elastic.ElasticRepository;
 import ir.moke.microfox.api.ftp.*;
@@ -10,8 +11,11 @@ import ir.moke.microfox.api.groovy.GroovyProvider;
 import ir.moke.microfox.api.hc.HealthCheckProvider;
 import ir.moke.microfox.api.http.*;
 import ir.moke.microfox.api.http.sse.SseObject;
+import ir.moke.microfox.api.httpclient.ConnectionInfo;
+import ir.moke.microfox.api.httpclient.HttpClientProvider;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
+import ir.moke.microfox.api.jms.JmsConnectionInfo;
 import ir.moke.microfox.api.jms.JmsProvider;
 import ir.moke.microfox.api.job.JobOption;
 import ir.moke.microfox.api.job.JobProvider;
@@ -23,13 +27,16 @@ import ir.moke.microfox.api.kafka.KafkaProducerController;
 import ir.moke.microfox.api.kafka.KafkaProvider;
 import ir.moke.microfox.api.kafka.KafkaStreamController;
 import ir.moke.microfox.api.metrics.MetricsProvider;
+import ir.moke.microfox.api.mongodb.MongoConnectionInfo;
 import ir.moke.microfox.api.mongodb.MongoProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
 import ir.moke.microfox.api.redis.Cache;
 import ir.moke.microfox.api.redis.ClusterCoordinator;
+import ir.moke.microfox.api.redis.RedisConfig;
 import ir.moke.microfox.api.redis.RedisProvider;
-import ir.moke.microfox.api.system.SystemProvider;
+import ir.moke.microfox.exception.ExceptionMapper;
+import ir.moke.microfox.exception.ExceptionMapperHolder;
 import ir.moke.microfox.logger.LoggerManager;
 import ir.moke.microfox.logger.model.LogModel;
 import jakarta.jms.JMSContext;
@@ -38,43 +45,147 @@ import jakarta.persistence.EntityManager;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.File;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Consumer;
 
 public class MicroFox {
 
-    private static final HttpProvider httpProvider = ServiceLoader.load(HttpProvider.class).findFirst().orElse(null);
-    private static final JobProvider jobProvider = ServiceLoader.load(JobProvider.class).findFirst().orElse(null);
-    private static final FtpProvider ftpProvider = ServiceLoader.load(FtpProvider.class).findFirst().orElse(null);
-    private static final SftpProvider sftpProvider = ServiceLoader.load(SftpProvider.class).findFirst().orElse(null);
-    private static final MyBatisProvider myBatisProvider = ServiceLoader.load(MyBatisProvider.class).findFirst().orElse(null);
-    private static final JpaProvider jpaProvider = ServiceLoader.load(JpaProvider.class).findFirst().orElse(null);
-    private static final JmsProvider jmsProvider = ServiceLoader.load(JmsProvider.class).findFirst().orElse(null);
-    private static final KafkaProvider kafkaProvider = ServiceLoader.load(KafkaProvider.class).findFirst().orElse(null);
     private static final ElasticProvider elasticProvider = ServiceLoader.load(ElasticProvider.class).findFirst().orElse(null);
-    private static final OpenApiProvider openApiProvider = ServiceLoader.load(OpenApiProvider.class).findFirst().orElse(null);
-    private static final MetricsProvider metricsProvider = ServiceLoader.load(MetricsProvider.class).findFirst().orElse(null);
-    private static final HealthCheckProvider healthCheckProvider = ServiceLoader.load(HealthCheckProvider.class).findFirst().orElse(null);
-    private static final SystemProvider systemProvider = ServiceLoader.load(SystemProvider.class).findFirst().orElse(null);
-    private static final MongoProvider mongoProvider = ServiceLoader.load(MongoProvider.class).findFirst().orElse(null);
+    private static final FtpProvider ftpProvider = ServiceLoader.load(FtpProvider.class).findFirst().orElse(null);
     private static final GroovyProvider groovyProvider = ServiceLoader.load(GroovyProvider.class).findFirst().orElse(null);
+    private static final HttpProvider httpProvider = ServiceLoader.load(HttpProvider.class).findFirst().orElse(null);
+    private static final HttpClientProvider httpClientProvider = ServiceLoader.load(HttpClientProvider.class).findFirst().orElse(null);
+    private static final JmsProvider jmsProvider = ServiceLoader.load(JmsProvider.class).findFirst().orElse(null);
+    private static final JobProvider jobProvider = ServiceLoader.load(JobProvider.class).findFirst().orElse(null);
+    private static final JpaProvider jpaProvider = ServiceLoader.load(JpaProvider.class).findFirst().orElse(null);
+    private static final KafkaProvider kafkaProvider = ServiceLoader.load(KafkaProvider.class).findFirst().orElse(null);
+    private static final MetricsProvider metricsProvider = ServiceLoader.load(MetricsProvider.class).findFirst().orElse(null);
+    private static final MongoProvider mongoProvider = ServiceLoader.load(MongoProvider.class).findFirst().orElse(null);
+    private static final MyBatisProvider myBatisProvider = ServiceLoader.load(MyBatisProvider.class).findFirst().orElse(null);
     private static final RedisProvider redisProvider = ServiceLoader.load(RedisProvider.class).findFirst().orElse(null);
+    private static final SftpProvider sftpProvider = ServiceLoader.load(SftpProvider.class).findFirst().orElse(null);
+
+    private static final OpenApiProvider openApiProvider = ServiceLoader.load(OpenApiProvider.class).findFirst().orElse(null);
+    private static final HealthCheckProvider healthCheckProvider = ServiceLoader.load(HealthCheckProvider.class).findFirst().orElse(null);
 
     static {
         MicroFoxEnvironment.introduce();
-        Optional.ofNullable(systemProvider).ifPresent(SystemProvider::activate);
         Optional.ofNullable(healthCheckProvider).ifPresent(HealthCheckProvider::activate);
         Optional.ofNullable(openApiProvider).ifPresent(OpenApiProvider::registerOpenAPI);
     }
 
-    public static void logger(LogModel log) {
-        LoggerManager.registerLog(log);
+    public static void elasticRegister(String identity, ElasticConfig config) {
+        if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");
+        elasticProvider.register(identity, config);
     }
 
-    public static List<Logger> logger() {
-        return LoggerManager.list();
+    public static void elasticUnregister(String identity) {
+        if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");
+        elasticProvider.unregister(identity);
+    }
+
+    public static <T> ElasticRepository<T> elastic(String identity, Class<T> entityClass) {
+        if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");
+        return elasticProvider.elastic(identity, entityClass);
+    }
+
+    public static <T extends Throwable> void exceptionMapperRegister(Class<T> t, ExceptionMapper mapper) {
+        ExceptionMapperHolder.add(t, mapper);
+    }
+
+    public static <T extends Throwable> void exceptionMapperUnregister(Class<T> t) {
+        ExceptionMapperHolder.remove(t);
+    }
+
+
+    public static void ftpDownload(MicroFoxFtpConfig config, Path remoteFilePath, Path localDownloadDir) {
+        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
+        ftpProvider.ftpDownload(config, remoteFilePath, localDownloadDir);
+    }
+
+    public static void ftpBatchDownload(MicroFoxFtpConfig config, List<Path> remoteFilePath, Path localDownloadDir) {
+        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
+        ftpProvider.ftpBatchDownload(config, remoteFilePath, localDownloadDir);
+    }
+
+    public static void ftpUpload(MicroFoxFtpConfig config, Path remoteFilePath, Path file) {
+        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
+        ftpProvider.ftpUpload(config, remoteFilePath, file);
+    }
+
+    public static void ftpBatchUpload(MicroFoxFtpConfig config, Path remoteFilePath, List<Path> files) {
+        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
+        ftpProvider.ftpBatchUpload(config, remoteFilePath, files);
+    }
+
+    public static void ftpDelete(MicroFoxFtpConfig config, Path remoteFilePath) {
+        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
+        ftpProvider.ftpDelete(config, remoteFilePath);
+    }
+
+    public static void ftpList(MicroFoxFtpConfig config, Path remoteFilePath, Consumer<FTPFile[]> consumer) {
+        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
+        ftpProvider.ftpList(config, remoteFilePath, consumer);
+    }
+
+    public static void groovyEval(String script, Consumer<Object> result) {
+        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
+        groovyProvider.eval(script, result);
+    }
+
+    public static void groovyEval(File file, Consumer<Object> result) {
+        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
+        groovyProvider.eval(file, result);
+    }
+
+    public static void groovyParse(String script, Consumer<Class<?>> classConsumer) {
+        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
+        groovyProvider.parse(script, classConsumer);
+    }
+
+    public static void groovyParse(File file, Consumer<Class<?>> classConsumer) {
+        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
+        groovyProvider.parse(file, classConsumer);
+    }
+
+    public static void groovyParse(String script, ClassLoader parentClassLoader, Consumer<Class<?>> classConsumer) {
+        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
+        groovyProvider.parse(script, parentClassLoader, classConsumer);
+    }
+
+    public static void groovyParse(File file, ClassLoader parentClassLoader, Consumer<Class<?>> classConsumer) {
+        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
+        groovyProvider.parse(file, parentClassLoader, classConsumer);
+    }
+
+    public static void removeHttpRoute(String path, HttpMethod method) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.removeRoute(path, method);
+    }
+
+    public static void removeHttpRoute(String category) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.removeRoute(category);
+    }
+
+    public static void removeHttpFilter(String category) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.removeFilter(category);
+    }
+
+    public static void sseRegister(String identity, String path) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.sseRegister(identity, path);
+    }
+
+    public static void sseUnregister(String identity) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        httpProvider.sseUnregister(identity);
     }
 
     public static void cors(String path, String name, Map<CORSHeader, String> valueMap) {
@@ -152,6 +263,51 @@ public class MicroFox {
         httpProvider.ssePublisher(identity, sseObject);
     }
 
+    public static void register(String identity, ConnectionInfo connectionInfo) {
+        if (httpClientProvider == null) throw new UnsupportedOperationException("Http client support not available");
+        httpClientProvider.register(identity, connectionInfo);
+    }
+
+    public static void unregister(String identity) {
+        if (httpClientProvider == null) throw new UnsupportedOperationException("Http client support not available");
+        httpClientProvider.unregister(identity);
+    }
+
+    public static <T> HttpResponse<T> send(String identity, HttpMethod method, Map<String, String> headers, HttpResponse.BodyHandler<T> bodyHandler, HttpRequest.BodyPublisher bodyPublisher) {
+        if (httpClientProvider == null) throw new UnsupportedOperationException("Http client support not available");
+        return httpClientProvider.send(identity, method, headers, bodyHandler, bodyPublisher);
+    }
+
+    public static <T> HttpResponse<T> sendAsync(String identity, HttpMethod method, Map<String, String> headers, HttpResponse.BodyHandler<T> bodyHandler, HttpRequest.BodyPublisher bodyPublisher) {
+        if (httpClientProvider == null) throw new UnsupportedOperationException("Http client support not available");
+        return httpClientProvider.send(identity, method, headers, bodyHandler, bodyPublisher);
+    }
+
+    public static void jmsRegister(String identity, JmsConnectionInfo connectionInfo) {
+        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
+        jmsProvider.register(identity, connectionInfo);
+    }
+
+    public static void jmsUnregister(String identity) {
+        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
+        jmsProvider.unregister(identity);
+    }
+
+    public static void jmsListener(String identity, DestinationType type, String destination, AckMode acknowledgeMode, MessageListener listener) {
+        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
+        jmsProvider.consume(identity, destination, acknowledgeMode, type, listener);
+    }
+
+    public static void jmsProducer(String identity, Consumer<JMSContext> consumer) {
+        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
+        jmsProvider.produce(identity, consumer);
+    }
+
+    public static void jmsStop(String identity) {
+        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
+        jmsProvider.stop(identity);
+    }
+
     public static void job(Task task, String name, String cronExpression, JobOption option) {
         if (jobProvider == null) throw new UnsupportedOperationException("Job scheduler support not available");
         jobProvider.job(task, name, null, cronExpression, option);
@@ -227,80 +383,21 @@ public class MicroFox {
         jobProvider.deleteJob(name, null);
     }
 
-    public static void ftpDownload(MicroFoxFtpConfig config, Path remoteFilePath, Path localDownloadDir) {
-        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpDownload(config, remoteFilePath, localDownloadDir);
+    public static void jpaRegisterWithEntities(String identity, Set<Class<?>> entities, Map<String, Object> settings) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.registerWithEntities(identity, entities, settings);
     }
 
-    public static void ftpBatchDownload(MicroFoxFtpConfig config, List<Path> remoteFilePath, Path localDownloadDir) {
-        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpBatchDownload(config, remoteFilePath, localDownloadDir);
+    public static void jpaRegisterWithPackage(String identity, Set<String> scanPackages, Map<String, Object> settings) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.registerWithPackages(identity, scanPackages, settings);
     }
 
-    public static void ftpUpload(MicroFoxFtpConfig config, Path remoteFilePath, Path file) {
-        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpUpload(config, remoteFilePath, file);
+    public static void jpaUnregister(String identity) {
+        if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
+        jpaProvider.unregister(identity);
     }
 
-    public static void ftpBatchUpload(MicroFoxFtpConfig config, Path remoteFilePath, List<Path> files) {
-        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpBatchUpload(config, remoteFilePath, files);
-    }
-
-    public static void ftpDelete(MicroFoxFtpConfig config, Path remoteFilePath) {
-        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpDelete(config, remoteFilePath);
-    }
-
-    public static void ftpList(MicroFoxFtpConfig config, Path remoteFilePath, Consumer<FTPFile[]> consumer) {
-        if (ftpProvider == null) throw new UnsupportedOperationException("FTP support not available");
-        ftpProvider.ftpList(config, remoteFilePath, consumer);
-    }
-
-    public static void sftpDownload(MicroFoxSftpConfig config, Path remoteFilePath, Path localDownloadDir) {
-        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
-        sftpProvider.sftpDownload(config, remoteFilePath, localDownloadDir);
-    }
-
-    public static void sftpBatchDownload(MicroFoxSftpConfig config, List<Path> remoteFilePath, Path localDownloadDir) {
-        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
-        sftpProvider.sftpBatchDownload(config, remoteFilePath, localDownloadDir);
-    }
-
-    public static void sftpUpload(MicroFoxSftpConfig config, Path remoteDirPath, Path file, SftpMode mode) {
-        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
-        sftpProvider.sftpUpload(config, remoteDirPath, file, mode);
-    }
-
-    public static void sftpBatchUpload(MicroFoxSftpConfig config, Path remoteDirPath, List<Path> files, SftpMode mode) {
-        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
-        sftpProvider.sftpBatchUpload(config, remoteDirPath, files, mode);
-    }
-
-    public static void sftpDelete(MicroFoxSftpConfig config, Path remoteFilePath) {
-        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
-        sftpProvider.sftpDelete(config, remoteFilePath);
-    }
-
-    public static void sftpList(MicroFoxSftpConfig config, Path remoteFilePath, Consumer<Vector<ChannelSftp.LsEntry>> consumer) {
-        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
-        sftpProvider.sftpList(config, remoteFilePath, consumer);
-    }
-
-    public static <T> T mybatis(String identity, Class<T> mapper) {
-        if (myBatisProvider == null) throw new UnsupportedOperationException("MyBatis support not available");
-        return myBatisProvider.mybatis(identity, mapper);
-    }
-
-    public static <T> void mybatisTx(String identity, Class<T> mapper, Consumer<T> consumer) {
-        if (myBatisProvider == null) throw new UnsupportedOperationException("MyBatis support not available");
-        myBatisProvider.mybatisTx(identity, mapper, consumer);
-    }
-
-    public static <T> void mybatisBatch(String identity, Class<T> mapper, Consumer<T> consumer) {
-        if (myBatisProvider == null) throw new UnsupportedOperationException("MyBatis support not available");
-        myBatisProvider.mybatisBatch(identity, mapper, consumer);
-    }
 
     public static void jpa(String identity, Runnable runnable) {
         if (jpaProvider == null) throw new UnsupportedOperationException("JPA support not available");
@@ -342,19 +439,34 @@ public class MicroFox {
         jpaProvider.jpaPrintUpdateSchemaSQL(identity, outputFile);
     }
 
-    public static void jmsListener(String identity, DestinationType type, String destination, AckMode acknowledgeMode, MessageListener listener) {
-        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.consume(identity, destination, acknowledgeMode, type, listener);
+    public static <K, V> void kafkaProducerRegister(String clientId, Map<String, Object> config) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.registerProducer(clientId, config);
     }
 
-    public static void jmsProducer(String identity, Consumer<JMSContext> consumer) {
-        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.produce(identity, consumer);
+    public static <K, V> void kafkaConsumerRegister(String clientId, Map<String, Object> config) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.registerConsumer(clientId, config);
     }
 
-    public static void jmsStop(String identity) {
-        if (jmsProvider == null) throw new UnsupportedOperationException("Jms support not available");
-        jmsProvider.stop(identity);
+    public static <K, V> void kafkaStreamRegister(String clientId, Map<String, Object> config) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.registerStream(clientId, config);
+    }
+
+    public static void kafkaProducerUnregister(String clientId, Duration duration) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.unregisterProducer(clientId, duration);
+    }
+
+    public static void kafkaConsumerUnregister(String clientId, Duration duration) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.unregisterConsumer(clientId, duration);
+    }
+
+    public static void kafkaStreamUnregister(String clientId, Duration duration) {
+        if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
+        kafkaProvider.unregisterStream(clientId, duration);
     }
 
     public static <K, V> void kafkaProducer(String clientId, Consumer<KafkaProducerController<K, V>> consumer) {
@@ -372,44 +484,16 @@ public class MicroFox {
         kafkaProvider.stream(clientId, topology, consumer);
     }
 
-    public static <T> ElasticRepository<T> elastic(String identity, Class<T> entityClass) {
-        if (elasticProvider == null) throw new UnsupportedOperationException("ElasticSearch support not available");
-        return elasticProvider.elastic(identity, entityClass);
+    public static void detachLogAppender(String appenderName, String packageName) {
+        LoggerManager.detachLoggerAppender(appenderName, packageName);
     }
 
-    public static <T> MongoCollection<T> mongo(String identity, Class<T> entityClass) {
-        if (mongoProvider == null) throw new UnsupportedOperationException("MongoDB support not available");
-        return mongoProvider.collection(identity, entityClass);
+    public static void logger(LogModel log) {
+        LoggerManager.registerLog(log);
     }
 
-    public static void groovyEval(String script, Consumer<Object> result) {
-        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
-        groovyProvider.eval(script, result);
-    }
-
-    public static void groovyEval(File file, Consumer<Object> result) {
-        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
-        groovyProvider.eval(file, result);
-    }
-
-    public static void groovyParse(String script, Consumer<Class<?>> classConsumer) {
-        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
-        groovyProvider.parse(script, classConsumer);
-    }
-
-    public static void groovyParse(File file, Consumer<Class<?>> classConsumer) {
-        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
-        groovyProvider.parse(file, classConsumer);
-    }
-
-    public static void groovyParse(String script, ClassLoader parentClassLoader, Consumer<Class<?>> classConsumer) {
-        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
-        groovyProvider.parse(script, parentClassLoader, classConsumer);
-    }
-
-    public static void groovyParse(File file, ClassLoader parentClassLoader, Consumer<Class<?>> classConsumer) {
-        if (groovyProvider == null) throw new UnsupportedOperationException("Groovy support not available");
-        groovyProvider.parse(file, parentClassLoader, classConsumer);
+    public static List<Logger> logger() {
+        return LoggerManager.list();
     }
 
     public static void metricGauge(String name, double value) {
@@ -432,6 +516,46 @@ public class MicroFox {
         metricsProvider.counter(name, tags);
     }
 
+    public static void mongoRegister(String identity, MongoConnectionInfo connectionInfo) {
+        if (mongoProvider == null) throw new UnsupportedOperationException("MongoDB support not available");
+        mongoProvider.register(identity, connectionInfo);
+    }
+
+    public static void mongoUnregister(String identity) {
+        if (mongoProvider == null) throw new UnsupportedOperationException("MongoDB support not available");
+        mongoProvider.unregister(identity);
+    }
+
+    public static <T> MongoCollection<T> mongo(String identity, Class<T> entityClass) {
+        if (mongoProvider == null) throw new UnsupportedOperationException("MongoDB support not available");
+        return mongoProvider.collection(identity, entityClass);
+    }
+
+    public static <T> T mybatis(String identity, Class<T> mapper) {
+        if (myBatisProvider == null) throw new UnsupportedOperationException("MyBatis support not available");
+        return myBatisProvider.mybatis(identity, mapper);
+    }
+
+    public static <T> void mybatisTx(String identity, Class<T> mapper, Consumer<T> consumer) {
+        if (myBatisProvider == null) throw new UnsupportedOperationException("MyBatis support not available");
+        myBatisProvider.mybatisTx(identity, mapper, consumer);
+    }
+
+    public static <T> void mybatisBatch(String identity, Class<T> mapper, Consumer<T> consumer) {
+        if (myBatisProvider == null) throw new UnsupportedOperationException("MyBatis support not available");
+        myBatisProvider.mybatisBatch(identity, mapper, consumer);
+    }
+
+    public static void redisRegister(String identity, RedisConfig config) {
+        if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
+        redisProvider.register(identity, config);
+    }
+
+    public static void redisUnregister(String identity) {
+        if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
+        redisProvider.unregister(identity);
+    }
+
     public static Cache redis(String identity) {
         if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
         return redisProvider.cache(identity);
@@ -440,5 +564,35 @@ public class MicroFox {
     public static ClusterCoordinator redisCluster(String identity) {
         if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
         return redisProvider.cluster(identity);
+    }
+
+    public static void sftpDownload(MicroFoxSftpConfig config, Path remoteFilePath, Path localDownloadDir) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpDownload(config, remoteFilePath, localDownloadDir);
+    }
+
+    public static void sftpBatchDownload(MicroFoxSftpConfig config, List<Path> remoteFilePath, Path localDownloadDir) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpBatchDownload(config, remoteFilePath, localDownloadDir);
+    }
+
+    public static void sftpUpload(MicroFoxSftpConfig config, Path remoteDirPath, Path file, SftpMode mode) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpUpload(config, remoteDirPath, file, mode);
+    }
+
+    public static void sftpBatchUpload(MicroFoxSftpConfig config, Path remoteDirPath, List<Path> files, SftpMode mode) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpBatchUpload(config, remoteDirPath, files, mode);
+    }
+
+    public static void sftpDelete(MicroFoxSftpConfig config, Path remoteFilePath) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpDelete(config, remoteFilePath);
+    }
+
+    public static void sftpList(MicroFoxSftpConfig config, Path remoteFilePath, Consumer<Vector<ChannelSftp.LsEntry>> consumer) {
+        if (sftpProvider == null) throw new UnsupportedOperationException("SFTP support not available");
+        sftpProvider.sftpList(config, remoteFilePath, consumer);
     }
 }

@@ -1,9 +1,10 @@
 import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.elastic.*;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
+
+import static ir.moke.microfox.MicroFox.elasticRegister;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ElasticTest {
@@ -11,7 +12,7 @@ public class ElasticTest {
     @BeforeAll
     public static void init() {
         ElasticConfig config = new ElasticConfig("127.0.0.1", 9200, "admin", "adminpass", false);
-        MicrofoxRegistry.elasticRegister("el", config);
+        elasticRegister("el", config);
     }
 
     @Test

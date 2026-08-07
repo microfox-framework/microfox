@@ -1,8 +1,6 @@
 package ir.microfox.jpa.test;
 
 import com.zaxxer.hikari.hibernate.HikariConnectionProvider;
-import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.MicrofoxRegistry;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
@@ -10,6 +8,8 @@ import org.hibernate.dialect.PostgreSQLDialect;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import static ir.moke.microfox.MicroFox.jpaRegisterWithPackage;
 
 public class DB {
 
@@ -23,7 +23,7 @@ public class DB {
         properties.put(AvailableSettings.DIALECT, H2Dialect.class.getCanonicalName());
         properties.put(AvailableSettings.SHOW_SQL, "true");
 
-        MicrofoxRegistry.jpaRegisterWithPackage("h2", Set.of("ir.microfox.jpa.test.entity"), properties);
+        jpaRegisterWithPackage("h2", Set.of("ir.microfox.jpa.test.entity"), properties);
     }
 
 
@@ -40,6 +40,6 @@ public class DB {
         properties.put(AvailableSettings.HIKARI_MAX_SIZE, "100");
         properties.put(AvailableSettings.HIKARI_MIN_IDLE_SIZE, "50");
 
-        MicrofoxRegistry.jpaRegisterWithPackage("postgres", Set.of("ir.microfox.jpa.test.entity"), properties);
+        jpaRegisterWithPackage("postgres", Set.of("ir.microfox.jpa.test.entity"), properties);
     }
 }

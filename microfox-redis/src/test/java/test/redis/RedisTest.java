@@ -1,10 +1,11 @@
 package test.redis;
 
 import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.redis.Cache;
 import ir.moke.microfox.api.redis.RedisConfig;
 import org.junit.jupiter.api.Test;
+
+import static ir.moke.microfox.MicroFox.redisRegister;
 
 public class RedisTest {
 
@@ -13,7 +14,7 @@ public class RedisTest {
 
     static {
         config.setPassword("adminpass");
-        MicrofoxRegistry.redisRegister(IDENTITY, config);
+        redisRegister(IDENTITY, config);
     }
 
     @Test

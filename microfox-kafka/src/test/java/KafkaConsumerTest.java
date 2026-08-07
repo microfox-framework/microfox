@@ -1,8 +1,6 @@
 import ch.qos.logback.classic.Level;
 import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.kafka.KafkaConsumerController;
-import ir.moke.microfox.kafka.KafkaConsumerFactory;
 import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -12,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static ir.moke.microfox.MicroFox.kafkaConsumer;
+import static ir.moke.microfox.MicroFox.kafkaConsumerRegister;
 
 public class KafkaConsumerTest {
     private static final String IDENTITY = "kafka-test";
@@ -30,7 +29,7 @@ public class KafkaConsumerTest {
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, "G1");
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        MicrofoxRegistry.kafkaConsumerRegister(IDENTITY, configs);
+        kafkaConsumerRegister(IDENTITY, configs);
     }
 
     static void main() {

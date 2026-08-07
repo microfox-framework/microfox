@@ -1,9 +1,10 @@
 import com.mongodb.client.MongoCollection;
 import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.mongodb.MongoConnectionInfo;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import static ir.moke.microfox.MicroFox.mongoRegister;
 
 public class MongoTest {
     private static final String IDENTITY = "mongo-db";
@@ -16,7 +17,7 @@ public class MongoTest {
                 27017,
                 "test",
                 "authSource=admin");
-        MicrofoxRegistry.mongoRegister(IDENTITY, info);
+        mongoRegister(IDENTITY, info);
     }
 
     @Test

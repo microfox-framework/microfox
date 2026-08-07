@@ -1,13 +1,10 @@
 import com.ibm.msg.client.jakarta.jms.JmsConnectionFactory;
 import com.ibm.msg.client.jakarta.jms.JmsFactoryFactory;
 import com.ibm.msg.client.jakarta.wmq.WMQConstants;
-import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsConnectionInfo;
 import ir.moke.microfox.exception.MicroFoxException;
-import ir.moke.microfox.jms.JmsFactory;
 import jakarta.jms.JMSProducer;
 import jakarta.jms.Queue;
 import jakarta.jms.TextMessage;
@@ -16,8 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static ir.moke.microfox.MicroFox.jmsListener;
-import static ir.moke.microfox.MicroFox.jmsProducer;
+import static ir.moke.microfox.MicroFox.*;
 
 /**
  * Run ibmmq container with this command :
@@ -79,7 +75,7 @@ public class IbmMQTest {
             connectionFactory.setStringProperty(WMQConstants.USERID, USERNAME);
             connectionFactory.setStringProperty(WMQConstants.PASSWORD, PASSWORD);
             connectionFactory.setStringProperty(WMQConstants.TIME_TO_LIVE, CONNECTION_TTL);
-            MicrofoxRegistry.jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory));
+            jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory));
         } catch (Exception e) {
             throw new MicroFoxException(e);
         }

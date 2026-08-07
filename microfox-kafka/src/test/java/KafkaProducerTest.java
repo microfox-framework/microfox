@@ -1,6 +1,4 @@
-import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.kafka.KafkaProducerController;
-import ir.moke.microfox.kafka.KafkaProducerFactory;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -8,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static ir.moke.microfox.MicroFox.kafkaProducer;
+import static ir.moke.microfox.MicroFox.kafkaProducerRegister;
 
 public class KafkaProducerTest {
     private static final String IDENTITY = "kafka-test";
@@ -24,7 +23,7 @@ public class KafkaProducerTest {
         configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "%s:%s".formatted(HOST, PORT));
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        MicrofoxRegistry.kafkaProducerRegister(IDENTITY, configs);
+        kafkaProducerRegister(IDENTITY, configs);
     }
 
     static void main() {

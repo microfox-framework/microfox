@@ -39,6 +39,7 @@
         <module>microfox-groovy</module>
         <module>microfox-health-check</module>
         <module>microfox-http</module>
+        <module>microfox-http-client</module>
         <module>microfox-jms</module>
         <module>microfox-job</module>
         <module>microfox-jpa</module>

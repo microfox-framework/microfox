@@ -1,5 +1,3 @@
-import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.MicrofoxRegistry;
 import ir.moke.microfox.api.jms.AckMode;
 import ir.moke.microfox.api.jms.DestinationType;
 import ir.moke.microfox.api.jms.JmsConnectionInfo;
@@ -14,8 +12,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import java.time.ZonedDateTime;
 import java.util.Locale;
 
-import static ir.moke.microfox.MicroFox.jmsListener;
-import static ir.moke.microfox.MicroFox.jmsProducer;
+import static ir.moke.microfox.MicroFox.*;
 
 /**
  * Run artemis container with this command :
@@ -58,6 +55,6 @@ public class ActiveMQTest {
         connectionFactory.setUserName(USERNAME);
         connectionFactory.setPassword(PASSWORD);
         connectionFactory.setCloseTimeout(CONNECTION_TTL);
-        MicrofoxRegistry.jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory, 3));
+        jmsRegister(IDENTITY, new JmsConnectionInfo(connectionFactory, 3));
     }
 }
