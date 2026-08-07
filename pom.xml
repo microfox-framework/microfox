@@ -102,6 +102,11 @@
             </dependency>
             <dependency>
                 <groupId>ir.moke.microfox</groupId>
+                <artifactId>microfox-http-client</artifactId>
+                <version>${microfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ir.moke.microfox</groupId>
                 <artifactId>microfox-jms</artifactId>
                 <version>${microfox.version}</version>
             </dependency>
