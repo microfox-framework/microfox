@@ -4,7 +4,6 @@ import ir.moke.microfox.api.http.FilterInfo;
 import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.RouteInfo;
 import ir.moke.microfox.api.http.SecurityInfo;
-import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.filter.SecurityFilter;
 import ir.moke.microfox.http.sse.SseInfo;
@@ -12,11 +11,13 @@ import jakarta.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.SubmissionPublisher;
 
 import static ir.moke.microfox.http.HttpHelper.concatContextPath;
 import static ir.moke.utils.TtyAsciiCodecs.*;
@@ -33,9 +34,7 @@ public class ResourceHolder {
 
     static {
         EXECUTOR.execute(HttpContainer::start);
-        if (!SECURITY_LIST.isEmpty()) {
-            addFilter(new FilterInfo("/*", -1, new SecurityFilter(), "Security filter", "Microfox"));
-        }
+        addFilter(new FilterInfo("/*", -1, new SecurityFilter(), "Security filter", "Microfox"));
     }
 
     public static void addRoute(RouteInfo routeInfo) {
