@@ -1,6 +1,7 @@
 package ir.moke.microfox.job;
 
 import ir.moke.microfox.MicroFox;
+import ir.moke.microfox.api.redis.cluster.ClusterLeaderElection;
 import ir.moke.microfox.api.redis.cluster.ClusterLock;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -32,10 +33,10 @@ public class DistributedDelegateJob implements Job {
         }
 
         if (!allowConcurrent) {
-            ClusterLock lock = MicroFox.redisCluster(identity).getLock(jobKey);
+            ClusterLeaderElection leaderElection = MicroFox.redisCluster(identity).leaderElection(jobKey);
             boolean acquired = false;
             try {
-                acquired = lock.tryLock(0);
+                acquired = leaderElection.tryBecomeLeader();
                 if (!acquired) {
                     logger.debug("Job {} is already running, skipping...", jobKey);
                     return;
@@ -44,8 +45,8 @@ public class DistributedDelegateJob implements Job {
             } catch (Exception e) {
                 logger.error("Job {} failed", jobKey, e);
             } finally {
-                if (acquired && lock.isHeldByCurrentThread()) {
-                    lock.unlock();
+                if (acquired && leaderElection.isLeader()) {
+                    leaderElection.release();
                 }
             }
         } else {

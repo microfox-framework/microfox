@@ -11,7 +11,6 @@ public class ClusterLeaderElectionImpl implements ClusterLeaderElection {
 
     private final String name;
     private final RLock lock;
-    private volatile boolean leader = false;
 
     public ClusterLeaderElectionImpl(String name, RedissonClient client) {
         this.name = name;
@@ -23,11 +22,9 @@ public class ClusterLeaderElectionImpl implements ClusterLeaderElection {
     }
 
     @Override
-    public boolean tryBecomeLeader(Duration leaseTime) {
+    public boolean tryBecomeLeader() {
         try {
-            boolean acquired = lock.tryLock(0, leaseTime.toMillis(), TimeUnit.MILLISECONDS);
-            leader = acquired;
-            return acquired;
+            return lock.tryLock(0, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return false;
@@ -36,7 +33,7 @@ public class ClusterLeaderElectionImpl implements ClusterLeaderElection {
 
     @Override
     public boolean isLeader() {
-        return leader && lock.isHeldByCurrentThread();
+        return lock.isHeldByCurrentThread();
     }
 
     @Override
@@ -44,7 +41,6 @@ public class ClusterLeaderElectionImpl implements ClusterLeaderElection {
         if (lock.isHeldByCurrentThread()) {
             lock.unlock();
         }
-        leader = false;
     }
 
     @Override
