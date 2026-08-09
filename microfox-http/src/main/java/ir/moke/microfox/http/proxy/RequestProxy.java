@@ -112,10 +112,11 @@ public class RequestProxy implements InvocationHandler {
             case "protocol" -> {
                 return RequestHelper.protocol(request);
             }
-            case "getAttribute" -> {
-                return RequestHelper.getAttribute((String) args[0], request);
+            case "attribute" -> {
+                if (args.length == 1) return RequestHelper.getAttribute((String) args[0], request);
+                RequestHelper.setAttribute((String) args[0], args[1], request);
+                return null;
             }
-            case "setAttribute" -> RequestHelper.setAttribute((String) args[0], args[1], request);
             case "attributes" -> {
                 return RequestHelper.attributes(request);
             }

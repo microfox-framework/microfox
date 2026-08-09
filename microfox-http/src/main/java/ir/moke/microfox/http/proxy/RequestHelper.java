@@ -115,22 +115,22 @@ public class RequestHelper {
     }
 
     public static <U> U pathParam(String key, Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends U> supplier, HttpServletRequest request) {
-        String value = request.getParameter(key);
+        String value = pathParam(key, request);
         return OptionalObject.of(value).parseOrGet(predicate, parser, supplier);
     }
 
     public static <U> U pathParam(String key, Predicate<String> predicate, Function<String, ? extends U> parser, U u, HttpServletRequest request) {
-        String value = request.getParameter(key);
+        String value = pathParam(key, request);
         return OptionalObject.of(value).parseOrGet(predicate, parser, u);
     }
 
     public static <U> U pathParamThrowable(String key, Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends Throwable> supplier, HttpServletRequest request) throws Throwable {
-        String value = request.getParameter(key);
+        String value = pathParam(key, request);
         return OptionalObject.of(value).parseOrThrows(predicate, parser, supplier);
     }
 
     public static <U> U pathParamThrowable(String key, Predicate<String> predicate, Function<String, ? extends U> parser, String message, HttpServletRequest request) throws Throwable {
-        String value = request.getParameter(key);
+        String value = pathParam(key, request);
         return OptionalObject.of(value).parseOrThrows(predicate, parser, () -> new MicroFoxParameterException(message));
     }
 

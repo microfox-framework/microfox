@@ -48,6 +48,8 @@ public interface Request {
 
     <U> U pathParamThrowable(String key, Predicate<String> predicate, Function<String, ? extends U> parser, String message);
 
+    <U> U bean(Class<U> beanClass);
+
     Map<String, String> cookies();
 
     String cookie(String name);
