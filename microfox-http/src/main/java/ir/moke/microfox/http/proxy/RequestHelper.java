@@ -1,9 +1,7 @@
 package ir.moke.microfox.http.proxy;
 
-import ir.moke.microfox.api.http.BeanParamValue;
 import ir.moke.microfox.api.http.HttpMethod;
 import ir.moke.microfox.api.http.RouteInfo;
-import ir.moke.microfox.api.http.annotation.*;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.exception.MicroFoxParameterException;
 import ir.moke.microfox.http.HttpHelper;
@@ -17,15 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.*;
-import java.nio.file.Path;
-import java.time.*;
-import java.time.format.DateTimeParseException;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -285,21 +276,24 @@ public class RequestHelper {
 
     public static <U> U bean(Class<U> beanClass, HttpServletRequest request) {
         try {
+            if (beanClass.isRecord()) {
+                U bean = BeanParamBinder.createRecordInstance(beanClass, request);
+                MicroFoxValidator.validate(bean);
+                return bean;
+            }
+
             U bean = BeanParamBinder.createInstance(beanClass);
 
             for (Field field : BeanParamBinder.getAllFields(beanClass)) {
+                if (!BeanParamBinder.isBindableField(field)) continue;
                 Object value = BeanParamBinder.resolveBeanFieldValue(field, request);
-
-                if (value != BeanParamValue.UNRESOLVED) {
-                    boolean accessible = field.canAccess(bean);
-                    field.setAccessible(true);
-                    field.set(bean, value);
-                    field.setAccessible(accessible);
-                }
+                boolean accessible = field.canAccess(bean);
+                field.setAccessible(true);
+                field.set(bean, value);
+                field.setAccessible(accessible);
             }
 
             MicroFoxValidator.validate(bean);
-
             return bean;
         } catch (Exception e) {
             throw new MicroFoxException(e);
