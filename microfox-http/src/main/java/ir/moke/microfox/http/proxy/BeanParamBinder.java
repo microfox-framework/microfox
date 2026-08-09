@@ -22,8 +22,7 @@ public class BeanParamBinder {
         return field.isAnnotationPresent(QueryParam.class)
                 || field.isAnnotationPresent(PathParam.class)
                 || field.isAnnotationPresent(HeaderParam.class)
-                || field.isAnnotationPresent(CookieParam.class)
-                || field.isAnnotationPresent(QueryParams.class);
+                || field.isAnnotationPresent(CookieParam.class);
     }
 
     static Object resolveBeanFieldValue(Field field, HttpServletRequest request) {
@@ -60,17 +59,11 @@ public class BeanParamBinder {
             resolved = true;
         }
 
-        if (field.isAnnotationPresent(QueryParams.class)) return convertQueryParamsMap(field, request);
-
         if (!resolved) throw new MicroFoxParameterException("Field is not bindable: %s".formatted(field.getName()));
 
         DefaultValue defaultValue = field.getAnnotation(DefaultValue.class);
         if ((rawValues == null || rawValues.length == 0 || allBlank(rawValues)) && defaultValue != null)
             rawValues = new String[]{defaultValue.value()};
-
-        Required required = field.getAnnotation(Required.class);
-        if ((rawValues == null || rawValues.length == 0 || allBlank(rawValues)) && required != null)
-            throw new MicroFoxParameterException("Required parameter is missing: " + field.getName());
 
         if (rawValues == null || rawValues.length == 0 || allBlank(rawValues)) {
             if (isContainerType(field.getType())) return convertValue(new String[0], field);
@@ -132,16 +125,11 @@ public class BeanParamBinder {
             resolved = true;
         }
 
-        if (component.isAnnotationPresent(QueryParams.class)) return convertQueryParamsMap(component, request);
         if (!resolved) return getNullValueForType(component.getType());
 
         DefaultValue defaultValue = component.getAnnotation(DefaultValue.class);
         if ((rawValues == null || rawValues.length == 0 || allBlank(rawValues)) && defaultValue != null)
             rawValues = new String[]{defaultValue.value()};
-
-        Required required = component.getAnnotation(Required.class);
-        if ((rawValues == null || rawValues.length == 0 || allBlank(rawValues)) && required != null)
-            throw new MicroFoxParameterException("Required parameter is missing: " + component.getName());
 
         if (rawValues == null || rawValues.length == 0 || allBlank(rawValues)) {
             if (isContainerType(component.getType())) return convertValue(new String[0], component);
@@ -226,55 +214,7 @@ public class BeanParamBinder {
         throw new MicroFoxParameterException("Unsupported generic type for: " + fieldName);
     }
 
-    // --- Map Support ---
-
-    private static Object convertQueryParamsMap(Field field, HttpServletRequest request) {
-        return convertQueryParamsMapGeneric(field.getType(), field.getGenericType(), field.getName(), request);
-    }
-
-    private static Object convertQueryParamsMap(RecordComponent component, HttpServletRequest request) {
-        return convertQueryParamsMapGeneric(component.getType(), component.getGenericType(), component.getName(), request);
-    }
-
-    private static Object convertQueryParamsMapGeneric(Class<?> type, Type genericType, String name, HttpServletRequest request) {
-        if (!Map.class.isAssignableFrom(type))
-            throw new MicroFoxParameterException("@QueryParams can only be used on Map fields: " + name);
-
-        Class<?> keyType = getMapKeyClass(genericType);
-        Class<?> valueType = getMapValueClass(genericType);
-        if (keyType != String.class)
-            throw new MicroFoxParameterException("@QueryParams Map key must be String: " + name);
-
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        if (valueType == String.class) {
-            Map<String, String> result = new LinkedHashMap<>();
-            parameterMap.forEach((k, v) -> result.put(k, v != null && v.length > 0 ? v[0] : null));
-            return result;
-        }
-        if (List.class.isAssignableFrom(valueType) || Collection.class.isAssignableFrom(valueType)) {
-            Map<String, List<String>> result = new LinkedHashMap<>();
-            parameterMap.forEach((k, v) -> result.put(k, flattenValues(v)));
-            return result;
-        }
-        if (String[].class == valueType) return new LinkedHashMap<>(parameterMap);
-        throw new MicroFoxParameterException("Unsupported @QueryParams Map value type: " + valueType.getName());
-    }
-
-    private static Class<?> getMapKeyClass(Type genericType) {
-        if (!(genericType instanceof ParameterizedType pt)) return String.class;
-        return (Class<?>) pt.getActualTypeArguments()[0];
-    }
-
-    private static Class<?> getMapValueClass(Type genericType) {
-        if (!(genericType instanceof ParameterizedType pt)) return String.class;
-        Type valType = pt.getActualTypeArguments()[1];
-        if (valType instanceof Class<?> c) return c;
-        if (valType instanceof ParameterizedType npt) return (Class<?>) npt.getRawType();
-        return String.class;
-    }
-
     // --- Static Conversion & Helpers ---
-
     private static Object convertValue(String value, Class<?> targetType) {
         if (targetType == String.class) return value;
         if (targetType == int.class || targetType == Integer.class) return Integer.parseInt(value);
@@ -461,7 +401,6 @@ public class BeanParamBinder {
         if (field.isAnnotationPresent(PathParam.class)) count++;
         if (field.isAnnotationPresent(HeaderParam.class)) count++;
         if (field.isAnnotationPresent(CookieParam.class)) count++;
-        if (field.isAnnotationPresent(QueryParams.class)) count++;
         if (count > 1) throw new MicroFoxParameterException("Multiple binding annotations on: " + field.getName());
     }
 
