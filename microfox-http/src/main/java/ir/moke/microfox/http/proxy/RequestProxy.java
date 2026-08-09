@@ -61,6 +61,9 @@ public class RequestProxy implements InvocationHandler {
             case "pathParamThrowable" -> {
                 return handlePathParameterThrowable(args);
             }
+            case "bean" -> {
+                return RequestHelper.bean((Class<?>) args[0], request);
+            }
             case "cookies" -> {
                 return RequestHelper.cookies(request);
             }
