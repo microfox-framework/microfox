@@ -285,10 +285,10 @@ public class RequestHelper {
 
     public static <U> U bean(Class<U> beanClass, HttpServletRequest request) {
         try {
-            U bean = BeanDelegate.createInstance(beanClass);
+            U bean = BeanParamBinder.createInstance(beanClass);
 
-            for (Field field : BeanDelegate.getAllFields(beanClass)) {
-                Object value = BeanDelegate.resolveBeanFieldValue(field, request);
+            for (Field field : BeanParamBinder.getAllFields(beanClass)) {
+                Object value = BeanParamBinder.resolveBeanFieldValue(field, request);
 
                 if (value != BeanParamValue.UNRESOLVED) {
                     boolean accessible = field.canAccess(bean);
