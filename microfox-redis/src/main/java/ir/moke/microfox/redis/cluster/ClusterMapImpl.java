@@ -4,6 +4,7 @@ import ir.moke.microfox.api.redis.cluster.ClusterMap;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.redisson.api.options.KeysScanOptions;
+import org.redisson.client.codec.StringCodec;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class ClusterMapImpl<K, V> implements ClusterMap<K, V> {
 
     public ClusterMapImpl(String name, RedissonClient client) {
         this.name = name;
-        this.map = client.getMap(name);
+        this.map = client.getMap(name, StringCodec.INSTANCE);
     }
 
     public String getName() {
