@@ -9,6 +9,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class RedisCacheImpl implements Cache {
     private final RedissonClient client;
@@ -51,11 +53,17 @@ public class RedisCacheImpl implements Cache {
         client.getBucket(key).expire(ttl);
     }
 
-    public List<String> getKeysByPattern(String pattern) {
+    public List<String> keys(String pattern) {
         List<String> result = new ArrayList<>();
         for (String key : client.getKeys().getKeys(KeysScanOptions.defaults().pattern(pattern))) {
             result.add(key);
         }
         return result;
+    }
+
+    @Override
+    public List<String> keys() {
+        Iterable<String> items = client.getKeys().getKeys();
+        return StreamSupport.stream(items.spliterator(),true).toList();
     }
 }

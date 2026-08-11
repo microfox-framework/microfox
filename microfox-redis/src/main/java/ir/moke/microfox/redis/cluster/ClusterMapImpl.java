@@ -3,6 +3,11 @@ package ir.moke.microfox.redis.cluster;
 import ir.moke.microfox.api.redis.cluster.ClusterMap;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
+import org.redisson.api.options.KeysScanOptions;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class ClusterMapImpl<K, V> implements ClusterMap<K, V> {
     private final String name;
@@ -35,5 +40,15 @@ public class ClusterMapImpl<K, V> implements ClusterMap<K, V> {
     @Override
     public boolean containsKey(K key) {
         return map.containsKey(key);
+    }
+
+    @Override
+    public Set<K> keys(String pattern) {
+        return map.keySet(pattern);
+    }
+
+    @Override
+    public Set<K> keys() {
+        return map.keySet();
     }
 }

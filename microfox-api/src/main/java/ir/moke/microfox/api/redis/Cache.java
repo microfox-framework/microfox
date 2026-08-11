@@ -17,5 +17,7 @@ public interface Cache {
 
     void expire(String key, Duration ttl);
 
-    List<String> getKeysByPattern(String pattern);
+    List<String> keys(String pattern);
+
+    List<String> keys();
 }
