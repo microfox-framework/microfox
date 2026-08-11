@@ -12,7 +12,7 @@ public interface ClusterCoordinator {
 
     ClusterPatternTopic getPatternTopic(String pattern);
 
-    <K, V> ClusterMap<K, V> getMap(String name);
+    <V> ClusterMap<V> getMap(String name);
 
     <E> ClusterQueue<E> getQueue(String name);
 

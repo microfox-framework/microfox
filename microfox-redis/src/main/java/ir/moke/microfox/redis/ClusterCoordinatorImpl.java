@@ -31,7 +31,7 @@ public class ClusterCoordinatorImpl implements ClusterCoordinator {
     }
 
     @Override
-    public <K, V> ClusterMap<K, V> getMap(String name) {
+    public <V> ClusterMap<V> getMap(String name) {
         return new ClusterMapImpl<>(name, client);
     }
 

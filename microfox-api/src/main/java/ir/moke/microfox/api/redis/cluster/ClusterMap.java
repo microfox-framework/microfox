@@ -2,16 +2,16 @@ package ir.moke.microfox.api.redis.cluster;
 
 import java.util.Set;
 
-public interface ClusterMap<K, V> {
-    V get(K key);
+public interface ClusterMap<V> {
+    V get(String key);
 
-    void put(K key, V value);
+    void put(String key, V value);
 
-    V remove(K key);
+    V remove(String key);
 
-    boolean containsKey(K key);
+    boolean containsKey(String key);
 
-    Set<K> keys(String pattern);
+    Set<String> keys(String pattern);
 
-    Set<K> keys();
+    Set<String> keys();
 }
