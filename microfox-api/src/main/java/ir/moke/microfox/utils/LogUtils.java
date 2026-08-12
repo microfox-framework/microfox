@@ -59,7 +59,7 @@ public class LogUtils {
         asyncAppender.setQueueSize(512);
         asyncAppender.setDiscardingThreshold(0);
         asyncAppender.setNeverBlock(false);
-        asyncAppender.setIncludeCallerData(false);
+        asyncAppender.setIncludeCallerData(true);
 
         asyncAppender.addAppender(underlyingAppender);
         asyncAppender.start();
