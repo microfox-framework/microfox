@@ -1,6 +1,7 @@
 package ir.moke.microfox.jpa;
 
 import ir.moke.microfox.api.jpa.TransactionPolicy;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
 import java.util.*;
@@ -86,5 +87,13 @@ public class Crud extends Jpa {
 
         T t = select(identity, primaryKey, entityClass);
         Optional.ofNullable(t).ifPresent(item -> delete(identity, t));
+    }
+
+    public static <T> void execute(String identity, String hql,Map<String,Object> parameters) {
+        persistence(identity, TransactionPolicy.REQUIRED, em -> {
+            Query query = em.createQuery(hql);
+            parameters.forEach(query::setParameter);
+            query.executeUpdate();
+        });
     }
 }

@@ -65,6 +65,10 @@ public class OptionalRepository<T> {
         return Crud.count(identity, hql, parameters) > 0;
     }
 
+    public void execute(String hql, Map<String, Object> parameters) {
+        Crud.execute(identity, hql, parameters);
+    }
+
     /*-------------------------------*/
 
     private static <T> boolean isPrimaryKeyIsNull(T t) {
