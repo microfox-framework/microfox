@@ -16,6 +16,8 @@ public interface ClusterCoordinator {
 
     <E> ClusterQueue<E> getQueue(String name);
 
+    <E> ClusterBlockingQueue<E> getBlockingQueue(String name);
+
     ClusterAtomicLong getAtomicLong(String name);
 
     ClusterSemaphore getSemaphore(String name);

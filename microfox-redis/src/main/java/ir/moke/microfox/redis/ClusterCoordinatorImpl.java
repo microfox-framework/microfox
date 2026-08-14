@@ -41,6 +41,11 @@ public class ClusterCoordinatorImpl implements ClusterCoordinator {
     }
 
     @Override
+    public <E> ClusterBlockingQueue<E> getBlockingQueue(String name) {
+        return new ClusterBlockingQueueImpl<>(name, client);
+    }
+
+    @Override
     public ClusterAtomicLong getAtomicLong(String name) {
         return new ClusterAtomicLongImpl(name, client);
     }
