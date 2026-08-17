@@ -40,14 +40,17 @@ public class RequestProxy implements InvocationHandler {
             case "authType" -> {
                 return RequestHelper.authType(request);
             }
+            case "headersMap" -> {
+                return RequestHelper.headersMap(request);
+            }
             case "headers" -> {
-                return RequestHelper.headers(request);
+                return handleHeaders(args);
             }
             case "header" -> {
                 return RequestHelper.header((String) args[0], request);
             }
             case "queryParameters" -> {
-                return RequestHelper.queryParameters(request);
+                return handleQueryParameters(args);
             }
             case "queryParameter" -> {
                 return handleQueryParameter(args);
@@ -147,8 +150,27 @@ public class RequestProxy implements InvocationHandler {
             case "remoteUser" -> {
                 return SecurityContext.principal().getName();
             }
+            case "raw" -> {
+                return request;
+            }
         }
         return null;
+    }
+
+    private Object handleHeaders(Object[] args) {
+        if (args != null && args.length > 0) {
+            return RequestHelper.queryParameters((String) args[0], request);
+        } else {
+            return RequestHelper.headers(request);
+        }
+    }
+
+    private Object handleQueryParameters(Object[] args) {
+        if (args != null && args.length > 0) {
+            return RequestHelper.queryParameters((String) args[0], request);
+        } else {
+            return RequestHelper.queryParameters(request);
+        }
     }
 
     @SuppressWarnings("unchecked")

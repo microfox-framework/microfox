@@ -1,5 +1,6 @@
 package ir.moke.microfox.http.proxy;
 
+import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.annotation.*;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.exception.MicroFoxParameterException;
@@ -429,4 +430,51 @@ public class BeanParamBinder {
 
         return array;
     }
+
+    static Object resolveParameterValue(Parameter param, Request request) {
+        boolean resolved = false;
+        String[] rawValues = null;
+
+        QueryParam queryParam = param.getAnnotation(QueryParam.class);
+        if (queryParam != null) { rawValues = request.queryParameters(queryParam.value()); resolved = true; }
+
+        PathParam pathParam = param.getAnnotation(PathParam.class);
+        if (pathParam != null) {
+            String v = request.pathParam(pathParam.value());
+            rawValues = v == null ? null : new String[]{v};
+            resolved = true;
+        }
+
+        HeaderParam headerParam = param.getAnnotation(HeaderParam.class);
+        if (headerParam != null) {
+            Enumeration<String> headers = request.headers(headerParam.value());
+            List<String> list = headers == null ? List.of() : Collections.list(headers);
+            rawValues = list.isEmpty() ? null : list.toArray(String[]::new);
+            resolved = true;
+        }
+
+        CookieParam cookieParam = param.getAnnotation(CookieParam.class);
+        if (cookieParam != null) {
+            String v = request.cookie(cookieParam.value());
+            rawValues = v == null ? null : new String[]{v};
+            resolved = true;
+        }
+
+        if (!resolved) return getNullValueForType(param.getType());
+
+        DefaultValue defaultValue = param.getAnnotation(DefaultValue.class);
+        if ((rawValues == null || allBlank(rawValues)) && defaultValue != null)
+            rawValues = new String[]{defaultValue.value()};
+
+        if (rawValues == null || rawValues.length == 0 || allBlank(rawValues)) {
+            if (isContainerType(param.getType())) return convertValue(new String[0], param);
+            return getNullValueForType(param.getType());
+        }
+        return convertValue(rawValues, param);
+    }
+
+    private static Object convertValue(String[] values, Parameter param) {
+        return convertValueGeneric(values, param.getType(), param.getParameterizedType(), param.getName());
+    }
+
 }

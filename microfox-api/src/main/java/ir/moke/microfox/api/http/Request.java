@@ -2,8 +2,10 @@ package ir.moke.microfox.api.http;
 
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.security.Principal;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +28,13 @@ public interface Request {
 
     String header(String name);
 
+    Enumeration<String> headers(String name);
+
+    Map<String, String[]> headersMap();
+
     Set<String> queryParameters();
+
+    String[] queryParameters(String key);
 
     String queryParameter(String key);
 
@@ -105,4 +113,6 @@ public interface Request {
     Principal principal();
 
     String remoteUser();
+
+    HttpServletRequest raw();
 }

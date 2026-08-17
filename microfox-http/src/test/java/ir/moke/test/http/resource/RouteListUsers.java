@@ -1,4 +1,4 @@
-package ir.moke.test.resource;
+package ir.moke.test.http.resource;
 
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;

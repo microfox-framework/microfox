@@ -253,6 +253,13 @@ public class MicroFox {
         return httpProvider.routeList();
     }
 
+    public static void rest(Class<?>... restClasses) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        for (Class<?> restClass : restClasses) {
+            httpProvider.rest(restClass);
+        }
+    }
+
     public static void websocket(Class<?> endpointClass) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         httpProvider.websocket(endpointClass);

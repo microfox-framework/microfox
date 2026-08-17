@@ -69,6 +69,10 @@ public class RequestHelper {
         return headers;
     }
 
+    public static Enumeration<String> headers(String key, HttpServletRequest request) {
+        return request.getHeaders(key);
+    }
+
     public static String header(String name, HttpServletRequest request) {
         return request.getHeader(name);
     }
@@ -80,6 +84,10 @@ public class RequestHelper {
             params.add(enumeration.nextElement());
         }
         return params;
+    }
+
+    public static String[] queryParameters(String key, HttpServletRequest request) {
+        return request.getParameterValues(key);
     }
 
     public static String queryParameter(String key, HttpServletRequest request) {

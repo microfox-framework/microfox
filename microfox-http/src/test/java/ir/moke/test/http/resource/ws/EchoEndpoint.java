@@ -1,4 +1,4 @@
-package ir.moke.test.resource.ws;
+package ir.moke.test.http.resource.ws;
 
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;

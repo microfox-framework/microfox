@@ -1,4 +1,4 @@
-package ir.moke.test.security;
+package ir.moke.test.http.security;
 
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.security.SecurityStrategy;

@@ -1,4 +1,4 @@
-package ir.moke.test.security;
+package ir.moke.test.http.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import ir.moke.microfox.api.http.Request;

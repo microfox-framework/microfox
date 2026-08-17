@@ -1,4 +1,4 @@
-package ir.moke.test;
+package ir.moke.test.http;
 
 import ch.qos.logback.classic.Level;
 import ir.moke.microfox.MicroFox;
@@ -7,12 +7,12 @@ import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.logger.model.ConsoleGenericModel;
 import ir.moke.test.exception.ExceptionController;
 import ir.moke.test.exception.SampleException;
-import ir.moke.test.resource.RouteCheckException;
-import ir.moke.test.resource.RouteListUsers;
-import ir.moke.test.resource.RouteLogin;
-import ir.moke.test.resource.ws.EchoEndpoint;
-import ir.moke.test.security.BasicAuthSecurity;
-import ir.moke.test.security.JwtSecurity;
+import ir.moke.test.http.resource.RouteCheckException;
+import ir.moke.test.http.resource.RouteListUsers;
+import ir.moke.test.http.resource.RouteLogin;
+import ir.moke.test.http.resource.ws.EchoEndpoint;
+import ir.moke.test.http.security.BasicAuthSecurity;
+import ir.moke.test.http.security.JwtSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

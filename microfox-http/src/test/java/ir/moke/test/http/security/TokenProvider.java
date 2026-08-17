@@ -1,4 +1,4 @@
-package ir.moke.test.security;
+package ir.moke.test.http.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

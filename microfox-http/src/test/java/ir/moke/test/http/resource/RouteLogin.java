@@ -1,11 +1,11 @@
-package ir.moke.test.resource;
+package ir.moke.test.http.resource;
 
 import ir.moke.microfox.api.http.Request;
 import ir.moke.microfox.api.http.Response;
 import ir.moke.microfox.api.http.Route;
 import ir.moke.microfox.http.SecurityContext;
-import ir.moke.test.security.BasicPrincipal;
-import ir.moke.test.security.TokenProvider;
+import ir.moke.test.http.security.BasicPrincipal;
+import ir.moke.test.http.security.TokenProvider;
 
 import java.util.List;
 

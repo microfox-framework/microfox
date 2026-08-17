@@ -25,6 +25,8 @@ public interface HttpProvider {
 
     void route(RouteInfo routeInfo);
 
+    void rest(Class<?> restClass);
+
     Set<RouteInfo> routeList();
 
     void websocket(Class<?> endpointClass);

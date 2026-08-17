@@ -1,4 +1,4 @@
-package ir.moke.test.sse;
+package ir.moke.test.http.sse;
 
 import ir.moke.microfox.MicroFox;
 import ir.moke.microfox.api.http.sse.SseObject;

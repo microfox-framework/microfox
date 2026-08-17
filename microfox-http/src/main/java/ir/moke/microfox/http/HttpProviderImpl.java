@@ -4,6 +4,7 @@ import ir.moke.microfox.api.http.*;
 import ir.moke.microfox.api.http.sse.SseObject;
 import ir.moke.microfox.exception.MicroFoxException;
 import ir.moke.microfox.http.filter.CorsFilter;
+import ir.moke.microfox.http.proxy.RestRouter;
 import ir.moke.microfox.http.sse.SseInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,11 @@ public class HttpProviderImpl implements HttpProvider {
     @Override
     public void route(RouteInfo routeInfo) {
         ResourceHolder.addRoute(routeInfo);
+    }
+
+    @Override
+    public void rest(Class<?> restClass) {
+        RestRouter.registerRoutes(restClass, this::route);
     }
 
     @Override
