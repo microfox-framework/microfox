@@ -256,7 +256,14 @@ public class MicroFox {
     public static void rest(Class<?>... restClasses) {
         if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
         for (Class<?> restClass : restClasses) {
-            httpProvider.rest(restClass);
+            httpProvider.rest(null, null, restClass);
+        }
+    }
+
+    public static void rest(String name, String category, Class<?>... restClasses) {
+        if (httpProvider == null) throw new UnsupportedOperationException("HTTP support not available");
+        for (Class<?> restClass : restClasses) {
+            httpProvider.rest(name, category, restClass);
         }
     }
 

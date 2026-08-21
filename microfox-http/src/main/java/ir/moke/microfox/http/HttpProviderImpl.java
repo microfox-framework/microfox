@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.SubmissionPublisher;
 
 public class HttpProviderImpl implements HttpProvider {
     private static final Logger logger = LoggerFactory.getLogger(HttpProviderImpl.class);
@@ -69,8 +68,8 @@ public class HttpProviderImpl implements HttpProvider {
     }
 
     @Override
-    public void rest(Class<?> restClass) {
-        RestRouter.registerRoutes(restClass, this::route);
+    public void rest(String name, String category, Class<?> restClass) {
+        RestRouter.registerRoutes(restClass, (path, method, route) -> route(path, method, name, category, route));
     }
 
     @Override

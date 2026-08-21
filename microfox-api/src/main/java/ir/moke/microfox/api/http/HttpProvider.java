@@ -25,7 +25,7 @@ public interface HttpProvider {
 
     void route(RouteInfo routeInfo);
 
-    void rest(Class<?> restClass);
+    void rest(String name, String category, Class<?> restClass);
 
     Set<RouteInfo> routeList();
 
