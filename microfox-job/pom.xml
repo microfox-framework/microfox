@@ -18,16 +18,22 @@
             <groupId>ir.moke.microfox</groupId>
             <artifactId>microfox-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>ir.moke.microfox</groupId>
+            <artifactId>microfox-redis</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
 </project>

@@ -1,9 +1,11 @@
 package test.redis;
 
 import ir.moke.microfox.MicroFox;
-import ir.moke.microfox.api.redis.Cache;
 import ir.moke.microfox.api.redis.RedisConfig;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.StringCodec;
 
 import static ir.moke.microfox.MicroFox.redisRegister;
 
@@ -19,9 +21,9 @@ public class RedisTest {
 
     @Test
     public void save() {
-        Cache cache = MicroFox.redis(IDENTITY);
-
-        cache.set("name", "Ali");
-        System.out.println(cache.keys("n*"));
+        RedissonClient client = MicroFox.redis(IDENTITY);
+        RBucket<Object> bucket = client.getBucket("name", StringCodec.INSTANCE);
+        bucket.set("Ali");
+        System.out.println(bucket.get());
     }
 }

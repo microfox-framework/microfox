@@ -31,8 +31,6 @@ import ir.moke.microfox.api.mongodb.MongoConnectionInfo;
 import ir.moke.microfox.api.mongodb.MongoProvider;
 import ir.moke.microfox.api.mybatis.MyBatisProvider;
 import ir.moke.microfox.api.openapi.OpenApiProvider;
-import ir.moke.microfox.api.redis.Cache;
-import ir.moke.microfox.api.redis.ClusterCoordinator;
 import ir.moke.microfox.api.redis.RedisConfig;
 import ir.moke.microfox.api.redis.RedisProvider;
 import ir.moke.microfox.exception.ExceptionMapper;
@@ -43,6 +41,7 @@ import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
 import jakarta.persistence.EntityManager;
 import org.apache.commons.net.ftp.FTPFile;
+import org.redisson.api.RedissonClient;
 
 import java.io.File;
 import java.net.http.HttpRequest;
@@ -570,14 +569,9 @@ public class MicroFox {
         redisProvider.unregister(identity);
     }
 
-    public static Cache redis(String identity) {
+    public static RedissonClient redis(String identity) {
         if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
-        return redisProvider.cache(identity);
-    }
-
-    public static ClusterCoordinator redisCluster(String identity) {
-        if (redisProvider == null) throw new UnsupportedOperationException("redis support not available");
-        return redisProvider.cluster(identity);
+        return redisProvider.client(identity);
     }
 
     public static void sftpDownload(MicroFoxSftpConfig config, Path remoteFilePath, Path localDownloadDir) {
