@@ -52,5 +52,9 @@
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>ir.moke</groupId>
+            <artifactId>utils</artifactId>
+        </dependency>
     </dependencies>
 </project>
