@@ -41,6 +41,7 @@ import jakarta.jms.JMSContext;
 import jakarta.jms.MessageListener;
 import jakarta.persistence.EntityManager;
 import org.apache.commons.net.ftp.FTPFile;
+import org.apache.kafka.streams.Topology;
 import org.redisson.api.RedissonClient;
 
 import java.io.File;
@@ -492,7 +493,7 @@ public class MicroFox {
         kafkaProvider.consumer(clientId, consumer);
     }
 
-    public static <K, V> void kafkaStream(String clientId, Object topology, Consumer<KafkaStreamController> consumer) {
+    public static <K, V> void kafkaStream(String clientId, Topology topology, Consumer<KafkaStreamController> consumer) {
         if (kafkaProvider == null) throw new UnsupportedOperationException("Kafka support not available");
         kafkaProvider.stream(clientId, topology, consumer);
     }

@@ -1,5 +1,7 @@
 package ir.moke.microfox.api.kafka;
 
+import org.apache.kafka.streams.Topology;
+
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -22,5 +24,5 @@ public interface KafkaProvider {
 
     <K, V> void consumer(String identity, Consumer<KafkaConsumerController<K, V>> consumer);
 
-    void stream(String identity, Object topology, Consumer<KafkaStreamController> consumer);
+    void stream(String identity, Topology topology, Consumer<KafkaStreamController> consumer);
 }

@@ -37,6 +37,6 @@ public class KafkaConsumerTest {
     }
 
     private static void listen(KafkaConsumerController<String, String> kafkaConsumerController) {
-        kafkaConsumerController.listen(List.of("sample"), (topic, key, value, partition, offset, timestamp, serializedKeySize, serializedValueSize, headers, leaderEpoch, deliveryCount) -> System.out.printf("Key: %s   | Value: %s%n", key, value));
+        kafkaConsumerController.listen(List.of("sample"), record -> System.out.printf("Key: %s   | Value: %s%n", record.key(), record.value()));
     }
 }

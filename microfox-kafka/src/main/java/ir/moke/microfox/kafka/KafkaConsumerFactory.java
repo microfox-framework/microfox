@@ -31,6 +31,10 @@ public class KafkaConsumerFactory {
         return (KafkaConsumer<K, V>) CONSUMERS.computeIfAbsent(identity, id -> new KafkaConsumer<>(configs));
     }
 
+    public static boolean isExists(String identity) {
+        return get(identity) != null;
+    }
+
     public static void close(String identity, Duration timeout) {
         CONFIGS.remove(identity);
         KafkaConsumer<?, ?> consumer = CONSUMERS.remove(identity);

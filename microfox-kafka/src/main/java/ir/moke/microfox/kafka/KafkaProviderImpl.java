@@ -55,8 +55,8 @@ public class KafkaProviderImpl implements KafkaProvider {
     }
 
     @Override
-    public void stream(String clientId, Object topology, Consumer<KafkaStreamController> consumer) {
-        KafkaStreamController kafkaStreamController = KafkaStreamFactory.createProxyInstance(clientId, (Topology) topology);
+    public void stream(String clientId, Topology topology, Consumer<KafkaStreamController> consumer) {
+        KafkaStreamController kafkaStreamController = KafkaStreamFactory.createProxyInstance(clientId, topology);
         consumer.accept(kafkaStreamController);
     }
 }
