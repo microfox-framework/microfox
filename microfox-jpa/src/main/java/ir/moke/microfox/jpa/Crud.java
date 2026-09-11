@@ -1,6 +1,8 @@
 package ir.moke.microfox.jpa;
 
 import ir.moke.microfox.api.jpa.TransactionPolicy;
+import ir.moke.microfox.exception.MicroFoxException;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 
 import java.util.*;
@@ -69,12 +71,18 @@ public class Crud extends Jpa {
     public static <T> Long count(String identity, String query, Map<String, Object> parameters, boolean isNative) {
         Objects.requireNonNull(identity, "JPA query could not be null");
 
+        if (!query.startsWith("select count")) throw new MicroFoxException("Count query must started with [select count...]");
+
         AtomicLong countRef = new AtomicLong();
         persistence(identity, TransactionPolicy.NOT_SUPPORTED, em -> {
-            Query q = isNative ? em.createNativeQuery(query) : em.createQuery(query);
-            if (parameters != null && !parameters.isEmpty()) parameters.forEach(q::setParameter);
-            Long count = (Long) q.getSingleResult();
-            countRef.set(count);
+            try {
+                Query q = isNative ? em.createNativeQuery(query) : em.createQuery(query);
+                if (parameters != null && !parameters.isEmpty()) parameters.forEach(q::setParameter);
+                Long count = (Long) q.getSingleResult();
+                countRef.set(count);
+            } catch (NoResultException nre) {
+                countRef.set(0);
+            }
         });
 
         return countRef.get();
