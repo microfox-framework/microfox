@@ -21,11 +21,6 @@
 
         <!-- Provided scope dependencies -->
         <dependency>
-            <groupId>com.ibm.icu</groupId>
-            <artifactId>icu4j</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>ir.moke</groupId>
             <artifactId>utils</artifactId>
             <scope>provided</scope>
